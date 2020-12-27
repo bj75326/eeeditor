@@ -1,4 +1,7 @@
 {
+  "name": "eeeditor",
+  "version": "0.0.1",
+  "decription": "A rich text editor based on draft.js & antd",
   "private": true,
   "scripts": {
     "start": "umi dev",
@@ -7,7 +10,10 @@
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage",
-    "father:build": "npx father build"
+    "father:compile": "npx father build",
+    "father:start": "npx father doc dev --storybook",
+    "father:build": "npx father doc build  --storybook",
+    "gh-pages": "cnpm run build && gh-pages -d dist"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -22,7 +28,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "antd": "^4.9.4"
+    "antd": "^4.9.4",
+    "draft-js": "^0.11.7"
   },
   "devDependencies": {
     "@types/react": "^16.9.0",
@@ -30,6 +37,7 @@
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.3.3",
     "father": "^2.13.4",
+    "gh-pages": "^3.1.0",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.0",
     "react": "^16.9.0",
@@ -45,5 +53,6 @@
   },
   "resolutions": {
     "@types/react": "^16.14.2"
-  }
+  },
+  "homepage": "https://bj75326.github.com/eeeditor"
 }

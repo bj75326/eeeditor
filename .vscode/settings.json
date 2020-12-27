@@ -1,8 +1,0 @@
-{
-  "files.watcherExclude": {
-    "**/node_modules/**": false
-  },
-  "search.exclude": {
-    "**/node_modules": false
-  }
-}
