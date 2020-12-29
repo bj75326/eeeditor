@@ -28,10 +28,14 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
+    "@draft-js-plugins/editor": "^4.0.0-beta4",
     "antd": "^4.9.4",
+    "classnames": "^2.2.6",
     "draft-js": "^0.11.7"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.11",
+    "@types/draft-js": "^0.10.44",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@umijs/preset-react": "1.x",
