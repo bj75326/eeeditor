@@ -1,5 +1,5 @@
-import React, { CSSProperties, useState, useRef } from 'react';
-import Editor from '@draft-js-plugins/editor';
+import React, { CSSProperties, useState } from 'react';
+import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
 import { EditorState, convertToRaw } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
@@ -8,7 +8,7 @@ export type DirectionType = 'ltr' | 'rtl' | undefined;
 
 export interface Locale {}
 
-export interface EEEditorProps {
+export interface EEEditorProps extends PluginEditorProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
@@ -17,21 +17,23 @@ export interface EEEditorProps {
 }
 
 const EEEditor: React.FC<EEEditorProps> = (props) => {
-  const []: [] = useState();
-
   const {
     prefixCls = 'eee',
     className,
     style,
     locale = zhCN,
     direction,
+    editorState,
+    onChange,
   } = props;
 
   const eeeditorCls = classNames(prefixCls, {}, className);
 
   //const eeeditorRef = useRef(null);
 
-  const handleChange = () => {};
+  const handleChange = (editorState: EditorState) => {
+    onChange(editorState);
+  };
 
   return (
     <div
@@ -51,7 +53,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       }}
     >
       <Editor
-        editorState={}
+        editorState={editorState}
+        onChange={handleChange}
         //ref={eeeditorRef}
       />
     </div>
