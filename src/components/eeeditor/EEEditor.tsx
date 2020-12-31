@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties } from 'react';
 import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
 import { EditorState, convertToRaw } from 'draft-js';
 import classNames from 'classnames';

@@ -26,6 +26,22 @@ const Page: React.FC<PageProps> = (props) => {
     setEditorState(editorState);
   };
 
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'draft/fetchDraft',
+        payload: {
+          // Draft id or something.
+          draftId: '000000',
+        },
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    setEditorState(EditorState.createWithContent(convertFromRaw(content)));
+  }, [content]);
+
   return (
     <div className="main">
       <header className="header"></header>
@@ -40,6 +56,7 @@ const Page: React.FC<PageProps> = (props) => {
               placeholder="标题"
               rows={1}
               style={{ height: '37px' }}
+              //value={title}
             ></textarea>
           </h1>
           <EEEditor editorState={editorState} onChange={handleChange} />
@@ -49,7 +66,7 @@ const Page: React.FC<PageProps> = (props) => {
   );
 };
 
-export default connect(({ page }: { page: StateType }) => ({
-  title: page.title,
-  content: page.content,
+export default connect(({ draft }: { draft: StateType }) => ({
+  title: draft.title,
+  content: draft.content,
 }))(Page);
