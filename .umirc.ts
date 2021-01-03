@@ -12,4 +12,8 @@ export default defineConfig({
   },
   routes: [{ path: '/', component: '@/pages/index' }],
   title: false,
+  locale: {
+    default: 'zh-CN',
+    baseNavigator: true,
+  },
 });

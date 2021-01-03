@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { connect, ConnectProps } from 'umi';
-import EEEditor, { convertFromRaw, EditorState } from '@/components/eeeditor';
+import { connect, ConnectProps, useIntl } from 'umi';
+import EEEditor, {
+  convertFromRaw,
+  convertToRaw,
+  EditorState,
+} from '@/components/eeeditor';
 import { StateType } from './model';
 
 import './index.less';
@@ -8,10 +12,13 @@ import './index.less';
 export interface PageProps extends ConnectProps {
   title: StateType['title'];
   content: StateType['content'];
+  fetching: boolean;
+  syncing: boolean;
 }
 
 const Page: React.FC<PageProps> = (props) => {
-  const { title, content, dispatch } = props;
+  const { title, content, dispatch, fetching, syncing } = props;
+  const { formatMessage } = useIntl();
 
   const [editorState, setEditorState]: [
     EditorState,
@@ -24,6 +31,17 @@ const Page: React.FC<PageProps> = (props) => {
 
   const handleChange = (editorState: EditorState) => {
     setEditorState(editorState);
+    // sync with server side
+    if (dispatch) {
+      dispatch({
+        type: 'draft/syncDraft',
+        payload: {
+          content: convertToRaw(editorState.getCurrentContent()),
+
+          formatMessage,
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -33,6 +51,8 @@ const Page: React.FC<PageProps> = (props) => {
         payload: {
           // Draft id or something.
           draftId: '000000',
+
+          formatMessage,
         },
       });
     }
@@ -66,7 +86,19 @@ const Page: React.FC<PageProps> = (props) => {
   );
 };
 
-export default connect(({ draft }: { draft: StateType }) => ({
-  title: draft.title,
-  content: draft.content,
-}))(Page);
+export default connect(
+  ({
+    draft,
+    loading,
+  }: {
+    draft: StateType;
+    loading: {
+      [key: string]: boolean;
+    };
+  }) => ({
+    title: draft.title,
+    content: draft.content,
+    fetching: loading['draft/fetchDraft'],
+    syncing: loading['draft/syncDraft'],
+  }),
+)(Page);
