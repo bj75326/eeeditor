@@ -30,6 +30,7 @@ const Page: React.FC<PageProps> = (props) => {
   );
 
   const handleChange = (editorState: EditorState) => {
+    console.log('Page handleChange run');
     setEditorState(editorState);
     // sync with server side
     if (dispatch) {
@@ -45,6 +46,7 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   useEffect(() => {
+    console.log('ready to fetch init contentState RAW');
     if (dispatch) {
       dispatch({
         type: 'draft/fetchDraft',
@@ -59,6 +61,7 @@ const Page: React.FC<PageProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('after get init contentState RAW');
     setEditorState(EditorState.createWithContent(convertFromRaw(content)));
   }, [content]);
 

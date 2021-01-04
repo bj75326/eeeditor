@@ -3,7 +3,6 @@ import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
 import { EditorState, convertToRaw } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
-import { Button } from 'antd';
 
 export type DirectionType = 'ltr' | 'rtl' | undefined;
 
@@ -53,7 +52,6 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         console.log('editor wrapper mouseup');
       }}
     >
-      <Button>test</Button>
       <Editor
         editorState={editorState}
         onChange={handleChange}
