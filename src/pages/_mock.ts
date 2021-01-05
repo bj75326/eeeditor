@@ -35,4 +35,11 @@ export default {
       });
     }, 1000);
   },
+  'POST /api/sync': (req: Request, res: Response) => {
+    setTimeout(() => {
+      res.send({
+        status: 'ok',
+      });
+    }, 1000);
+  },
 };
