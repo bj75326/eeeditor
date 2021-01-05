@@ -8,5 +8,7 @@ export async function getDraft(params: { draftId: string }) {
 }
 
 export async function syncDraft(params: { draftId: string }) {
-  return request(`/api/`);
+  return request(`${fastmock}/api/sync`, {
+    method: 'POST',
+  });
 }

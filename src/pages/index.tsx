@@ -6,6 +6,7 @@ import EEEditor, {
   EditorState,
 } from '@/components/eeeditor';
 import { StateType } from './model';
+import { is } from 'immutable';
 
 import './index.less';
 
@@ -29,14 +30,31 @@ const Page: React.FC<PageProps> = (props) => {
       : EditorState.createEmpty(),
   );
 
-  const handleChange = (editorState: EditorState) => {
+  const handleChange = (nextEditorState: EditorState) => {
     console.log('Page handleChange run');
-    setEditorState(editorState);
+    setEditorState(nextEditorState);
+
     // sync with server side
-    if (dispatch) {
+    // editorState 包含 selectionState 和 contentState，selectionState 的改动不应该也不需要与服务器同步
+    // contentState 的比较可以选择 '===' 或者 Immutable.is()
+    // 区别在于 is() 可以将 Immutable Collection 当做直接量对待，e.g:
+    // Immutable.is(Immutable.Map({a: 1}), Immutable.Map({a: 1})) ---> true
+    const nextContentState = nextEditorState.getCurrentContent();
+    const currContentState = editorState.getCurrentContent();
+    console.log(
+      '=== 直接比较 contentState: ',
+      nextContentState === currContentState,
+    );
+    console.log(
+      'Immutable.is() 比较 contentState: ',
+      is(currContentState, nextContentState),
+    );
+
+    if (dispatch && !is(currContentState, nextContentState)) {
       dispatch({
         type: 'draft/syncDraft',
         payload: {
+          draftId: '000000',
           content: convertToRaw(editorState.getCurrentContent()),
 
           formatMessage,
