@@ -7,6 +7,8 @@ import EEEditor, {
 } from '@/components/eeeditor';
 import { StateType } from './model';
 import { is } from 'immutable';
+import logo from '@/assets/logo.svg';
+import { HamburgerButton, Github } from '@icon-park/react';
 
 import './index.less';
 
@@ -84,7 +86,24 @@ const Page: React.FC<PageProps> = (props) => {
 
   return (
     <div className="main">
-      <header className="header"></header>
+      <header className="header">
+        <div className="header-body">
+          <div className="logo">
+            <a href="/">
+              <img src={logo} alt="logo" />
+              <span>EEEditor</span>
+            </a>
+          </div>
+          <div className="actions">
+            <span role="button" className="actionBtn">
+              <HamburgerButton theme="outline" size="18" strokeWidth={3} />
+            </span>
+            <a href="" className="actionBtn">
+              <Github theme="outline" size="24" strokeWidth={3} />
+            </a>
+          </div>
+        </div>
+      </header>
       <div className="editor">
         <div
           className="transform-wrapper"

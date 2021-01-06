@@ -1,3 +1,11 @@
+:root {
+  --primary-color: #1890ff;
+  --body-background-color: #ffffff;
+  --text-color: fade(#000000, 65%);
+  --text-color-secondary: fade(#000000, 45%);
+  --border-default-color: hsv(0, 0, 85%);
+}
+
 html,
 body {
   box-sizing: border-box;
@@ -6,13 +14,11 @@ body {
 }
 
 body {
+  font-family: Microsoft Yahei UI, Arial, Helvetica, sans-serif !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: Microsoft Yahei UI, Arial, Helvetica, sans-serif !important;
-}
-
-:root {
-  --primary-color: #1890ff;
-  // --background-color: ;
+  padding-top: 48px;
+  background-color: var(--body-background-color);
+  color: var(--text-color);
 }
