@@ -155,11 +155,11 @@ const Page: React.FC<PageProps> = (props) => {
                       {formatMessage({ id: 'page.sidebar.tool.preview' })}
                     </span>
                   </a>
-                  <a className="toolBtn">
+                  <a className="toolBtn" onClick={handleThemeChange}>
                     {darkMode ? (
                       <Moon theme="outline" strokeWidth={3} />
                     ) : (
-                      <Sun theme="outline" size="18" strokeWidth={3} />
+                      <Sun theme="outline" strokeWidth={3} />
                     )}
                     <span>
                       {formatMessage({ id: 'page.sidebar.tool.theme' })}
