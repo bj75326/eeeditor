@@ -10,7 +10,6 @@
   height: 48px;
   background-color: var(--body-background-color);
   color: var(--text-color-secondary);
-  line-height: 48px;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -32,6 +31,7 @@
   top: 0;
   left: 0;
   height: 48px;
+  line-height: 48px;
   margin-left: 24px;
   & > a {
     display: inline-block;
@@ -114,6 +114,49 @@
   opacity: 0;
   transform: translate3d(300px, 0, 0);
   transition: opacity 120ms ease-in, transform 120ms ease-in;
+}
+
+.sidebarMenu {
+  padding: 0 20px;
+
+  section {
+    position: relative;
+    padding-bottom: 12px;
+    h3 {
+      padding: 16px 0;
+      color: var(--text-color-primary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+}
+
+.toolBtn {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px 0;
+  width: 60px;
+  vertical-align: top;
+  text-align: center;
+  transition: all 0.15s linear;
+  &:hover {
+    background-color: var(--sidebar-tools-icon-hover-bg-color);
+  }
+  .i-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 4px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: var(--sidebar-tools-icon-bg-color);
+  }
+  & > span {
+    font-size: 12px;
+    color: var(--text-color);
+  }
 }
 
 .editor {

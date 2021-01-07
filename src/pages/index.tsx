@@ -8,7 +8,15 @@ import EEEditor, {
 import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';
-import { HamburgerButton, Github } from '@icon-park/react';
+import {
+  HamburgerButton,
+  Github,
+  DataSheet,
+  PreviewOpen,
+  International,
+  Sun,
+  Moon,
+} from '@icon-park/react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 
@@ -31,6 +39,12 @@ const Page: React.FC<PageProps> = (props) => {
 
   const handleCollapseBtnClick = () => {
     setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
+  };
+
+  const [darkMode, setDarkMode]: [boolean, any] = useState(false);
+
+  const handleThemeChange = () => {
+    setDarkMode((darkMode: boolean) => !darkMode);
   };
 
   const [editorState, setEditorState]: [EditorState, any] = useState(
@@ -123,7 +137,60 @@ const Page: React.FC<PageProps> = (props) => {
           unmountOnExit
         >
           <aside className="sidebar">
-            <div className=""></div>
+            <div className="sidebarMenu">
+              <section className="tools">
+                <h3>
+                  {formatMessage({ id: 'page.sidebar.tool.section.header' })}
+                </h3>
+                <div>
+                  <a className="toolBtn">
+                    <DataSheet theme="outline" strokeWidth={3} />
+                    <span>
+                      {formatMessage({ id: 'page.sidebar.tool.wordcount' })}
+                    </span>
+                  </a>
+                  <a className="toolBtn" href="" target="_blank">
+                    <PreviewOpen theme="outline" strokeWidth={3} />
+                    <span>
+                      {formatMessage({ id: 'page.sidebar.tool.preview' })}
+                    </span>
+                  </a>
+                  <a className="toolBtn">
+                    {darkMode ? (
+                      <Moon theme="outline" strokeWidth={3} />
+                    ) : (
+                      <Sun theme="outline" size="18" strokeWidth={3} />
+                    )}
+                    <span>
+                      {formatMessage({ id: 'page.sidebar.tool.theme' })}
+                    </span>
+                  </a>
+                  <a className="toolBtn">
+                    <International theme="outline" strokeWidth={3} />
+                    <span>
+                      {formatMessage({ id: 'page.sidebar.tool.locale' })}
+                    </span>
+                  </a>
+                </div>
+              </section>
+              <section className="mode">
+                <h3>
+                  {formatMessage({ id: 'page.sidebar.mode.section.header' })}
+                </h3>
+              </section>
+              <section className="typesetting">
+                <h3>
+                  {formatMessage({
+                    id: 'page.sidebar.typesetting.section.header',
+                  })}
+                </h3>
+              </section>
+              <section className="help">
+                <h3>
+                  {formatMessage({ id: 'page.sidebar.help.section.header' })}
+                </h3>
+              </section>
+            </div>
           </aside>
         </CSSTransition>
       </header>
