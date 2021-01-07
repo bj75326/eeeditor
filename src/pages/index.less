@@ -66,7 +66,54 @@
     height: 48px;
     line-height: 48px;
     align-items: center;
+    &:focus {
+      outline: none;
+    }
   }
+  &:focus {
+    outline: none;
+  }
+}
+
+.headerBtn {
+  cursor: pointer;
+  transition: all 0.15s linear;
+  &:hover {
+    background-color: var(--hover-background-color);
+  }
+}
+
+.uncollapsed {
+  background-color: var(--hover-background-color);
+}
+
+.sidebar {
+  position: fixed;
+  top: 48px;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  overflow: auto;
+  width: 300px;
+  background-color: var(--sidebar-background-color);
+}
+
+.sidebar-enter {
+  opacity: 0;
+  transform: translate3d(300px, 0, 0);
+}
+.sidebar-enter-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+.sidebar-exit {
+  opacity: 1;
+}
+.sidebar-exit-active {
+  opacity: 0;
+  transform: translate3d(300px, 0, 0);
+  transition: opacity 120ms ease-in, transform 120ms ease-in;
 }
 
 .editor {

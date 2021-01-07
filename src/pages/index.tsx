@@ -9,6 +9,8 @@ import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';
 import { HamburgerButton, Github } from '@icon-park/react';
+import { CSSTransition } from 'react-transition-group';
+import classNames from 'classnames';
 
 import './index.less';
 
@@ -23,10 +25,15 @@ const Page: React.FC<PageProps> = (props) => {
   const { title, content, dispatch, fetching, syncing } = props;
   const { formatMessage } = useIntl();
 
-  const [editorState, setEditorState]: [
-    EditorState,
-    (editorState: EditorState) => void,
-  ] = useState(
+  const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] = useState(
+    false,
+  );
+
+  const handleCollapseBtnClick = () => {
+    setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
+  };
+
+  const [editorState, setEditorState]: [EditorState, any] = useState(
     content
       ? EditorState.createWithContent(convertFromRaw(content))
       : EditorState.createEmpty(),
@@ -95,7 +102,13 @@ const Page: React.FC<PageProps> = (props) => {
             </a>
           </div>
           <div className="actions">
-            <span role="button" className="actionBtn">
+            <span
+              role="button"
+              className={classNames('actionBtn', 'headerBtn', {
+                uncollapsed: !sidebarCollapsed,
+              })}
+              onClick={handleCollapseBtnClick}
+            >
               <HamburgerButton theme="outline" size="18" strokeWidth={3} />
             </span>
             <a href="" className="actionBtn">
@@ -103,6 +116,16 @@ const Page: React.FC<PageProps> = (props) => {
             </a>
           </div>
         </div>
+        <CSSTransition
+          in={!sidebarCollapsed}
+          timeout={120}
+          classNames="sidebar"
+          unmountOnExit
+        >
+          <aside className="sidebar">
+            <div className=""></div>
+          </aside>
+        </CSSTransition>
       </header>
       <div className="editor">
         <div
