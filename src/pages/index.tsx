@@ -45,6 +45,10 @@ const Page: React.FC<PageProps> = (props) => {
 
   const handleThemeChange = () => {
     setDarkMode((darkMode: boolean) => !darkMode);
+
+    const nextTheme = !darkMode ? 'dark' : 'light';
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('theme', nextTheme);
   };
 
   const [editorState, setEditorState]: [EditorState, any] = useState(

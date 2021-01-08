@@ -1,19 +1,57 @@
+// :root {
+//   --primary-color: #1890ff;
+//   --body-background-color: #faf8f8;
+//   --text-color: fade(#000000, 65%);
+//   --text-color-secondary: fade(#000000, 45%);
+//   --text-color-primary: #68889f;
+//   --text-color-dark: #2b4559;
+//   --border-default-color: hsv(0, 0, 85%);
+//   --hover-background-color: #e8edf0;
+//   --sidebar-background-color: #e8edf0;
+//   --sidebar-tools-icon-bg-color: #ffffff;
+//   --sidebar-tools-icon-text-color: #68889f;
+//   --sidebar-tools-icon-hover-bg-color: #d6e0ea;
+// }
+
+// [data-theme='dark'] {
+//   --primary-color: #1890ff;
+//   --body-background-color: #1c1b22;
+//   --text-color: fade(#ffffff, 65%);
+//   --text-color-secondary: fade(#ffffff, 45%);
+//   --text-color-primary: #84a59d;
+//   --text-color-dark: #a7b8b3;
+//   --border-default-color: #434343;
+//   --hover-background-color: #1c1b22;
+//   --sidebar-background-color: #1c1b22;
+//   --sidebar-tools-icon-bg-color: #84a59d;
+//   --sidebar-tools-icon-text-color: #ffffff;
+//   --sidebar-tools-icon-hover-bg-color: #d6e0ea;
+// }
+
 :root {
-  --primary-color: #1890ff;
-  --body-background-color: #ffffff;
-  --text-color: fade(#000000, 65%);
-  --text-color-secondary: fade(#000000, 45%);
-  --text-color-primary: #68889f;
-  --text-color-dark: #2b4559;
-  --border-default-color: hsv(0, 0, 85%);
-  --hover-background-color: #e8edf0;
-  --sidebar-background-color: #e8edf0;
-  --sidebar-tools-icon-bg-color: #ffffff;
-  --sidebar-tools-icon-text-color: #68889f;
-  --sidebar-tools-icon-hover-bg-color: #d6e0ea;
+  --color-inverse: #ffffff;
+  --color-tint-0: rgba(0, 0, 0, 0);
+  --color-tint-1: rgba(0, 0, 0, 0.04);
+  --color-tint-2: rgba(0, 0, 0, 0.08);
+  --color-tint-3: rgba(0, 0, 0, 0.16);
+  --color-tint-4: rgba(0, 0, 0, 0.24);
+  --color-tint-5: rgba(0, 0, 0, 0.4);
+  --color-tint-6: rgba(0, 0, 0, 0.64);
+  --color-tint-7: rgba(0, 0, 0, 0.84);
+  --color-tint-8: rgba(0, 0, 0, 1);
 }
 
-[saved-theme='dark'] {
+[data-theme='dark'] {
+  --color-inverse: #101419;
+  --color-tint-0: rgba(255, 255, 255, 0);
+  --color-tint-1: rgba(255, 255, 255, 0.04);
+  --color-tint-2: rgba(255, 255, 255, 0.08);
+  --color-tint-3: rgba(255, 255, 255, 0.16);
+  --color-tint-4: rgba(255, 255, 255, 0.24);
+  --color-tint-5: rgba(255, 255, 255, 0.4);
+  --color-tint-6: rgba(255, 255, 255, 0.64);
+  --color-tint-7: rgba(255, 255, 255, 0.84);
+  --color-tint-8: rgba(255, 255, 255, 1);
 }
 
 html,
@@ -29,6 +67,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-top: 48px;
-  background-color: var(--body-background-color);
-  color: var(--text-color);
+  background-color: var(--color-inverse);
+  color: var(--color-tint-7);
 }
