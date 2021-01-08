@@ -1,11 +1,11 @@
 import { Effect, Reducer } from 'umi';
-import { message } from 'antd';
+//import { message } from 'antd';
 import {
   RawDraftContentState,
   EditorState,
   convertToRaw,
 } from '@/components/eeeditor';
-import { getDraft, syncDraft } from './service';
+import { getDraft, syncContent, syncTitle } from './service';
 
 export interface StateType {
   title: string;
@@ -17,7 +17,8 @@ export interface ModelType {
   state: StateType;
   effects: {
     fetchDraft: Effect;
-    syncDraft: Effect;
+    syncContent: Effect;
+    syncTitle: Effect;
   };
   reducers: {
     changeDraft: Reducer<StateType>;
@@ -39,16 +40,25 @@ const Modal: ModelType = {
           payload: response,
         });
       } else if (response.status === 'error') {
-        message.error(formatMessage({ id: 'page.fetch.draft.failed' }));
+        //message.error(formatMessage({ id: 'page.fetch.draft.failed' }));
       }
     },
-    *syncDraft({ payload: { formatMessage, ...data } }, { call, put }) {
-      const response = yield call(syncDraft, data);
+    *syncContent({ payload: { formatMessage, ...data } }, { call, put }) {
+      const response = yield call(syncContent, data);
       if (response.status === 'ok') {
         // 示例使用dva-loading更新同步文稿的状态，如果不使用dva-loading，
         // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
       } else if (response.status === 'error') {
-        message.error(formatMessage({ id: 'page.sync.draft.failed' }));
+        //message.error(formatMessage({ id: 'page.sync.draft.failed' }));
+      }
+    },
+    *syncTitle({ payload: { formatMessage, ...data } }, { call, put }) {
+      const response = yield call(syncTitle, data);
+      if (response.status === 'ok') {
+        // 示例使用dva-loading更新同步标题的状态，如果不使用dva-loading，
+        // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
+      } else if (response.status === 'error') {
+        //message.error(formatMessage({id: 'page.sync.title.failed'}));
       }
     },
   },

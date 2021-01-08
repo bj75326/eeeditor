@@ -20,6 +20,7 @@ import {
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 
+import 'normalize.css';
 import './index.less';
 
 export interface PageProps extends ConnectProps {
@@ -30,7 +31,7 @@ export interface PageProps extends ConnectProps {
 }
 
 const Page: React.FC<PageProps> = (props) => {
-  const { title, content, dispatch, fetching, syncing } = props;
+  const { title: initTitle, content, dispatch, fetching, syncing } = props;
   const { formatMessage } = useIntl();
 
   const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] = useState(
@@ -41,7 +42,8 @@ const Page: React.FC<PageProps> = (props) => {
     setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
   };
 
-  const [darkMode, setDarkMode]: [boolean, any] = useState(false);
+  const initDarkMode = localStorage.getItem('theme') === 'dark' ? true : false;
+  const [darkMode, setDarkMode]: [boolean, any] = useState(initDarkMode);
 
   const handleThemeChange = () => {
     setDarkMode((darkMode: boolean) => !darkMode);
@@ -78,10 +80,28 @@ const Page: React.FC<PageProps> = (props) => {
 
     if (dispatch && !is(currContentState, nextContentState)) {
       dispatch({
-        type: 'draft/syncDraft',
+        type: 'draft/syncContent',
         payload: {
           draftId: '000000',
           content: convertToRaw(editorState.getCurrentContent()),
+
+          formatMessage,
+        },
+      });
+    }
+  };
+
+  const [title, setTitle]: [string, any] = useState(initTitle);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTitle(e.target.value);
+
+    if (dispatch) {
+      dispatch({
+        type: 'draft/syncTitle',
+        payload: {
+          draftId: '000000',
+          title: e.target.value,
 
           formatMessage,
         },
@@ -161,9 +181,9 @@ const Page: React.FC<PageProps> = (props) => {
                   </a>
                   <a className="toolBtn" onClick={handleThemeChange}>
                     {darkMode ? (
-                      <Moon theme="outline" strokeWidth={3} />
-                    ) : (
                       <Sun theme="outline" strokeWidth={3} />
+                    ) : (
+                      <Moon theme="outline" strokeWidth={3} />
                     )}
                     <span>
                       {formatMessage({ id: 'page.sidebar.tool.theme' })}
@@ -205,11 +225,14 @@ const Page: React.FC<PageProps> = (props) => {
         >
           <h1 className="title">
             <textarea
-              maxLength={20}
-              placeholder="标题"
+              maxLength={50}
+              placeholder={formatMessage({
+                id: 'page.draft.title.placeholder',
+              })}
               rows={1}
               style={{ height: '37px' }}
-              //value={title}
+              value={title}
+              onChange={handleTitleChange}
             ></textarea>
           </h1>
           <EEEditor editorState={editorState} onChange={handleChange} />

@@ -16,7 +16,7 @@ export default defineConfig({
     default: 'zh-CN',
     baseNavigator: true,
   },
-  antd: {},
+  // antd: {},
   ignoreMomentLocale: true,
   publicPath: process.env.NODE_ENV === 'production' ? '/eeeditor/' : '/',
 });

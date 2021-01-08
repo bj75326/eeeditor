@@ -29,7 +29,6 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@draft-js-plugins/editor": "^4.0.0-beta4",
-    "antd": "^4.9.4",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.7",
     "immutable": "^4.0.0-rc.12"
@@ -41,12 +40,14 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-transition-group": "^4.4.0",
-    "@umijs/preset-react": "1.x",
+    "@umijs/plugin-dva": "^0.9.1",
+    "@umijs/plugin-locale": "^0.10.5",
     "@umijs/test": "^3.3.3",
     "cross-env": "^7.0.3",
     "father": "^2.13.4",
     "gh-pages": "^3.1.0",
     "lint-staged": "^10.0.7",
+    "normalize.css": "^8.0.1",
     "prettier": "^2.2.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

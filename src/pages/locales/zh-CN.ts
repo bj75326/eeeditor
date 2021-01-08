@@ -9,4 +9,6 @@ export default {
   'page.sidebar.tool.preview': '预览',
   'page.sidebar.tool.theme': '主题切换',
   'page.sidebar.tool.locale': '国际化',
+  'page.draft.title.placeholder': '标题',
+  'page.sync.title.failed': '同步标题异常',
 };

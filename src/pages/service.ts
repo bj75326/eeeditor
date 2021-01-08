@@ -8,11 +8,18 @@ export async function getDraft(params: { draftId: string }) {
   return request(`${fastmock}/api/draft?draftId=${params.draftId}`);
 }
 
-export async function syncDraft(params: {
+export async function syncContent(params: {
   draftId: string;
   content: RawDraftContentBlock;
 }) {
   return request(`${fastmock}/api/sync`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export async function syncTitle(params: { draftId: string; title: string }) {
+  return request(`${fastmock}/api/sync/title`, {
     method: 'POST',
     data: params,
   });

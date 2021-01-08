@@ -9,4 +9,5 @@ export default {
   'page.sidebar.tool.preview': 'Preview',
   'page.sidebar.tool.theme': 'Theme',
   'page.sidebar.tool.locale': 'i18N',
+  'page.draft.title.placeholder': 'Title',
 };
