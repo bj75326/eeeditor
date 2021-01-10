@@ -8,6 +8,6 @@ export default {
   'page.sidebar.tool.wordcount': 'Count',
   'page.sidebar.tool.preview': 'Preview',
   'page.sidebar.tool.theme': 'Theme',
-  'page.sidebar.tool.locale': 'i18N',
+  'page.sidebar.tool.locale': 'i18n',
   'page.draft.title.placeholder': 'Title',
 };

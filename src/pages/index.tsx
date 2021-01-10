@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { connect, ConnectProps, useIntl } from 'umi';
+import {
+  connect,
+  ConnectProps,
+  useIntl,
+  setLocale,
+  getLocale,
+  Helmet,
+} from 'umi';
 import EEEditor, {
   convertFromRaw,
   convertToRaw,
@@ -108,6 +115,17 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
+  //const [draftLocale, setDraftLocale]:['zh-CN' | 'en-US', any] = useState(getLocale());
+
+  const handleLocaleChange = () => {
+    const currLocale = getLocale();
+    if (currLocale === 'zh-CN') {
+      setLocale('en-US', false);
+    } else {
+      setLocale('zh-CN', false);
+    }
+  };
+
   useEffect(() => {
     console.log('ready to fetch init contentState RAW');
     if (dispatch) {
@@ -116,20 +134,28 @@ const Page: React.FC<PageProps> = (props) => {
         payload: {
           // Draft id or something.
           draftId: '000000',
-
+          locale: getLocale(),
           formatMessage,
         },
       });
     }
-  }, []);
+  }, [getLocale()]);
 
   useEffect(() => {
     console.log('after get init contentState RAW');
     setEditorState(EditorState.createWithContent(convertFromRaw(content)));
   }, [content]);
 
+  useEffect(() => {
+    console.log('after get init title');
+    setTitle(initTitle);
+  }, [initTitle]);
+
   return (
     <div className="main">
+      <Helmet>
+        <title>{title ? `${title} | EEEditor` : 'EEEditor'}</title>
+      </Helmet>
       <header className="header">
         <div className="header-body">
           <div className="logo">
@@ -188,7 +214,7 @@ const Page: React.FC<PageProps> = (props) => {
                       {formatMessage({ id: 'page.sidebar.tool.theme' })}
                     </span>
                   </a>
-                  <a className="toolBtn">
+                  <a className="toolBtn" onClick={handleLocaleChange}>
                     <International theme="outline" strokeWidth={3} />
                     <span>
                       {formatMessage({ id: 'page.sidebar.tool.locale' })}

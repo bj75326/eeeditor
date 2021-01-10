@@ -5,9 +5,10 @@ export default defineConfig({
     hmr: true,
   },
   //antd: {},
-  // theme: {
-  //   '@body-background': 'var(--body-background)',
-  // },
+  theme: {
+    '@text-color': 'var(--color-tint-7)',
+    '@message-notice-content-bg': 'var(--color-tint-1)',
+  },
   nodeModulesTransform: {
     type: 'none',
   },

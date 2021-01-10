@@ -44,6 +44,7 @@
     "@types/react-transition-group": "^4.4.0",
     "@umijs/plugin-antd": "^0.9.1",
     "@umijs/plugin-dva": "^0.9.1",
+    "@umijs/plugin-helmet": "^1.1.1",
     "@umijs/plugin-locale": "^0.10.5",
     "@umijs/test": "^3.3.3",
     "cross-env": "^7.0.3",

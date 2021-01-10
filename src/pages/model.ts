@@ -49,7 +49,7 @@ const Modal: ModelType = {
         // 示例使用dva-loading更新同步文稿的状态，如果不使用dva-loading，
         // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
       } else if (response.status === 'error') {
-        message.error(formatMessage({ id: 'page.sync.draft.failed' }));
+        //message.error(formatMessage({ id: 'page.sync.draft.failed' }));
       }
     },
     *syncTitle({ payload: { formatMessage, ...data } }, { call, put }) {
@@ -58,7 +58,7 @@ const Modal: ModelType = {
         // 示例使用dva-loading更新同步标题的状态，如果不使用dva-loading，
         // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
       } else if (response.status === 'error') {
-        message.error(formatMessage({ id: 'page.sync.title.failed' }));
+        //message.error(formatMessage({ id: 'page.sync.title.failed' }));
       }
     },
   },
