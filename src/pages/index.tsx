@@ -33,11 +33,19 @@ export interface PageProps extends ConnectProps {
   title: StateType['title'];
   content: StateType['content'];
   fetching: boolean;
-  syncing: boolean;
+  syncingContent: boolean;
+  syncTitle: boolean;
 }
 
 const Page: React.FC<PageProps> = (props) => {
-  const { title: initTitle, content, dispatch, fetching, syncing } = props;
+  const {
+    title: initTitle,
+    content,
+    dispatch,
+    fetching,
+    syncingContent,
+    syncTitle,
+  } = props;
   const { formatMessage } = useIntl();
 
   const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] = useState(
@@ -164,6 +172,7 @@ const Page: React.FC<PageProps> = (props) => {
               <span>EEEditor</span>
             </a>
           </div>
+          <div className="status"></div>
           <div className="actions">
             <span
               role="button"
@@ -280,6 +289,7 @@ export default connect(
     title: draft.title,
     content: draft.content,
     fetching: loading['draft/fetchDraft'],
-    syncing: loading['draft/syncDraft'],
+    syncingContent: loading['draft/syncContent'],
+    syncingTitle: loading['draft/syncTitle'],
   }),
 )(Page);
