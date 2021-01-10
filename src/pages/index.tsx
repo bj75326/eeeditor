@@ -20,7 +20,6 @@ import {
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 
-import 'normalize.css';
 import './index.less';
 
 export interface PageProps extends ConnectProps {

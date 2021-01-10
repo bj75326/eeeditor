@@ -4,6 +4,7 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
+  //antd: {},
   // theme: {
   //   '@body-background': 'var(--body-background)',
   // },
@@ -16,7 +17,16 @@ export default defineConfig({
     default: 'zh-CN',
     baseNavigator: true,
   },
-  // antd: {},
   ignoreMomentLocale: true,
   publicPath: process.env.NODE_ENV === 'production' ? '/eeeditor/' : '/',
+  extraBabelPlugins: [
+    [
+      'import',
+      {
+        libraryName: '@icon-park/react',
+        libraryDirectory: 'es/icons',
+        camel2DashComponentName: false,
+      },
+    ],
+  ],
 });
