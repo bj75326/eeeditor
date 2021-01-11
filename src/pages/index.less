@@ -88,7 +88,6 @@
   top: 48px;
   right: 0;
   bottom: 0;
-  z-index: -1;
   overflow: auto;
   width: 300px;
   background-color: var(--color-tint-1);
@@ -203,5 +202,24 @@
     border-bottom: 1px solid var(--color-tint-3);
     transform: scaleY(0.5);
     transform-origin: 0 bottom;
+  }
+}
+
+.i-icon-loading {
+  -webkit-animation: loadingCircle 1s linear infinite;
+  animation: loadingCircle 1s linear infinite;
+}
+
+@-webkit-keyframes loadingCircle {
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes loadingCircle {
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
