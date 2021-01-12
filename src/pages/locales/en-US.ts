@@ -8,6 +8,7 @@ export default {
   'page.sidebar.tool.theme': 'Theme',
   'page.sidebar.tool.locale': 'i18n',
   'page.draft.title.placeholder': 'Title',
+  'page.draft.editor.placeholder': 'Write something...',
   'page.fetch.draft.failed': 'Fetch draft failed',
   'page.fetch.draft.in-progress': 'Fetching draft',
   'page.fetch.draft.success': 'Fetch draft successfully',

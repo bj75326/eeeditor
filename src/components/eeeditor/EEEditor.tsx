@@ -4,6 +4,8 @@ import { EditorState, convertToRaw } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 
+import './style';
+
 export type DirectionType = 'ltr' | 'rtl' | undefined;
 
 export interface Locale {}
@@ -25,6 +27,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     direction,
     editorState,
     onChange,
+    ...restProps
   } = props;
 
   const eeeditorCls = classNames(prefixCls, {}, className);
@@ -56,6 +59,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         editorState={editorState}
         onChange={handleChange}
         //ref={eeeditorRef}
+        {...restProps}
       />
     </div>
   );

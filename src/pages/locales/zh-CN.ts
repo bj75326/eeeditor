@@ -8,6 +8,7 @@ export default {
   'page.sidebar.tool.theme': '主题切换',
   'page.sidebar.tool.locale': '国际化',
   'page.draft.title.placeholder': '标题',
+  'page.draft.editor.placeholder': '写点什么吧...',
   'page.fetch.draft.failed': '读取文稿异常',
   'page.fetch.draft.in-progress': '正在读取文稿',
   'page.fetch.draft.success': '读取文稿成功',

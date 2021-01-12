@@ -1,2 +1,15 @@
-@import '~antd/es/style/themes/default.less';
 @import './theme.less';
+
+@eeeditor-prefix-cls: 'eee';
+
+// placeholder
+.@{eeeditor-prefix-cls} {
+  .public-DraftEditorPlaceholder-root {
+    position: absolute;
+    z-index: 0;
+    padding: 0 20px;
+    color: @placeholder-color;
+
+    transition: opacity 0.2s;
+  }
+}

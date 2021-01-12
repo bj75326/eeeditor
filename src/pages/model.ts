@@ -1,5 +1,4 @@
 import { Effect, Reducer } from 'umi';
-import { message } from 'antd';
 import {
   RawDraftContentState,
   EditorState,
@@ -65,21 +64,57 @@ const Modal: ModelType = {
       }
     },
     *syncContent({ payload: { formatMessage, ...data } }, { call, put }) {
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          status: 'in progress',
+          statusText: formatMessage({ id: 'page.sync.draft.in-progress' }),
+        },
+      });
       const response = yield call(syncContent, data);
       if (response.status === 'ok') {
-        // 示例使用dva-loading更新同步文稿的状态，如果不使用dva-loading，
-        // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            status: 'success',
+            statusText: formatMessage({ id: 'page.sync.draft.success' }),
+          },
+        });
       } else {
-        //message.error(formatMessage({ id: 'page.sync.draft.failed' }));
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            status: 'failed',
+            statusText: formatMessage({ id: 'page.sync.draft.failed' }),
+          },
+        });
       }
     },
     *syncTitle({ payload: { formatMessage, ...data } }, { call, put }) {
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          status: 'in progress',
+          statusText: formatMessage({ id: 'page.sync.title.in-progress' }),
+        },
+      });
       const response = yield call(syncTitle, data);
       if (response.status === 'ok') {
-        // 示例使用dva-loading更新同步标题的状态，如果不使用dva-loading，
-        // 则需要考虑在这里修改特定state的值以使同步状态在页面上展示。
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            status: 'success',
+            statusText: formatMessage({ id: 'page.sync.title.success' }),
+          },
+        });
       } else {
-        //message.error(formatMessage({ id: 'page.sync.title.failed' }));
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            status: 'failed',
+            statusText: formatMessage({ id: 'page.sync.title.failed' }),
+          },
+        });
       }
     },
   },

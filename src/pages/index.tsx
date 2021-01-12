@@ -291,7 +291,14 @@ const Page: React.FC<PageProps> = (props) => {
                 onChange={handleTitleChange}
               ></textarea>
             </h1>
-            <EEEditor editorState={editorState} onChange={handleChange} />
+            <EEEditor
+              editorState={editorState}
+              onChange={handleChange}
+              //locale=
+              placeholder={formatMessage({
+                id: 'page.draft.editor.placeholder',
+              })}
+            />
           </div>
         </div>
         {sidebar}
