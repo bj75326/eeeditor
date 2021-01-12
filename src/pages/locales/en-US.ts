@@ -1,6 +1,4 @@
 export default {
-  'page.fetch.draft.failed': 'Fetch draft failed',
-  'page.sync.draft.failed': 'Sync draft failed',
   'page.sidebar.tool.section.header': 'Tools',
   'page.sidebar.mode.section.header': 'Toolbar mode',
   'page.sidebar.typesetting.section.header': 'Paragraph typesetting',
@@ -10,4 +8,13 @@ export default {
   'page.sidebar.tool.theme': 'Theme',
   'page.sidebar.tool.locale': 'i18n',
   'page.draft.title.placeholder': 'Title',
+  'page.fetch.draft.failed': 'Fetch draft failed',
+  'page.fetch.draft.in-progress': 'Fetching draft',
+  'page.fetch.draft.success': 'Fetch draft successfully',
+  'page.sync.draft.failed': 'Sync draft failed',
+  'page.sync.draft.in-progress': 'Syncing draft',
+  'page.sync.draft.success': 'Sync draft successfully',
+  'page.sync.title.failed': 'Sync title failed',
+  'page.sync.title.in-progress': 'Syncing title',
+  'page.sync.title.success': 'Sync title successfully',
 };

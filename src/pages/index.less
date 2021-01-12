@@ -29,23 +29,39 @@
   top: 0;
   left: 0;
   height: 48px;
-  line-height: 48px;
   margin-left: 24px;
   & > a {
-    display: inline-block;
+    display: flex;
     height: 100%;
+    align-items: center;
   }
   img {
     width: 28px;
-    vertical-align: middle;
   }
   span {
     color: var(--color-tint-8);
     font-weight: bold;
     font-size: 14px;
     margin-left: 10px;
-    vertical-align: middle;
     transition: color 0.2s ease 0s;
+  }
+}
+
+.status {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  height: 48px;
+  font-size: 12px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  .i-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 4px;
+    animation: statusChange 0.3s forwards;
   }
 }
 
@@ -206,8 +222,8 @@
 }
 
 .i-icon-loading {
-  -webkit-animation: loadingCircle 1s linear infinite;
-  animation: loadingCircle 1s linear infinite;
+  -webkit-animation: loadingCircle 1s linear infinite !important;
+  animation: loadingCircle 1s linear infinite !important;
 }
 
 @-webkit-keyframes loadingCircle {
@@ -221,5 +237,35 @@
   to {
     -webkit-transform: rotate(1turn);
     transform: rotate(1turn);
+  }
+}
+
+@-webkit-keyframes statusChange {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(0.75);
+    -ms-transform: scale(0.75);
+    transform: scale(0.75);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes statusChange {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(0.75);
+    -ms-transform: scale(0.75);
+    transform: scale(0.75);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
   }
 }

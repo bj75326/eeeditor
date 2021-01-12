@@ -24,6 +24,8 @@ import {
   Sun,
   Moon,
   Loading,
+  CheckOne,
+  CloseOne,
 } from '@icon-park/react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
@@ -35,8 +37,10 @@ export interface PageProps extends ConnectProps {
   title: StateType['title'];
   content: StateType['content'];
   fetching: boolean;
-  syncingContent: boolean;
-  syncingTitle: boolean;
+  status: StateType['status'];
+  statusText: StateType['statusText'];
+  //syncingContent: boolean;
+  //syncingTitle: boolean;
 }
 
 const Page: React.FC<PageProps> = (props) => {
@@ -45,8 +49,10 @@ const Page: React.FC<PageProps> = (props) => {
     content,
     dispatch,
     fetching,
-    syncingContent,
-    syncingTitle,
+    status,
+    statusText,
+    //syncingContent,
+    //syncingTitle,
   } = props;
   const { formatMessage } = useIntl();
 
@@ -161,9 +167,66 @@ const Page: React.FC<PageProps> = (props) => {
     setTitle(initTitle);
   }, [initTitle]);
 
+  console.log('status: ', status);
+  console.log('statusText: ', statusText);
   console.log('fetching: ', fetching);
-  console.log('syncingContent: ', syncingContent);
-  console.log('syncingTitle: ', syncingTitle);
+  console.log('title: ', title);
+
+  const sidebar = (
+    <CSSTransition
+      in={!sidebarCollapsed}
+      timeout={120}
+      classNames="sidebar"
+      unmountOnExit
+    >
+      <aside className="sidebar">
+        <div className="sidebarMenu">
+          <section className="tools">
+            <h3>{formatMessage({ id: 'page.sidebar.tool.section.header' })}</h3>
+            <div>
+              <a className="toolBtn">
+                <DataSheet theme="outline" strokeWidth={3} />
+                <span>
+                  {formatMessage({ id: 'page.sidebar.tool.wordcount' })}
+                </span>
+              </a>
+              <a className="toolBtn" href="" target="_blank">
+                <PreviewOpen theme="outline" strokeWidth={3} />
+                <span>
+                  {formatMessage({ id: 'page.sidebar.tool.preview' })}
+                </span>
+              </a>
+              <a className="toolBtn" onClick={handleThemeChange}>
+                {darkMode ? (
+                  <Sun theme="outline" strokeWidth={3} />
+                ) : (
+                  <Moon theme="outline" strokeWidth={3} />
+                )}
+                <span>{formatMessage({ id: 'page.sidebar.tool.theme' })}</span>
+              </a>
+              <a className="toolBtn" onClick={handleLocaleChange}>
+                <International theme="outline" strokeWidth={3} />
+                <span>{formatMessage({ id: 'page.sidebar.tool.locale' })}</span>
+              </a>
+            </div>
+          </section>
+          <section className="mode">
+            <h3>{formatMessage({ id: 'page.sidebar.mode.section.header' })}</h3>
+          </section>
+          <section className="typesetting">
+            <h3>
+              {formatMessage({
+                id: 'page.sidebar.typesetting.section.header',
+              })}
+            </h3>
+          </section>
+          <section className="help">
+            <h3>{formatMessage({ id: 'page.sidebar.help.section.header' })}</h3>
+          </section>
+        </div>
+      </aside>
+    </CSSTransition>
+  );
 
   return (
     <div className="main">
@@ -178,7 +241,18 @@ const Page: React.FC<PageProps> = (props) => {
               <span>EEEditor</span>
             </a>
           </div>
-          <div className="status"></div>
+          <div className="status">
+            {status === 'failed' && (
+              <CloseOne theme="outline" strokeWidth={3} />
+            )}
+            {status === 'in progress' && (
+              <Loading theme="outline" strokeWidth={3} />
+            )}
+            {status === 'success' && (
+              <CheckOne theme="outline" strokeWidth={3} />
+            )}
+            {statusText && <span>{statusText}</span>}
+          </div>
           <div className="actions">
             <span
               role="button"
@@ -219,70 +293,8 @@ const Page: React.FC<PageProps> = (props) => {
             </h1>
             <EEEditor editorState={editorState} onChange={handleChange} />
           </div>
-          <CSSTransition
-            in={!sidebarCollapsed}
-            timeout={120}
-            classNames="sidebar"
-            unmountOnExit
-          >
-            <aside className="sidebar">
-              <div className="sidebarMenu">
-                <section className="tools">
-                  <h3>
-                    {formatMessage({ id: 'page.sidebar.tool.section.header' })}
-                  </h3>
-                  <div>
-                    <a className="toolBtn">
-                      <DataSheet theme="outline" strokeWidth={3} />
-                      <span>
-                        {formatMessage({ id: 'page.sidebar.tool.wordcount' })}
-                      </span>
-                    </a>
-                    <a className="toolBtn" href="" target="_blank">
-                      <PreviewOpen theme="outline" strokeWidth={3} />
-                      <span>
-                        {formatMessage({ id: 'page.sidebar.tool.preview' })}
-                      </span>
-                    </a>
-                    <a className="toolBtn" onClick={handleThemeChange}>
-                      {darkMode ? (
-                        <Sun theme="outline" strokeWidth={3} />
-                      ) : (
-                        <Moon theme="outline" strokeWidth={3} />
-                      )}
-                      <span>
-                        {formatMessage({ id: 'page.sidebar.tool.theme' })}
-                      </span>
-                    </a>
-                    <a className="toolBtn" onClick={handleLocaleChange}>
-                      <International theme="outline" strokeWidth={3} />
-                      <span>
-                        {formatMessage({ id: 'page.sidebar.tool.locale' })}
-                      </span>
-                    </a>
-                  </div>
-                </section>
-                <section className="mode">
-                  <h3>
-                    {formatMessage({ id: 'page.sidebar.mode.section.header' })}
-                  </h3>
-                </section>
-                <section className="typesetting">
-                  <h3>
-                    {formatMessage({
-                      id: 'page.sidebar.typesetting.section.header',
-                    })}
-                  </h3>
-                </section>
-                <section className="help">
-                  <h3>
-                    {formatMessage({ id: 'page.sidebar.help.section.header' })}
-                  </h3>
-                </section>
-              </div>
-            </aside>
-          </CSSTransition>
         </div>
+        {sidebar}
       </Spin>
     </div>
   );
@@ -300,8 +312,10 @@ export default connect(
   }) => ({
     title: draft.title,
     content: draft.content,
+    status: draft.status,
+    statusText: draft.statusText,
     fetching: !!loading.effects['draft/fetchDraft'],
-    syncingContent: !!loading.effects['draft/syncContent'],
-    syncingTitle: !!loading.effects['draft/syncTitle'],
+    //syncingContent: !!loading.effects['draft/syncContent'],
+    //syncingTitle: !!loading.effects['draft/syncTitle'],
   }),
 )(Page);
