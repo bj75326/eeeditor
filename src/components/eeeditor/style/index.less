@@ -1,15 +1,31 @@
 @import './theme.less';
 
-@eeeditor-prefix-cls: 'eee';
+@eeeditor-prefix-cls: eee;
 
-// placeholder
 .@{eeeditor-prefix-cls} {
+  position: relative;
+  font-size: 16px;
+
   .public-DraftEditorPlaceholder-root {
     position: absolute;
     z-index: 0;
-    padding: 0 20px;
     color: @placeholder-color;
-
     transition: opacity 0.2s;
+  }
+  .public-DraftEditorPlaceholder-hasFocus {
+    opacity: 0 !important;
+  }
+
+  .DraftEditor-editorContainer {
+    position: relative;
+    z-index: 1;
+  }
+
+  blockquote,
+  .paragraph,
+  .public-DraftStyleDefault-ul,
+  .public-DraftStyleDefault-ol {
+    text-align: justify;
+    line-height: 2;
   }
 }

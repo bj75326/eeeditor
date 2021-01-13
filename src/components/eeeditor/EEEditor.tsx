@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, ContentBlock } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 
@@ -18,6 +18,11 @@ export interface EEEditorProps extends PluginEditorProps {
   direction?: DirectionType;
 }
 
+const eeeBlockStyleFn = (contentBlock: ContentBlock): string => {
+  const type = contentBlock.getType();
+  console.log('eeeBlickStyleFn type: ', type);
+};
+
 const EEEditor: React.FC<EEEditorProps> = (props) => {
   const {
     prefixCls = 'eee',
@@ -27,12 +32,11 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     direction,
     editorState,
     onChange,
+    blockStyleFn,
     ...restProps
   } = props;
 
   const eeeditorCls = classNames(prefixCls, {}, className);
-
-  //const eeeditorRef = useRef(null);
 
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);
@@ -58,7 +62,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       <Editor
         editorState={editorState}
         onChange={handleChange}
-        //ref={eeeditorRef}
+        blockStyleFn={blockStyleFn || eeeBlockStyleFn}
         {...restProps}
       />
     </div>
