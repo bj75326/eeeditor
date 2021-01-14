@@ -26,6 +26,8 @@ import {
   Loading,
   CheckOne,
   CloseOne,
+  AlignTextLeftOne,
+  AlignTextRightOne,
 } from '@icon-park/react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
@@ -131,14 +133,29 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
-  //const [draftLocale, setDraftLocale]:['zh-CN' | 'en-US', any] = useState(getLocale());
-
   const handleLocaleChange = () => {
     const currLocale = getLocale();
     if (currLocale === 'zh-CN') {
       setLocale('en-US', false);
     } else {
       setLocale('zh-CN', false);
+    }
+  };
+
+  const [rtl, setRtl]: [boolean, any] = useState(false);
+
+  const handleDirectionChange = () => {
+    setRtl((rtl: boolean) => !rtl);
+    localStorage.setItem('direction', !rtl ? 'rtl' : 'ltr');
+    const html = document.documentElement;
+    if (!rtl) {
+      html.classList.remove('ltr');
+      html.classList.add('rtl');
+      html.dataset['direction'] = 'rtl';
+    } else {
+      html.classList.remove('rtl');
+      html.classList.add('ltr');
+      html.dataset['direction'] = 'ltr';
     }
   };
 
@@ -207,6 +224,16 @@ const Page: React.FC<PageProps> = (props) => {
               <a className="toolBtn" onClick={handleLocaleChange}>
                 <International theme="outline" strokeWidth={3} />
                 <span>{formatMessage({ id: 'page.sidebar.tool.locale' })}</span>
+              </a>
+              <a className="toolBtn" onClick={handleDirectionChange}>
+                {rtl ? (
+                  <AlignTextLeftOne theme="outline" strokeWidth={3} />
+                ) : (
+                  <AlignTextRightOne theme="outline" strokeWidth={3} />
+                )}
+                <span>
+                  {formatMessage({ id: 'page.sidebar.tool.direction' })}
+                </span>
               </a>
             </div>
           </section>
@@ -294,7 +321,7 @@ const Page: React.FC<PageProps> = (props) => {
             <EEEditor
               editorState={editorState}
               onChange={handleChange}
-              //locale=
+              textDirectionality="RTL"
               placeholder={formatMessage({
                 id: 'page.draft.editor.placeholder',
               })}

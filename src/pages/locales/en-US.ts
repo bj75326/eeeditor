@@ -7,6 +7,7 @@ export default {
   'page.sidebar.tool.preview': 'Preview',
   'page.sidebar.tool.theme': 'Theme',
   'page.sidebar.tool.locale': 'i18n',
+  'page.sidebar.tool.direction': 'Direction',
   'page.draft.title.placeholder': 'Title',
   'page.draft.editor.placeholder': 'Write something...',
   'page.fetch.draft.failed': 'Fetch draft failed',

@@ -10,6 +10,7 @@
     position: absolute;
     z-index: 0;
     color: @placeholder-color;
+    line-height: 2;
     transition: opacity 0.2s;
   }
   .public-DraftEditorPlaceholder-hasFocus {
@@ -25,7 +26,11 @@
   .paragraph,
   .public-DraftStyleDefault-ul,
   .public-DraftStyleDefault-ol {
-    text-align: justify;
+    //text-align: justify;
     line-height: 2;
+  }
+
+  .public-DraftStyleDefault-rtl {
+    direction: rtl;
   }
 }

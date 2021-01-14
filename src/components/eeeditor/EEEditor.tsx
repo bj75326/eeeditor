@@ -20,7 +20,10 @@ export interface EEEditorProps extends PluginEditorProps {
 
 const eeeBlockStyleFn = (contentBlock: ContentBlock): string => {
   const type = contentBlock.getType();
-  console.log('eeeBlickStyleFn type: ', type);
+  if (type === 'unstyled' || type === 'paragraph') {
+    return 'paragraph';
+  }
+  return '';
 };
 
 const EEEditor: React.FC<EEEditorProps> = (props) => {

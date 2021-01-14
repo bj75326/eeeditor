@@ -7,6 +7,7 @@ export default {
   'page.sidebar.tool.preview': '预览',
   'page.sidebar.tool.theme': '主题切换',
   'page.sidebar.tool.locale': '国际化',
+  'page.sidebar.tool.direction': '方向',
   'page.draft.title.placeholder': '标题',
   'page.draft.editor.placeholder': '写点什么吧...',
   'page.fetch.draft.failed': '读取文稿异常',
