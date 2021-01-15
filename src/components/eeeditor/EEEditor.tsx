@@ -6,8 +6,6 @@ import zhCN from './locale/zh_CN';
 
 import './style';
 
-export type DirectionType = 'ltr' | 'rtl' | undefined;
-
 export interface Locale {}
 
 export interface EEEditorProps extends PluginEditorProps {
@@ -15,7 +13,6 @@ export interface EEEditorProps extends PluginEditorProps {
   className?: string;
   style?: CSSProperties;
   locale?: Locale;
-  direction?: DirectionType;
 }
 
 const eeeBlockStyleFn = (contentBlock: ContentBlock): string => {
@@ -32,7 +29,6 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     className,
     style,
     locale = zhCN,
-    direction,
     editorState,
     onChange,
     blockStyleFn,

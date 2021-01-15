@@ -279,10 +279,61 @@
 }
 
 .rtl {
+  direction: rtl;
+
   .logo {
     left: auto;
     right: 0;
     margin-left: 0;
     margin-right: 24px;
+    span {
+      margin-left: 0;
+      margin-right: 10px;
+    }
+  }
+
+  .status {
+    left: auto;
+    right: 150px;
+    margin-left: 0;
+    margin-right: 12px;
+    .i-icon {
+      margin-right: 0;
+      margin-left: 4px;
+    }
+  }
+
+  .actions {
+    float: left;
+    margin-right: 0px;
+    margin-left: 12px;
+  }
+
+  .sidebar {
+    right: auto;
+    left: 0;
+  }
+
+  .sidebar-enter {
+    opacity: 0;
+    transform: translate3d(-300px, 0, 0);
+  }
+  .sidebar-enter-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 120ms ease-out, transform 120ms ease-out;
+  }
+  .sidebar-exit {
+    opacity: 1;
+  }
+  .sidebar-exit-active {
+    opacity: 0;
+    transform: translate3d(-300px, 0, 0);
+    transition: opacity 120ms ease-in, transform 120ms ease-in;
+  }
+
+  .toolBtn {
+    margin-right: 0;
+    margin-left: 10px;
   }
 }

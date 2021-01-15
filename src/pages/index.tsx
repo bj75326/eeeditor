@@ -142,7 +142,8 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
-  const [rtl, setRtl]: [boolean, any] = useState(false);
+  const initDirection = localStorage.getItem('direction') === 'rtl';
+  const [rtl, setRtl]: [boolean, any] = useState(initDirection);
 
   const handleDirectionChange = () => {
     setRtl((rtl: boolean) => !rtl);
@@ -188,6 +189,7 @@ const Page: React.FC<PageProps> = (props) => {
   console.log('statusText: ', statusText);
   console.log('fetching: ', fetching);
   console.log('title: ', title);
+  console.log('rtl: ', rtl);
 
   const sidebar = (
     <CSSTransition
@@ -299,7 +301,7 @@ const Page: React.FC<PageProps> = (props) => {
       <Spin
         indicator={<Loading theme="outline" strokeWidth={3} />}
         wrapperClassName="spin"
-        spinning={fetching}
+        spinning={true}
       >
         <div className="editor">
           <div
@@ -321,7 +323,7 @@ const Page: React.FC<PageProps> = (props) => {
             <EEEditor
               editorState={editorState}
               onChange={handleChange}
-              textDirectionality="RTL"
+              textDirectionality={rtl ? 'RTL' : 'LTR'}
               placeholder={formatMessage({
                 id: 'page.draft.editor.placeholder',
               })}
