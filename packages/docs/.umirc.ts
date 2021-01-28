@@ -4,7 +4,7 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
-  //antd: {},
+  antd: {},
   theme: {
     '@text-color': 'var(--color-tint-7)',
     '@message-notice-content-bg': 'var(--color-tint-1)',

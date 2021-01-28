@@ -11,7 +11,7 @@ import EEEditor, {
   convertFromRaw,
   convertToRaw,
   EditorState,
-} from '@/components/eeeditor';
+} from '@eeeditor/editor';
 import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';
@@ -301,7 +301,7 @@ const Page: React.FC<PageProps> = (props) => {
       <Spin
         indicator={<Loading theme="outline" strokeWidth={3} />}
         wrapperClassName="spin"
-        spinning={true}
+        spinning={fetching}
       >
         <div className="editor">
           <div

@@ -1,4 +1,4 @@
-import { Locale } from '../context';
+import { Locale } from '../Editor';
 
 const localeValues: Locale = {};
 

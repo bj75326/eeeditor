@@ -4,9 +4,9 @@ import { EditorState, convertToRaw, ContentBlock } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 
-import './style';
+//import './style';
 
-export interface Locale {}
+export interface Locale { }
 
 export interface EEEditorProps extends PluginEditorProps {
   prefixCls?: string;
@@ -35,7 +35,9 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     ...restProps
   } = props;
 
-  const eeeditorCls = classNames(prefixCls, {}, className);
+  const eeeditorCls = classNames(prefixCls, {
+    'eee-rtl': restProps.textDirectionality === 'RTL',
+  }, className);
 
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);

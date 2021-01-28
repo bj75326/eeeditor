@@ -1,0 +1,34 @@
+{
+  "name": "@eeeditor/docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "clean": "rm -rf node_modules src/.umi src/.umi-production dist yarn-error.log"
+  },
+  "dependencies": {
+    "@eeeditor/editor": "1.0.0",
+    "@icon-park/react": "^1.2.0",
+    "@umijs/plugin-antd": "^0.9.1",
+    "@umijs/plugin-dva": "^0.9.1",
+    "@umijs/plugin-helmet": "^1.1.1",
+    "@umijs/plugin-locale": "^0.10.5",
+    "@umijs/plugin-request": "^2.5.2",
+    "classnames": "^2.2.6",
+    "immutable": "^4.0.0-rc.12",
+    "umi": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.11",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@umijs/test": "^3.3.3",
+    "vfile-message": "^2.0.4",
+    "yorkie": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  }
+}

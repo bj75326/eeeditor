@@ -3,7 +3,7 @@ import {
   RawDraftContentState,
   EditorState,
   convertToRaw,
-} from '@/components/eeeditor';
+} from '@eeeditor/editor';
 import { getDraft, syncContent, syncTitle } from './service';
 
 export interface StateType {

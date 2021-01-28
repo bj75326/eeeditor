@@ -1,4 +1,4 @@
-import { Locale } from '../EEEditor';
+import { Locale } from '../Editor';
 
 const localeValues: Locale = {};
 

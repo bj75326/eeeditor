@@ -1,0 +1,17 @@
+{
+  "packages": ["packages/*"],
+  "npmClient": "tyarn",
+  "version": "independent",
+  "useWorkspaces": true,
+  "command": {
+    "bootstrap": {
+      "hoist": true
+    },
+    "publish": {
+      "ignoreChanges": ["*.md"],
+      "verifyAccess": false,
+      "verifyRegistry": false,
+      "message": "chore: publish"
+    }
+  }
+}

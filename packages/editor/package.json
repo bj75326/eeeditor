@@ -1,0 +1,29 @@
+{
+  "name": "@eeeditor/editor",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "father build",
+    "build:watch": "father build --watch",
+    "clean": "rm -rf node_modules es lib yarn-error.log",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "main": "es/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@draft-js-plugins/editor": "^4.1.0",
+    "antd": "^4.11.2",
+    "draft-js": "^0.11.7"
+  },
+  "devDependencies": {
+    "@types/draft-js": "^0.10.44"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "license": "MIT"
+}

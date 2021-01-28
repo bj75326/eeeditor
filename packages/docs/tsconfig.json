@@ -8,5 +8,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
+  },
+  "paths": {
+    "@/*": ["src/*"],
+    "@@/*": ["src/.umi/*"]
   }
 }

@@ -1,7 +1,7 @@
-import EEEditor from './EEEditor';
+import Editor from './Editor';
 
 export * from 'draft-js';
 
 export * from '@draft-js-plugins/editor';
 
-export default EEEditor;
+export default Editor;
