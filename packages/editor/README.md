@@ -1,3 +1,4 @@
+
 # EditorPlugin
 
 initialize: PluginEditor 在 constructor 的时候依次执行，可以传递的参数有：
