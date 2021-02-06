@@ -23,9 +23,27 @@ export default function createBlockStyleButton({
 
     const toggleStyle = (event: MouseEvent): void => {
       event.preventDefault();
+      setEditorState(RichUtils.toggleBlockType(getEditorState(), blockType));
     };
 
-    const btnClassName = classNames(`${prefixCls}-btn`, className);
+    const preventBubblingUp = (event: MouseEvent): void => {
+      event.preventDefault();
+    };
+
+    const blockTypeIsActive = (): boolean => {
+      if (!getEditorState) {
+        return false;
+      }
+
+      const editorState = getEditorState();
+      const type = editorState
+        .getCurrentContent()
+        .getBlockForKey(editorState.getSelection().getStartKey())
+        .getType();
+      return type === blockType;
+    };
+
+    const btnClassName = classNames(`${prefixCls}-btn`, className, {});
 
     return <div className={btnClassName} style={style}></div>;
   };
