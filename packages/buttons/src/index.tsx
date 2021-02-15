@@ -4,6 +4,8 @@ import createBlockStyleButton from './utils/createBlockStyleButton';
 
 export interface Locale {}
 
+export type EEEditorButtonType = 'header' | 'bold' | 'italic';
+
 export interface EEEditorButtonProps {
   prefixCls?: string;
   className?: string;
