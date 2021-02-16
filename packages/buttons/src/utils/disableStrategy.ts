@@ -2,14 +2,14 @@ import { EditorState, DraftBlockType, DraftInlineStyle } from 'draft-js';
 import { EEEditorButtonType } from '..';
 
 interface StrategyType {
-  blockLevel?: string[];
-  inlineLevel?: string[];
+  block?: string[];
+  inline?: string[];
 }
 
 const disableStrategy: { [key: string]: StrategyType } = {
   header: {
-    blockLevel: ['atomic'],
-    inlineLevel: [],
+    block: ['atomic'],
+    inline: [],
   },
 };
 
@@ -18,11 +18,25 @@ const shouldButtonDisabled = (
   buttonType: EEEditorButtonType,
 ) => {
   const strategy: StrategyType = disableStrategy[buttonType];
-  const currentBlockType: DraftBlockType = editorState
+  const currentBlock = editorState
     .getCurrentContent()
-    .getBlockForKey(editorState.getSelection().getStartKey())
-    .getType();
-  const currentInlineStyle: DraftInline;
+    .getBlockForKey(editorState.getSelection().getStartKey());
+  const currentBlockType: DraftBlockType = currentBlock.getType();
+  const currentInlineStyle: DraftInlineStyle = currentBlock.getInlineStyleAt(
+    editorState.getSelection().getStartOffset(),
+  );
+  if (
+    strategy.block &&
+    strategy.block.length > 0 &&
+    strategy.block.some((block) => block === currentBlockType)
+  ) {
+    return true;
+  }
+  // todo: 行内样式对 buttons 状态的影响
+  if (strategy.inline && strategy.inline.length > 0) {
+    return true;
+  }
+  return false;
 };
 
 export default shouldButtonDisabled;
