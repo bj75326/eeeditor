@@ -4,6 +4,7 @@ import { EEEditorStyleButtonType, EEEditorButtonType } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
 import { Tooltip } from 'antd';
+import zhCN from '../locale/zh_CN';
 
 interface CreateBlockStyleButtonProps {
   blockType: DraftBlockType;
@@ -21,6 +22,9 @@ export default function createBlockStyleButton({
       prefixCls = 'eee',
       className,
       style,
+      locale = zhCN,
+      title = '',
+      align,
       getEditorState,
       setEditorState,
     } = props;
@@ -47,7 +51,7 @@ export default function createBlockStyleButton({
       return type === blockType;
     };
 
-    const getButtonStatus = (): boolean => {
+    const checkButtonShouldDisabled = (): boolean => {
       if (!getEditorState) {
         return true;
       }
@@ -57,12 +61,21 @@ export default function createBlockStyleButton({
 
     const btnClassName = classNames(`${prefixCls}-btn`, className, {});
 
+    const tipTitle: ReactNode = (
+      <span className={`${prefixCls}-tip`}>
+        <span className={`${prefixCls}-tip-name`}>{}</span>
+        <span className={`${prefixCls}-tip-shortcut`}></span>
+      </span>
+    );
+
     return (
       <div className={btnClassName} style={style}>
-        {getButtonStatus() ? (
+        {checkButtonShouldDisabled() || !title ? (
           <div>{children}</div>
         ) : (
-          <Tooltip title={title} align={}></Tooltip>
+          <Tooltip title={tipTitle} align={align}>
+            <div>{children}</div>
+          </Tooltip>
         )}
       </div>
     );
