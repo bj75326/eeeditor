@@ -23,7 +23,7 @@ export default function createBlockStyleButton({
       className,
       style,
       locale = zhCN,
-      title = '',
+      title,
       align,
       getEditorState,
       setEditorState,
@@ -59,22 +59,38 @@ export default function createBlockStyleButton({
       return shouldButtonDisabled(editorState, buttonType);
     };
 
-    const btnClassName = classNames(`${prefixCls}-btn`, className, {});
+    const btnClassName = classNames(`${prefixCls}-btn`, className, {
+      [`${prefixCls}-btn-active`]: blockTypeIsActive(),
+      [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
+    });
 
-    const tipTitle: ReactNode = (
-      <span className={`${prefixCls}-tip`}>
-        <span className={`${prefixCls}-tip-name`}>{}</span>
-        <span className={`${prefixCls}-tip-shortcut`}></span>
-      </span>
-    );
+    const tipTitle: ReactNode =
+      title && title.name ? (
+        <span className={`${prefixCls}-tip`}>
+          <span className={`${prefixCls}-tip-name`}>
+            {locale[title.name] || title.name}
+          </span>
+          {title.shortcut && (
+            <span className={`${prefixCls}-tip-shortcut`}>
+              {locale[title.shortcut] || title.shortcut}
+            </span>
+          )}
+        </span>
+      ) : (
+        ''
+      );
 
     return (
-      <div className={btnClassName} style={style}>
-        {checkButtonShouldDisabled() || !title ? (
+      <div
+        className={btnClassName}
+        style={style}
+        onMouseDown={preventBubblingUp}
+      >
+        {checkButtonShouldDisabled() ? (
           <div>{children}</div>
         ) : (
           <Tooltip title={tipTitle} align={align}>
-            <div>{children}</div>
+            <div onClick={toggleStyle}>{children}</div>
           </Tooltip>
         )}
       </div>

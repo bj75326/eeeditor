@@ -2,6 +2,7 @@ import { ComponentType, CSSProperties } from 'react';
 import { EditorState } from 'draft-js';
 import createBlockStyleButton from './utils/createBlockStyleButton';
 import { AbstractTooltipProps } from 'antd/es/tooltip';
+import HeaderlineOneButton from './components/HeadlineOneButton';
 
 export interface Locale {
   'eeeditor.button.h1.tooltip.main': string;
@@ -25,7 +26,10 @@ export interface EEEditorButtonProps {
   className?: string;
   style?: CSSProperties;
   locale?: Locale;
-  title?: string;
+  title?: {
+    name?: string;
+    shortcut?: string;
+  };
   align?: AbstractTooltipProps['align'];
 }
 
@@ -36,4 +40,4 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
 
 export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
 
-export {};
+export { createBlockStyleButton, HeaderlineOneButton };
