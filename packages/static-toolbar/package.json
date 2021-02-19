@@ -19,6 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@draft-js-plugins/utils": "^4.1.0"
+    "@draft-js-plugins/utils": "^4.1.0",
+    "@eeeditor/buttons": "1.0.0"
   }
 }
