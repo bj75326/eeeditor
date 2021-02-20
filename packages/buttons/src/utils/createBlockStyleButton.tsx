@@ -25,8 +25,11 @@ export default function createBlockStyleButton({
       locale = zhCN,
       title,
       align,
+      icon,
       getEditorState,
       setEditorState,
+      setSelectorBtnActive,
+      setSelectorBtnDisabled,
     } = props;
 
     const toggleStyle = (event: MouseEvent): void => {
@@ -87,10 +90,10 @@ export default function createBlockStyleButton({
         onMouseDown={preventBubblingUp}
       >
         {checkButtonShouldDisabled() ? (
-          <div>{children}</div>
+          <div>{icon || children}</div>
         ) : (
           <Tooltip title={tipTitle} align={align}>
-            <div onClick={toggleStyle}>{children}</div>
+            <div onClick={toggleStyle}>{icon || children}</div>
           </Tooltip>
         )}
       </div>

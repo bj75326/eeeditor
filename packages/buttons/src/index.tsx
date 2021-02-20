@@ -1,7 +1,8 @@
-import { ComponentType, CSSProperties } from 'react';
+import { ComponentType, CSSProperties, ReactNode } from 'react';
 import { EditorState } from 'draft-js';
 import createBlockStyleButton from './utils/createBlockStyleButton';
 import { AbstractTooltipProps } from 'antd/es/tooltip';
+import shouldButtonDisabled from './utils/disableStrategy';
 import HeaderlineOneButton from './components/HeadlineOneButton';
 
 export interface Locale {
@@ -31,13 +32,16 @@ export interface EEEditorButtonProps {
     shortcut?: string;
   };
   align?: AbstractTooltipProps['align'];
+  icon?: ReactNode;
 }
 
 export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   getEditorState(): EditorState;
   setEditorState(editorState: EditorState): void;
+  setSelectorBtnActive?: () => void;
+  setSelectorBtnDisabled?: () => void;
 }
 
 export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
 
-export { createBlockStyleButton, HeaderlineOneButton };
+export { createBlockStyleButton, shouldButtonDisabled, HeaderlineOneButton };
