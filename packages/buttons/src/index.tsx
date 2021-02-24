@@ -36,10 +36,13 @@ export interface EEEditorButtonProps {
 }
 
 export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
+  // toolbar plugin 提供的 props
   getEditorState(): EditorState;
   setEditorState(editorState: EditorState): void;
+  // 使用 static toolbar 时，selector button 提供的 props
   setSelectorBtnActive?: () => void;
   setSelectorBtnDisabled?: () => void;
+  optionKey?: number;
 }
 
 export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
