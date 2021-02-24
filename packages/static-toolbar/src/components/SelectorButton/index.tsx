@@ -5,6 +5,15 @@ import {
   shouldButtonDisabled,
 } from '@eeeditor/buttons';
 import classNames from 'classnames';
+import { EditorState } from 'draft-js';
+
+export interface SelectorBtnChildrenProps {
+  getEditorState(): EditorState;
+  setEditorState(editorState: EditorState): void;
+  setSelectorBtnActive: () => void;
+  setSelectorBtnDisabled: () => void;
+  //optionKey: number;
+}
 
 export interface SelectorButtonProps
   extends Omit<
@@ -12,7 +21,7 @@ export interface SelectorButtonProps
     'title' | 'locale' | 'icon' | 'align'
   > {
   icon: ReactNode;
-  buttons: EEEditorStyleButtonType[];
+  children: React.FC<EEEditor>;
 }
 
 const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
@@ -21,7 +30,6 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     className,
     style,
     icon,
-    buttons = [],
     getEditorState,
     setEditorState,
   } = props;
@@ -41,6 +49,13 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     setVisible(false);
   };
 
+  const childrenProps: SelectorBtnChildrenProps = {
+    getEditorState,
+    setEditorState,
+    setSelectorBtnActive,
+    setSelectorBtnDisabled,
+  };
+
   const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {
     [`${prefixCls}-selector-btn-active`]: btnActive,
     [`${prefixCls}-selector-btn-disabled`]: btnDisabled,
@@ -54,17 +69,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
       onMouseLeave={hideOptions}
     >
       <div>{icon}</div>
-      <div className={`${prefixCls}-selector-btn-options`}>
-        {visible &&
-          buttons.map((Button: EEEditorStyleButtonType, index: number) => (
-            <Button
-              prefixCls={prefixCls}
-              className={`${prefixCls}-option-btn`}
-              getEditorState={getEditorState}
-              setEditorState={setEditorState}
-            />
-          ))}
-      </div>
+      <div className={`${prefixCls}-selector-btn-options`}></div>
     </div>
   );
 };
