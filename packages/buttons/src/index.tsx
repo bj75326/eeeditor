@@ -40,8 +40,8 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   getEditorState(): EditorState;
   setEditorState(editorState: EditorState): void;
   // 使用 static toolbar 时，selector button 提供的 props
-  setSelectorBtnActive?: () => void;
-  setSelectorBtnDisabled?: () => void;
+  setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
+  setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
   optionKey?: number;
 }
 

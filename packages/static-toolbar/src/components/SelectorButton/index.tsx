@@ -1,17 +1,13 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
-import {
-  EEEditorStyleButtonProps,
-  EEEditorStyleButtonType,
-  shouldButtonDisabled,
-} from '@eeeditor/buttons';
+import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
 import classNames from 'classnames';
 import { EditorState } from 'draft-js';
 
 export interface SelectorBtnChildrenProps {
   getEditorState(): EditorState;
   setEditorState(editorState: EditorState): void;
-  setSelectorBtnActive: () => void;
-  setSelectorBtnDisabled: () => void;
+  setSelectorBtnActive: (active: boolean, optionKey: number) => void;
+  setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
 }
 
 export interface SelectorButtonProps
@@ -38,9 +34,24 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
 
-  const setSelectorBtnActive = (): void => {};
+  const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
+    setBtnActive((btnActive: boolean[]) => {
+      // todo 是否可以保留同一个数组对象引用
+      btnActive[optionKey] = active;
+      return btnActive;
+    });
+  };
 
-  const setSelectorBtnDisabled = (): void => {};
+  const setSelectorBtnDisabled = (
+    disabled: boolean,
+    optionKey: number,
+  ): void => {
+    setBtnDisabled((btnDisabled: boolean[]) => {
+      // todo 是否可以保留同一个数组对象引用
+      btnDisabled[optionKey] = disabled;
+      return btnDisabled;
+    });
+  };
 
   const showOptions = (): void => {
     setVisible(true);
