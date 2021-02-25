@@ -28,6 +28,9 @@ export default function createBlockStyleButton({
       icon,
       getEditorState,
       setEditorState,
+      setSelectorBtnActive,
+      setSelectorBtnDisabled,
+      optionKey,
     } = props;
 
     const toggleStyle = (event: MouseEvent): void => {

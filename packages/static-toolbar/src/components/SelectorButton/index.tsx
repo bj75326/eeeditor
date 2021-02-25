@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import {
   EEEditorStyleButtonProps,
   EEEditorStyleButtonType,
@@ -12,7 +12,6 @@ export interface SelectorBtnChildrenProps {
   setEditorState(editorState: EditorState): void;
   setSelectorBtnActive: () => void;
   setSelectorBtnDisabled: () => void;
-  //optionKey: number;
 }
 
 export interface SelectorButtonProps
@@ -21,7 +20,7 @@ export interface SelectorButtonProps
     'title' | 'locale' | 'icon' | 'align'
   > {
   icon: ReactNode;
-  children: React.FC<EEEditor>;
+  children: ReactElement | ReactElement[];
 }
 
 const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
@@ -32,6 +31,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     icon,
     getEditorState,
     setEditorState,
+    children,
   } = props;
 
   const [visible, setVisible]: [boolean, any] = useState(false);
@@ -49,7 +49,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     setVisible(false);
   };
 
-  const childrenProps: SelectorBtnChildrenProps = {
+  const childProps: SelectorBtnChildrenProps = {
     getEditorState,
     setEditorState,
     setSelectorBtnActive,
@@ -61,6 +61,10 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     [`${prefixCls}-selector-btn-disabled`]: btnDisabled,
   });
 
+  const optionsClassName = classNames(`${prefixCls}-selector-btn-options`, {
+    [`${prefixCls}-selector-btn-options-hidden`]: !visible,
+  });
+
   return (
     <div
       className={btnClassName}
@@ -69,7 +73,13 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
       onMouseLeave={hideOptions}
     >
       <div>{icon}</div>
-      <div className={`${prefixCls}-selector-btn-options`}></div>
+      <div className={optionsClassName}>
+        {React.Children.map<ReactElement, ReactElement>(
+          children,
+          (child, index) =>
+            React.cloneElement(child, { ...childProps, optionKey: index }),
+        )}
+      </div>
     </div>
   );
 };
