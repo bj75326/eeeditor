@@ -4,8 +4,6 @@ import classNames from 'classnames';
 import { EditorState } from 'draft-js';
 
 export interface SelectorBtnChildrenProps {
-  getEditorState(): EditorState;
-  setEditorState(editorState: EditorState): void;
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
 }
@@ -20,15 +18,7 @@ export interface SelectorButtonProps
 }
 
 const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
-  const {
-    prefixCls = 'eee',
-    className,
-    style,
-    icon,
-    getEditorState,
-    setEditorState,
-    children,
-  } = props;
+  const { prefixCls = 'eee', className, style, icon, children } = props;
 
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
@@ -61,8 +51,6 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   };
 
   const childProps: SelectorBtnChildrenProps = {
-    getEditorState,
-    setEditorState,
     setSelectorBtnActive,
     setSelectorBtnDisabled,
   };

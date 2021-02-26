@@ -12,6 +12,7 @@ import EEEditor, {
   convertToRaw,
   EditorState,
 } from '@eeeditor/editor';
+
 import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';

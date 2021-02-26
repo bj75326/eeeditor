@@ -78,19 +78,33 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     store,
   } = props;
 
+  const childrenProps: ToolbarChildrenProps = {
+    getEditorState: store.getItem('getEditorState'),
+    setEditorState: store.getItem('setEditorState'),
+  };
+
   const renderDefaultButtons = (
     externalProps: ToolbarChildrenProps,
   ): ReactElement => (
     <div>
       <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
-        <HeadlineOneButton />
+        <HeadlineOneButton {...externalProps} />
+        <HeadlineTwoButton {...externalProps} />
+        <HeadlineThreeButton {...externalProps} />
+        <HeadlineFourButton {...externalProps} />
+        <HeadlineFiveButton {...externalProps} />
+        <HeadlineSixButton {...externalProps} />
       </SelectorButton>
     </div>
   );
 
   const toolbarClassName = classNames(`${prefixCls}-static-toolbar`, className);
 
-  return <div className={toolbarClassName} style={style}></div>;
+  return (
+    <div className={toolbarClassName} style={style}>
+      {(children || renderDefaultButtons)(childrenProps)}
+    </div>
+  );
 };
 
 export default Toolbar;

@@ -1,10 +1,10 @@
-import React, {ComponentType} from 'react';
-import { createStore, Store} from '@draft-js-plugins/utils';
+import React, { ComponentType } from 'react';
+import { createStore, Store } from '@draft-js-plugins/utils';
 import { EditorPlugin } from '@eeeditor/editor';
 import Toolbar, { ToolbarPubProps } from './components/Toolbar';
 import { SelectionState, EditorState } from 'draft-js';
 
-export interface Locale { }
+export interface Locale {}
 
 export interface StaticToolbarPluginConfig {
   prefixCls?: string;
@@ -27,11 +27,23 @@ export interface StoreItemMap {
 
 export type StaticToolbarPluginStore = Store<StoreItemMap>;
 
-export default (config: StaticToolbarPluginConfig = {}): StaticToolbarPlugin => { 
+export default (
+  config: StaticToolbarPluginConfig = {},
+): StaticToolbarPlugin => {
   const store = createStore<StoreItemMap>();
 
-  const StaticToolbar: React.FC<StaticToolbarProps>= (props) => (
-    <Toolbar {...props} store={ store}/>
+  const StaticToolbar: React.FC<StaticToolbarProps> = (props) => (
+    <Toolbar {...props} store={store} />
   );
-  
+
+  return {
+    initialize: ({ getEditorState, setEditorState }) => {
+      store.updateItem('getEditorState', getEditorState);
+      store.updateItem('setEditorState', setEditorState);
+    },
+
+    onChange: () => {},
+
+    Toolbar: StaticToolbar,
+  };
 };
