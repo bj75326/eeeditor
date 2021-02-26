@@ -1,6 +1,6 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
 
-const defaultHeaderlineOneIcon = (
+const defaultHeadlineOneIcon = (
   <svg
     width="18"
     height="18"
@@ -42,5 +42,5 @@ const defaultHeaderlineOneIcon = (
 export default createBlockStyleButton({
   blockType: 'header-one',
   buttonType: 'header',
-  children: defaultHeaderlineOneIcon,
+  children: defaultHeadlineOneIcon,
 });

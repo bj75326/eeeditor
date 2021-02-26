@@ -3,7 +3,12 @@ import { EditorState } from 'draft-js';
 import createBlockStyleButton from './utils/createBlockStyleButton';
 import { AbstractTooltipProps } from 'antd/es/tooltip';
 import shouldButtonDisabled from './utils/disableStrategy';
-import HeaderlineOneButton from './components/HeadlineOneButton';
+import HeadlineOneButton from './components/HeadlineOneButton';
+import HeadlineTwoButton from './components/HeadlineTwoButton';
+import HeadlineThreeButton from './components/HeadlineThreeButton';
+import HeadlineFourButton from './components/HeadlineFourButton';
+import HeadlineFiveButton from './components/HeadlineFiveButton';
+import HeadlineSixButton from './components/HeadlineSixButton';
 
 export interface Locale {
   'eeeditor.button.h1.tooltip.main': string;
@@ -47,4 +52,13 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
 
 export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
 
-export { createBlockStyleButton, shouldButtonDisabled, HeaderlineOneButton };
+export {
+  createBlockStyleButton,
+  shouldButtonDisabled,
+  HeadlineOneButton,
+  HeadlineTwoButton,
+  HeadlineThreeButton,
+  HeadlineFourButton,
+  HeadlineFiveButton,
+  HeadlineSixButton,
+};
