@@ -11,8 +11,11 @@ import EEEditor, {
   convertFromRaw,
   convertToRaw,
   EditorState,
+  EditorPlugin,
 } from '@eeeditor/editor';
-
+import createStaticToolbarPlugin, {
+  StaticToolbarPlugin,
+} from '@eeeditor/static-toolbar';
 import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';
@@ -35,6 +38,14 @@ import classNames from 'classnames';
 import { Spin } from 'antd';
 
 import './index.less';
+
+const {
+  StaticToolbar,
+  SelectorButton,
+  ...staticToolbarPlugin
+}: StaticToolbarPlugin = createStaticToolbarPlugin();
+
+const plugins: EditorPlugin[] = [staticToolbarPlugin];
 
 export interface PageProps extends ConnectProps {
   title: StateType['title'];
@@ -328,7 +339,9 @@ const Page: React.FC<PageProps> = (props) => {
               placeholder={formatMessage({
                 id: 'page.draft.editor.placeholder',
               })}
+              plugins={plugins}
             />
+            <StaticToolbar className="" />
           </div>
         </div>
         {sidebar}
