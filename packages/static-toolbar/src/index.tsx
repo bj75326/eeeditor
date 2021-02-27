@@ -1,7 +1,11 @@
 import React, { ComponentType } from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import { EditorPlugin } from '@eeeditor/editor';
-import Toolbar, { ToolbarPubProps } from './components/Toolbar';
+import Toolbar, {
+  ToolbarPubProps,
+  ToolbarChildrenProps,
+  HeaderButtonIcon,
+} from './components/Toolbar';
 import SelectorButton, {
   SelectorButtonProps,
 } from './components/SelectorButton';
@@ -16,7 +20,13 @@ export interface Locale {}
 //   locale?: Locale;
 // }
 
+export const defaultSelectorBtnIcons = {
+  HeaderButtonIcon,
+};
+
 export type StaticToolbarProps = ToolbarPubProps;
+
+export type StaticToolbarChildrenProps = ToolbarChildrenProps;
 
 export type StaticToolbarPlugin = EditorPlugin & {
   StaticToolbar: ComponentType<StaticToolbarProps>;

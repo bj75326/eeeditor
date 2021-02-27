@@ -29,7 +29,7 @@ interface ToolbarProps extends ToolbarPubProps {
   store: StaticToolbarPluginStore;
 }
 
-const HeaderButtonIcon = (
+export const HeaderButtonIcon = (
   <svg
     width="18"
     height="18"

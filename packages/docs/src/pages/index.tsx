@@ -15,7 +15,17 @@ import EEEditor, {
 } from '@eeeditor/editor';
 import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
+  StaticToolbarChildrenProps,
+  defaultSelectorBtnIcons,
 } from '@eeeditor/static-toolbar';
+import {
+  HeadlineOneButton,
+  HeadlineTwoButton,
+  HeadlineThreeButton,
+  HeadlineFourButton,
+  HeadlineFiveButton,
+  HeadlineSixButton,
+} from '@eeeditor/buttons';
 import { StateType } from './model';
 import { is } from 'immutable';
 import logo from '@/assets/logo.svg';
@@ -38,6 +48,10 @@ import classNames from 'classnames';
 import { Spin } from 'antd';
 
 import './index.less';
+
+import '@eeeditor/editor/es/style';
+
+const { HeaderButtonIcon } = defaultSelectorBtnIcons;
 
 const {
   StaticToolbar,
@@ -317,7 +331,7 @@ const Page: React.FC<PageProps> = (props) => {
       >
         <div className="editor">
           <div
-            className="transform-wrapper"
+            className="transformWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <h1 className="title">
@@ -341,7 +355,25 @@ const Page: React.FC<PageProps> = (props) => {
               })}
               plugins={plugins}
             />
-            <StaticToolbar className="" />
+          </div>
+          <div
+            className="transformWrapper staticToolbarWrapper"
+            style={{ transform: 'translate3d(0px, 0px, 0px)' }}
+          >
+            <StaticToolbar>
+              {(externalProps: StaticToolbarChildrenProps) => (
+                <div>
+                  <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
+                    <HeadlineOneButton {...externalProps} />
+                    <HeadlineTwoButton {...externalProps} />
+                    <HeadlineThreeButton {...externalProps} />
+                    <HeadlineFourButton {...externalProps} />
+                    <HeadlineFiveButton {...externalProps} />
+                    <HeadlineSixButton {...externalProps} />
+                  </SelectorButton>
+                </div>
+              )}
+            </StaticToolbar>
           </div>
         </div>
         {sidebar}
