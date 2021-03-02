@@ -86,7 +86,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const renderDefaultButtons = (
     externalProps: ToolbarChildrenProps,
   ): ReactElement => (
-    <div>
+    <>
       <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
         <HeadlineOneButton {...externalProps} />
         <HeadlineTwoButton {...externalProps} />
@@ -95,7 +95,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         <HeadlineFiveButton {...externalProps} />
         <HeadlineSixButton {...externalProps} />
       </SelectorButton>
-    </div>
+    </>
   );
 
   const toolbarClassName = classNames(`${prefixCls}-static-toolbar`, className);

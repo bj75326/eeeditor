@@ -2,5 +2,38 @@
 
 @eeeditor-prefix-cls: eee;
 
-.@{eeeditor-prefix-cls} {
+.@{eeeditor-prefix-cls}-static-toolbar {
+  box-sizing: border-box;
+  height: 40px;
+  background-color: @staticToolbarBackgroundColor;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.@{eeeditor-prefix-cls}-selector-btn {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  color: ;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: ;
+  }
+}
+
+.@{eeeditor-prefix-cls}-selector-btn-active {
+}
+
+.@{eeeditor-prefix-cls}-selector-btn-disabled {
+}
+
+.@{eeeditor-prefix-cls}-selector-btn-options {
+}
+
+.@{eeeditor-prefix-cls}-selector-btn-options-hidden {
 }

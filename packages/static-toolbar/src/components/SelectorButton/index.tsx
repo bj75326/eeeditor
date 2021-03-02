@@ -66,12 +66,13 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
 
   return (
     <div
-      className={btnClassName}
-      style={style}
+      className={`${prefixCls}-selector-btn-wrapper`}
       onMouseEnter={showOptions}
       onMouseLeave={hideOptions}
     >
-      <div>{icon}</div>
+      <div className={btnClassName} style={style}>
+        {icon}
+      </div>
       <div className={optionsClassName}>
         {React.Children.map<ReactElement, ReactElement>(
           children,

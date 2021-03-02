@@ -50,6 +50,7 @@ import { Spin } from 'antd';
 import './index.less';
 
 import '@eeeditor/editor/es/style';
+import '@eeeditor/static-toolbar/es/style';
 
 const { HeaderButtonIcon } = defaultSelectorBtnIcons;
 
@@ -362,7 +363,7 @@ const Page: React.FC<PageProps> = (props) => {
           >
             <StaticToolbar>
               {(externalProps: StaticToolbarChildrenProps) => (
-                <div>
+                <>
                   <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
                     <HeadlineOneButton {...externalProps} />
                     <HeadlineTwoButton {...externalProps} />
@@ -371,7 +372,7 @@ const Page: React.FC<PageProps> = (props) => {
                     <HeadlineFiveButton {...externalProps} />
                     <HeadlineSixButton {...externalProps} />
                   </SelectorButton>
-                </div>
+                </>
               )}
             </StaticToolbar>
           </div>
