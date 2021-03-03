@@ -1,0 +1,35 @@
+@import './theme.less';
+
+@eeeditor-prefix-cls: eee;
+
+.@{eeeditor-prefix-cls}-btn-wrapper {
+  display: inline-block;
+}
+
+.@{eeeditor-prefix-cls}-btn {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  color: @text-color;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @item-hover-bg;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-active {
+    color: @primary-color;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-disabled {
+    color: @disabled-color;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+  }
+}

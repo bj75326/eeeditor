@@ -51,6 +51,7 @@ import './index.less';
 
 import '@eeeditor/editor/es/style';
 import '@eeeditor/static-toolbar/es/style';
+import '@eeeditor/buttons/es/style';
 
 const { HeaderButtonIcon } = defaultSelectorBtnIcons;
 

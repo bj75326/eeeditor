@@ -86,15 +86,18 @@ export default function createBlockStyleButton({
 
     return (
       <div
-        className={btnClassName}
-        style={style}
+        className={`${prefixCls}-btn-wrapper`}
         onMouseDown={preventBubblingUp}
       >
         {checkButtonShouldDisabled() ? (
-          <div>{icon || children}</div>
+          <div className={btnClassName} style={style}>
+            {icon || children}
+          </div>
         ) : (
           <Tooltip title={tipTitle} align={align}>
-            <div onClick={toggleStyle}>{icon || children}</div>
+            <div className={btnClassName} style={style} onClick={toggleStyle}>
+              {icon || children}
+            </div>
           </Tooltip>
         )}
       </div>

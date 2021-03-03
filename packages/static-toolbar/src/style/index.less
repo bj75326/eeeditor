@@ -11,6 +11,11 @@
   user-select: none;
 }
 
+.@{eeeditor-prefix-cls}-selector-btn-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
 .@{eeeditor-prefix-cls}-selector-btn {
   position: relative;
   display: inline-flex;
@@ -18,22 +23,49 @@
   align-items: center;
   width: 40px;
   height: 40px;
-  color: ;
+  font-size: 20px;
+  color: @text-color;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: ;
+    background-color: @item-hover-bg;
+  }
+  &:before {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: @text-color;
+    content: '';
+    transform: rotate(-45deg);
+  }
+  &.@{eeeditor-prefix-cls}-selector-btn-active {
+    color: @primary-color;
+  }
+
+  &.@{eeeditor-prefix-cls}-selector-btn-disabled {
+    cursor: not-allowed;
+    color: @disabled-color;
+    &:hover {
+      background: none;
+    }
+    &:before {
+      border-top-color: @disabled-color;
+    }
   }
 }
 
-.@{eeeditor-prefix-cls}-selector-btn-active {
-}
-
-.@{eeeditor-prefix-cls}-selector-btn-disabled {
-}
-
 .@{eeeditor-prefix-cls}-selector-btn-options {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  background: @staticToolbarBackgroundColor;
 }
 
 .@{eeeditor-prefix-cls}-selector-btn-options-hidden {
+  display: none;
 }

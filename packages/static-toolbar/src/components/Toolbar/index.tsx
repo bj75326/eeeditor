@@ -31,39 +31,44 @@ interface ToolbarProps extends ToolbarPubProps {
 
 export const HeaderButtonIcon = (
   <svg
-    width="18"
-    height="18"
+    width="1em"
+    height="1em"
     viewBox="0 0 48 48"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
       d="M6 8.00024V40.0002"
-      stroke="#333"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="bevel"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="bevel"
     />
     <path
       d="M24 8.00024V40.0002"
-      stroke="#333"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="bevel"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="bevel"
     />
     <path
       d="M7 24.0002H23"
-      stroke="#333"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="bevel"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="bevel"
     />
-    <path d="M32 24V40" stroke="#333" stroke-width="3" stroke-linecap="round" />
+    <path
+      d="M32 24V40"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+    />
     <path
       d="M32 31.0237C32 28.4597 34 26.0002 37 26.0002C40 26.0002 42 28.3583 42 31.0237C42 32.8007 42 36.464 42 40.0136"
-      stroke="#333"
-      stroke-width="3"
-      stroke-linecap="round"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
     />
   </svg>
 );
