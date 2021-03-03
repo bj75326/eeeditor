@@ -1,11 +1,9 @@
 @import './theme.less';
 
-@eeeditor-prefix-cls: eee;
-
 .@{eeeditor-prefix-cls}-static-toolbar {
   box-sizing: border-box;
   height: 40px;
-  background-color: @staticToolbarBackgroundColor;
+  background-color: @static-toolbar-bg-color;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -21,9 +19,9 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
+  width: @static-toolbar-btn-size;
+  height: @static-toolbar-btn-size;
+  font-size: @static-toolbar-icon-size;
   color: @text-color;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
@@ -45,7 +43,6 @@
   &.@{eeeditor-prefix-cls}-selector-btn-active {
     color: @primary-color;
   }
-
   &.@{eeeditor-prefix-cls}-selector-btn-disabled {
     cursor: not-allowed;
     color: @disabled-color;
@@ -56,14 +53,19 @@
       border-top-color: @disabled-color;
     }
   }
+  &.@{eeeditor-prefix-cls}-selector-btn-show {
+    &:before {
+      display: none;
+    }
+  }
 }
 
 .@{eeeditor-prefix-cls}-selector-btn-options {
   position: absolute;
-  top: 40px;
+  top: @static-toolbar-btn-size;
   left: 0;
   width: 100%;
-  background: @staticToolbarBackgroundColor;
+  background: @static-toolbar-bg-color;
 }
 
 .@{eeeditor-prefix-cls}-selector-btn-options-hidden {
