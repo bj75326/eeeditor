@@ -44,6 +44,9 @@ export default function createBlockStyleButton({
 
     const blockTypeIsActive = (): boolean => {
       if (!getEditorState) {
+        if (setSelectorBtnActive) {
+          setSelectorBtnActive(false, optionKey);
+        }
         return false;
       }
 
@@ -52,15 +55,26 @@ export default function createBlockStyleButton({
         .getCurrentContent()
         .getBlockForKey(editorState.getSelection().getStartKey())
         .getType();
+
+      if (setSelectorBtnActive) {
+        setSelectorBtnActive(type === blockType, optionKey);
+      }
       return type === blockType;
     };
 
     const checkButtonShouldDisabled = (): boolean => {
       if (!getEditorState) {
+        if (setSelectorBtnDisabled) {
+          setSelectorBtnDisabled(true, optionKey);
+        }
         return true;
       }
       const editorState = getEditorState();
-      return shouldButtonDisabled(editorState, buttonType);
+      const status = shouldButtonDisabled(editorState, buttonType);
+      if (setSelectorBtnDisabled) {
+        setSelectorBtnDisabled(status, optionKey);
+      }
+      return status;
     };
 
     const btnClassName = classNames(`${prefixCls}-btn`, className, {

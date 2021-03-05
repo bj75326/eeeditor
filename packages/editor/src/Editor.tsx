@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useRef } from 'react';
 import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
 import { EditorState, convertToRaw, ContentBlock } from 'draft-js';
 import classNames from 'classnames';
@@ -41,6 +41,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     className,
   );
 
+  const editorRef = useRef(null);
+
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);
   };
@@ -51,9 +53,14 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       style={style}
       onBlur={() => {
         console.log('editor wrapper blur');
+        editorRef.current.blur();
+      }}
+      onFocus={() => {
+        console.log('editor wrapper focus');
       }}
       onClick={() => {
         console.log('editor wrapper click');
+        editorRef.current.focus();
       }}
       onMouseDown={() => {
         console.log('editor wrapper mousedown');
@@ -66,6 +73,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         editorState={editorState}
         onChange={handleChange}
         blockStyleFn={blockStyleFn || eeeBlockStyleFn}
+        ref={editorRef}
         {...restProps}
       />
     </div>
