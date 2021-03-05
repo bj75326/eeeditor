@@ -43,4 +43,8 @@ export default createBlockStyleButton({
   blockType: 'header-three',
   buttonType: 'header',
   children: defaultHeadlineThreeIcon,
+  defaultTitle: {
+    name: 'eeeditor.button.h3.tooltip.name',
+    shortcut: 'eeeditor.button.h3.tooltip.shortcut',
+  },
 });

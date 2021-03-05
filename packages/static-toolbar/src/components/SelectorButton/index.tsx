@@ -25,10 +25,11 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
 
   const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
+    if (active === btnActive[optionKey]) return;
     setBtnActive((btnActive: boolean[]) => {
-      // todo 是否可以保留同一个数组对象引用
-      btnActive[optionKey] = active;
-      return btnActive;
+      const newBtnActive: boolean[] = [...btnActive];
+      newBtnActive[optionKey] = active;
+      return newBtnActive;
     });
   };
 
@@ -36,10 +37,11 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     disabled: boolean,
     optionKey: number,
   ): void => {
+    if (disabled === btnDisabled[optionKey]) return;
     setBtnDisabled((btnDisabled: boolean[]) => {
-      // todo 是否可以保留同一个数组对象引用
-      btnDisabled[optionKey] = disabled;
-      return btnDisabled;
+      const newBtnDisabled: boolean[] = [...btnDisabled];
+      newBtnDisabled[optionKey] = disabled;
+      return newBtnDisabled;
     });
   };
 

@@ -1,6 +1,10 @@
 import React, { ReactNode, MouseEvent } from 'react';
 import { RichUtils, DraftBlockType } from 'draft-js';
-import { EEEditorStyleButtonType, EEEditorButtonType } from '..';
+import {
+  EEEditorStyleButtonType,
+  EEEditorButtonType,
+  EEEditorButtonProps,
+} from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
 import { Tooltip } from 'antd';
@@ -10,12 +14,14 @@ interface CreateBlockStyleButtonProps {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
   children: ReactNode;
+  defaultTitle?: EEEditorButtonProps['title'];
 }
 
 export default function createBlockStyleButton({
   blockType,
   buttonType,
   children,
+  defaultTitle,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
   return function BlockStyleButton(props) {
     const {
@@ -23,7 +29,7 @@ export default function createBlockStyleButton({
       className,
       style,
       locale = zhCN,
-      title,
+      title = defaultTitle,
       align,
       icon,
       getEditorState,
@@ -108,7 +114,7 @@ export default function createBlockStyleButton({
             {icon || children}
           </div>
         ) : (
-          <Tooltip title={tipTitle} align={align}>
+          <Tooltip title={tipTitle}>
             <div className={btnClassName} style={style} onClick={toggleStyle}>
               {icon || children}
             </div>

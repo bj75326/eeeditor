@@ -48,4 +48,8 @@ export default createBlockStyleButton({
   blockType: 'header-six',
   buttonType: 'header',
   children: defaultHeadlineSixIcon,
+  defaultTitle: {
+    name: 'eeeditor.button.h6.tooltip.name',
+    shortcut: 'eeeditor.button.h6.tooltip.shortcut',
+  },
 });

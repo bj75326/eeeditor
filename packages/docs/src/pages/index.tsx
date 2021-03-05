@@ -19,6 +19,8 @@ import createStaticToolbarPlugin, {
   defaultSelectorBtnIcons,
 } from '@eeeditor/static-toolbar';
 import {
+  enUS,
+  zhCN,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,

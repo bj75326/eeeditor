@@ -9,6 +9,8 @@ import HeadlineThreeButton from './components/HeadlineThreeButton';
 import HeadlineFourButton from './components/HeadlineFourButton';
 import HeadlineFiveButton from './components/HeadlineFiveButton';
 import HeadlineSixButton from './components/HeadlineSixButton';
+import enUS from './locale/en_US';
+import zhCN from './locale/zh_CN';
 
 export interface Locale {
   'eeeditor.button.h1.tooltip.main': string;
@@ -55,6 +57,8 @@ export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
 export {
   createBlockStyleButton,
   shouldButtonDisabled,
+  zhCN,
+  enUS,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
