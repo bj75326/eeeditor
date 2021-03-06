@@ -221,6 +221,10 @@ const Page: React.FC<PageProps> = (props) => {
   console.log('title: ', title);
   console.log('rtl: ', rtl);
 
+  const staticToolbarTipProps = {
+    placement: rtl ? 'left' : 'right',
+  };
+
   const sidebar = (
     <CSSTransition
       in={!sidebarCollapsed}
@@ -368,12 +372,30 @@ const Page: React.FC<PageProps> = (props) => {
               {(externalProps: StaticToolbarChildrenProps) => (
                 <>
                   <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
-                    <HeadlineOneButton {...externalProps} />
-                    <HeadlineTwoButton {...externalProps} />
-                    <HeadlineThreeButton {...externalProps} />
-                    <HeadlineFourButton {...externalProps} />
-                    <HeadlineFiveButton {...externalProps} />
-                    <HeadlineSixButton {...externalProps} />
+                    <HeadlineOneButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
+                    <HeadlineTwoButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
+                    <HeadlineThreeButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
+                    <HeadlineFourButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
+                    <HeadlineFiveButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
+                    <HeadlineSixButton
+                      {...externalProps}
+                      tipProps={staticToolbarTipProps}
+                    />
                   </SelectorButton>
                 </>
               )}

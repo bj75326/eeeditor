@@ -8,7 +8,7 @@ interface StrategyType {
 
 const disableStrategy: { [key: string]: StrategyType } = {
   header: {
-    block: ['atomic'],
+    block: ['atomic', 'unstyled'],
     inline: [],
   },
 };

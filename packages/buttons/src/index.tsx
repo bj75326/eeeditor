@@ -1,7 +1,7 @@
 import { ComponentType, CSSProperties, ReactNode } from 'react';
 import { EditorState } from 'draft-js';
 import createBlockStyleButton from './utils/createBlockStyleButton';
-import { AbstractTooltipProps } from 'antd/es/tooltip';
+import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import shouldButtonDisabled from './utils/disableStrategy';
 import HeadlineOneButton from './components/HeadlineOneButton';
 import HeadlineTwoButton from './components/HeadlineTwoButton';
@@ -38,7 +38,9 @@ export interface EEEditorButtonProps {
     name?: string;
     shortcut?: string;
   };
-  align?: AbstractTooltipProps['align'];
+  // align?: TooltipPropsWithTitle['align'];
+  // placement?: TooltipPropsWithTitle['placement'];
+  tipProps?: Omit<TooltipPropsWithTitle, 'title'>;
   icon?: ReactNode;
 }
 

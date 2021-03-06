@@ -1,4 +1,4 @@
-import React, { ReactNode, MouseEvent } from 'react';
+import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import { RichUtils, DraftBlockType } from 'draft-js';
 import {
   EEEditorStyleButtonType,
@@ -30,7 +30,7 @@ export default function createBlockStyleButton({
       style,
       locale = zhCN,
       title = defaultTitle,
-      align,
+      tipProps,
       icon,
       getEditorState,
       setEditorState,
@@ -50,38 +50,49 @@ export default function createBlockStyleButton({
 
     const blockTypeIsActive = (): boolean => {
       if (!getEditorState) {
-        if (setSelectorBtnActive) {
-          setSelectorBtnActive(false, optionKey);
-        }
+        // if (setSelectorBtnActive) {
+        //   setSelectorBtnActive(false, optionKey);
+        // }
         return false;
       }
-
       const editorState = getEditorState();
       const type = editorState
         .getCurrentContent()
         .getBlockForKey(editorState.getSelection().getStartKey())
         .getType();
 
-      if (setSelectorBtnActive) {
-        setSelectorBtnActive(type === blockType, optionKey);
-      }
+      // if (setSelectorBtnActive) {
+      //   setSelectorBtnActive(type === blockType, optionKey);
+      // }
       return type === blockType;
     };
 
+    useEffect(() => {
+      if (setSelectorBtnActive) {
+        setSelectorBtnActive(blockTypeIsActive(), optionKey);
+      }
+    }, [blockTypeIsActive()]);
+
     const checkButtonShouldDisabled = (): boolean => {
       if (!getEditorState) {
-        if (setSelectorBtnDisabled) {
-          setSelectorBtnDisabled(true, optionKey);
-        }
+        // if (setSelectorBtnDisabled) {
+        //   setSelectorBtnDisabled(true, optionKey);
+        // }
         return true;
       }
       const editorState = getEditorState();
       const status = shouldButtonDisabled(editorState, buttonType);
-      if (setSelectorBtnDisabled) {
-        setSelectorBtnDisabled(status, optionKey);
-      }
+      // if (setSelectorBtnDisabled) {
+      //   setSelectorBtnDisabled(status, optionKey);
+      // }
       return status;
     };
+
+    useEffect(() => {
+      if (setSelectorBtnDisabled) {
+        setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
+      }
+    }, [checkButtonShouldDisabled()]);
 
     const btnClassName = classNames(`${prefixCls}-btn`, className, {
       [`${prefixCls}-btn-active`]: blockTypeIsActive(),
@@ -114,7 +125,11 @@ export default function createBlockStyleButton({
             {icon || children}
           </div>
         ) : (
-          <Tooltip title={tipTitle}>
+          <Tooltip
+            title={tipTitle}
+            overlayClassName={`${prefixCls}-tip-wrapper`}
+            {...tipProps}
+          >
             <div className={btnClassName} style={style} onClick={toggleStyle}>
               {icon || children}
             </div>
