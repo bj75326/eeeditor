@@ -3,7 +3,7 @@ import { RichUtils, DraftBlockType } from 'draft-js';
 import {
   EEEditorStyleButtonType,
   EEEditorButtonType,
-  EEEditorButtonProps,
+  EEEditorStyleButtonProps,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -14,7 +14,7 @@ interface CreateBlockStyleButtonProps {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
   children: ReactNode;
-  defaultTitle?: EEEditorButtonProps['title'];
+  defaultTitle?: EEEditorStyleButtonProps['title'];
 }
 
 export default function createBlockStyleButton({
@@ -23,7 +23,7 @@ export default function createBlockStyleButton({
   children,
   defaultTitle,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
-  return function BlockStyleButton(props) {
+  return function BlockStyleButton(props: EEEditorStyleButtonProps) {
     const {
       prefixCls = 'eee',
       className,

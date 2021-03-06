@@ -33,8 +33,26 @@
 }
 
 .@{eeeditor-prefix-cls}-tip-wrapper {
+  .ant-tooltip-inner {
+    padding: 4px 6px;
+    border-radius: 4px;
+    background-color: @tip-background-color;
+  }
 }
 
 .@{eeeditor-prefix-cls}-tip {
   box-sizing: border-box;
+  font-size: @tip-font-size;
+  color: @text-color-inverse;
+}
+
+.@{eeeditor-prefix-cls}-tip-name {
+  display: block;
+  text-align: center;
+}
+
+.@{eeeditor-prefix-cls}-tip-shortcut {
+  display: block;
+  text-align: center;
+  opacity: 0.6;
 }

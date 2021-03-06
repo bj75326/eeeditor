@@ -64,7 +64,8 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     [`${prefixCls}-selector-btn-disabled`]: !btnDisabled.some(
       (status: boolean) => !status,
     ),
-    [`${prefixCls}-selector-btn-show`]: visible,
+    [`${prefixCls}-selector-btn-show`]:
+      visible && btnDisabled.some((status: boolean) => !status),
   });
 
   const optionsClassName = classNames(`${prefixCls}-selector-btn-options`, {
