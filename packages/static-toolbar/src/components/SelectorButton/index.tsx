@@ -1,7 +1,6 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
 import classNames from 'classnames';
-import { EditorState } from 'draft-js';
 
 export interface SelectorBtnChildrenProps {
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
