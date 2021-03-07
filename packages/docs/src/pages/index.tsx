@@ -21,12 +21,17 @@ import createStaticToolbarPlugin, {
 import {
   enUS,
   zhCN,
+  EEEditorStyleButtonProps,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
   HeadlineFourButton,
   HeadlineFiveButton,
   HeadlineSixButton,
+  BoldButton,
+  CodeButton,
+  UnderlineButton,
+  ItalicButton,
 } from '@eeeditor/buttons';
 import { StateType } from './model';
 import { is } from 'immutable';
@@ -221,8 +226,11 @@ const Page: React.FC<PageProps> = (props) => {
   console.log('title: ', title);
   console.log('rtl: ', rtl);
 
-  const staticToolbarTipProps = {
+  const selectBtnChildrenTip: EEEditorStyleButtonProps['tipProps'] = {
     placement: rtl ? 'left' : 'right',
+  };
+  const staticToolbarBtnTip: EEEditorStyleButtonProps['tipProps'] = {
+    placement: 'bottom',
   };
 
   const sidebar = (
@@ -371,30 +379,46 @@ const Page: React.FC<PageProps> = (props) => {
             <StaticToolbar>
               {(externalProps: StaticToolbarChildrenProps) => (
                 <>
+                  <BoldButton
+                    {...externalProps}
+                    tipProps={staticToolbarBtnTip}
+                  />
+                  <ItalicButton
+                    {...externalProps}
+                    tipProps={staticToolbarBtnTip}
+                  />
+                  <UnderlineButton
+                    {...externalProps}
+                    tipProps={staticToolbarBtnTip}
+                  />
+                  <CodeButton
+                    {...externalProps}
+                    tipProps={staticToolbarBtnTip}
+                  />
                   <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
                     <HeadlineOneButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                     <HeadlineTwoButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                     <HeadlineThreeButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                     <HeadlineFourButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                     <HeadlineFiveButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                     <HeadlineSixButton
                       {...externalProps}
-                      tipProps={staticToolbarTipProps}
+                      tipProps={selectBtnChildrenTip}
                     />
                   </SelectorButton>
                 </>

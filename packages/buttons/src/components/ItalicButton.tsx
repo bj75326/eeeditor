@@ -9,33 +9,35 @@ const defaultCodeIcon = (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M16 13L4 25.4322L16 37"
+      d="M20 6H36"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="bevel"
     />
     <path
-      d="M32 13L44 25.4322L32 37"
+      d="M12 42H28"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="bevel"
     />
     <path
-      d="M28 4L21 44"
+      d="M29 5.95239L19 42"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
+      strokeLinejoin="bevel"
     />
   </svg>
 );
 
 export default createInlineStyleButton({
-  inlineStyle: 'CODE',
-  buttonType: 'code',
+  inlineStyle: 'ITALIC',
+  buttonType: 'italic',
   children: defaultCodeIcon,
   defaultTitle: {
-    name: 'eeeditor.button.code.tip.name',
+    name: 'eeeditor.button.italic.tip.name',
+    shortcut: 'eeeditor.button.italic.tip.shortcut',
   },
 });

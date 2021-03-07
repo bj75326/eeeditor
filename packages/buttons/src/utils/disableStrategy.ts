@@ -17,7 +17,7 @@ const shouldButtonDisabled = (
   editorState: EditorState,
   buttonType: EEEditorButtonType,
 ) => {
-  const strategy: StrategyType = disableStrategy[buttonType];
+  const strategy: StrategyType = disableStrategy[buttonType] || {};
   const currentBlock = editorState
     .getCurrentContent()
     .getBlockForKey(editorState.getSelection().getStartKey());
