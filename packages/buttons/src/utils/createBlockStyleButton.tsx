@@ -1,5 +1,6 @@
 import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import { RichUtils, DraftBlockType } from 'draft-js';
+import { EditorPlugin } from '@eeeditor/editor';
 import {
   EEEditorStyleButtonType,
   EEEditorButtonType,
@@ -15,6 +16,8 @@ interface CreateBlockStyleButtonProps {
   buttonType: EEEditorButtonType;
   children: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
+  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  buttonKeyCommand?: EditorPlugin['handleKeyCommand'];
 }
 
 export default function createBlockStyleButton({
@@ -22,8 +25,10 @@ export default function createBlockStyleButton({
   buttonType,
   children,
   defaultTitle,
+  buttonKeyBindingFn,
+  buttonKeyCommand,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
-  return function BlockStyleButton(props: EEEditorStyleButtonProps) {
+  const BlockStyleButton: EEEditorStyleButtonType = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -138,4 +143,10 @@ export default function createBlockStyleButton({
       </div>
     );
   };
+
+  if (buttonKeyBindingFn)
+    BlockStyleButton.buttonKeyBindingFn = buttonKeyBindingFn;
+  if (buttonKeyCommand) BlockStyleButton.buttonKeyCommand = buttonKeyCommand;
+
+  return BlockStyleButton;
 }

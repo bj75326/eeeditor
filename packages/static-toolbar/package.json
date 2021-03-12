@@ -15,7 +15,8 @@
   },
   "peerDependencies": {
     "react": ">=16.9.0",
-    "react-dom": ">=16.9.0"
+    "react-dom": ">=16.9.0",
+    "@eeeditor/editor": ">=1.0.0"
   },
   "license": "MIT",
   "dependencies": {

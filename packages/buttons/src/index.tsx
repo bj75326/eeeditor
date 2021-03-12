@@ -1,5 +1,6 @@
-import { ComponentType, CSSProperties, ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { EditorState } from 'draft-js';
+import { EditorPlugin } from '@eeeditor/editor';
 import createBlockStyleButton from './utils/createBlockStyleButton';
 import createInlineStyleButton from './utils/createInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -71,7 +72,11 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   optionKey?: number;
 }
 
-export type EEEditorStyleButtonType = ComponentType<EEEditorStyleButtonProps>;
+export interface EEEditorStyleButtonType
+  extends React.FC<EEEditorStyleButtonProps> {
+  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  buttonKeyCommand?: EditorPlugin['handleKeyCommand'];
+}
 
 export {
   createBlockStyleButton,
