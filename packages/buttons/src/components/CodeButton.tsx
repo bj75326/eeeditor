@@ -1,4 +1,5 @@
 import createInlineStyleButton from '../utils/createInlineStyleButton';
+import { RichUtils } from '@eeeditor/editor';
 
 const defaultCodeIcon = (
   <svg
@@ -37,5 +38,12 @@ export default createInlineStyleButton({
   children: defaultCodeIcon,
   defaultTitle: {
     name: 'eeeditor.button.code.tip.name',
+  },
+  buttonKeyCommand: (command, editorState, _, { setEditorState }) => {
+    if (command === 'code') {
+      setEditorState(RichUtils.handleKeyCommand(editorState, 'code'));
+      return 'handled';
+    }
+    return 'not-handled';
   },
 });

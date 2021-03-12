@@ -1,5 +1,6 @@
 import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import { RichUtils } from 'draft-js';
+import { EditorPlugin } from '@eeeditor/editor';
 import {
   EEEditorStyleButtonType,
   EEEditorStyleButtonProps,
@@ -15,6 +16,8 @@ interface CreateInlineStyleButtonProps {
   buttonType: EEEditorButtonType;
   children: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
+  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  buttonKeyCommand?: EditorPlugin['handleKeyCommand'];
 }
 
 export default function CreateInlineStyleButton({
@@ -22,8 +25,10 @@ export default function CreateInlineStyleButton({
   buttonType,
   children,
   defaultTitle,
+  buttonKeyBindingFn,
+  buttonKeyCommand,
 }: CreateInlineStyleButtonProps): EEEditorStyleButtonType {
-  return function InlineStyleButton(props: EEEditorStyleButtonProps) {
+  const InlineStyleButton: EEEditorStyleButtonType = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -124,4 +129,10 @@ export default function CreateInlineStyleButton({
       </div>
     );
   };
+
+  if (buttonKeyBindingFn)
+    InlineStyleButton.buttonKeyBindingFn = buttonKeyBindingFn;
+  if (buttonKeyCommand) InlineStyleButton.buttonKeyCommand = buttonKeyCommand;
+
+  return InlineStyleButton;
 }

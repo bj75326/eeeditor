@@ -1,4 +1,5 @@
 import createInlineStyleButton from '../utils/createInlineStyleButton';
+import { RichUtils } from '@eeeditor/editor';
 
 const defaultBoldIcon = (
   <svg
@@ -36,5 +37,12 @@ export default createInlineStyleButton({
   defaultTitle: {
     name: 'eeeditor.button.bold.tip.name',
     shortcut: 'eeeditor.button.bold.tip.shortcut',
+  },
+  buttonKeyCommand: (command, editorState, _, { setEditorState }) => {
+    if (command === 'bold') {
+      setEditorState(RichUtils.handleKeyCommand(editorState, 'bold'));
+      return 'handled';
+    }
+    return 'not-handled';
   },
 });
