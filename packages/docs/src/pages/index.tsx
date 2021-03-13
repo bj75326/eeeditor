@@ -15,7 +15,6 @@ import EEEditor, {
 } from '@eeeditor/editor';
 import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
-  StaticToolbarChildrenProps,
   defaultSelectorBtnIcons,
 } from '@eeeditor/static-toolbar';
 import {

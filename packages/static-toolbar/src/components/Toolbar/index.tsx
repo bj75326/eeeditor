@@ -1,7 +1,8 @@
-import React, { CSSProperties, ReactElement, useEffect } from 'react';
+import React, { CSSProperties, ReactElement, useEffect, useRef } from 'react';
 import { EditorState } from 'draft-js';
 import { StaticToolbarPluginStore, Locale } from '../..';
 import {
+  EEEditorStyleButtonType,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
@@ -88,22 +89,30 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     setEditorState: store.getItem('setEditorState'),
   };
 
-  //useEffect(()=>{}, []);
+  const keyCommandHandlers = useRef([]);
 
-  // const renderDefaultButtons = (
-  //   externalProps: ToolbarChildrenProps,
-  // ): ReactElement => (
-  //   <>
-  //     <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
-  //       <HeadlineOneButton {...externalProps} />
-  //       <HeadlineTwoButton {...externalProps} />
-  //       <HeadlineThreeButton {...externalProps} />
-  //       <HeadlineFourButton {...externalProps} />
-  //       <HeadlineFiveButton {...externalProps} />
-  //       <HeadlineSixButton {...externalProps} />
-  //     </SelectorButton>
-  //   </>
-  // );
+  const getButtonKeyCommand = (
+    children: ReactElement | ReactElement[],
+    keyCommandHandlers,
+  ) => {
+    React.Children.forEach(children, (child) => {
+      if ((child.type as EEEditorStyleButtonType).buttonKeyCommand) {
+        keyCommandHandlers.current.push(
+          (child.type as EEEditorStyleButtonType).buttonKeyCommand,
+        );
+      }
+      if (child.props.children) {
+        getButtonKeyCommand(child.props.children, keyCommandHandlers);
+      }
+    });
+  };
+  //getButtonKeyCommand(children, keyCommandHandlers);
+
+  useEffect(() => {
+    console.log('toolbar children changed');
+    getButtonKeyCommand(children, keyCommandHandlers);
+    console.log(keyCommandHandlers);
+  }, []);
 
   const defaultButtons = (
     <SelectorButton icon={HeaderButtonIcon}>

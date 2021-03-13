@@ -101,8 +101,6 @@ export default function createBlockStyleButton({
       }
     }, [checkButtonShouldDisabled()]);
 
-    console.log('check disable: ', checkButtonShouldDisabled());
-
     const btnClassName = classNames(`${prefixCls}-btn`, className, {
       [`${prefixCls}-btn-active`]: blockTypeIsActive(),
       [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),

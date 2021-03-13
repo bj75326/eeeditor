@@ -59,6 +59,9 @@ StaticToolbarPlugin => {
       store.updateItem('selection', editorState.getSelection());
       return editorState;
     },
+    handleKeyCommand: () => {
+      return 'not-handled';
+    },
 
     StaticToolbar,
 
