@@ -46,9 +46,11 @@ export default function CreateInlineStyleButton({
 
     const toggleStyle = (event: MouseEvent): void => {
       event.preventDefault();
-      setEditorState(
-        RichUtils.toggleInlineStyle(getEditorState(), inlineStyle),
-      );
+      if (setEditorState) {
+        setEditorState(
+          RichUtils.toggleInlineStyle(getEditorState(), inlineStyle),
+        );
+      }
     };
 
     const preventBubblingUp = (event: MouseEvent): void => {

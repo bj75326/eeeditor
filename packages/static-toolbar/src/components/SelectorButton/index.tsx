@@ -1,8 +1,11 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
+import { EditorState } from 'draft-js';
 import classNames from 'classnames';
 
 export interface SelectorBtnChildrenProps {
+  getEditorState?: () => EditorState;
+  setEditorState?: (editorState: EditorState) => void;
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
 }
@@ -17,7 +20,15 @@ export interface SelectorButtonProps
 }
 
 const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
-  const { prefixCls = 'eee', className, style, icon, children } = props;
+  const {
+    prefixCls = 'eee',
+    className,
+    style,
+    icon,
+    children,
+    getEditorState,
+    setEditorState,
+  } = props;
 
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
@@ -52,6 +63,8 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   };
 
   const childProps: SelectorBtnChildrenProps = {
+    getEditorState,
+    setEditorState,
     setSelectorBtnActive,
     setSelectorBtnDisabled,
   };

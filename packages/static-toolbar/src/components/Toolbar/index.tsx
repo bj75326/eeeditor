@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactElement } from 'react';
+import React, { CSSProperties, ReactElement, useEffect } from 'react';
 import { EditorState } from 'draft-js';
 import { StaticToolbarPluginStore, Locale } from '../..';
 import {
@@ -13,8 +13,8 @@ import classNames from 'classnames';
 import SelectorButton from '../SelectorButton';
 
 export interface ToolbarChildrenProps {
-  getEditorState: () => EditorState;
-  setEditorState: (editorState: EditorState) => void;
+  getEditorState?: () => EditorState;
+  setEditorState?: (editorState: EditorState) => void;
 }
 
 export interface ToolbarPubProps {
@@ -22,7 +22,7 @@ export interface ToolbarPubProps {
   className?: string;
   style?: CSSProperties;
   locale?: Locale;
-  children?: React.FC<ToolbarChildrenProps>;
+  children?: ReactElement | ReactElement[];
 }
 
 interface ToolbarProps extends ToolbarPubProps {
@@ -88,26 +88,42 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     setEditorState: store.getItem('setEditorState'),
   };
 
-  const renderDefaultButtons = (
-    externalProps: ToolbarChildrenProps,
-  ): ReactElement => (
-    <>
-      <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
-        <HeadlineOneButton {...externalProps} />
-        <HeadlineTwoButton {...externalProps} />
-        <HeadlineThreeButton {...externalProps} />
-        <HeadlineFourButton {...externalProps} />
-        <HeadlineFiveButton {...externalProps} />
-        <HeadlineSixButton {...externalProps} />
-      </SelectorButton>
-    </>
+  //useEffect(()=>{}, []);
+
+  // const renderDefaultButtons = (
+  //   externalProps: ToolbarChildrenProps,
+  // ): ReactElement => (
+  //   <>
+  //     <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
+  //       <HeadlineOneButton {...externalProps} />
+  //       <HeadlineTwoButton {...externalProps} />
+  //       <HeadlineThreeButton {...externalProps} />
+  //       <HeadlineFourButton {...externalProps} />
+  //       <HeadlineFiveButton {...externalProps} />
+  //       <HeadlineSixButton {...externalProps} />
+  //     </SelectorButton>
+  //   </>
+  // );
+
+  const defaultButtons = (
+    <SelectorButton icon={HeaderButtonIcon}>
+      <HeadlineOneButton />
+      <HeadlineTwoButton />
+      <HeadlineThreeButton />
+      <HeadlineFourButton />
+      <HeadlineFiveButton />
+      <HeadlineSixButton />
+    </SelectorButton>
   );
 
   const toolbarClassName = classNames(`${prefixCls}-static-toolbar`, className);
 
   return (
     <div className={toolbarClassName} style={style}>
-      {(children || renderDefaultButtons)(childrenProps)}
+      {React.Children.map<ReactElement, ReactElement>(
+        children || defaultButtons,
+        (child) => React.cloneElement(child, { ...childrenProps }),
+      )}
     </div>
   );
 };

@@ -46,7 +46,9 @@ export default function createBlockStyleButton({
 
     const toggleStyle = (event: MouseEvent): void => {
       event.preventDefault();
-      setEditorState(RichUtils.toggleBlockType(getEditorState(), blockType));
+      if (setEditorState) {
+        setEditorState(RichUtils.toggleBlockType(getEditorState(), blockType));
+      }
     };
 
     const preventBubblingUp = (event: MouseEvent): void => {
@@ -98,6 +100,8 @@ export default function createBlockStyleButton({
         setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
       }
     }, [checkButtonShouldDisabled()]);
+
+    console.log('check disable: ', checkButtonShouldDisabled());
 
     const btnClassName = classNames(`${prefixCls}-btn`, className, {
       [`${prefixCls}-btn-active`]: blockTypeIsActive(),

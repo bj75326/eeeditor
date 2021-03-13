@@ -377,52 +377,18 @@ const Page: React.FC<PageProps> = (props) => {
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <StaticToolbar>
-              {(externalProps: StaticToolbarChildrenProps) => (
-                <>
-                  <BoldButton
-                    {...externalProps}
-                    tipProps={staticToolbarBtnTip}
-                  />
-                  <ItalicButton
-                    {...externalProps}
-                    tipProps={staticToolbarBtnTip}
-                  />
-                  <UnderlineButton
-                    {...externalProps}
-                    tipProps={staticToolbarBtnTip}
-                  />
-                  <CodeButton
-                    {...externalProps}
-                    tipProps={staticToolbarBtnTip}
-                  />
-                  <SelectorButton {...externalProps} icon={HeaderButtonIcon}>
-                    <HeadlineOneButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                    <HeadlineTwoButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                    <HeadlineThreeButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                    <HeadlineFourButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                    <HeadlineFiveButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                    <HeadlineSixButton
-                      {...externalProps}
-                      tipProps={selectBtnChildrenTip}
-                    />
-                  </SelectorButton>
-                </>
-              )}
+              <BoldButton tipProps={staticToolbarBtnTip} />
+              <ItalicButton tipProps={staticToolbarBtnTip} />
+              <UnderlineButton tipProps={staticToolbarBtnTip} />
+              <CodeButton tipProps={staticToolbarBtnTip} />
+              <SelectorButton icon={HeaderButtonIcon}>
+                <HeadlineOneButton tipProps={selectBtnChildrenTip} />
+                <HeadlineTwoButton tipProps={selectBtnChildrenTip} />
+                <HeadlineThreeButton tipProps={selectBtnChildrenTip} />
+                <HeadlineFourButton tipProps={selectBtnChildrenTip} />
+                <HeadlineFiveButton tipProps={selectBtnChildrenTip} />
+                <HeadlineSixButton tipProps={selectBtnChildrenTip} />
+              </SelectorButton>
             </StaticToolbar>
           </div>
         </div>
