@@ -39,7 +39,7 @@ export default createInlineStyleButton({
   defaultTitle: {
     name: 'eeeditor.button.code.tip.name',
   },
-  buttonKeyCommand: (command, editorState, _, { setEditorState }) => {
+  buttonKeyCommandHandler: (command, editorState, _, { setEditorState }) => {
     if (command === 'code') {
       setEditorState(RichUtils.handleKeyCommand(editorState, 'code'));
       return 'handled';

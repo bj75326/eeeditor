@@ -59,13 +59,28 @@ StaticToolbarPlugin => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
     },
-    // todo Static toolbar plugin 是否需要这个 onChange
+    // todo: Static toolbar plugin 是否需要这个 onChange
     onChange: (editorState) => {
       store.updateItem('selection', editorState.getSelection());
       return editorState;
     },
-    handleKeyCommand: () => {
-      return 'not-handled';
+
+    keyBindingFn: (event, pluginFunctions) => {},
+
+    handleKeyCommand: (
+      command,
+      editorState,
+      eventTimeStamp,
+      pluginFunctions,
+    ) => {
+      const keyCommandHandlers = store.getItem('keyCommandHandlers');
+      return keyCommandHandlers.some(
+        (handler) =>
+          handler(command, editorState, eventTimeStamp, pluginFunctions) ===
+          'handled',
+      )
+        ? 'handled'
+        : 'not-handled';
     },
 
     StaticToolbar,

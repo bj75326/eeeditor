@@ -67,10 +67,10 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
   addKeyCommandHandler?: (
-    keyCommandHnadler: EditorPlugin['handleKeyCommand'],
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
   removeKeyCommandHandler?: (
-    keyCommandHnadler: EditorPlugin['handleKeyCommand'],
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
   addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;

@@ -41,7 +41,7 @@ export default createInlineStyleButton({
     name: 'eeeditor.button.italic.tip.name',
     shortcut: 'eeeditor.button.italic.tip.shortcut',
   },
-  buttonKeyCommand: (command, editorState, _, { setEditorState }) => {
+  buttonKeyCommandHandler: (command, editorState, _, { setEditorState }) => {
     if (command === 'italic') {
       setEditorState(RichUtils.handleKeyCommand(editorState, 'italic'));
       return 'handled';

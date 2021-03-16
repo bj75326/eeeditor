@@ -76,6 +76,14 @@ export default function CreateInlineStyleButton({
       if (buttonKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
+      return () => {
+        if (buttonKeyBindingFn) {
+          removeKeyBindingFn(buttonKeyBindingFn);
+        }
+        if (buttonKeyCommandHandler) {
+          removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+      };
     }, []);
 
     useEffect(() => {

@@ -79,6 +79,23 @@ export default function createBlockStyleButton({
     };
 
     useEffect(() => {
+      if (buttonKeyBindingFn) {
+        addKeyBindingFn(buttonKeyBindingFn);
+      }
+      if (buttonKeyCommandHandler) {
+        addKeyCommandHandler(buttonKeyCommandHandler);
+      }
+      return () => {
+        if (buttonKeyBindingFn) {
+          removeKeyBindingFn(buttonKeyBindingFn);
+        }
+        if (buttonKeyCommandHandler) {
+          removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+      };
+    }, []);
+
+    useEffect(() => {
       if (setSelectorBtnActive) {
         setSelectorBtnActive(blockTypeIsActive(), optionKey);
       }
