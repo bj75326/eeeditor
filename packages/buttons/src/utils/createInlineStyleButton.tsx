@@ -17,7 +17,7 @@ interface CreateInlineStyleButtonProps {
   children: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
   buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
-  buttonKeyCommand?: EditorPlugin['handleKeyCommand'];
+  buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
 }
 
 export default function CreateInlineStyleButton({
@@ -26,7 +26,7 @@ export default function CreateInlineStyleButton({
   children,
   defaultTitle,
   buttonKeyBindingFn,
-  buttonKeyCommand,
+  buttonKeyCommandHandler,
 }: CreateInlineStyleButtonProps): EEEditorStyleButtonType {
   const InlineStyleButton: EEEditorStyleButtonType = (props) => {
     const {
@@ -39,6 +39,10 @@ export default function CreateInlineStyleButton({
       icon,
       getEditorState,
       setEditorState,
+      addKeyCommandHandler,
+      removeKeyCommandHandler,
+      addKeyBindingFn,
+      removeKeyBindingFn,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
@@ -64,6 +68,15 @@ export default function CreateInlineStyleButton({
       const editorState = getEditorState();
       return editorState.getCurrentInlineStyle().has(inlineStyle);
     };
+
+    useEffect(() => {
+      if (buttonKeyBindingFn) {
+        addKeyBindingFn(buttonKeyBindingFn);
+      }
+      if (buttonKeyCommandHandler) {
+        addKeyCommandHandler(buttonKeyCommandHandler);
+      }
+    }, []);
 
     useEffect(() => {
       if (setSelectorBtnActive) {
@@ -131,10 +144,6 @@ export default function CreateInlineStyleButton({
       </div>
     );
   };
-
-  if (buttonKeyBindingFn)
-    InlineStyleButton.buttonKeyBindingFn = buttonKeyBindingFn;
-  if (buttonKeyCommand) InlineStyleButton.buttonKeyCommand = buttonKeyCommand;
 
   return InlineStyleButton;
 }

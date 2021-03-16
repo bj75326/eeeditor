@@ -1,8 +1,7 @@
 import React, { CSSProperties, ReactElement, useEffect, useRef } from 'react';
-import { EditorState } from 'draft-js';
+import { EditorState, EditorPlugin } from '@eeeditor/editor';
 import { StaticToolbarPluginStore, Locale } from '../..';
 import {
-  EEEditorStyleButtonType,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
@@ -16,6 +15,16 @@ import SelectorButton from '../SelectorButton';
 export interface ToolbarChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  // 提供方法给 buttons 动态增减 handleKeyCommand
+  addKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  removeKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  // 提供方法给 buttons 动态增减 keyBindingFn
+  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
 }
 
 export interface ToolbarPubProps {
@@ -87,32 +96,39 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
     setEditorState: store.getItem('setEditorState'),
+    // 提供方法给 buttons 动态增减 handleKeyCommand
+    addKeyCommandHandler: (keyCommandHandler) => {
+      const keyCommandHandlers = store.getItem('keyCommandHandlers');
+      store.updateItem('keyCommandHandlers', [
+        ...keyCommandHandlers.filter(
+          (handler) => handler !== keyCommandHandler,
+        ),
+        keyCommandHandler,
+      ]);
+    },
+    removeKeyCommandHandler: (keyCommandHandler) => {
+      const keyCommandHandlers = store.getItem('keyCommandHandlers');
+      store.updateItem(
+        'keyCommandHandlers',
+        keyCommandHandlers.filter((handler) => handler !== keyCommandHandler),
+      );
+    },
+    // 提供方法给 buttons 动态增减 keyBindingFn
+    addKeyBindingFn: (keyBindingFn) => {
+      const keyBindingFns = store.getItem('keyBindingFns');
+      store.updateItem('keyBindingFns', [
+        ...keyBindingFns.filter((fn) => fn !== keyBindingFn),
+        keyBindingFn,
+      ]);
+    },
+    removeKeyBindingFn: (keyBindingFn) => {
+      const keyBindingFns = store.getItem('keyBindingFns');
+      store.updateItem(
+        'keyBindingFns',
+        keyBindingFns.filter((fn) => fn !== keyBindingFn),
+      );
+    },
   };
-
-  const keyCommandHandlers = useRef([]);
-
-  const getButtonKeyCommand = (
-    children: ReactElement | ReactElement[],
-    keyCommandHandlers,
-  ) => {
-    React.Children.forEach(children, (child) => {
-      if ((child.type as EEEditorStyleButtonType).buttonKeyCommand) {
-        keyCommandHandlers.current.push(
-          (child.type as EEEditorStyleButtonType).buttonKeyCommand,
-        );
-      }
-      if (child.props.children) {
-        getButtonKeyCommand(child.props.children, keyCommandHandlers);
-      }
-    });
-  };
-  //getButtonKeyCommand(children, keyCommandHandlers);
-
-  useEffect(() => {
-    console.log('toolbar children changed');
-    getButtonKeyCommand(children, keyCommandHandlers);
-    console.log(keyCommandHandlers);
-  }, []);
 
   const defaultButtons = (
     <SelectorButton icon={HeaderButtonIcon}>

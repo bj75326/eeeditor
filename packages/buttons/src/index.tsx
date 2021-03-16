@@ -66,17 +66,21 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  addKeyCommandHandler?: (
+    keyCommandHnadler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  removeKeyCommandHandler?: (
+    keyCommandHnadler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   // 使用 static toolbar 时，selector button 提供的 props
   setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
   optionKey?: number;
 }
 
-export interface EEEditorStyleButtonType
-  extends React.FC<EEEditorStyleButtonProps> {
-  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
-  buttonKeyCommand?: EditorPlugin['handleKeyCommand'];
-}
+export type EEEditorStyleButtonType = React.FC<EEEditorStyleButtonProps>;
 
 export {
   createBlockStyleButton,
