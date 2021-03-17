@@ -14,6 +14,7 @@ export default {
   'eeeditor.button.bold.tip.name': '加粗',
   'eeeditor.button.bold.tip.shortcut': '⌘ + b',
   'eeeditor.button.underline.tip.name': '下划线',
+  'eeeditor.button.underline.tip.shortcut': '⌘ + u',
   'eeeditor.button.code.tip.name': '行内代码',
   'eeeditor.button.italic.tip.name': '斜体',
   'eeeditor.button.italic.tip.shortcut': '⌘ + i',

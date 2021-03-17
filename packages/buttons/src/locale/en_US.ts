@@ -14,6 +14,7 @@ export default {
   'eeeditor.button.bold.tip.name': 'Bold',
   'eeeditor.button.bold.tip.shortcut': '⌘ + b',
   'eeeditor.button.underline.tip.name': 'Underline',
+  'eeeditor.button.underline.tip.shortcut': '⌘ + u',
   'eeeditor.button.code.tip.name': 'Code',
   'eeeditor.button.italic.tip.name': 'Italic',
   'eeeditor.button.italic.tip.shortcut': '⌘ + i',

@@ -56,23 +56,23 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   };
 
   //test
-  const { hasCommandModifier } = KeyBindingUtil;
-  const myKeyBindingFn = (e): string | null => {
-    if (e.keyCode === 83 /* `S` key */ && hasCommandModifier(e)) {
-      return 'myeditor-save';
-    }
-    return getDefaultKeyBinding(e);
-  };
-  const myHandleKeyCommand = (command: string) => {
-    console.log('get a command: ', command);
-    if (command === 'myeditor-save') {
-      // Perform a request to save your contents, set
-      // a new `editorState`, etc.
-      console.log('command handled in custom handleKeyCommand');
-      return 'handled';
-    }
-    return 'not-handled';
-  };
+  // const { hasCommandModifier } = KeyBindingUtil;
+  // const myKeyBindingFn = (e): string | null => {
+  //   if (e.keyCode === 83 /* `S` key */ && hasCommandModifier(e)) {
+  //     return 'myeditor-save';
+  //   }
+  //   return getDefaultKeyBinding(e);
+  // };
+  // const myHandleKeyCommand = (command: string) => {
+  //   console.log('get a command: ', command);
+  //   if (command === 'myeditor-save') {
+  //     // Perform a request to save your contents, set
+  //     // a new `editorState`, etc.
+  //     console.log('command handled in custom handleKeyCommand');
+  //     return 'handled';
+  //   }
+  //   return 'not-handled';
+  // };
 
   return (
     <div

@@ -1,6 +1,10 @@
 import React, { ComponentType } from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin } from '@eeeditor/editor';
+import {
+  EditorPlugin,
+  EditorCommand,
+  getDefaultKeyBinding,
+} from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -39,6 +43,7 @@ export interface StoreItemMap {
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
+  beforeInputHandlers?: EditorPlugin['handleBeforeInput'][];
 }
 
 export type StaticToolbarPluginStore = Store<StoreItemMap>;
@@ -48,6 +53,7 @@ StaticToolbarPlugin => {
   const store = createStore<StoreItemMap>({
     keyCommandHandlers: [],
     keyBindingFns: [],
+    beforeInputHandlers: [],
   });
 
   const StaticToolbar: React.FC<StaticToolbarProps> = (props) => (
@@ -65,7 +71,16 @@ StaticToolbarPlugin => {
       return editorState;
     },
 
-    keyBindingFn: (event, pluginFunctions) => {},
+    keyBindingFn: (event, pluginFunctions) => {
+      const keyBindingFns = store.getItem('keyBindingFns');
+      let result: EditorCommand | null | undefined = null;
+      return keyBindingFns.some((fn) => {
+        result = fn(event, pluginFunctions);
+        return result !== undefined;
+      })
+        ? result
+        : null;
+    },
 
     handleKeyCommand: (
       command,
@@ -77,6 +92,22 @@ StaticToolbarPlugin => {
       return keyCommandHandlers.some(
         (handler) =>
           handler(command, editorState, eventTimeStamp, pluginFunctions) ===
+          'handled',
+      )
+        ? 'handled'
+        : 'not-handled';
+    },
+
+    handleBeforeInput: (
+      chars,
+      editorState,
+      eventTimeStamp,
+      pluginFunctions,
+    ) => {
+      const beforeInputHandlers = store.getItem('beforeInputHandlers');
+      return beforeInputHandlers.some(
+        (handler) =>
+          handler(chars, editorState, eventTimeStamp, pluginFunctions) ===
           'handled',
       )
         ? 'handled'

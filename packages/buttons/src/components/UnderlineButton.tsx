@@ -32,6 +32,7 @@ export default createInlineStyleButton({
   children: defaultCodeIcon,
   defaultTitle: {
     name: 'eeeditor.button.underline.tip.name',
+    shortcut: 'eeeditor.button.underline.tip.shortcut',
   },
   buttonKeyCommandHandler: (command, editorState, _, { setEditorState }) => {
     if (command === 'underline') {

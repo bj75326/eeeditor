@@ -34,6 +34,7 @@ export interface Locale {
   'eeeditor.button.bold.tip.name': string;
   'eeeditor.button.bold.tip.shortcut': string;
   'eeeditor.button.underline.tip.name': string;
+  'eeeditor.button.underline.tip.shortcut': string;
   'eeeditor.button.code.tip.name': string;
   'eeeditor.button.italic.tip.name': string;
   'eeeditor.button.italic.tip.shortcut': string;
