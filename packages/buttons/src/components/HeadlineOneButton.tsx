@@ -47,4 +47,7 @@ export default createBlockStyleButton({
     name: 'eeeditor.button.h1.tip.name',
     shortcut: 'eeeditor.button.h1.tip.shortcut',
   },
+  buttonBeforeInputHandler(chars, editorState, _, pluginFunctions) {
+    return 'not-handled';
+  },
 });

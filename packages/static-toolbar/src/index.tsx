@@ -1,10 +1,6 @@
 import React, { ComponentType } from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import {
-  EditorPlugin,
-  EditorCommand,
-  getDefaultKeyBinding,
-} from '@eeeditor/editor';
+import { EditorPlugin, EditorCommand } from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -73,13 +69,13 @@ StaticToolbarPlugin => {
 
     keyBindingFn: (event, pluginFunctions) => {
       const keyBindingFns = store.getItem('keyBindingFns');
-      let result: EditorCommand | null | undefined = null;
+      let result: EditorCommand | null | undefined = undefined;
       return keyBindingFns.some((fn) => {
         result = fn(event, pluginFunctions);
         return result !== undefined;
       })
         ? result
-        : null;
+        : undefined;
     },
 
     handleKeyCommand: (

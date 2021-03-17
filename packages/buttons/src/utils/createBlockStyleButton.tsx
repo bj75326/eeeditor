@@ -18,6 +18,7 @@ interface CreateBlockStyleButtonProps {
   defaultTitle?: EEEditorStyleButtonProps['title'];
   buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
+  buttonBeforeInputHandler?: EditorPlugin['handleBeforeInput'];
 }
 
 export default function createBlockStyleButton({
@@ -27,6 +28,7 @@ export default function createBlockStyleButton({
   defaultTitle,
   buttonKeyBindingFn,
   buttonKeyCommandHandler,
+  buttonBeforeInputHandler,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
   const BlockStyleButton: EEEditorStyleButtonType = (props) => {
     const {
@@ -43,6 +45,8 @@ export default function createBlockStyleButton({
       removeKeyCommandHandler,
       addKeyBindingFn,
       removeKeyBindingFn,
+      addBeforeInputHandler,
+      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
@@ -85,12 +89,18 @@ export default function createBlockStyleButton({
       if (buttonKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
+      if (buttonBeforeInputHandler) {
+        addBeforeInputHandler(buttonBeforeInputHandler);
+      }
       return () => {
         if (buttonKeyBindingFn) {
           removeKeyBindingFn(buttonKeyBindingFn);
         }
         if (buttonKeyCommandHandler) {
           removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+        if (buttonBeforeInputHandler) {
+          removeBeforeInputHandler(buttonBeforeInputHandler);
         }
       };
     }, []);

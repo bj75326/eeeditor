@@ -25,6 +25,13 @@ export interface ToolbarChildrenProps {
   // 提供方法给 buttons 动态增减 keyBindingFn
   addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  // 提供方法给 buttons 动态增减 handleBeforeInput
+  addBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
+  removeBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
 }
 
 export interface ToolbarPubProps {
@@ -126,6 +133,27 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       store.updateItem(
         'keyBindingFns',
         keyBindingFns.filter((fn) => fn !== keyBindingFn),
+      );
+    },
+    // 提供方法给 buttons 动态增减 handleBeforeInput
+    addBeforeInputHandler: (
+      beforeInputHandler: EditorPlugin['handleBeforeInput'],
+    ) => {
+      const beforeInputHandlers = store.getItem('beforeInputHandlers');
+      store.updateItem('beforeInputHandlers', [
+        ...beforeInputHandlers.filter(
+          (handler) => handler !== beforeInputHandler,
+        ),
+        beforeInputHandler,
+      ]);
+    },
+    removeBeforeInputHandler: (
+      beforeInputHandler: EditorPlugin['handleBeforeInput'],
+    ) => {
+      const beforeInputHandlers = store.getItem('beforeInputHandlers');
+      store.updateItem(
+        'beforeInputHandlers',
+        beforeInputHandlers.filter((handler) => handler !== beforeInputHandler),
       );
     },
   };

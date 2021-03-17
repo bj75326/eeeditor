@@ -75,6 +75,12 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   ) => void;
   addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  addBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
+  removeBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
   // 使用 static toolbar 时，selector button 提供的 props
   setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;

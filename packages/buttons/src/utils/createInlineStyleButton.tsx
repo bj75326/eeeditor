@@ -18,6 +18,7 @@ interface CreateInlineStyleButtonProps {
   defaultTitle?: EEEditorStyleButtonProps['title'];
   buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
+  buttonBeforeInputHandler?: EditorPlugin['handleBeforeInput'];
 }
 
 export default function CreateInlineStyleButton({
@@ -27,6 +28,7 @@ export default function CreateInlineStyleButton({
   defaultTitle,
   buttonKeyBindingFn,
   buttonKeyCommandHandler,
+  buttonBeforeInputHandler,
 }: CreateInlineStyleButtonProps): EEEditorStyleButtonType {
   const InlineStyleButton: EEEditorStyleButtonType = (props) => {
     const {
@@ -43,6 +45,8 @@ export default function CreateInlineStyleButton({
       removeKeyCommandHandler,
       addKeyBindingFn,
       removeKeyBindingFn,
+      addBeforeInputHandler,
+      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
@@ -76,12 +80,18 @@ export default function CreateInlineStyleButton({
       if (buttonKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
+      if (buttonBeforeInputHandler) {
+        addBeforeInputHandler(buttonBeforeInputHandler);
+      }
       return () => {
         if (buttonKeyBindingFn) {
           removeKeyBindingFn(buttonKeyBindingFn);
         }
         if (buttonKeyCommandHandler) {
           removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+        if (buttonBeforeInputHandler) {
+          removeBeforeInputHandler(buttonBeforeInputHandler);
         }
       };
     }, []);
