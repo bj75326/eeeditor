@@ -1,4 +1,5 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
+import { RichUtils } from '@eeeditor/editor';
 
 const defaultHeadlineOneIcon = (
   <svg
@@ -48,6 +49,11 @@ export default createBlockStyleButton({
     shortcut: 'eeeditor.button.h1.tip.shortcut',
   },
   buttonBeforeInputHandler(chars, editorState, _, pluginFunctions) {
+    console.log('buttonBeforeInputHnadler run!!!', chars);
+    if (chars === '# ') {
+      RichUtils.toggleBlockType(editorState, 'header-one');
+      return 'handled';
+    }
     return 'not-handled';
   },
 });

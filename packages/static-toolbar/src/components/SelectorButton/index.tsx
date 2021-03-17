@@ -1,11 +1,25 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
-import { EditorState } from 'draft-js';
+import { EditorState, EditorPlugin } from '@eeeditor/editor';
 import classNames from 'classnames';
 
 export interface SelectorBtnChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  addKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  removeKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  addBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
+  removeBeforeInputHandler?: (
+    beforeInputHandler: EditorPlugin['handleBeforeInput'],
+  ) => void;
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
 }
@@ -28,6 +42,12 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     children,
     getEditorState,
     setEditorState,
+    addKeyCommandHandler,
+    removeKeyCommandHandler,
+    addKeyBindingFn,
+    removeKeyBindingFn,
+    addBeforeInputHandler,
+    removeBeforeInputHandler,
   } = props;
 
   const [visible, setVisible]: [boolean, any] = useState(false);
@@ -65,6 +85,12 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   const childProps: SelectorBtnChildrenProps = {
     getEditorState,
     setEditorState,
+    addKeyCommandHandler,
+    removeKeyCommandHandler,
+    addKeyBindingFn,
+    removeKeyBindingFn,
+    addBeforeInputHandler,
+    removeBeforeInputHandler,
     setSelectorBtnActive,
     setSelectorBtnDisabled,
   };

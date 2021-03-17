@@ -136,9 +136,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       );
     },
     // 提供方法给 buttons 动态增减 handleBeforeInput
-    addBeforeInputHandler: (
-      beforeInputHandler: EditorPlugin['handleBeforeInput'],
-    ) => {
+    addBeforeInputHandler: (beforeInputHandler) => {
       const beforeInputHandlers = store.getItem('beforeInputHandlers');
       store.updateItem('beforeInputHandlers', [
         ...beforeInputHandlers.filter(
@@ -147,9 +145,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         beforeInputHandler,
       ]);
     },
-    removeBeforeInputHandler: (
-      beforeInputHandler: EditorPlugin['handleBeforeInput'],
-    ) => {
+    removeBeforeInputHandler: (beforeInputHandler) => {
       const beforeInputHandlers = store.getItem('beforeInputHandlers');
       store.updateItem(
         'beforeInputHandlers',
