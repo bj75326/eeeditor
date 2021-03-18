@@ -1,4 +1,4 @@
-import React, { CSSProperties, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef } from 'react';
 import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
 import {
   EditorState,
@@ -55,24 +55,13 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange(editorState);
   };
 
-  //test
-  // const { hasCommandModifier } = KeyBindingUtil;
-  // const myKeyBindingFn = (e): string | null => {
-  //   if (e.keyCode === 83 /* `S` key */ && hasCommandModifier(e)) {
-  //     return 'myeditor-save';
-  //   }
-  //   return getDefaultKeyBinding(e);
-  // };
-  // const myHandleKeyCommand = (command: string) => {
-  //   console.log('get a command: ', command);
-  //   if (command === 'myeditor-save') {
-  //     // Perform a request to save your contents, set
-  //     // a new `editorState`, etc.
-  //     console.log('command handled in custom handleKeyCommand');
-  //     return 'handled';
-  //   }
-  //   return 'not-handled';
-  // };
+  // test
+  useEffect(() => {
+    console.log(
+      'selection offset!!!!!!!!!:',
+      editorState.getSelection().getStartOffset(),
+    );
+  });
 
   return (
     <div

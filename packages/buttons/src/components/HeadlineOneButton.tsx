@@ -1,5 +1,5 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
-import { RichUtils } from '@eeeditor/editor';
+import { RichUtils, Modifier, SelectionState } from '@eeeditor/editor';
 
 const defaultHeadlineOneIcon = (
   <svg
@@ -48,10 +48,21 @@ export default createBlockStyleButton({
     name: 'eeeditor.button.h1.tip.name',
     shortcut: 'eeeditor.button.h1.tip.shortcut',
   },
-  buttonBeforeInputHandler(chars, editorState, _, pluginFunctions) {
-    console.log('buttonBeforeInputHnadler run!!!', chars);
-    if (chars === '# ') {
-      RichUtils.toggleBlockType(editorState, 'header-one');
+  buttonBeforeInputHandler(chars, editorState, _, { setEditorState }) {
+    const selection = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    const strBefore = contentState
+      .getBlockForKey(selection.getStartKey())
+      .getText()
+      .slice(0, selection.getStartOffset());
+
+    if (`${strBefore}${chars}` === '# ') {
+      const newContentState = Modifier.replaceText(
+        contentState,
+        SelectionState.createEmpty(selection.getStartKey()),
+        '',
+      );
+      setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
       return 'handled';
     }
     return 'not-handled';

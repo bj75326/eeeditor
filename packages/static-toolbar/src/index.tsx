@@ -102,7 +102,6 @@ StaticToolbarPlugin => {
     ) => {
       console.log('handleBeofreInput run');
       const beforeInputHandlers = store.getItem('beforeInputHandlers');
-      console.log('beforeInputHandlers: ', beforeInputHandlers);
       return beforeInputHandlers.some(
         (handler) =>
           handler(chars, editorState, eventTimeStamp, pluginFunctions) ===
