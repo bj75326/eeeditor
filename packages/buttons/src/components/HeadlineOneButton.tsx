@@ -1,5 +1,10 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
-import { RichUtils, Modifier, SelectionState } from '@eeeditor/editor';
+import {
+  RichUtils,
+  Modifier,
+  EditorState,
+  EditorChangeType,
+} from '@eeeditor/editor';
 
 const defaultHeadlineOneIcon = (
   <svg
@@ -55,16 +60,41 @@ export default createBlockStyleButton({
       .getBlockForKey(selection.getStartKey())
       .getText()
       .slice(0, selection.getStartOffset());
+    // 不考虑 selection anchor & focus offset是否相同
+    // if (`${strBefore}${chars}` === '# ') {
+    //   const newContentState = Modifier.replaceText(
+    //     contentState,
+    //     selection.merge({
+    //       anchorOffset: 0,
+    //       focusOffset: selection.getEndOffset(),
+    //       isBackward: false,
+    //     }),
+    //     '',
+    //   );
+    //   setEditorState(RichUtils.toggleBlockType(EditorState.push(editorState, newContentState, 'remove-range'), 'header-one'));
+    //   return 'handled';
+    // }
 
-    if (`${strBefore}${chars}` === '# ') {
+    // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
+    if (
+      `${strBefore}${chars}` === '# ' &&
+      selection.getAnchorKey() === selection.getFocusKey() &&
+      selection.getAnchorOffset() === selection.getFocusOffset()
+    ) {
       const newContentState = Modifier.replaceText(
         contentState,
-        SelectionState.createEmpty(selection.getStartKey()),
+        selection.merge({
+          anchorOffset: 0,
+          focusOffset: selection.getEndOffset(),
+          isBackward: false,
+        }),
         '',
       );
       setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
+      //setEditorState(RichUtils.toggleBlockType(EditorState.push(editorState, newContentState, 'remove-range'), 'header-one'));
       return 'handled';
     }
+
     return 'not-handled';
   },
 });
