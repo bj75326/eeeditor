@@ -4,6 +4,7 @@ import {
   Modifier,
   EditorState,
   EditorChangeType,
+  DraftRemovalDirection,
 } from '@eeeditor/editor';
 
 const defaultHeadlineOneIcon = (
@@ -81,16 +82,27 @@ export default createBlockStyleButton({
       selection.getAnchorKey() === selection.getFocusKey() &&
       selection.getAnchorOffset() === selection.getFocusOffset()
     ) {
-      const newContentState = Modifier.replaceText(
+      const newContentState = Modifier.removeRange(
         contentState,
         selection.merge({
           anchorOffset: 0,
           focusOffset: selection.getEndOffset(),
           isBackward: false,
         }),
-        '',
+        'backward',
       );
-      setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
+      // console.log('newContentState selectionAfter!!!!!: ', newContentState.getSelectionAfter());
+      // console.log('editorState selection!!!!!: ', selection);
+      // const e = EditorState.forceSelection(editorState, newContentState.getSelectionAfter());
+      setEditorState(
+        RichUtils.toggleBlockType(
+          EditorState.set(editorState, {
+            currentContent: newContentState,
+            selection: newContentState.getSelectionAfter(),
+          }),
+          'header-one',
+        ),
+      );
       //setEditorState(RichUtils.toggleBlockType(EditorState.push(editorState, newContentState, 'remove-range'), 'header-one'));
       return 'handled';
     }
