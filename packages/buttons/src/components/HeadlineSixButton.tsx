@@ -1,4 +1,5 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
+import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
 const defaultHeadlineSixIcon = (
   <svg
@@ -51,5 +52,33 @@ export default createBlockStyleButton({
   defaultTitle: {
     name: 'eeeditor.button.h6.tip.name',
     shortcut: 'eeeditor.button.h6.tip.shortcut',
+  },
+  buttonBeforeInputHandler(chars, editorState, _, { setEditorState }) {
+    const selection = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    const strBefore = contentState
+      .getBlockForKey(selection.getStartKey())
+      .getText()
+      .slice(0, selection.getStartOffset());
+
+    if (`${strBefore}${chars}` === '###### ' && selection.isCollapsed()) {
+      const newContentState = Modifier.removeRange(
+        RichUtils.toggleBlockType(
+          editorState,
+          'header-six',
+        ).getCurrentContent(),
+        selection.merge({
+          anchorOffset: 0,
+          focusOffset: selection.getEndOffset(),
+          isBackward: false,
+        }),
+        'backward',
+      );
+      setEditorState(
+        EditorState.push(editorState, newContentState, 'change-block-type'),
+      );
+      return 'handled';
+    }
+    return 'not-handled';
   },
 });

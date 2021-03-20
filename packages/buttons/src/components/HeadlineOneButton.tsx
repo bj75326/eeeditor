@@ -1,11 +1,5 @@
 import createBlockStyleButton from '../utils/createBlockStyleButton';
-import {
-  RichUtils,
-  Modifier,
-  EditorState,
-  EditorChangeType,
-  DraftRemovalDirection,
-} from '@eeeditor/editor';
+import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
 const defaultHeadlineOneIcon = (
   <svg
@@ -77,13 +71,12 @@ export default createBlockStyleButton({
     // }
 
     // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
-    if (
-      `${strBefore}${chars}` === '# ' &&
-      selection.getAnchorKey() === selection.getFocusKey() &&
-      selection.getAnchorOffset() === selection.getFocusOffset()
-    ) {
+    if (`${strBefore}${chars}` === '# ' && selection.isCollapsed()) {
       const newContentState = Modifier.removeRange(
-        contentState,
+        RichUtils.toggleBlockType(
+          editorState,
+          'header-one',
+        ).getCurrentContent(),
         selection.merge({
           anchorOffset: 0,
           focusOffset: selection.getEndOffset(),
@@ -91,22 +84,11 @@ export default createBlockStyleButton({
         }),
         'backward',
       );
-      // console.log('newContentState selectionAfter!!!!!: ', newContentState.getSelectionAfter());
-      // console.log('editorState selection!!!!!: ', selection);
-      // const e = EditorState.forceSelection(editorState, newContentState.getSelectionAfter());
       setEditorState(
-        RichUtils.toggleBlockType(
-          EditorState.set(editorState, {
-            currentContent: newContentState,
-            selection: newContentState.getSelectionAfter(),
-          }),
-          'header-one',
-        ),
+        EditorState.push(editorState, newContentState, 'change-block-type'),
       );
-      //setEditorState(RichUtils.toggleBlockType(EditorState.push(editorState, newContentState, 'remove-range'), 'header-one'));
       return 'handled';
     }
-
     return 'not-handled';
   },
 });
