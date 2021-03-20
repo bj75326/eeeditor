@@ -18,4 +18,8 @@ export default {
   'eeeditor.button.code.tip.name': '行内代码',
   'eeeditor.button.italic.tip.name': '斜体',
   'eeeditor.button.italic.tip.shortcut': '⌘ + i',
+  'eeeditor.button.ol.tip.name': '有序列表',
+  'eeeditor.button.ol.tip.shortcut': '1. 空格',
+  'eeeditor.button.ul.tip.name': '无序列表',
+  'eeeditor.button.ul.tip.shortcut': '- 空格',
 };

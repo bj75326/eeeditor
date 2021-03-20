@@ -9,6 +9,7 @@ import Toolbar, {
 import SelectorButton, {
   SelectorButtonProps,
 } from './components/SelectorButton';
+import Separator, { SeparatorProps } from './components/Separator';
 import { SelectionState, EditorState } from 'draft-js';
 
 export interface Locale {}
@@ -31,6 +32,7 @@ export type StaticToolbarChildrenProps = ToolbarChildrenProps;
 export type StaticToolbarPlugin = EditorPlugin & {
   StaticToolbar: ComponentType<StaticToolbarProps>;
   SelectorButton: React.FC<SelectorButtonProps>;
+  Separator: React.FC<SeparatorProps>;
 };
 
 export interface StoreItemMap {
@@ -114,5 +116,7 @@ StaticToolbarPlugin => {
     StaticToolbar,
 
     SelectorButton,
+
+    Separator,
   };
 };

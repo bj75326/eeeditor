@@ -31,6 +31,8 @@ import {
   CodeButton,
   UnderlineButton,
   ItalicButton,
+  OrderedListButton,
+  UnorderedListButton,
 } from '@eeeditor/buttons';
 import { StateType } from './model';
 import { is } from 'immutable';
@@ -64,6 +66,7 @@ const { HeaderButtonIcon } = defaultSelectorBtnIcons;
 const {
   StaticToolbar,
   SelectorButton,
+  Separator,
   ...staticToolbarPlugin
 }: StaticToolbarPlugin = createStaticToolbarPlugin();
 
@@ -380,6 +383,7 @@ const Page: React.FC<PageProps> = (props) => {
               <ItalicButton tipProps={staticToolbarBtnTip} />
               <UnderlineButton tipProps={staticToolbarBtnTip} />
               <CodeButton tipProps={staticToolbarBtnTip} />
+              <Separator />
               <SelectorButton icon={HeaderButtonIcon}>
                 <HeadlineOneButton tipProps={selectBtnChildrenTip} />
                 <HeadlineTwoButton tipProps={selectBtnChildrenTip} />
@@ -388,6 +392,8 @@ const Page: React.FC<PageProps> = (props) => {
                 <HeadlineFiveButton tipProps={selectBtnChildrenTip} />
                 <HeadlineSixButton tipProps={selectBtnChildrenTip} />
               </SelectorButton>
+              <UnorderedListButton tipProps={staticToolbarBtnTip} />
+              <OrderedListButton tipProps={staticToolbarBtnTip} />
             </StaticToolbar>
           </div>
         </div>

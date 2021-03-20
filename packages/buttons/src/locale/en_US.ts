@@ -18,4 +18,8 @@ export default {
   'eeeditor.button.code.tip.name': 'Code',
   'eeeditor.button.italic.tip.name': 'Italic',
   'eeeditor.button.italic.tip.shortcut': '⌘ + i',
+  'eeeditor.button.ol.tip.name': 'Ordered list',
+  'eeeditor.button.ol.tip.shortcut': '1. space',
+  'eeeditor.button.ul.tip.name': 'Unordered list',
+  'eeeditor.button.ul.tip.shortcut': '- space',
 };

@@ -15,6 +15,8 @@ import BoldButton from './components/BoldButton';
 import CodeButton from './components/CodeButton';
 import UnderlineButton from './components/UnderlineButton';
 import ItalicButton from './components/ItalicButton';
+import OrderedListButton from './components/OrderedListButton';
+import UnorderedListButton from './components/UnorderedListButton';
 import enUS from './locale/en_US';
 import zhCN from './locale/zh_CN';
 
@@ -38,11 +40,17 @@ export interface Locale {
   'eeeditor.button.code.tip.name': string;
   'eeeditor.button.italic.tip.name': string;
   'eeeditor.button.italic.tip.shortcut': string;
+  'eeeditor.button.ol.tip.name': string;
+  'eeeditor.button.ol.tip.shortcut': string;
+  'eeeditor.button.ul.tip.name': string;
+  'eeeditor.button.ul.tip.shortcut': string;
 }
 
 // 在 disableStrategy 时使用
 export type EEEditorButtonType =
   | 'header'
+  | 'ordered-list-item'
+  | 'unordered-list-item'
   | 'bold'
   | 'italic'
   | 'code'
@@ -105,4 +113,6 @@ export {
   CodeButton,
   UnderlineButton,
   ItalicButton,
+  OrderedListButton,
+  UnorderedListButton,
 };

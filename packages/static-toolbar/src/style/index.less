@@ -10,19 +10,20 @@
 }
 
 .@{eeeditor-prefix-cls}-selector-btn-wrapper {
-  display: inline-block;
   position: relative;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .@{eeeditor-prefix-cls}-selector-btn {
   position: relative;
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: @static-toolbar-btn-size;
   height: @static-toolbar-btn-size;
-  font-size: @static-toolbar-icon-size;
   color: @text-color;
+  font-size: @static-toolbar-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
@@ -37,15 +38,15 @@
     height: 0;
     border: 3px solid transparent;
     border-top-color: @text-color;
-    content: '';
     transform: rotate(-45deg);
+    content: '';
   }
   &.@{eeeditor-prefix-cls}-selector-btn-active {
     color: @primary-color;
   }
   &.@{eeeditor-prefix-cls}-selector-btn-disabled {
-    cursor: not-allowed;
     color: @disabled-color;
+    cursor: not-allowed;
     &:hover {
       background: none;
     }
@@ -70,4 +71,25 @@
 
 .@{eeeditor-prefix-cls}-selector-btn-options-hidden {
   display: none;
+}
+
+.@{eeeditor-prefix-cls}-separator {
+  position: relative;
+  display: inline-block;
+  width: 1px;
+  height: @static-toolbar-separator-size;
+  margin: 0 10px;
+  vertical-align: top;
+  &:after {
+    position: absolute;
+    top: 10px;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 20px;
+    border-left: 1px solid @statuc-toolbar-separator-color;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+    content: '';
+  }
 }

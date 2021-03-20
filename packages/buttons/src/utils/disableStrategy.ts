@@ -11,6 +11,10 @@ const disableStrategy: { [key: string]: StrategyType } = {
     block: ['atomic'],
     inline: [],
   },
+  'ordered-list-item': {
+    block: ['atomic'],
+    inline: [],
+  },
 };
 
 const shouldButtonDisabled = (

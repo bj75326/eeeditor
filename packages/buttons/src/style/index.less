@@ -2,17 +2,18 @@
 
 .@{eeeditor-prefix-cls}-btn-wrapper {
   display: inline-block;
+  vertical-align: top;
 }
 
 .@{eeeditor-prefix-cls}-btn {
   position: relative;
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: @buttons-size;
   height: @buttons-size;
-  font-size: @buttons-icon-size;
   color: @text-color;
+  font-size: @buttons-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
@@ -37,15 +38,15 @@
     min-width: 0;
     min-height: 0;
     padding: 4px 6px;
-    border-radius: 4px;
     background-color: @tip-background-color;
+    border-radius: 4px;
   }
 }
 
 .@{eeeditor-prefix-cls}-tip {
   box-sizing: border-box;
-  font-size: @tip-font-size;
   color: @text-color-inverse;
+  font-size: @tip-font-size;
 }
 
 .@{eeeditor-prefix-cls}-tip-name {

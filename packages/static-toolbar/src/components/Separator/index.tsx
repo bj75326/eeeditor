@@ -12,7 +12,7 @@ const Separator: React.FC<SeparatorProps> = (props) => {
 
   const separatorCls = classNames(`${prefixCls}-separator`, className);
 
-  return <div className={separatorCls} style={style} />;
+  return <span className={separatorCls} style={style} />;
 };
 
 export default Separator;
