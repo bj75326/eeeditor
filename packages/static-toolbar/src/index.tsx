@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import { EditorPlugin, EditorCommand } from '@eeeditor/editor';
 import Toolbar, {
@@ -30,7 +30,7 @@ export type StaticToolbarProps = ToolbarPubProps;
 export type StaticToolbarChildrenProps = ToolbarChildrenProps;
 
 export type StaticToolbarPlugin = EditorPlugin & {
-  StaticToolbar: ComponentType<StaticToolbarProps>;
+  StaticToolbar: React.FC<StaticToolbarProps>;
   SelectorButton: React.FC<SelectorButtonProps>;
   Separator: React.FC<SeparatorProps>;
 };

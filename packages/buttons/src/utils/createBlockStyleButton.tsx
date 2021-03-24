@@ -14,7 +14,7 @@ import zhCN from '../locale/zh_CN';
 interface CreateBlockStyleButtonProps {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
-  children: ReactNode;
+  defaultChildren: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
   buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
@@ -24,7 +24,7 @@ interface CreateBlockStyleButtonProps {
 export default function createBlockStyleButton({
   blockType,
   buttonType,
-  children,
+  defaultChildren,
   defaultTitle,
   buttonKeyBindingFn,
   buttonKeyCommandHandler,
@@ -38,7 +38,7 @@ export default function createBlockStyleButton({
       locale = zhCN,
       title = defaultTitle,
       tipProps,
-      icon,
+      children = defaultChildren,
       getEditorState,
       setEditorState,
       addKeyCommandHandler,
@@ -160,7 +160,7 @@ export default function createBlockStyleButton({
       >
         {checkButtonShouldDisabled() ? (
           <div className={btnClassName} style={style}>
-            {icon || children}
+            {children}
           </div>
         ) : (
           <Tooltip
@@ -169,7 +169,7 @@ export default function createBlockStyleButton({
             {...tipProps}
           >
             <div className={btnClassName} style={style} onClick={toggleStyle}>
-              {icon || children}
+              {children}
             </div>
           </Tooltip>
         )}

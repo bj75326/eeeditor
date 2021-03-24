@@ -29,7 +29,7 @@ const defaultCodeIcon = (
 export default createInlineStyleButton({
   inlineStyle: 'UNDERLINE',
   buttonType: 'underline',
-  children: defaultCodeIcon,
+  defaultChildren: defaultCodeIcon,
   defaultTitle: {
     name: 'eeeditor.button.underline.tip.name',
     shortcut: 'eeeditor.button.underline.tip.shortcut',

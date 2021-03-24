@@ -14,7 +14,7 @@ import zhCN from '../locale/zh_CN';
 interface CreateInlineStyleButtonProps {
   inlineStyle: string;
   buttonType: EEEditorButtonType;
-  children: ReactNode;
+  defaultChildren: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
   buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
@@ -24,7 +24,7 @@ interface CreateInlineStyleButtonProps {
 export default function CreateInlineStyleButton({
   inlineStyle,
   buttonType,
-  children,
+  defaultChildren,
   defaultTitle,
   buttonKeyBindingFn,
   buttonKeyCommandHandler,
@@ -38,7 +38,7 @@ export default function CreateInlineStyleButton({
       locale = zhCN,
       title = defaultTitle,
       tipProps,
-      icon,
+      children = defaultChildren,
       getEditorState,
       setEditorState,
       addKeyCommandHandler,
@@ -146,7 +146,7 @@ export default function CreateInlineStyleButton({
       >
         {checkButtonShouldDisabled() ? (
           <div className={btnClassName} style={style}>
-            {icon || children}
+            {children}
           </div>
         ) : (
           <Tooltip
@@ -155,7 +155,7 @@ export default function CreateInlineStyleButton({
             {...tipProps}
           >
             <div className={btnClassName} style={style} onClick={toggleStyle}>
-              {icon || children}
+              {children}
             </div>
           </Tooltip>
         )}

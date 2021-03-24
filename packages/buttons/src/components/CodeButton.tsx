@@ -35,7 +35,7 @@ const defaultCodeIcon = (
 export default createInlineStyleButton({
   inlineStyle: 'CODE',
   buttonType: 'code',
-  children: defaultCodeIcon,
+  defaultChildren: defaultCodeIcon,
   defaultTitle: {
     name: 'eeeditor.button.code.tip.name',
   },

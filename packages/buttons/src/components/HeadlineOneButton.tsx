@@ -43,7 +43,7 @@ const defaultHeadlineOneIcon = (
 export default createBlockStyleButton({
   blockType: 'header-one',
   buttonType: 'header',
-  children: defaultHeadlineOneIcon,
+  defaultChildren: defaultHeadlineOneIcon,
   defaultTitle: {
     name: 'eeeditor.button.h1.tip.name',
     shortcut: 'eeeditor.button.h1.tip.shortcut',

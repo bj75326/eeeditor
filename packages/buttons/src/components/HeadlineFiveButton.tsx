@@ -43,7 +43,7 @@ const defaultHeadlineFiveIcon = (
 export default createBlockStyleButton({
   blockType: 'header-five',
   buttonType: 'header',
-  children: defaultHeadlineFiveIcon,
+  defaultChildren: defaultHeadlineFiveIcon,
   defaultTitle: {
     name: 'eeeditor.button.h5.tip.name',
     shortcut: 'eeeditor.button.h5.tip.shortcut',

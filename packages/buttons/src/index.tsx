@@ -1,6 +1,5 @@
 import { CSSProperties, ReactNode } from 'react';
-import { EditorState } from 'draft-js';
-import { EditorPlugin } from '@eeeditor/editor';
+import { EditorState, EditorPlugin } from '@eeeditor/editor';
 import createBlockStyleButton from './utils/createBlockStyleButton';
 import createInlineStyleButton from './utils/createInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -68,7 +67,7 @@ export interface EEEditorButtonProps {
   // align?: TooltipPropsWithTitle['align'];
   // placement?: TooltipPropsWithTitle['placement'];
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
-  icon?: ReactNode;
+  children?: ReactNode;
 }
 
 export interface EEEditorStyleButtonProps extends EEEditorButtonProps {

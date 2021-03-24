@@ -48,7 +48,7 @@ const defaultHeadlineSixIcon = (
 export default createBlockStyleButton({
   blockType: 'header-six',
   buttonType: 'header',
-  children: defaultHeadlineSixIcon,
+  defaultChildren: defaultHeadlineSixIcon,
   defaultTitle: {
     name: 'eeeditor.button.h6.tip.name',
     shortcut: 'eeeditor.button.h6.tip.shortcut',

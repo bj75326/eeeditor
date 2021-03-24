@@ -33,7 +33,7 @@ const defaultBoldIcon = (
 export default createInlineStyleButton({
   inlineStyle: 'BOLD',
   buttonType: 'bold',
-  children: defaultBoldIcon,
+  defaultChildren: defaultBoldIcon,
   defaultTitle: {
     name: 'eeeditor.button.bold.tip.name',
     shortcut: 'eeeditor.button.bold.tip.shortcut',

@@ -85,7 +85,7 @@ const defaultOrderedListIcon = (
 export default createBlockStyleButton({
   blockType: 'ordered-list-item',
   buttonType: 'ordered-list-item',
-  children: defaultOrderedListIcon,
+  defaultChildren: defaultOrderedListIcon,
   defaultTitle: {
     name: 'eeeditor.button.ol.tip.name',
     shortcut: 'eeeditor.button.ol.tip.shortcut',

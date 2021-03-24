@@ -85,7 +85,7 @@ const defaultUnorderedListIcon = (
 export default createBlockStyleButton({
   blockType: 'unordered-list-item',
   buttonType: 'unordered-list-item',
-  children: defaultUnorderedListIcon,
+  defaultChildren: defaultUnorderedListIcon,
   defaultTitle: {
     name: 'eeeditor.button.ul.tip.name',
     shortcut: 'eeeditor.button.ul.tip.shortcut',
