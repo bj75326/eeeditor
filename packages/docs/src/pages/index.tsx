@@ -17,6 +17,7 @@ import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
   defaultSelectorBtnIcons,
 } from '@eeeditor/static-toolbar';
+import createUndoPlugin from '@eeeditor/undo';
 import {
   enUS,
   zhCN,
@@ -70,7 +71,13 @@ const {
   ...staticToolbarPlugin
 }: StaticToolbarPlugin = createStaticToolbarPlugin();
 
-const plugins: EditorPlugin[] = [staticToolbarPlugin];
+const {
+  DecoratedUndoButton,
+  DecoratedRedoButton,
+  ...UndoPlugin
+} = createUndoPlugin();
+
+const plugins: EditorPlugin[] = [staticToolbarPlugin, UndoPlugin];
 
 export interface PageProps extends ConnectProps {
   title: StateType['title'];
@@ -394,6 +401,9 @@ const Page: React.FC<PageProps> = (props) => {
               </SelectorButton>
               <UnorderedListButton tipProps={staticToolbarBtnTip} />
               <OrderedListButton tipProps={staticToolbarBtnTip} />
+              <Separator />
+              <DecoratedUndoButton />
+              <DecoratedRedoButton />
             </StaticToolbar>
           </div>
         </div>

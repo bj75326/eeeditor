@@ -1,0 +1,61 @@
+@import './theme.less';
+
+.@{eeeditor-prefix-cls}-btn-wrapper {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.@{eeeditor-prefix-cls}-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @buttons-size;
+  height: @buttons-size;
+  color: @text-color;
+  font-size: @buttons-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @item-hover-bg;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-active {
+    color: @primary-color;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-disabled {
+    color: @disabled-color;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+.@{eeeditor-prefix-cls}-tip-wrapper {
+  .ant-tooltip-inner {
+    min-width: 0;
+    min-height: 0;
+    padding: 4px 6px;
+    background-color: @tip-background-color;
+    border-radius: 4px;
+  }
+}
+
+.@{eeeditor-prefix-cls}-tip {
+  box-sizing: border-box;
+  color: @text-color-inverse;
+  font-size: @tip-font-size;
+}
+
+.@{eeeditor-prefix-cls}-tip-name {
+  display: block;
+  text-align: center;
+}
+
+.@{eeeditor-prefix-cls}-tip-shortcut {
+  display: block;
+  text-align: center;
+  opacity: 0.6;
+}

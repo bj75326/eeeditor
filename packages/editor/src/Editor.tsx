@@ -56,12 +56,12 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   };
 
   // test
-  useEffect(() => {
-    console.log(
-      'selection offset!!!!!!!!!:',
-      editorState.getSelection().getStartOffset(),
-    );
-  });
+  // useEffect(() => {
+  //   console.log(
+  //     'selection offset!!!!!!!!!:',
+  //     editorState.getSelection().getStartOffset(),
+  //   );
+  // });
 
   return (
     <div
