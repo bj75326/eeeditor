@@ -48,7 +48,9 @@ export default createBlockStyleButton({
     name: 'eeeditor.button.h1.tip.name',
     shortcut: 'eeeditor.button.h1.tip.shortcut',
   },
-  buttonBeforeInputHandler(chars, editorState, _, { setEditorState }) {
+  buttonBeforeInputHandler(chars, editorState, _ /*{ setEditorState }*/) {
+    console.log('arguments！！！！: ', arguments);
+    /*
     const selection = editorState.getSelection();
     const contentState = editorState.getCurrentContent();
     const strBefore = contentState
@@ -89,6 +91,7 @@ export default createBlockStyleButton({
       );
       return 'handled';
     }
+    */
     return 'not-handled';
   },
 });

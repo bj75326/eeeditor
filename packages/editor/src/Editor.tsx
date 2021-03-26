@@ -1,5 +1,5 @@
 import React, { CSSProperties, useEffect, useRef } from 'react';
-import Editor, { PluginEditorProps } from '@draft-js-plugins/editor';
+import Editor, { PluginEditorProps } from 'draft-js-plugins-editor/lib';
 import {
   EditorState,
   convertToRaw,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin, EditorCommand } from '@eeeditor/editor';
+import { EditorPlugin, DraftEditorCommand } from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -71,13 +71,13 @@ StaticToolbarPlugin => {
 
     keyBindingFn: (event, pluginFunctions) => {
       const keyBindingFns = store.getItem('keyBindingFns');
-      let result: EditorCommand | null | undefined = undefined;
+      let result: DraftEditorCommand | null = null;
       return keyBindingFns.some((fn) => {
         result = fn(event, pluginFunctions);
-        return result !== undefined;
+        return result !== null;
       })
         ? result
-        : undefined;
+        : null;
     },
 
     handleKeyCommand: (
@@ -102,6 +102,10 @@ StaticToolbarPlugin => {
       eventTimeStamp,
       pluginFunctions,
     ) => {
+      console.log('beforeInput args!!!!: ', chars);
+      console.log('beforeInput args!!!!: ', editorState);
+      console.log('beforeInput args!!!!: ', eventTimeStamp);
+      console.log('beforeInput args!!!!: ', pluginFunctions);
       const beforeInputHandlers = store.getItem('beforeInputHandlers');
       return beforeInputHandlers.some(
         (handler) =>

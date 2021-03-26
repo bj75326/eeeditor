@@ -1,10 +1,3 @@
-import EEEditor from './Editor';
-
-export * from 'draft-js';
-
-//export * from 'draft-js-plugins-editor';
-
-// draft-js-plugins-editor 使用 flow 做类型管理，所以在 @eeeditor/editor 这里转换成 ts 申明类型。
 /* eslint-disable no-use-before-define */
 
 /* eslint-disable no-undef */
@@ -219,5 +212,3 @@ export type Plugin = {
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
 export default Editor;
-
-export default EEEditor;

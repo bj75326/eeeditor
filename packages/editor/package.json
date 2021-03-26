@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@draft-js-plugins/editor": "^4.1.0",
+    "draft-js-plugins-editor": "^2.1.1",
     "antd": "^4.11.2",
-    "draft-js": "^0.11.7"
+    "draft-js": "^0.10.5"
   },
   "devDependencies": {
     "@types/draft-js": "^0.10.44"
