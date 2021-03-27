@@ -90,7 +90,7 @@ export default createBlockStyleButton({
     name: 'eeeditor.button.ul.tip.name',
     shortcut: 'eeeditor.button.ul.tip.shortcut',
   },
-  buttonBeforeInputHandler(chars, editorState, _, { setEditorState }) {
+  buttonBeforeInputHandler(chars, editorState, { setEditorState }) {
     const selection = editorState.getSelection();
     const contentState = editorState.getCurrentContent();
     const strBefore = contentState

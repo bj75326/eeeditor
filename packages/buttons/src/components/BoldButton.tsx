@@ -38,7 +38,7 @@ export default createInlineStyleButton({
     name: 'eeeditor.button.bold.tip.name',
     shortcut: 'eeeditor.button.bold.tip.shortcut',
   },
-  buttonKeyCommandHandler: (command, editorState, _, { setEditorState }) => {
+  buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'bold') {
       setEditorState(RichUtils.handleKeyCommand(editorState, 'bold'));
       return 'handled';

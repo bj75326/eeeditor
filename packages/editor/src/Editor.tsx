@@ -1,5 +1,6 @@
 import React, { CSSProperties, useEffect, useRef } from 'react';
-import Editor, { PluginEditorProps } from 'draft-js-plugins-editor/lib';
+import Editor from 'draft-js-plugins-editor';
+import { PluginEditorProps } from './';
 import {
   EditorState,
   convertToRaw,
@@ -9,8 +10,6 @@ import {
 } from 'draft-js';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
-
-//test
 
 export interface Locale {}
 

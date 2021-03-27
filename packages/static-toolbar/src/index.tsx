@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin, DraftEditorCommand } from '@eeeditor/editor';
+import { EditorPlugin } from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -71,46 +71,29 @@ StaticToolbarPlugin => {
 
     keyBindingFn: (event, pluginFunctions) => {
       const keyBindingFns = store.getItem('keyBindingFns');
-      let result: DraftEditorCommand | null = null;
+      let result: string | null | undefined = undefined;
       return keyBindingFns.some((fn) => {
         result = fn(event, pluginFunctions);
-        return result !== null;
+        return result !== undefined;
       })
         ? result
-        : null;
+        : undefined;
     },
 
-    handleKeyCommand: (
-      command,
-      editorState,
-      eventTimeStamp,
-      pluginFunctions,
-    ) => {
+    handleKeyCommand: (command, editorState, pluginFunctions) => {
       const keyCommandHandlers = store.getItem('keyCommandHandlers');
       return keyCommandHandlers.some(
         (handler) =>
-          handler(command, editorState, eventTimeStamp, pluginFunctions) ===
-          'handled',
+          handler(command, editorState, pluginFunctions) === 'handled',
       )
         ? 'handled'
         : 'not-handled';
     },
 
-    handleBeforeInput: (
-      chars,
-      editorState,
-      eventTimeStamp,
-      pluginFunctions,
-    ) => {
-      console.log('beforeInput args!!!!: ', chars);
-      console.log('beforeInput args!!!!: ', editorState);
-      console.log('beforeInput args!!!!: ', eventTimeStamp);
-      console.log('beforeInput args!!!!: ', pluginFunctions);
+    handleBeforeInput: (chars, editorState, pluginFunctions) => {
       const beforeInputHandlers = store.getItem('beforeInputHandlers');
       return beforeInputHandlers.some(
-        (handler) =>
-          handler(chars, editorState, eventTimeStamp, pluginFunctions) ===
-          'handled',
+        (handler) => handler(chars, editorState, pluginFunctions) === 'handled',
       )
         ? 'handled'
         : 'not-handled';

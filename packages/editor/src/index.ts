@@ -2,25 +2,24 @@ import EEEditor from './Editor';
 
 export * from 'draft-js';
 
-//export * from 'draft-js-plugins-editor';
-
 // draft-js-plugins-editor 使用 flow 做类型管理，所以在 @eeeditor/editor 这里转换成 ts 申明类型。
 /* eslint-disable no-use-before-define */
 
 /* eslint-disable no-undef */
-import { BlockNodeRecord } from 'draft-js/lib/BlockNodeRecord';
+// import { BlockNodeRecord } from 'draft-js/lib/BlockNodeRecord';
+import { ContentBlock, DraftInlineStyle } from 'draft-js';
 import { DraftDragType } from 'draft-js';
-import { DraftTextAlignment } from 'draft-js';
+import { EditorProps } from 'draft-js';
 import { DraftEditorCommand } from 'draft-js';
-import { DraftDecoratorType } from 'draft-js/lib/DraftDecoratorType';
-import { DraftHandleValue } from 'draft-js/lib/DraftHandleValue';
-import { BidiDirection } from 'fbjs/lib/UnicodeBidiDirection';
-import { DraftBlockRenderMap } from 'draft-js/lib/DraftBlockRenderMap';
+import { CompositeDecorator, DraftDecorator } from 'draft-js';
+import { DraftHandleValue } from 'draft-js';
+//import { BidiDirection } from 'fbjs/lib/UnicodeBidiDirection';
+import { DraftBlockRenderMap } from 'draft-js';
 import { EditorState, SelectionState } from 'draft-js';
-import createEditorStateWithTextFn from './utils/createEditorStateWithText';
-import composeDecoratorsFn from './utils/composeDecorators';
+import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
+import { composeDecoratorsFn } from 'draft-js-plugins-editor';
 // eslint-disable-next-line import/no-named-as-default
-import Editor from './Editor';
+// import Editor from 'draft-js-plugins-editor/Editor';
 export const createEditorStateWithText = createEditorStateWithTextFn;
 export const composeDecorators = composeDecoratorsFn;
 export type PluginMethods = {
@@ -49,7 +48,7 @@ type HandleBeforeInput = (
 ) => DraftHandleValue;
 type HandlePastedText = (
   text: string,
-  html?: string,
+  html: string | undefined,
   editorState: EditorState,
   arg3: PluginMethods,
 ) => DraftHandleValue;
@@ -76,13 +75,13 @@ export type Handler =
   | HandlePastedFiles
   | HandleDroppedFiles
   | HandleDrop;
-export type EditorProps = {
+export type PluginEditorProps = {
   editorState: EditorState;
-  onChange: (arg0: EditorState, arg1: PluginMethods) => EditorState;
-  textAlignment?: DraftTextAlignment;
-  textDirectionality?: BidiDirection;
+  onChange: (arg0: EditorState, arg1?: PluginMethods) => EditorState;
+  textAlignment?: EditorProps['textAlignment'];
+  textDirectionality?: EditorProps['textDirectionality'];
   placeholder?: string;
-  plugins?: Array<Plugin>;
+  plugins?: Array<EditorPlugin>;
   readOnly?: boolean;
   tabIndex?: number;
   spellCheck?: boolean;
@@ -98,10 +97,10 @@ export type EditorProps = {
   defaultKeyBindings?: boolean;
   defaultBlockRenderMap?: boolean;
   blockRendererFn?: (
-    block: BlockNodeRecord,
+    block: ContentBlock,
     arg1: PluginMethods,
   ) => Record<string, any> | null | undefined;
-  blockStyleFn?: (block: BlockNodeRecord, arg1: PluginMethods) => string;
+  blockStyleFn?: (block: ContentBlock, arg1: PluginMethods) => string;
   keyBindingFn?: (
     e: React.KeyboardEvent,
     arg1: PluginMethods,
@@ -119,10 +118,10 @@ export type EditorProps = {
   initialize?: (arg0: PluginMethods) => void;
   customStyleFn?: (
     style: DraftInlineStyle,
-    block: BlockNodeRecord,
+    block: ContentBlock,
     arg2: PluginMethods,
   ) => Record<string, any> | null | undefined;
-  decorators?: Array<DraftDecoratorType>;
+  decorators?: Array<CompositeDecorator | DraftDecorator>;
   autoCapitalize?: string;
   autoComplete?: string;
   autoCorrect?: string;
@@ -169,19 +168,19 @@ type OnFocus = (
   e: React.SyntheticEvent,
   arg1: PluginMethods,
 ) => boolean | null | undefined;
-export type Plugin = {
+export type EditorPlugin = {
   blockRendererFn?: (
-    block: BlockNodeRecord,
+    block: ContentBlock,
     arg1: PluginMethods,
   ) => Record<string, any> | null | undefined;
-  blockStyleFn?: (block: BlockNodeRecord, arg1: PluginMethods) => string;
+  blockStyleFn?: (block: ContentBlock, arg1: PluginMethods) => string;
   keyBindingFn?: (
     e: React.KeyboardEvent,
     arg1: PluginMethods,
   ) => string | null | undefined;
   customStyleFn?: (
     style: DraftInlineStyle,
-    block: BlockNodeRecord,
+    block: ContentBlock,
     arg2: PluginMethods,
   ) => Record<string, any> | null | undefined;
   blockRenderMap?: DraftBlockRenderMap;
@@ -214,10 +213,9 @@ export type Plugin = {
   onFocus?: OnFocus;
   onChange?: (arg0: EditorState, arg1: PluginMethods) => void;
   initialize?: (arg0: PluginMethods) => void;
-  decorators?: Array<DraftDecoratorType>;
+  decorators?: Array<CompositeDecorator | DraftDecorator>;
   willUnmount?: (arg0: PluginMethods) => void;
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
-export default Editor;
 
 export default EEEditor;

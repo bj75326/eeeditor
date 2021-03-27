@@ -34,7 +34,7 @@ export default createInlineStyleButton({
     name: 'eeeditor.button.underline.tip.name',
     shortcut: 'eeeditor.button.underline.tip.shortcut',
   },
-  buttonKeyCommandHandler: (command, editorState, _, { setEditorState }) => {
+  buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'underline') {
       setEditorState(RichUtils.handleKeyCommand(editorState, 'underline'));
       return 'handled';
