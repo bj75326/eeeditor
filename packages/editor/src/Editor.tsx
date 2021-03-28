@@ -88,10 +88,6 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         editorState={editorState}
         onChange={handleChange}
         blockStyleFn={blockStyleFn || eeeBlockStyleFn}
-        // keyBindingFn={myKeyBindingFn}
-        // handleKeyCommand={myHandleKeyCommand}
-        // defaultKeyBindings={false}
-        // defaultKeyCommands={false}
         ref={editorRef}
         {...restProps}
       />

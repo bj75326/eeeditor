@@ -42,6 +42,7 @@ export interface StoreItemMap {
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
   beforeInputHandlers?: EditorPlugin['handleBeforeInput'][];
+  decorators?: EditorPlugin['decorators'];
 }
 
 export type StaticToolbarPluginStore = Store<StoreItemMap>;
@@ -52,6 +53,7 @@ StaticToolbarPlugin => {
     keyCommandHandlers: [],
     keyBindingFns: [],
     beforeInputHandlers: [],
+    decorators: [],
   });
 
   const StaticToolbar: React.FC<StaticToolbarProps> = (props) => (

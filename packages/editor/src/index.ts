@@ -77,7 +77,7 @@ export type Handler =
   | HandleDrop;
 export type PluginEditorProps = {
   editorState: EditorState;
-  onChange: (arg0: EditorState, arg1?: PluginMethods) => EditorState;
+  onChange: (arg0: EditorState, arg1?: PluginMethods) => void;
   textAlignment?: EditorProps['textAlignment'];
   textDirectionality?: EditorProps['textDirectionality'];
   placeholder?: string;
