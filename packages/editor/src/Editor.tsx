@@ -7,7 +7,8 @@ import {
   ContentBlock,
   KeyBindingUtil,
   getDefaultKeyBinding,
-} from 'draft-js';
+} from './';
+import defaultDecorators from './decorators';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 
@@ -27,6 +28,10 @@ const eeeBlockStyleFn = (contentBlock: ContentBlock): string => {
   }
   return '';
 };
+
+const PluginEditor: React.FC<PluginEditorProps> = (props) => (
+  <Editor {...props} />
+);
 
 const EEEditor: React.FC<EEEditorProps> = (props) => {
   const {
@@ -48,7 +53,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     className,
   );
 
-  const editorRef = useRef(null);
+  // const editorRef = useRef(null);
 
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);
@@ -68,14 +73,14 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       style={style}
       onBlur={() => {
         console.log('editor wrapper blur');
-        editorRef.current.blur();
+        // editorRef.current.blur();
       }}
       onFocus={() => {
         console.log('editor wrapper focus');
       }}
       onClick={() => {
         console.log('editor wrapper click');
-        editorRef.current.focus();
+        // editorRef.current.focus();
       }}
       onMouseDown={() => {
         console.log('editor wrapper mousedown');
@@ -88,7 +93,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         editorState={editorState}
         onChange={handleChange}
         blockStyleFn={blockStyleFn || eeeBlockStyleFn}
-        ref={editorRef}
+        decorators={[defaultDecorators]}
+        // ref={editorRef}
         {...restProps}
       />
     </div>
