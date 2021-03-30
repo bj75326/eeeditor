@@ -56,6 +56,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   // const editorRef = useRef(null);
 
   const handleChange = (editorState: EditorState) => {
+    console.log('handleChange run -------------: ', editorState.getDecorator());
     onChange(editorState);
   };
 
@@ -89,7 +90,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         console.log('editor wrapper mouseup');
       }}
     >
-      <Editor
+      <PluginEditor
         editorState={editorState}
         onChange={handleChange}
         blockStyleFn={blockStyleFn || eeeBlockStyleFn}

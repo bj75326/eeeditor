@@ -129,6 +129,10 @@ const Page: React.FC<PageProps> = (props) => {
 
   const handleChange = (nextEditorState: EditorState) => {
     console.log('Page handleChange run');
+    console.log(
+      'nextEditorState decorator----> ',
+      nextEditorState.getDecorator(),
+    );
     setEditorState(nextEditorState);
     // sync with server side
     // editorState 包含 selectionState 和 contentState，selectionState 的改动不应该也不需要与服务器同步
@@ -205,6 +209,10 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   useEffect(() => {
+    console.log('didMount decorator ----> ', editorState.getDecorator());
+  }, []);
+
+  useEffect(() => {
     console.log('ready to fetch init contentState RAW');
     if (dispatch) {
       dispatch({
@@ -221,7 +229,9 @@ const Page: React.FC<PageProps> = (props) => {
 
   useEffect(() => {
     console.log('after get init contentState RAW');
-    setEditorState(EditorState.createWithContent(convertFromRaw(content)));
+    if (status === 'success') {
+      setEditorState(EditorState.createWithContent(convertFromRaw(content)));
+    }
   }, [content]);
 
   useEffect(() => {
