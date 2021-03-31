@@ -34,6 +34,7 @@ import {
   ItalicButton,
   OrderedListButton,
   UnorderedListButton,
+  BlockquoteButton,
 } from '@eeeditor/buttons';
 import { StateType } from './model';
 import { is } from 'immutable';
@@ -413,6 +414,7 @@ const Page: React.FC<PageProps> = (props) => {
               </SelectorButton>
               <UnorderedListButton tipProps={staticToolbarBtnTip} />
               <OrderedListButton tipProps={staticToolbarBtnTip} />
+              <BlockquoteButton tipProps={staticToolbarBtnTip} />
               <Separator />
               <DecoratedUndoButton />
               <DecoratedRedoButton />

@@ -16,6 +16,7 @@ import UnderlineButton from './components/UnderlineButton';
 import ItalicButton from './components/ItalicButton';
 import OrderedListButton from './components/OrderedListButton';
 import UnorderedListButton from './components/UnorderedListButton';
+import BlockquoteButton from './components/BlockquoteButton';
 import enUS from './locale/en_US';
 import zhCN from './locale/zh_CN';
 
@@ -43,6 +44,8 @@ export interface Locale {
   'eeeditor.button.ol.tip.shortcut': string;
   'eeeditor.button.ul.tip.name': string;
   'eeeditor.button.ul.tip.shortcut': string;
+  'eeeditor.button.blockquote.tip.name': string;
+  'eeeditor.button.blockquote.tip.shortcut': string;
 }
 
 // 在 disableStrategy 时使用
@@ -50,6 +53,7 @@ export type EEEditorButtonType =
   | 'header'
   | 'ordered-list-item'
   | 'unordered-list-item'
+  | 'blockquote'
   | 'bold'
   | 'italic'
   | 'code'
@@ -114,4 +118,5 @@ export {
   ItalicButton,
   OrderedListButton,
   UnorderedListButton,
+  BlockquoteButton,
 };

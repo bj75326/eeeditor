@@ -22,4 +22,6 @@ export default {
   'eeeditor.button.ol.tip.shortcut': '1. 空格',
   'eeeditor.button.ul.tip.name': '无序列表',
   'eeeditor.button.ul.tip.shortcut': '- 空格',
+  'eeeditor.button.blockquote.tip.name': '引用',
+  'eeeditor.button.blockquote.tip.shortcut': '> 空格',
 };

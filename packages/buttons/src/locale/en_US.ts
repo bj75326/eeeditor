@@ -22,4 +22,6 @@ export default {
   'eeeditor.button.ol.tip.shortcut': '1. space',
   'eeeditor.button.ul.tip.name': 'Unordered list',
   'eeeditor.button.ul.tip.shortcut': '- space',
+  'eeeditor.button.blockquote.tip.name': 'Blockquote',
+  'eeeditor.button.blockquote.tip.shortcut': '> space',
 };
