@@ -1,5 +1,4 @@
 import EEEditor from './Editor';
-import tdecorators from './decorators';
 
 export * from 'draft-js';
 
@@ -218,7 +217,5 @@ export type EditorPlugin = {
   willUnmount?: (arg0: PluginMethods) => void;
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
-
-export const decorators = tdecorators;
 
 export default EEEditor;

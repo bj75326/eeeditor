@@ -228,15 +228,17 @@ const Page: React.FC<PageProps> = (props) => {
   }, [getLocale()]);
 
   useEffect(() => {
-    console.log('after get init contentState RAW');
     if (status === 'success') {
+      console.log('after get init contentState RAW');
       setEditorState(EditorState.createWithContent(convertFromRaw(content)));
     }
   }, [content]);
 
   useEffect(() => {
-    console.log('after get init title');
-    setTitle(initTitle);
+    if (status === 'success') {
+      console.log('after get init title');
+      setTitle(initTitle);
+    }
   }, [initTitle]);
 
   console.log('status: ', status);

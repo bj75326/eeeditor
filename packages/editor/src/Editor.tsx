@@ -1,14 +1,13 @@
 import React, { CSSProperties, useEffect, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
-import { PluginEditorProps } from './';
 import {
   EditorState,
   convertToRaw,
   ContentBlock,
   KeyBindingUtil,
   getDefaultKeyBinding,
+  PluginEditorProps,
 } from './';
-import defaultDecorators from './decorators';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 
@@ -21,12 +20,48 @@ export interface EEEditorProps extends PluginEditorProps {
   locale?: Locale;
 }
 
-const eeeBlockStyleFn = (contentBlock: ContentBlock): string => {
+const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
   const type = contentBlock.getType();
-  if (type === 'unstyled' || type === 'paragraph') {
-    return 'paragraph';
+  switch (type) {
+    case 'unstyled':
+    case 'paragraph':
+      return 'paragraph';
+    case 'unordered-list-item':
+      return 'unordered-list-item';
+    case 'ordered-list-item':
+      return 'ordered-list-item';
+    case 'blockquote':
+      return 'blockquote';
+    case 'header-one':
+      return 'header-one';
+    case 'header-two':
+      return 'header-two';
+    case 'header-three':
+      return 'header-three';
+    case 'header-four':
+      return 'header-four';
+    case 'header-five':
+      return 'header-five';
+    case 'header-six':
+      return 'header-six';
+    case 'code-block':
+      return 'code-block';
+    default:
+      return '';
   }
-  return '';
+};
+
+const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
+  CODE: {
+    display: 'inline',
+    'font-size': '14px',
+    margin: '0 2px',
+    padding: '2px 5px',
+    'border-radius': '3px',
+    'background-color': 'rgb(235, 235, 235)',
+    'font-family':
+      'Consolas, "Liberation Mono", "BitStream Vera Sans Mono", Courier, monospace',
+  },
 };
 
 const PluginEditor: React.FC<PluginEditorProps> = (props) => (
@@ -41,7 +76,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     locale = zhCN,
     editorState,
     onChange,
-    blockStyleFn,
+    blockStyleFn = defaultBlockStyleFn,
+    customStyleMap = defaultCustomStyleMap,
     ...restProps
   } = props;
 
@@ -93,8 +129,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       <PluginEditor
         editorState={editorState}
         onChange={handleChange}
-        blockStyleFn={blockStyleFn || eeeBlockStyleFn}
-        decorators={[defaultDecorators]}
+        blockStyleFn={blockStyleFn}
+        customStyleMap={customStyleMap}
         // ref={editorRef}
         {...restProps}
       />

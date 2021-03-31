@@ -1,16 +1,15 @@
 @import './theme.less';
 
-@eeeditor-prefix-cls: eee;
-
 .@{eeeditor-prefix-cls} {
   position: relative;
+  color: @editor-text-color;
   font-size: 16px;
 
   .public-DraftEditorPlaceholder-root {
     position: absolute;
     z-index: 0;
-    color: @placeholder-color;
-    line-height: @line-height-base;
+    color: @editor-placeholder-color;
+    line-height: @editor-line-height;
     transition: opacity 0.2s;
   }
   .public-DraftEditorPlaceholder-hasFocus {
@@ -22,12 +21,21 @@
     z-index: 1;
   }
 
-  blockquote,
+  .blockquote,
   .paragraph,
   .public-DraftStyleDefault-ul,
   .public-DraftStyleDefault-ol {
-    //text-align: justify;
-    line-height: @line-height-base;
+    margin-bottom: @editor-paragragh-gap;
+    line-height: @editor-line-height;
+  }
+
+  .header-one,
+  .header-two,
+  .header-three,
+  .header-four,
+  .header-five,
+  .header-fix {
+    color: @editor-text-color;
   }
 }
 
