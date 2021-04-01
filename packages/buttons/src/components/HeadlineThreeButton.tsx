@@ -1,4 +1,4 @@
-import createBlockStyleButton from '../utils/createBlockStyleButton';
+import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
 import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
 const defaultHeadlineThreeIcon = (
@@ -40,7 +40,7 @@ const defaultHeadlineThreeIcon = (
   </svg>
 );
 
-export default createBlockStyleButton({
+export default createToggleBlockTypeButton({
   blockType: 'header-three',
   buttonType: 'header',
   defaultChildren: defaultHeadlineThreeIcon,

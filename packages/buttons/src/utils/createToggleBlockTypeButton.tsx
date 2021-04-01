@@ -30,7 +30,7 @@ export default function createBlockStyleButton({
   buttonKeyCommandHandler,
   buttonBeforeInputHandler,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
-  const BlockStyleButton: EEEditorStyleButtonType = (props) => {
+  const ToggleBlockTypeButton: EEEditorStyleButtonType = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -177,5 +177,5 @@ export default function createBlockStyleButton({
     );
   };
 
-  return BlockStyleButton;
+  return ToggleBlockTypeButton;
 }

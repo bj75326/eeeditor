@@ -1,4 +1,4 @@
-import createBlockStyleButton from '../utils/createBlockStyleButton';
+import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
 import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
 const defaultBlockquoteIcon = (
@@ -24,7 +24,7 @@ const defaultBlockquoteIcon = (
   </svg>
 );
 
-export default createBlockStyleButton({
+export default createToggleBlockTypeButton({
   blockType: 'blockquote',
   buttonType: 'blockquote',
   defaultChildren: defaultBlockquoteIcon,

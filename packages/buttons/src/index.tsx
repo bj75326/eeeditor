@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode } from 'react';
 import { EditorState, EditorPlugin } from '@eeeditor/editor';
-import createBlockStyleButton from './utils/createBlockStyleButton';
-import createInlineStyleButton from './utils/createInlineStyleButton';
+import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
+import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import shouldButtonDisabled from './utils/disableStrategy';
 import HeadlineOneButton from './components/HeadlineOneButton';
@@ -101,8 +101,8 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
 export type EEEditorStyleButtonType = React.FC<EEEditorStyleButtonProps>;
 
 export {
-  createBlockStyleButton,
-  createInlineStyleButton,
+  createToggleBlockTypeButton,
+  createToggleInlineStyleButton,
   shouldButtonDisabled,
   zhCN,
   enUS,

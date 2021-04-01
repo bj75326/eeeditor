@@ -1,4 +1,4 @@
-import createBlockStyleButton from '../utils/createBlockStyleButton';
+import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
 import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
 const defaultHeadlineSixIcon = (
@@ -45,7 +45,7 @@ const defaultHeadlineSixIcon = (
   </svg>
 );
 
-export default createBlockStyleButton({
+export default createToggleBlockTypeButton({
   blockType: 'header-six',
   buttonType: 'header',
   defaultChildren: defaultHeadlineSixIcon,

@@ -30,7 +30,7 @@ export default function CreateInlineStyleButton({
   buttonKeyCommandHandler,
   buttonBeforeInputHandler,
 }: CreateInlineStyleButtonProps): EEEditorStyleButtonType {
-  const InlineStyleButton: EEEditorStyleButtonType = (props) => {
+  const ToggleInlineStyleButton: EEEditorStyleButtonType = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -163,5 +163,5 @@ export default function CreateInlineStyleButton({
     );
   };
 
-  return InlineStyleButton;
+  return ToggleInlineStyleButton;
 }

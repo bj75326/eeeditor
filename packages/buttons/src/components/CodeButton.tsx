@@ -1,4 +1,4 @@
-import createInlineStyleButton from '../utils/createInlineStyleButton';
+import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils } from '@eeeditor/editor';
 
 const defaultCodeIcon = (
@@ -32,7 +32,7 @@ const defaultCodeIcon = (
   </svg>
 );
 
-export default createInlineStyleButton({
+export default createToggleInlineStyleButton({
   inlineStyle: 'CODE',
   buttonType: 'code',
   defaultChildren: defaultCodeIcon,

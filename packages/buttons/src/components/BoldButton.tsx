@@ -1,4 +1,4 @@
-import createInlineStyleButton from '../utils/createInlineStyleButton';
+import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils } from '@eeeditor/editor';
 
 const defaultBoldIcon = (
@@ -30,7 +30,7 @@ const defaultBoldIcon = (
   </svg>
 );
 
-export default createInlineStyleButton({
+export default createToggleInlineStyleButton({
   inlineStyle: 'BOLD',
   buttonType: 'bold',
   defaultChildren: defaultBoldIcon,
