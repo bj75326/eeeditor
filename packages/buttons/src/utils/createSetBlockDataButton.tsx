@@ -1,4 +1,4 @@
-import React, { ReactNode, MouseEvent } from 'react';
+import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import {
   EEEditorStyleButtonType,
   EEEditorButtonType,
@@ -38,15 +38,10 @@ export default function createSetBlockDataButton({
       children = defaultChildren,
       getEditorState,
       setEditorState,
-      addKeyCommandHandler,
-      removeKeyCommandHandler,
-      addKeyBindingFn,
-      removeKeyBindingFn,
-      addBeforeInputHandler,
-      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
+      setSelectorBtnIcon,
     } = props;
 
     const mergeBlockData = (event: MouseEvent): void => {
@@ -86,6 +81,15 @@ export default function createSetBlockDataButton({
       );
     };
 
+    useEffect(() => {
+      if (setSelectorBtnActive) {
+        setSelectorBtnActive(blockTypeIsActive(), optionKey);
+      }
+      if (setSelectorBtnIcon && blockTypeIsActive()) {
+        setSelectorBtnIcon(children);
+      }
+    }, [blockTypeIsActive()]);
+
     const checkButtonShouldDisabled = (): boolean => {
       if (!getEditorState) {
         return true;
@@ -94,6 +98,12 @@ export default function createSetBlockDataButton({
       const status = shouldButtonDisabled(editorState, buttonType);
       return status;
     };
+
+    useEffect(() => {
+      if (setSelectorBtnDisabled) {
+        setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
+      }
+    }, [checkButtonShouldDisabled()]);
 
     const btnClassName = classNames(`${prefixCls}-btn`, className, {
       [`${prefixCls}-btn-active`]: blockTypeIsActive(),

@@ -17,6 +17,10 @@ import ItalicButton from './components/ItalicButton';
 import OrderedListButton from './components/OrderedListButton';
 import UnorderedListButton from './components/UnorderedListButton';
 import BlockquoteButton from './components/BlockquoteButton';
+import AlignCenterButton from './components/AlignCenterButton';
+import AlignJustifyButton from './components/AlignJustifyButton';
+import AlignLeftButton from './components/AlignLeftButton';
+import AlignRightButton from './components/AlignRightButton';
 import enUS from './locale/en_US';
 import zhCN from './locale/zh_CN';
 
@@ -97,6 +101,7 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
   optionKey?: number;
+  setSelectorBtnIcon?: (icon?: ReactNode) => void;
 }
 
 export type EEEditorStyleButtonType = React.FC<EEEditorStyleButtonProps>;
@@ -120,4 +125,8 @@ export {
   OrderedListButton,
   UnorderedListButton,
   BlockquoteButton,
+  AlignCenterButton,
+  AlignJustifyButton,
+  AlignLeftButton,
+  AlignRightButton,
 };

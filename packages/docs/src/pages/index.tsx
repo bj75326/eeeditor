@@ -35,6 +35,10 @@ import {
   OrderedListButton,
   UnorderedListButton,
   BlockquoteButton,
+  AlignCenterButton,
+  AlignJustifyButton,
+  AlignLeftButton,
+  AlignRightButton,
 } from '@eeeditor/buttons';
 import { StateType } from './model';
 import { is } from 'immutable';
@@ -411,6 +415,12 @@ const Page: React.FC<PageProps> = (props) => {
                 <HeadlineFourButton tipProps={selectBtnChildrenTip} />
                 <HeadlineFiveButton tipProps={selectBtnChildrenTip} />
                 <HeadlineSixButton tipProps={selectBtnChildrenTip} />
+              </SelectorButton>
+              <SelectorButton>
+                <AlignLeftButton tipProps={selectBtnChildrenTip} />
+                <AlignCenterButton tipProps={selectBtnChildrenTip} />
+                <AlignRightButton tipProps={selectBtnChildrenTip} />
+                <AlignJustifyButton tipProps={selectBtnChildrenTip} />
               </SelectorButton>
               <UnorderedListButton tipProps={staticToolbarBtnTip} />
               <OrderedListButton tipProps={staticToolbarBtnTip} />

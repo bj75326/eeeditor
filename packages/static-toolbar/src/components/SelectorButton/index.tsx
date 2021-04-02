@@ -22,14 +22,15 @@ export interface SelectorBtnChildrenProps {
   ) => void;
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
+  setSelectorBtnIcon: (icon: SelectorButtonProps['icon']) => void;
 }
 
 export interface SelectorButtonProps
   extends Omit<
     EEEditorStyleButtonProps,
-    'title' | 'locale' | 'icon' | 'align'
+    'title' | 'locale' | 'children' | 'align'
   > {
-  icon: ReactNode;
+  icon?: ReactNode;
   children: ReactElement | ReactElement[];
 }
 
@@ -53,6 +54,9 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
+  const [btnIcon, setBtnIcon]: [SelectorButtonProps['icon'], any] = useState(
+    icon,
+  );
 
   const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
     if (active === btnActive[optionKey]) return;
@@ -75,6 +79,10 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     });
   };
 
+  const setSelectorBtnIcon = (icon: SelectorButtonProps['icon']): void => {
+    setBtnIcon(icon);
+  };
+
   const showOptions = (): void => {
     setVisible(true);
   };
@@ -93,6 +101,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     removeBeforeInputHandler,
     setSelectorBtnActive,
     setSelectorBtnDisabled,
+    setSelectorBtnIcon,
   };
 
   const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {
@@ -118,7 +127,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
       onMouseLeave={hideOptions}
     >
       <div className={btnClassName} style={style}>
-        {icon}
+        {btnIcon}
       </div>
       <div className={optionsClassName}>
         {React.Children.map<ReactElement, ReactElement>(
