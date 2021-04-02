@@ -24,4 +24,8 @@ export default {
   'eeeditor.button.ul.tip.shortcut': '- 空格',
   'eeeditor.button.blockquote.tip.name': '引用',
   'eeeditor.button.blockquote.tip.shortcut': '> 空格',
+  'eeeditor.button.align.center.tip.name': '居中对齐',
+  'eeeditor.button.align.left.tip.name': '左对齐',
+  'eeeditor.button.align.right.tip.name': '右对齐',
+  'eeeditor.button.align.justify.tip.name': '两端对齐',
 };

@@ -24,4 +24,8 @@ export default {
   'eeeditor.button.ul.tip.shortcut': '- space',
   'eeeditor.button.blockquote.tip.name': 'Blockquote',
   'eeeditor.button.blockquote.tip.shortcut': '> space',
+  'eeeditor.button.align.center.tip.name': 'Center align',
+  'eeeditor.button.align.left.tip.name': 'Left align',
+  'eeeditor.button.align.right.tip.name': 'Right align',
+  'eeeditor.button.align.justify.tip.name': 'Justify',
 };

@@ -57,7 +57,8 @@ export type EEEditorButtonType =
   | 'bold'
   | 'italic'
   | 'code'
-  | 'underline';
+  | 'underline'
+  | 'align';
 
 export interface EEEditorButtonProps {
   prefixCls?: string;

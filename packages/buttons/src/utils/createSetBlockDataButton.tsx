@@ -5,11 +5,11 @@ import {
   EEEditorStyleButtonProps,
 } from '..';
 import zhCN from '../locale/zh_CN';
-import { EditorPlugin } from '@eeeditor/editor';
+import { EditorState, EditorPlugin, Modifier } from '@eeeditor/editor';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
-import immutable from 'immutable';
+import Immutable from 'immutable';
 
 interface CreateSetBlockDataButtonProps {
   blockMetaData: Record<string, any>;
@@ -51,7 +51,20 @@ export default function createSetBlockDataButton({
 
     const mergeBlockData = (event: MouseEvent): void => {
       event.preventDefault();
-      // todo
+      if (getEditorState && setEditorState) {
+        const editorState = getEditorState();
+        setEditorState(
+          EditorState.push(
+            editorState,
+            Modifier.mergeBlockData(
+              editorState.getCurrentContent(),
+              editorState.getSelection(),
+              Immutable.Map<string, any>(blockMetaData),
+            ),
+            'change-block-data',
+          ),
+        );
+      }
     };
 
     const preventBubblingUp = (event: MouseEvent): void => {
@@ -69,7 +82,7 @@ export default function createSetBlockDataButton({
         .getData();
 
       return !Object.keys(blockMetaData).some(
-        (key, index) => metaData.get(key) !== blockMetaData[key],
+        (key) => metaData.get(key) !== blockMetaData[key],
       );
     };
 
