@@ -12,7 +12,7 @@ import shouldButtonDisabled from './disableStrategy';
 import Immutable from 'immutable';
 
 interface CreateSetBlockDataButtonProps {
-  blockMetaData: Record<string, any>;
+  blockMetaData: Record<string, string | boolean | number>;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
@@ -41,6 +41,7 @@ export default function createSetBlockDataButton({
       children = defaultChildren,
       getEditorState,
       setEditorState,
+      getProps,
       addKeyCommandHandler,
       removeKeyCommandHandler,
       addKeyBindingFn,
@@ -63,7 +64,7 @@ export default function createSetBlockDataButton({
             Modifier.mergeBlockData(
               editorState.getCurrentContent(),
               editorState.getSelection(),
-              Immutable.Map<string, any>(blockMetaData),
+              Immutable.Map<string, string | boolean | number>(blockMetaData),
             ),
             'change-block-data',
           ),
@@ -85,7 +86,22 @@ export default function createSetBlockDataButton({
         .getBlockForKey(editorState.getSelection().getStartKey())
         .getData();
 
+      // align buttons 会根据 Editor props textDirectionality 进行判断状态
+      if (buttonType === 'align' && !metaData.get('align')) {
+        if (
+          (getProps().textDirectionality === 'LTR' &&
+            blockMetaData.align === 'left') ||
+          (getProps().textDirectionality === 'RTL' &&
+            blockMetaData.align === 'right') ||
+          (getProps().textDirectionality === 'NEUTRAL' &&
+            blockMetaData.align === 'center')
+        ) {
+          return true;
+        }
+      }
+
       return !Object.keys(blockMetaData).some(
+        // setBlockData 判断是否 active 时，只能比较直接量 etc. number | string | boolean
         (key) => metaData.get(key) !== blockMetaData[key],
       );
     };

@@ -1,5 +1,5 @@
 import { CSSProperties, ReactNode } from 'react';
-import { EditorState, EditorPlugin } from '@eeeditor/editor';
+import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -112,6 +112,7 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  getProps?: () => EditorProps;
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;

@@ -1,11 +1,12 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
-import { EditorState, EditorPlugin } from '@eeeditor/editor';
+import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
 import classNames from 'classnames';
 
 export interface SelectorBtnChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  getProps?: () => EditorProps;
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -43,6 +44,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     children,
     getEditorState,
     setEditorState,
+    getProps,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,
@@ -93,6 +95,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   const childProps: SelectorBtnChildrenProps = {
     getEditorState,
     setEditorState,
+    getProps,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,

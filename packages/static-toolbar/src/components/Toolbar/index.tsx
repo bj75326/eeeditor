@@ -1,5 +1,5 @@
 import React, { CSSProperties, ReactElement, useEffect, useRef } from 'react';
-import { EditorState, EditorPlugin } from '@eeeditor/editor';
+import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
 import { StaticToolbarPluginStore, Locale } from '../..';
 import {
   defaultHeadIcon,
@@ -16,6 +16,7 @@ import SelectorButton from '../SelectorButton';
 export interface ToolbarChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  getProps?: () => EditorProps;
   // 提供方法给 buttons 动态增减 handleKeyCommand
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
@@ -60,6 +61,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
     setEditorState: store.getItem('setEditorState'),
+    getProps: store.getItem('getProps'),
     // 提供方法给 buttons 动态增减 handleKeyCommand
     addKeyCommandHandler: (keyCommandHandler) => {
       const keyCommandHandlers = store.getItem('keyCommandHandlers');
