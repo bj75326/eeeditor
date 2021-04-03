@@ -1,6 +1,6 @@
 import createSetBlockDataButton from '../utils/createSetBlockDataButton';
 
-const defaultAlignCenterIcon = (
+export const defaultAlignCenterIcon = (
   <svg
     width="1em"
     height="1em"

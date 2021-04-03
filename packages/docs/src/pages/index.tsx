@@ -15,12 +15,12 @@ import EEEditor, {
 } from '@eeeditor/editor';
 import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
-  defaultSelectorBtnIcons,
 } from '@eeeditor/static-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
 import {
   enUS,
   zhCN,
+  defaultHeadIcon,
   EEEditorStyleButtonProps,
   HeadlineOneButton,
   HeadlineTwoButton,
@@ -66,8 +66,6 @@ import './index.less';
 import '@eeeditor/editor/es/style';
 import '@eeeditor/static-toolbar/es/style';
 import '@eeeditor/buttons/es/style';
-
-const { HeaderButtonIcon } = defaultSelectorBtnIcons;
 
 const {
   StaticToolbar,
@@ -408,7 +406,7 @@ const Page: React.FC<PageProps> = (props) => {
               <UnderlineButton tipProps={staticToolbarBtnTip} />
               <CodeButton tipProps={staticToolbarBtnTip} />
               <Separator />
-              <SelectorButton icon={HeaderButtonIcon}>
+              <SelectorButton icon={defaultHeadIcon}>
                 <HeadlineOneButton tipProps={selectBtnChildrenTip} />
                 <HeadlineTwoButton tipProps={selectBtnChildrenTip} />
                 <HeadlineThreeButton tipProps={selectBtnChildrenTip} />

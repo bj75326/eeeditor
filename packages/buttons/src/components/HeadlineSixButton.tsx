@@ -1,7 +1,7 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
 import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
 
-const defaultHeadlineSixIcon = (
+export const defaultHeadlineSixIcon = (
   <svg
     width="1em"
     height="1em"

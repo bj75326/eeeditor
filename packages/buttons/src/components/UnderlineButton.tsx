@@ -1,7 +1,7 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils } from '@eeeditor/editor';
 
-const defaultCodeIcon = (
+export const defaultUnderlineIcon = (
   <svg
     width="1em"
     height="1em"
@@ -29,7 +29,7 @@ const defaultCodeIcon = (
 export default createToggleInlineStyleButton({
   inlineStyle: 'UNDERLINE',
   buttonType: 'underline',
-  defaultChildren: defaultCodeIcon,
+  defaultChildren: defaultUnderlineIcon,
   defaultTitle: {
     name: 'eeeditor.button.underline.tip.name',
     shortcut: 'eeeditor.button.underline.tip.shortcut',

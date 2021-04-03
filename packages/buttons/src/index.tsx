@@ -4,23 +4,52 @@ import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import shouldButtonDisabled from './utils/disableStrategy';
-import HeadlineOneButton from './components/HeadlineOneButton';
-import HeadlineTwoButton from './components/HeadlineTwoButton';
-import HeadlineThreeButton from './components/HeadlineThreeButton';
-import HeadlineFourButton from './components/HeadlineFourButton';
-import HeadlineFiveButton from './components/HeadlineFiveButton';
-import HeadlineSixButton from './components/HeadlineSixButton';
-import BoldButton from './components/BoldButton';
-import CodeButton from './components/CodeButton';
-import UnderlineButton from './components/UnderlineButton';
-import ItalicButton from './components/ItalicButton';
-import OrderedListButton from './components/OrderedListButton';
-import UnorderedListButton from './components/UnorderedListButton';
-import BlockquoteButton from './components/BlockquoteButton';
-import AlignCenterButton from './components/AlignCenterButton';
-import AlignJustifyButton from './components/AlignJustifyButton';
-import AlignLeftButton from './components/AlignLeftButton';
-import AlignRightButton from './components/AlignRightButton';
+import { defaultHeadIcon } from './assets/extraIcons';
+import HeadlineOneButton, {
+  defaultHeadlineOneIcon,
+} from './components/HeadlineOneButton';
+import HeadlineTwoButton, {
+  defaultHeadlineTwoIcon,
+} from './components/HeadlineTwoButton';
+import HeadlineThreeButton, {
+  defaultHeadlineThreeIcon,
+} from './components/HeadlineThreeButton';
+import HeadlineFourButton, {
+  defaultHeadlineFourIcon,
+} from './components/HeadlineFourButton';
+import HeadlineFiveButton, {
+  defaultHeadlineFiveIcon,
+} from './components/HeadlineFiveButton';
+import HeadlineSixButton, {
+  defaultHeadlineSixIcon,
+} from './components/HeadlineSixButton';
+import BoldButton, { defaultBoldIcon } from './components/BoldButton';
+import CodeButton, { defaultCodeIcon } from './components/CodeButton';
+import UnderlineButton, {
+  defaultUnderlineIcon,
+} from './components/UnderlineButton';
+import ItalicButton, { defaultItalicIcon } from './components/ItalicButton';
+import OrderedListButton, {
+  defaultOrderedListIcon,
+} from './components/OrderedListButton';
+import UnorderedListButton, {
+  defaultUnorderedListIcon,
+} from './components/UnorderedListButton';
+import BlockquoteButton, {
+  defaultBlockquoteIcon,
+} from './components/BlockquoteButton';
+import AlignCenterButton, {
+  defaultAlignCenterIcon,
+} from './components/AlignCenterButton';
+import AlignJustifyButton, {
+  defaultAlignJustifyIcon,
+} from './components/AlignJustifyButton';
+import AlignLeftButton, {
+  defaultAlignLeftIcon,
+} from './components/AlignLeftButton';
+import AlignRightButton, {
+  defaultAlignRightIcon,
+} from './components/AlignRightButton';
 import enUS from './locale/en_US';
 import zhCN from './locale/zh_CN';
 
@@ -129,4 +158,22 @@ export {
   AlignJustifyButton,
   AlignLeftButton,
   AlignRightButton,
+  defaultHeadIcon,
+  defaultHeadlineOneIcon,
+  defaultHeadlineTwoIcon,
+  defaultHeadlineThreeIcon,
+  defaultHeadlineFourIcon,
+  defaultHeadlineFiveIcon,
+  defaultHeadlineSixIcon,
+  defaultBoldIcon,
+  defaultCodeIcon,
+  defaultUnderlineIcon,
+  defaultItalicIcon,
+  defaultOrderedListIcon,
+  defaultUnorderedListIcon,
+  defaultBlockquoteIcon,
+  defaultAlignCenterIcon,
+  defaultAlignJustifyIcon,
+  defaultAlignLeftIcon,
+  defaultAlignRightIcon,
 };

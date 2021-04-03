@@ -1,7 +1,7 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils } from '@eeeditor/editor';
 
-const defaultCodeIcon = (
+export const defaultItalicIcon = (
   <svg
     width="1em"
     height="1em"
@@ -36,7 +36,7 @@ const defaultCodeIcon = (
 export default createToggleInlineStyleButton({
   inlineStyle: 'ITALIC',
   buttonType: 'italic',
-  defaultChildren: defaultCodeIcon,
+  defaultChildren: defaultItalicIcon,
   defaultTitle: {
     name: 'eeeditor.button.italic.tip.name',
     shortcut: 'eeeditor.button.italic.tip.shortcut',

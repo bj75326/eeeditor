@@ -127,7 +127,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
       onMouseLeave={hideOptions}
     >
       <div className={btnClassName} style={style}>
-        {btnIcon}
+        {btnActive.some((status: boolean) => status) ? btnIcon : icon}
       </div>
       <div className={optionsClassName}>
         {React.Children.map<ReactElement, ReactElement>(

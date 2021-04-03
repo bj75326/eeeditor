@@ -50,6 +50,7 @@ export default function CreateInlineStyleButton({
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
+      setSelectorBtnIcon,
     } = props;
 
     const toggleStyle = (event: MouseEvent): void => {
@@ -99,6 +100,9 @@ export default function CreateInlineStyleButton({
     useEffect(() => {
       if (setSelectorBtnActive) {
         setSelectorBtnActive(inlineStyleIsActive(), optionKey);
+      }
+      if (setSelectorBtnIcon && inlineStyleIsActive()) {
+        setSelectorBtnIcon(children);
       }
     }, [inlineStyleIsActive()]);
 

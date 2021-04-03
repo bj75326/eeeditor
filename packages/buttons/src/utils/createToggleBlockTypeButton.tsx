@@ -50,6 +50,7 @@ export default function createBlockStyleButton({
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
+      setSelectorBtnIcon,
     } = props;
 
     const toggleStyle = (event: MouseEvent): void => {
@@ -108,6 +109,9 @@ export default function createBlockStyleButton({
     useEffect(() => {
       if (setSelectorBtnActive) {
         setSelectorBtnActive(blockTypeIsActive(), optionKey);
+      }
+      if (setSelectorBtnIcon && blockTypeIsActive()) {
+        setSelectorBtnIcon(children);
       }
     }, [blockTypeIsActive()]);
 

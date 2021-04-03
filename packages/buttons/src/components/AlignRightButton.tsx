@@ -1,6 +1,6 @@
 import createSetBlockDataButton from '../utils/createSetBlockDataButton';
 
-const defaultAlignRightIcon = (
+export const defaultAlignRightIcon = (
   <svg
     width="18"
     height="18"

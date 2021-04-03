@@ -1,7 +1,7 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils } from '@eeeditor/editor';
 
-const defaultBoldIcon = (
+export const defaultBoldIcon = (
   <svg
     width="1em"
     height="1em"

@@ -26,6 +26,9 @@ export default function createSetBlockDataButton({
   buttonType,
   defaultChildren,
   defaultTitle,
+  buttonKeyBindingFn,
+  buttonKeyCommandHandler,
+  buttonBeforeInputHandler,
 }: CreateSetBlockDataButtonProps): EEEditorStyleButtonType {
   const SetBlockDataButton: EEEditorStyleButtonType = (props) => {
     const {
@@ -38,6 +41,12 @@ export default function createSetBlockDataButton({
       children = defaultChildren,
       getEditorState,
       setEditorState,
+      addKeyCommandHandler,
+      removeKeyCommandHandler,
+      addKeyBindingFn,
+      removeKeyBindingFn,
+      addBeforeInputHandler,
+      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
@@ -80,6 +89,29 @@ export default function createSetBlockDataButton({
         (key) => metaData.get(key) !== blockMetaData[key],
       );
     };
+
+    useEffect(() => {
+      if (buttonKeyBindingFn) {
+        addKeyBindingFn(buttonKeyBindingFn);
+      }
+      if (buttonKeyCommandHandler) {
+        addKeyCommandHandler(buttonKeyCommandHandler);
+      }
+      if (buttonBeforeInputHandler) {
+        addBeforeInputHandler(buttonBeforeInputHandler);
+      }
+      return () => {
+        if (buttonKeyBindingFn) {
+          removeKeyBindingFn(buttonKeyBindingFn);
+        }
+        if (buttonKeyCommandHandler) {
+          removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+        if (buttonBeforeInputHandler) {
+          removeBeforeInputHandler(buttonBeforeInputHandler);
+        }
+      };
+    }, []);
 
     useEffect(() => {
       if (setSelectorBtnActive) {

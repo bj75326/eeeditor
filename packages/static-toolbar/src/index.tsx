@@ -1,10 +1,9 @@
 import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin } from '@eeeditor/editor';
+import { EditorPlugin, EditorProps } from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
-  HeaderButtonIcon,
 } from './components/Toolbar';
 import SelectorButton, {
   SelectorButtonProps,
@@ -21,10 +20,6 @@ export interface Locale {}
 //   locale?: Locale;
 // }
 
-export const defaultSelectorBtnIcons = {
-  HeaderButtonIcon,
-};
-
 export type StaticToolbarProps = ToolbarPubProps;
 
 export type StaticToolbarChildrenProps = ToolbarChildrenProps;
@@ -38,11 +33,11 @@ export type StaticToolbarPlugin = EditorPlugin & {
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(state: EditorState): void;
+  getProps?(): EditorProps;
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
   beforeInputHandlers?: EditorPlugin['handleBeforeInput'][];
-  decorators?: EditorPlugin['decorators'];
 }
 
 export type StaticToolbarPluginStore = Store<StoreItemMap>;
@@ -53,7 +48,6 @@ StaticToolbarPlugin => {
     keyCommandHandlers: [],
     keyBindingFns: [],
     beforeInputHandlers: [],
-    decorators: [],
   });
 
   const StaticToolbar: React.FC<StaticToolbarProps> = (props) => (
@@ -61,9 +55,10 @@ StaticToolbarPlugin => {
   );
 
   return {
-    initialize: ({ getEditorState, setEditorState }) => {
+    initialize: ({ getEditorState, setEditorState, getProps }) => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
+      store.updateItem('getProps', getProps);
     },
     // todo: Static toolbar plugin 是否需要这个 onChange
     onChange: (editorState) => {
