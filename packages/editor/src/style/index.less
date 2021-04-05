@@ -3,43 +3,68 @@
 .@{eeeditor-prefix-cls} {
   position: relative;
   color: @editor-text-color;
-  font-size: 16px;
+  font-size: @editor-font-size;
+  outline: none;
+}
 
-  .public-DraftEditorPlaceholder-root {
-    position: absolute;
-    z-index: 0;
-    color: @editor-placeholder-color;
-    line-height: @editor-line-height;
-    transition: opacity 0.2s;
-  }
-  .public-DraftEditorPlaceholder-hasFocus {
-    opacity: 0 !important;
-  }
+.public-DraftEditorPlaceholder-root {
+  position: absolute;
+  z-index: 0;
+  color: @editor-placeholder-color;
+  line-height: @editor-line-height;
+  transition: opacity 0.2s;
+}
+.public-DraftEditorPlaceholder-hasFocus {
+  opacity: 0 !important;
+}
 
-  .DraftEditor-editorContainer {
-    position: relative;
-    z-index: 1;
-  }
+.DraftEditor-editorContainer {
+  position: relative;
+  z-index: 1;
+}
 
-  .blockquote,
-  .paragraph,
-  .public-DraftStyleDefault-ul,
-  .public-DraftStyleDefault-ol {
-    margin-bottom: @editor-paragragh-gap;
-    line-height: @editor-line-height;
-  }
+.blockquote,
+.paragraph,
+.public-DraftStyleDefault-ul,
+.public-DraftStyleDefault-ol {
+  line-height: @editor-line-height;
+}
 
-  .blockquote {
-  }
+.blockquote {
+  padding: 8px 0;
+}
 
-  .header-one,
-  .header-two,
-  .header-three,
-  .header-four,
-  .header-five,
-  .header-fix {
-    color: @editor-text-color;
-  }
+.header-one,
+.header-two,
+.header-three,
+.header-four,
+.header-five,
+.header-six {
+  color: @editor-text-color;
+}
+
+.header-one {
+  font-size: @editor-h1-font-size;
+}
+
+.header-two {
+  font-size: @editor-h2-font-size;
+}
+
+.header-three {
+  font-size: @editor-h3-font-size;
+}
+
+.header-four {
+  font-size: @editor-h4-font-size;
+}
+
+.header-five {
+  font-size: @editor-h5-font-size;
+}
+
+.header-six {
+  font-size: @editor-h6-font-size;
 }
 
 .@{eeeditor-prefix-cls}-rtl {

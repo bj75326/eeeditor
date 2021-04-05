@@ -58,19 +58,21 @@ body {
 }
 
 body {
-  font-family: Microsoft Yahei UI, Arial, Helvetica, sans-serif !important;
+  padding-top: 48px;
+  color: var(--color-tint-7);
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB',
+    'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei',
+    'WenQuanYi Micro Hei', 'SimHei', sans-serif;
+  background-color: var(--color-inverse);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-top: 48px;
-  background-color: var(--color-inverse);
-  color: var(--color-tint-7);
 }
 
 .ant-spin-dot {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .ant-spin-container::after {
