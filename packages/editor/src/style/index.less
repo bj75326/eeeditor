@@ -92,3 +92,67 @@
     padding: 0 @editor-list-item-padding 0 0;
   }
 }
+
+// 由于 buttons style 被应用于多个 package ，所以把样式放到 @eeeditor/editor
+.@{eeeditor-prefix-cls}-btn-wrapper {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.@{eeeditor-prefix-cls}-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @buttons-size;
+  height: @buttons-size;
+  color: @buttons-text-color;
+  font-size: @buttons-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @buttons-hover-bg;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-active {
+    color: @buttons-text-active-color;
+  }
+
+  &.@{eeeditor-prefix-cls}-btn-disabled {
+    color: @buttons-text-disabled-color;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+.@{eeeditor-prefix-cls}-tip-wrapper {
+  .ant-tooltip-inner {
+    min-width: 0;
+    min-height: 0;
+    padding: 4px 6px;
+    background-color: @buttons-tip-background-color;
+    border-radius: 4px;
+  }
+  .ant-tooltip-arrow-content {
+    background-color: @buttons-tip-background-color;
+  }
+}
+
+.@{eeeditor-prefix-cls}-tip {
+  box-sizing: border-box;
+  color: @buttons-tip-color;
+  font-size: @buttons-tip-font-size;
+}
+
+.@{eeeditor-prefix-cls}-tip-name {
+  display: block;
+  text-align: center;
+}
+
+.@{eeeditor-prefix-cls}-tip-shortcut {
+  display: block;
+  text-align: center;
+  opacity: 0.6;
+}
