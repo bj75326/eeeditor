@@ -2,7 +2,7 @@
 
 .@{eeeditor-prefix-cls}-static-toolbar {
   box-sizing: border-box;
-  height: 40px;
+  height: @static-toolbar-height;
   background-color: @static-toolbar-bg-color;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -20,14 +20,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: @static-toolbar-btn-size;
-  height: @static-toolbar-btn-size;
-  color: @text-color;
-  font-size: @static-toolbar-icon-size;
+  width: @selector-btn-size;
+  height: @selector-btn-size;
+  color: @selector-btn-color;
+  font-size: @selector-btn-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: @item-hover-bg;
+    background-color: @selector-btn-hover-bg;
   }
   &:before {
     position: absolute;
@@ -37,21 +37,21 @@
     width: 0;
     height: 0;
     border: 3px solid transparent;
-    border-top-color: @text-color;
+    border-top-color: @selector-btn-color;
     transform: rotate(-45deg);
     content: '';
   }
   &.@{eeeditor-prefix-cls}-selector-btn-active {
-    color: @primary-color;
+    color: @selector-btn-active-color;
   }
   &.@{eeeditor-prefix-cls}-selector-btn-disabled {
-    color: @disabled-color;
+    color: @selector-btn-disabled-color;
     cursor: not-allowed;
     &:hover {
       background: none;
     }
     &:before {
-      border-top-color: @disabled-color;
+      border-top-color: @selector-btn-disabled-color;
     }
   }
   &.@{eeeditor-prefix-cls}-selector-btn-show {
@@ -63,7 +63,7 @@
 
 .@{eeeditor-prefix-cls}-selector-btn-options {
   position: absolute;
-  top: @static-toolbar-btn-size;
+  top: @selector-btn-size;
   left: 0;
   width: 100%;
   background: @static-toolbar-bg-color;
@@ -87,7 +87,7 @@
     left: 0;
     width: 0;
     height: 20px;
-    border-left: 1px solid @statuc-toolbar-separator-color;
+    border-left: 1px solid @static-toolbar-separator-color;
     transform: scaleX(0.5);
     transform-origin: 0 0;
     content: '';

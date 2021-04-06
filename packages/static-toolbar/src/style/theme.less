@@ -1,11 +1,13 @@
 @import '~antd/es/style/themes/default.less';
 @import '~@eeeditor/editor/es/style/theme.less';
 
-@eeeditor-prefix-cls: eee;
-
 @static-toolbar-bg-color: #fff;
-@static-toolbar-height: 40px;
-@static-toolbar-btn-size: 40px;
-@static-toolbar-icon-size: 18px;
-@static-toolbar-separator-size: 40px;
-@statuc-toolbar-separator-color: fade(@black, 45%);
+@static-toolbar-height: @buttons-size;
+@selector-btn-size: @buttons-size;
+@selector-btn-icon-size: @buttons-icon-size;
+@selector-btn-color: @buttons-text-color;
+@selector-btn-hover-bg: @buttons-hover-bg;
+@selector-btn-active-color: @buttons-text-active-color;
+@selector-btn-disabled-color: @buttons-text-disabled-color;
+@static-toolbar-separator-size: @buttons-size;
+@static-toolbar-separator-color: fade(@black, 45%);
