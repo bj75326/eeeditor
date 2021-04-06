@@ -54,13 +54,14 @@ const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
 const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
   CODE: {
     display: 'inline',
-    'font-size': '14px',
-    margin: '0 2px',
-    padding: '2px 5px',
+    'font-size': '85%',
+    margin: '0 .2em',
+    padding: '.2em .4em .1em',
+    border: '1px solid hsla(0,0%,39.2%,.2)',
     'border-radius': '3px',
-    'background-color': 'rgb(235, 235, 235)',
+    'background-color': 'hsla(0,0%,58.8%,.1)',
     'font-family':
-      'Consolas, "Liberation Mono", "BitStream Vera Sans Mono", Courier, monospace',
+      'SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace',
   },
 };
 

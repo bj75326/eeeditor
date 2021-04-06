@@ -27,11 +27,27 @@
 .paragraph,
 .public-DraftStyleDefault-ul,
 .public-DraftStyleDefault-ol {
+  margin-bottom: @editor-block-gap;
   line-height: @editor-line-height;
 }
 
 .blockquote {
-  padding: 8px 0;
+  padding: @editor-blockquote-padding;
+  color: @editor-blockquote-color;
+  font-size: @editor-blockquote-font-size;
+  border-left: @editor-blockquote-border-left;
+  opacity: @editor-blockquote-opacity;
+}
+
+.public-DraftStyleDefault-ul,
+.public-DraftStyleDefault-ol {
+  padding: 0;
+}
+
+.unordered-list-item,
+.ordered-list-item {
+  margin: 0 0 0 @editor-list-item-margin;
+  padding: 0 0 0 @editor-list-item-padding;
 }
 
 .header-one,
@@ -69,4 +85,10 @@
 
 .@{eeeditor-prefix-cls}-rtl {
   direction: rtl;
+
+  .unordered-list-item,
+  .ordered-list-item {
+    margin: 0 @editor-list-item-margin 0 0;
+    padding: 0 @editor-list-item-padding 0 0;
+  }
 }
