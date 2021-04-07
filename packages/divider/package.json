@@ -1,0 +1,30 @@
+{
+  "name": "@eeeditor/divider",
+  "version": "1.0.0",
+  "description": "divider plugin for EEEditor",
+  "author": "bj75326 <superice_gy@163.com>",
+  "scripts": {
+    "build": "father build",
+    "build:watch": "father build --watch",
+    "clean": "rm -rf node_modules es lib yarn-error.log",
+    "test": "father test",
+    "coverage": "father test --coverage"
+  },
+  "main": "es/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@eeeditor/editor": ">=1.0.0",
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.13.8",
+    "classnames": "^2.2.6"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.11"
+  }
+}
