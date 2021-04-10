@@ -11,7 +11,7 @@ export default function (
   const beforeKey = content.getKeyBefore(blockKey);
   const beforeBlock = content.getBlockForKey(beforeKey);
 
-  // 当 focusable 的 block 在文稿开头处，删除之后保留 block ，类型 unstyled 且内容为空。
+  // 当 focusable 的 block 在 draft 开头处，删除之后保留 block ，类型 unstyled 且内容为空。
   if (beforeBlock === undefined) {
     const targetRange = new SelectionState({
       anchorKey: blockKey,
@@ -25,7 +25,7 @@ export default function (
     const newState = EditorState.push(editorState, content, 'remove-range');
 
     // force to new selection
-    // todo 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
+    // todo: 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
     const newSelection = new SelectionState({
       anchorKey: blockKey,
       anchorOffset: 0,
@@ -43,7 +43,7 @@ export default function (
   });
 
   content = Modifier.removeRange(content, targetRange, 'backward');
-  // todo 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
+  // todo: 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
   const newState = EditorState.push(editorState, content, 'remove-range');
 
   // force to new selection

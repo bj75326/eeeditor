@@ -14,11 +14,11 @@ interface DecoratorProps {
 }
 
 interface BlockFocusDecoratorProps {
+  className: string;
   blockProps: {
     isFocused: boolean;
     setFocusToBlock(): void;
   };
-  className: string;
   block: ContentBlock;
   onClick(event: MouseEvent): void;
   ref: Ref<unknown>;
@@ -55,15 +55,15 @@ export default ({ blockKeyStore }: DecoratorProps) => (
 
       const { blockProps, className } = props;
       const { isFocused } = blockProps;
-      // const combinedClassName = isFocused
-      //   ? clsx(className, theme.focused)
-      //   : clsx(className, theme.unfocused);
+      const combinedClassName = classNames(className, {
+        isFocused: !!isFocused,
+      });
       return (
         <WrappedComponent
           {...props}
           ref={ref}
           onClick={onClick}
-          // className={combinedClassName}
+          className={combinedClassName}
         />
       );
     },
