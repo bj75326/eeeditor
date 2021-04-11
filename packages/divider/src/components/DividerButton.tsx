@@ -2,8 +2,13 @@ import React, { CSSProperties, ReactNode, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
-import { EditorState, EditorPlugin } from '@eeeditor/editor';
-import zhCN from '../locale/zhCN';
+import {
+  EditorState,
+  EditorPlugin,
+  ContentBlock,
+  DraftBlockType,
+} from '@eeeditor/editor';
+import zhCN from '../locale/zh_CN';
 
 export const defaultDividerIcon = (
   <svg
@@ -79,8 +84,9 @@ export interface DividerButtonProps {
     shortcut?: string;
   };
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
+  tipReverse?: boolean;
   children?: ReactNode;
-  // shortcut 禁用与自定义
+  // shortcut 自定义
   keyCommand?: string;
   grammar?: string;
   // toolbar plugin 提供的 props
@@ -117,6 +123,7 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
       name: 'eeeditor.divider.button.tip.name',
     },
     tipProps,
+    tipReverse,
     children = defaultDividerIcon,
     keyCommand,
     grammar,
@@ -134,13 +141,63 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
     setSelectorBtnIcon,
   } = props;
 
-  const preventBubblingUp = (event: MouseEvent): void => {};
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.preventDefault();
+  };
+
+  const checkButtonShouldDisabled = (): boolean => {
+    if (getEditorState) {
+      return true;
+    }
+    const editorState: EditorState = getEditorState();
+    const currentBlock: ContentBlock = editorState
+      .getCurrentContent()
+      .getBlockForKey(editorState.getSelection().getStartKey());
+    const currentBlockType: DraftBlockType = currentBlock.getType();
+    // 当 selection start block type 为 'atomic' 或者 'code-block' 时， disabled
+    if (currentBlockType === 'atomic' || currentBlockType === 'code-block') {
+      return true;
+    }
+    return false;
+  };
+
+  const btnClassName = classNames(`${prefixCls}-btn`, className, {
+    [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
+  });
+
+  const tipClassName = classNames(`${prefixCls}-tip`, {
+    [`${prefixCls}-tip-reverse`]:
+      tipReverse !== undefined
+        ? tipReverse
+        : tipProps.placement.startsWith('top'),
+  });
+
+  const tipTitle: ReactNode =
+    title && title.name ? (
+      <span className={tipClassName}>
+        <span className={`${prefixCls}-tip-name`}>
+          {locale[title.name] || title.name}
+        </span>
+        {title.shortcut && (
+          <span className={`${prefixCls}-tip-shortcut`}>
+            {locale[title.shortcut] || title.shortcut}
+          </span>
+        )}
+      </span>
+    ) : (
+      ''
+    );
 
   return (
-    <div
-      className={`${prefixCls}-btn-wrapper`}
-      onMouseDown={preventBubblingUp}
-    ></div>
+    <div className={`${prefixCls}-btn-wrapper`} onMouseDown={preventBubblingUp}>
+      {checkButtonShouldDisabled() ? (
+        <div className={btnClassName} style={style}>
+          {children}
+        </div>
+      ) : (
+        <Tooltip title={tipTitle}></Tooltip>
+      )}
+    </div>
   );
 };
 

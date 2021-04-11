@@ -102,10 +102,12 @@ export interface EEEditorButtonProps {
     name?: string;
     shortcut?: string;
   };
-  // align?: TooltipPropsWithTitle['align'];
-  // placement?: TooltipPropsWithTitle['placement'];
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
+  tipReverse?: boolean;
   children?: ReactNode;
+  // shortcut 自定义
+  keyCommand?: string;
+  grammar?: string;
 }
 
 export interface EEEditorStyleButtonProps extends EEEditorButtonProps {

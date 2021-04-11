@@ -24,6 +24,8 @@ export interface SelectorBtnChildrenProps {
   setSelectorBtnActive: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
   setSelectorBtnIcon: (icon: SelectorButtonProps['icon']) => void;
+  // selector button  默认的 button tip props
+  tipProps?: EEEditorStyleButtonProps['tipProps'];
 }
 
 export interface SelectorButtonProps
@@ -105,6 +107,9 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     setSelectorBtnActive,
     setSelectorBtnDisabled,
     setSelectorBtnIcon,
+    tipProps: {
+      placement: 'right',
+    },
   };
 
   const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {
@@ -136,7 +141,11 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
         {React.Children.map<ReactElement, ReactElement>(
           children,
           (child, index) =>
-            React.cloneElement(child, { ...childProps, optionKey: index }),
+            React.cloneElement(child, {
+              ...childProps,
+              optionKey: index,
+              ...child.props,
+            }),
         )}
       </div>
     </div>

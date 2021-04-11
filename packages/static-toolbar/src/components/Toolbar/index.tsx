@@ -9,6 +9,7 @@ import {
   HeadlineFourButton,
   HeadlineFiveButton,
   HeadlineSixButton,
+  EEEditorStyleButtonProps,
 } from '@eeeditor/buttons';
 import classNames from 'classnames';
 import SelectorButton from '../SelectorButton';
@@ -34,6 +35,8 @@ export interface ToolbarChildrenProps {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
+  // static toolbar 默认的 button tip props
+  tipProps?: EEEditorStyleButtonProps['tipProps'];
 }
 
 export interface ToolbarPubProps {
@@ -111,6 +114,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         beforeInputHandlers.filter((handler) => handler !== beforeInputHandler),
       );
     },
+    // static toolbar 默认的 button tip props
+    tipProps: {
+      placement: 'bottom',
+    },
   };
 
   const defaultButtons = (
@@ -130,7 +137,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     <div className={toolbarClassName} style={style}>
       {React.Children.map<ReactElement, ReactElement>(
         children || defaultButtons,
-        (child) => React.cloneElement(child, { ...childrenProps }),
+        (child) =>
+          React.cloneElement(child, { ...childrenProps, ...child.props }),
       )}
     </div>
   );

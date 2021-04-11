@@ -400,10 +400,10 @@ const Page: React.FC<PageProps> = (props) => {
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <StaticToolbar>
-              <BoldButton tipProps={staticToolbarBtnTip} />
-              <ItalicButton tipProps={staticToolbarBtnTip} />
-              <UnderlineButton tipProps={staticToolbarBtnTip} />
-              <CodeButton tipProps={staticToolbarBtnTip} />
+              <BoldButton />
+              <ItalicButton />
+              <UnderlineButton />
+              <CodeButton />
               <Separator />
               <SelectorButton icon={defaultHeadIcon}>
                 <HeadlineOneButton tipProps={selectBtnChildrenTip} />
@@ -419,9 +419,9 @@ const Page: React.FC<PageProps> = (props) => {
                 <AlignRightButton tipProps={selectBtnChildrenTip} />
                 <AlignJustifyButton tipProps={selectBtnChildrenTip} />
               </SelectorButton>
-              <UnorderedListButton tipProps={staticToolbarBtnTip} />
-              <OrderedListButton tipProps={staticToolbarBtnTip} />
-              <BlockquoteButton tipProps={staticToolbarBtnTip} />
+              <UnorderedListButton />
+              <OrderedListButton />
+              <BlockquoteButton />
               <Separator />
               <DecoratedUndoButton />
               <DecoratedRedoButton />
