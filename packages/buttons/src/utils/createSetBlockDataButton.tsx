@@ -38,7 +38,10 @@ export default function createSetBlockDataButton({
       locale = zhCN,
       title = defaultTitle,
       tipProps,
+      tipReverse,
       children = defaultChildren,
+      keyCommand,
+      grammar,
       getEditorState,
       setEditorState,
       getProps,
@@ -158,9 +161,16 @@ export default function createSetBlockDataButton({
       [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
     });
 
+    const tipClassName = classNames(`${prefixCls}-tip`, {
+      [`${prefixCls}-tip-reverse`]:
+        tipReverse !== undefined
+          ? tipReverse
+          : tipProps.placement.startsWith('top'),
+    });
+
     const tipTitle: ReactNode =
       title && title.name ? (
-        <span className={`${prefixCls}-tip`}>
+        <span className={tipClassName}>
           <span className={`${prefixCls}-tip-name`}>
             {locale[title.name] || title.name}
           </span>

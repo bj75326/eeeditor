@@ -144,9 +144,16 @@ export default function createBlockStyleButton({
       [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
     });
 
+    const tipClassName = classNames(`${prefixCls}-tip`, {
+      [`${prefixCls}-tip-reverse`]:
+        tipReverse !== undefined
+          ? tipReverse
+          : tipProps.placement.startsWith('top'),
+    });
+
     const tipTitle: ReactNode =
       title && title.name ? (
-        <span className={`${prefixCls}-tip`}>
+        <span className={tipClassName}>
           <span className={`${prefixCls}-tip-name`}>
             {locale[title.name] || title.name}
           </span>
