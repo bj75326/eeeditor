@@ -5,6 +5,7 @@ import {
   EEEditorStyleButtonType,
   EEEditorButtonType,
   EEEditorStyleButtonProps,
+  KeyCommand,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -16,9 +17,13 @@ interface CreateBlockStyleButtonProps {
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
-  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  defaultKeyCommand?: KeyCommand | false;
+  defaultSyntax?: string | false;
+  getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
-  buttonBeforeInputHandler?: EditorPlugin['handleBeforeInput'];
+  getBeforeInputHandler?: (
+    syntax: EEEditorStyleButtonProps['syntax'],
+  ) => EditorPlugin['handleBeforeInput'];
 }
 
 export default function createBlockStyleButton({
@@ -26,9 +31,11 @@ export default function createBlockStyleButton({
   buttonType,
   defaultChildren,
   defaultTitle,
-  buttonKeyBindingFn,
+  defaultKeyCommand = false,
+  defaultSyntax = false,
+  getKeyBindingFn,
   buttonKeyCommandHandler,
-  buttonBeforeInputHandler,
+  getBeforeInputHandler,
 }: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
   const ToggleBlockTypeButton: EEEditorStyleButtonType = (props) => {
     const {
@@ -40,8 +47,8 @@ export default function createBlockStyleButton({
       tipProps,
       tipReverse,
       children = defaultChildren,
-      keyCommand,
-      grammar,
+      keyCommand = defaultKeyCommand,
+      syntax = defaultSyntax,
       getEditorState,
       setEditorState,
       addKeyCommandHandler,
@@ -85,6 +92,16 @@ export default function createBlockStyleButton({
       // }
       return type === blockType;
     };
+
+    let buttonKeyBindingFn = null;
+    if (getKeyBindingFn && keyCommand) {
+      buttonKeyBindingFn = getKeyBindingFn(keyCommand);
+    }
+
+    let buttonBeforeInputHandler = null;
+    if (getBeforeInputHandler && syntax) {
+      buttonBeforeInputHandler = getBeforeInputHandler(syntax);
+    }
 
     useEffect(() => {
       if (buttonKeyBindingFn) {

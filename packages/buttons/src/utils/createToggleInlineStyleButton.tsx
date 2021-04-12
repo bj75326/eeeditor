@@ -5,6 +5,7 @@ import {
   EEEditorStyleButtonType,
   EEEditorStyleButtonProps,
   EEEditorButtonType,
+  KeyCommand,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -16,9 +17,10 @@ interface CreateInlineStyleButtonProps {
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
   defaultTitle?: EEEditorStyleButtonProps['title'];
-  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  defaultKeyCommand?: KeyCommand | false;
+  getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
-  buttonBeforeInputHandler?: EditorPlugin['handleBeforeInput'];
+  //getBeforeInputHandler?: (syntax: EEEditorStyleButtonProps['syntax']) => EditorPlugin['handleBeforeInput'];
 }
 
 export default function CreateInlineStyleButton({
@@ -26,10 +28,11 @@ export default function CreateInlineStyleButton({
   buttonType,
   defaultChildren,
   defaultTitle,
-  buttonKeyBindingFn,
+  defaultKeyCommand = false,
+  getKeyBindingFn,
   buttonKeyCommandHandler,
-  buttonBeforeInputHandler,
-}: CreateInlineStyleButtonProps): EEEditorStyleButtonType {
+}: //getBeforeInputHandler,
+CreateInlineStyleButtonProps): EEEditorStyleButtonType {
   const ToggleInlineStyleButton: EEEditorStyleButtonType = (props) => {
     const {
       prefixCls = 'eee',
@@ -40,8 +43,7 @@ export default function CreateInlineStyleButton({
       tipProps,
       tipReverse,
       children = defaultChildren,
-      keyCommand,
-      grammar,
+      keyCommand = defaultKeyCommand,
       getEditorState,
       setEditorState,
       addKeyCommandHandler,
@@ -77,6 +79,11 @@ export default function CreateInlineStyleButton({
       return editorState.getCurrentInlineStyle().has(inlineStyle);
     };
 
+    let buttonKeyBindingFn = null;
+    if (getKeyBindingFn && keyCommand) {
+      buttonKeyBindingFn = getKeyBindingFn(keyCommand);
+    }
+
     useEffect(() => {
       if (buttonKeyBindingFn) {
         addKeyBindingFn(buttonKeyBindingFn);
@@ -84,18 +91,12 @@ export default function CreateInlineStyleButton({
       if (buttonKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
-      if (buttonBeforeInputHandler) {
-        addBeforeInputHandler(buttonBeforeInputHandler);
-      }
       return () => {
         if (buttonKeyBindingFn) {
           removeKeyBindingFn(buttonKeyBindingFn);
         }
         if (buttonKeyCommandHandler) {
           removeKeyCommandHandler(buttonKeyCommandHandler);
-        }
-        if (buttonBeforeInputHandler) {
-          removeBeforeInputHandler(buttonBeforeInputHandler);
         }
       };
     }, []);

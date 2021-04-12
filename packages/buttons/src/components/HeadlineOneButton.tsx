@@ -1,5 +1,10 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
-import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
+import {
+  RichUtils,
+  Modifier,
+  EditorState,
+  KeyBindingUtil,
+} from '@eeeditor/editor';
 
 export const defaultHeadlineOneIcon = (
   <svg
@@ -48,47 +53,96 @@ export default createToggleBlockTypeButton({
     name: 'eeeditor.button.h1.tip.name',
     shortcut: 'eeeditor.button.h1.tip.shortcut',
   },
-  buttonBeforeInputHandler(chars, editorState, { setEditorState }) {
-    const selection = editorState.getSelection();
-    const contentState = editorState.getCurrentContent();
-    const strBefore = contentState
-      .getBlockForKey(selection.getStartKey())
-      .getText()
-      .slice(0, selection.getStartOffset());
-    // 不考虑 selection anchor & focus offset是否相同
-    // if (`${strBefore}${chars}` === '# ') {
-    //   const newContentState = Modifier.replaceText(
-    //     contentState,
-    //     selection.merge({
-    //       anchorOffset: 0,
-    //       focusOffset: selection.getEndOffset(),
-    //       isBackward: false,
-    //     }),
-    //     '',
-    //   );
-    //   setEditorState(RichUtils.toggleBlockType(EditorState.push(editorState, newContentState, 'remove-range'), 'header-one'));
-    //   return 'handled';
-    // }
+  defaultKeyCommand: false,
+  defaultSyntax: '# ',
+  // buttonBeforeInputHandler(chars, editorState, { setEditorState }) {
+  //   const selection = editorState.getSelection();
+  //   const contentState = editorState.getCurrentContent();
+  //   const strBefore = contentState
+  //     .getBlockForKey(selection.getStartKey())
+  //     .getText()
+  //     .slice(0, selection.getStartOffset());
 
-    // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
-    if (`${strBefore}${chars}` === '# ' && selection.isCollapsed()) {
-      const newContentState = Modifier.removeRange(
-        RichUtils.toggleBlockType(
-          editorState,
-          'header-one',
-        ).getCurrentContent(),
-        selection.merge({
-          anchorOffset: 0,
-          focusOffset: selection.getEndOffset(),
-          isBackward: false,
-        }),
-        'backward',
-      );
-      setEditorState(
-        EditorState.push(editorState, newContentState, 'change-block-type'),
-      );
+  //   // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
+  //   if (`${strBefore}${chars}` === '# ' && selection.isCollapsed()) {
+  //     const newContentState = Modifier.removeRange(
+  //       RichUtils.toggleBlockType(
+  //         editorState,
+  //         'header-one',
+  //       ).getCurrentContent(),
+  //       selection.merge({
+  //         anchorOffset: 0,
+  //         focusOffset: selection.getEndOffset(),
+  //         isBackward: false,
+  //       }),
+  //       'backward',
+  //     );
+  //     setEditorState(
+  //       EditorState.push(editorState, newContentState, 'change-block-type'),
+  //     );
+  //     return 'handled';
+  //   }
+  //   return 'not-handled';
+  // },
+  getKeyBindingFn(keyCommand) {
+    return (event) => {
+      if (
+        keyCommand.keyCode === event.keyCode &&
+        (keyCommand.isShiftKeyCommand === undefined ||
+          keyCommand.isShiftKeyCommand === event.shiftKey) &&
+        (keyCommand.isCtrlKeyCommand === undefined ||
+          keyCommand.isCtrlKeyCommand ===
+            KeyBindingUtil.isCtrlKeyCommand(event)) &&
+        (keyCommand.isOptionKeyCommand === undefined ||
+          keyCommand.isOptionKeyCommand ===
+            KeyBindingUtil.isOptionKeyCommand(event)) &&
+        (keyCommand.hasCommandModifier === undefined ||
+          keyCommand.hasCommandModifier ===
+            KeyBindingUtil.hasCommandModifier(event))
+      ) {
+        return 'header-one';
+      }
+      return undefined;
+    };
+  },
+
+  buttonKeyCommandHandler(command, editorState, { setEditorState }) {
+    if (command === 'header-one') {
+      setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
       return 'handled';
     }
     return 'not-handled';
+  },
+
+  getBeforeInputHandler(syntax) {
+    return (chars, editorState, { setEditorState }) => {
+      const selection = editorState.getSelection();
+      const contentState = editorState.getCurrentContent();
+      const strBefore = contentState
+        .getBlockForKey(selection.getStartKey())
+        .getText()
+        .slice(0, selection.getStartOffset());
+
+      // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
+      if (`${strBefore}${chars}` === syntax && selection.isCollapsed()) {
+        const newContentState = Modifier.removeRange(
+          RichUtils.toggleBlockType(
+            editorState,
+            'header-one',
+          ).getCurrentContent(),
+          selection.merge({
+            anchorOffset: 0,
+            focusOffset: selection.getEndOffset(),
+            isBackward: false,
+          }),
+          'backward',
+        );
+        setEditorState(
+          EditorState.push(editorState, newContentState, 'change-block-type'),
+        );
+        return 'handled';
+      }
+      return 'not-handled';
+    };
   },
 });

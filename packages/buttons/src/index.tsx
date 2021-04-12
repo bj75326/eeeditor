@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties, ReactNode, KeyboardEvent } from 'react';
 import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
@@ -93,6 +93,14 @@ export type EEEditorButtonType =
   | 'underline'
   | 'align';
 
+export interface KeyCommand {
+  keyCode: KeyboardEvent['keyCode'];
+  isShiftKeyCommand?: boolean; // e.shiftKey
+  isCtrlKeyCommand?: boolean; // !!e.ctrlKey && !e.altKey
+  isOptionKeyCommand?: boolean; // isOSX && e.altKey
+  hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
+}
+
 export interface EEEditorButtonProps {
   prefixCls?: string;
   className?: string;
@@ -106,8 +114,8 @@ export interface EEEditorButtonProps {
   tipReverse?: boolean;
   children?: ReactNode;
   // shortcut 自定义
-  keyCommand?: string;
-  grammar?: string;
+  keyCommand?: KeyCommand | false;
+  syntax?: string | false;
 }
 
 export interface EEEditorStyleButtonProps extends EEEditorButtonProps {

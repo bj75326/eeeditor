@@ -41,7 +41,7 @@ export default function createSetBlockDataButton({
       tipReverse,
       children = defaultChildren,
       keyCommand,
-      grammar,
+      syntax,
       getEditorState,
       setEditorState,
       getProps,
