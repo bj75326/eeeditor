@@ -118,7 +118,11 @@ export interface EEEditorButtonProps {
   syntax?: string | false;
 }
 
-export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
+export interface EEEditorStyleButtonProps<K, S>
+  extends Omit<EEEditorButtonProps, 'syntax' | 'keyCommand'> {
+  // 部分 button 不支持 keyCommand 或 syntax
+  keyCommand?: K;
+  syntax?: S;
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
@@ -144,7 +148,9 @@ export interface EEEditorStyleButtonProps extends EEEditorButtonProps {
   setSelectorBtnIcon?: (icon?: ReactNode) => void;
 }
 
-export type EEEditorStyleButtonType = React.FC<EEEditorStyleButtonProps>;
+export type EEEditorStyleButtonType<K, S> = React.FC<
+  EEEditorStyleButtonProps<K, S>
+>;
 
 export {
   createToggleBlockTypeButton,

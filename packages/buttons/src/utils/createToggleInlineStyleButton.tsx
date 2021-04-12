@@ -50,8 +50,6 @@ CreateInlineStyleButtonProps): EEEditorStyleButtonType {
       removeKeyCommandHandler,
       addKeyBindingFn,
       removeKeyBindingFn,
-      addBeforeInputHandler,
-      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
