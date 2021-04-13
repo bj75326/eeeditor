@@ -1,4 +1,5 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
+import { KeyCommand } from '..';
 import {
   RichUtils,
   Modifier,
@@ -87,7 +88,7 @@ export const defaultOrderedListIcon = (
   </svg>
 );
 
-export default createToggleBlockTypeButton({
+export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   blockType: 'ordered-list-item',
   buttonType: 'ordered-list-item',
   defaultChildren: defaultOrderedListIcon,
@@ -97,7 +98,7 @@ export default createToggleBlockTypeButton({
   },
   defaultKeyCommand: false,
   defaultSyntax: '1. ',
-  getKeyBindingFn: (keyCommand) => (event) => {
+  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
     if (
       keyCommand.keyCode === event.keyCode &&
       (keyCommand.isShiftKeyCommand === undefined ||
@@ -125,7 +126,7 @@ export default createToggleBlockTypeButton({
     }
     return 'not-handled';
   },
-  getBeforeInputHandler: (syntax) => (
+  getBeforeInputHandler: (syntax: string) => (
     chars,
     editorState,
     { setEditorState },

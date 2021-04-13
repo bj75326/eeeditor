@@ -11,26 +11,30 @@ import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
 import Immutable from 'immutable';
 
-interface CreateSetBlockDataButtonProps {
+interface CreateSetBlockDataButtonProps<K, S> {
   blockMetaData: Record<string, string | boolean | number>;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps['title'];
-  buttonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultKeyCommand?: K;
+  defaultSyntax?: S;
+  getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
-  buttonBeforeInputHandler?: EditorPlugin['handleBeforeInput'];
+  getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
 }
 
-export default function createSetBlockDataButton({
+export default function createSetBlockDataButton<K, S>({
   blockMetaData,
   buttonType,
   defaultChildren,
   defaultTitle,
-  buttonKeyBindingFn,
+  defaultKeyCommand,
+  defaultSyntax,
+  getKeyBindingFn,
   buttonKeyCommandHandler,
-  buttonBeforeInputHandler,
-}: CreateSetBlockDataButtonProps): EEEditorStyleButtonType {
-  const SetBlockDataButton: EEEditorStyleButtonType = (props) => {
+  getBeforeInputHandler,
+}: CreateSetBlockDataButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
+  const SetBlockDataButton: EEEditorStyleButtonType<K, S> = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -40,8 +44,8 @@ export default function createSetBlockDataButton({
       tipProps,
       tipReverse,
       children = defaultChildren,
-      keyCommand,
-      syntax,
+      keyCommand = defaultKeyCommand,
+      syntax = defaultSyntax,
       getEditorState,
       setEditorState,
       getProps,
@@ -108,6 +112,16 @@ export default function createSetBlockDataButton({
         (key) => metaData.get(key) !== blockMetaData[key],
       );
     };
+
+    let buttonKeyBindingFn = null;
+    if (getKeyBindingFn && keyCommand) {
+      buttonKeyBindingFn = getKeyBindingFn(keyCommand);
+    }
+
+    let buttonBeforeInputHandler = null;
+    if (getBeforeInputHandler && syntax) {
+      buttonBeforeInputHandler = getBeforeInputHandler(syntax);
+    }
 
     useEffect(() => {
       if (buttonKeyBindingFn) {

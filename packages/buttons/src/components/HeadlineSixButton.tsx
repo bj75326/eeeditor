@@ -1,4 +1,5 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
+import { KeyCommand } from '..';
 import {
   RichUtils,
   Modifier,
@@ -50,7 +51,7 @@ export const defaultHeadlineSixIcon = (
   </svg>
 );
 
-export default createToggleBlockTypeButton({
+export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   blockType: 'header-six',
   buttonType: 'header',
   defaultChildren: defaultHeadlineSixIcon,
@@ -60,7 +61,7 @@ export default createToggleBlockTypeButton({
   },
   defaultKeyCommand: false,
   defaultSyntax: '###### ',
-  getKeyBindingFn: (keyCommand) => (event) => {
+  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
     if (
       keyCommand.keyCode === event.keyCode &&
       (keyCommand.isShiftKeyCommand === undefined ||
@@ -86,7 +87,7 @@ export default createToggleBlockTypeButton({
     }
     return 'not-handled';
   },
-  getBeforeInputHandler: (syntax) => (
+  getBeforeInputHandler: (syntax: string) => (
     chars,
     editorState,
     { setEditorState },

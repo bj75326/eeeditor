@@ -1,5 +1,6 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils, KeyBindingUtil } from '@eeeditor/editor';
+import { KeyCommand } from '..';
 
 export const defaultUnderlineIcon = (
   <svg
@@ -26,7 +27,7 @@ export const defaultUnderlineIcon = (
   </svg>
 );
 
-export default createToggleInlineStyleButton({
+export default createToggleInlineStyleButton<KeyCommand | false, false>({
   inlineStyle: 'UNDERLINE',
   buttonType: 'underline',
   defaultChildren: defaultUnderlineIcon,
@@ -38,7 +39,8 @@ export default createToggleInlineStyleButton({
     keyCode: 85,
     hasCommandModifier: true,
   },
-  getKeyBindingFn: (keyCommand) => (event) => {
+  defaultSyntax: false,
+  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
     if (
       keyCommand.keyCode === event.keyCode &&
       (keyCommand.isShiftKeyCommand === undefined ||

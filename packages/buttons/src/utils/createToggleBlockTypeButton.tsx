@@ -5,48 +5,36 @@ import {
   EEEditorStyleButtonType,
   EEEditorButtonType,
   EEEditorStyleButtonProps,
-  KeyCommand,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
 import { Tooltip } from 'antd';
 import zhCN from '../locale/zh_CN';
 
-interface CreateBlockStyleButtonProps {
+interface CreateToggleBlockTypeButtonProps<K, S> {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps<
-    KeyCommand | false,
-    string | false
-  >['title'];
-  defaultKeyCommand?: KeyCommand | false;
-  defaultSyntax?: string | false;
-  getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
+  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultKeyCommand?: K;
+  defaultSyntax?: S;
+  getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
-  getBeforeInputHandler?: (
-    syntax: string | false,
-  ) => EditorPlugin['handleBeforeInput'];
+  getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
 }
 
-export default function createBlockStyleButton({
+export default function createToggleBlockTypeButton<K, S>({
   blockType,
   buttonType,
   defaultChildren,
   defaultTitle,
-  defaultKeyCommand = false,
-  defaultSyntax = false,
+  defaultKeyCommand,
+  defaultSyntax,
   getKeyBindingFn,
   buttonKeyCommandHandler,
   getBeforeInputHandler,
-}: CreateBlockStyleButtonProps): EEEditorStyleButtonType<
-  KeyCommand | false,
-  string | false
-> {
-  const ToggleBlockTypeButton: EEEditorStyleButtonType<
-    KeyCommand | false,
-    string | false
-  > = (props) => {
+}: CreateToggleBlockTypeButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
+  const ToggleBlockTypeButton: EEEditorStyleButtonType<K, S> = (props) => {
     const {
       prefixCls = 'eee',
       className,

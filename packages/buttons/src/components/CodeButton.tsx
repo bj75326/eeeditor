@@ -1,5 +1,6 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
 import { RichUtils, KeyBindingUtil } from '@eeeditor/editor';
+import { KeyCommand } from '..';
 
 export const defaultCodeIcon = (
   <svg
@@ -32,7 +33,7 @@ export const defaultCodeIcon = (
   </svg>
 );
 
-export default createToggleInlineStyleButton({
+export default createToggleInlineStyleButton<KeyCommand | false, false>({
   inlineStyle: 'CODE',
   buttonType: 'code',
   defaultChildren: defaultCodeIcon,
@@ -43,7 +44,8 @@ export default createToggleInlineStyleButton({
     keyCode: 74,
     hasCommandModifier: true,
   },
-  getKeyBindingFn: (keyCommand) => (event) => {
+  defaultSyntax: false,
+  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
     if (
       keyCommand.keyCode === event.keyCode &&
       (keyCommand.isShiftKeyCommand === undefined ||

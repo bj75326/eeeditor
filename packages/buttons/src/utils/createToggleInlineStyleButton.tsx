@@ -12,32 +12,30 @@ import shouldButtonDisabled from './disableStrategy';
 import { Tooltip } from 'antd';
 import zhCN from '../locale/zh_CN';
 
-interface CreateInlineStyleButtonProps {
+interface CreateToggleInlineStyleButtonProps<K, S> {
   inlineStyle: string;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps<KeyCommand | false, false>['title'];
-  defaultKeyCommand?: KeyCommand | false;
-  getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
+  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultKeyCommand?: K;
+  defaultSyntax?: S;
+  getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
+  getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
 }
 
-export default function CreateInlineStyleButton({
+export default function CreateToggleInlineStyleButton<K, S>({
   inlineStyle,
   buttonType,
   defaultChildren,
   defaultTitle,
-  defaultKeyCommand = false,
+  defaultKeyCommand,
+  defaultSyntax,
   getKeyBindingFn,
   buttonKeyCommandHandler,
-}: CreateInlineStyleButtonProps): EEEditorStyleButtonType<
-  KeyCommand | false,
-  false
-> {
-  const ToggleInlineStyleButton: EEEditorStyleButtonType<
-    KeyCommand | false,
-    false
-  > = (props) => {
+  getBeforeInputHandler,
+}: CreateToggleInlineStyleButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
+  const ToggleInlineStyleButton: EEEditorStyleButtonType<K, S> = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -48,12 +46,15 @@ export default function CreateInlineStyleButton({
       tipReverse,
       children = defaultChildren,
       keyCommand = defaultKeyCommand,
+      syntax = defaultSyntax,
       getEditorState,
       setEditorState,
       addKeyCommandHandler,
       removeKeyCommandHandler,
       addKeyBindingFn,
       removeKeyBindingFn,
+      addBeforeInputHandler,
+      removeBeforeInputHandler,
       setSelectorBtnActive,
       setSelectorBtnDisabled,
       optionKey,
@@ -86,6 +87,11 @@ export default function CreateInlineStyleButton({
       buttonKeyBindingFn = getKeyBindingFn(keyCommand);
     }
 
+    let buttonBeforeInputHandler = null;
+    if (getBeforeInputHandler && syntax) {
+      buttonBeforeInputHandler = getBeforeInputHandler(syntax);
+    }
+
     useEffect(() => {
       if (buttonKeyBindingFn) {
         addKeyBindingFn(buttonKeyBindingFn);
@@ -93,12 +99,18 @@ export default function CreateInlineStyleButton({
       if (buttonKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
+      if (buttonBeforeInputHandler) {
+        addBeforeInputHandler(buttonBeforeInputHandler);
+      }
       return () => {
         if (buttonKeyBindingFn) {
           removeKeyBindingFn(buttonKeyBindingFn);
         }
         if (buttonKeyCommandHandler) {
           removeKeyCommandHandler(buttonKeyCommandHandler);
+        }
+        if (buttonBeforeInputHandler) {
+          removeBeforeInputHandler(buttonBeforeInputHandler);
         }
       };
     }, []);

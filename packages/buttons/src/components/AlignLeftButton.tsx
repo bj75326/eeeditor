@@ -1,4 +1,7 @@
 import createSetBlockDataButton from '../utils/createSetBlockDataButton';
+import { KeyCommand } from '..';
+import { KeyBindingUtil, EditorState, Modifier } from '@eeeditor/editor';
+import Immutable from 'immutable';
 
 export const defaultAlignLeftIcon = (
   <svg
@@ -61,7 +64,7 @@ export const defaultAlignLeftIcon = (
   </svg>
 );
 
-export default createSetBlockDataButton({
+export default createSetBlockDataButton<KeyCommand | false, false>({
   blockMetaData: {
     align: 'left',
   },
@@ -69,5 +72,48 @@ export default createSetBlockDataButton({
   defaultChildren: defaultAlignLeftIcon,
   defaultTitle: {
     name: 'eeeditor.button.align.left.tip.name',
+  },
+  defaultKeyCommand: {
+    keyCode: 76,
+    hasCommandModifier: true,
+  },
+  defaultSyntax: false,
+  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
+    if (
+      keyCommand.keyCode === event.keyCode &&
+      (keyCommand.isShiftKeyCommand === undefined ||
+        keyCommand.isShiftKeyCommand === event.shiftKey) &&
+      (keyCommand.isCtrlKeyCommand === undefined ||
+        keyCommand.isCtrlKeyCommand ===
+          KeyBindingUtil.isCtrlKeyCommand(event)) &&
+      (keyCommand.isOptionKeyCommand === undefined ||
+        keyCommand.isOptionKeyCommand ===
+          KeyBindingUtil.isOptionKeyCommand(event)) &&
+      (keyCommand.hasCommandModifier === undefined ||
+        keyCommand.hasCommandModifier ===
+          KeyBindingUtil.hasCommandModifier(event))
+    ) {
+      return 'align-left';
+    }
+    return undefined;
+  },
+  buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
+    if (command === 'align-left') {
+      setEditorState(
+        EditorState.push(
+          editorState,
+          Modifier.mergeBlockData(
+            editorState.getCurrentContent(),
+            editorState.getSelection(),
+            Immutable.Map<string, string | boolean | number>({
+              align: 'left',
+            }),
+          ),
+          'change-block-data',
+        ),
+      );
+      return 'handled';
+    }
+    return 'not-handled';
   },
 });
