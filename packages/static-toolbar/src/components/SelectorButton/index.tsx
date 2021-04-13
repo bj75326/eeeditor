@@ -25,13 +25,19 @@ export interface SelectorBtnChildrenProps {
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
   setSelectorBtnIcon: (icon: SelectorButtonProps['icon']) => void;
   // selector button  默认的 button tip props
-  tipProps?: EEEditorStyleButtonProps['tipProps'];
+  tipProps?: EEEditorStyleButtonProps<false, false>['tipProps'];
 }
 
 export interface SelectorButtonProps
   extends Omit<
-    EEEditorStyleButtonProps,
-    'title' | 'locale' | 'children' | 'align'
+    EEEditorStyleButtonProps<false, false>,
+    | 'title'
+    | 'locale'
+    | 'children'
+    | 'tipProps'
+    | 'tipReverse'
+    | 'keyCommand'
+    | 'syntax'
   > {
   icon?: ReactNode;
   children: ReactElement | ReactElement[];

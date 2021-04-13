@@ -36,7 +36,7 @@ export interface ToolbarChildrenProps {
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
   // static toolbar 默认的 button tip props
-  tipProps?: EEEditorStyleButtonProps['tipProps'];
+  tipProps?: EEEditorStyleButtonProps<false, false>['tipProps'];
 }
 
 export interface ToolbarPubProps {
