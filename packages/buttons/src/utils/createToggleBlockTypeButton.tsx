@@ -16,13 +16,16 @@ interface CreateBlockStyleButtonProps {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps['title'];
+  defaultTitle?: EEEditorStyleButtonProps<
+    KeyCommand | false,
+    string | false
+  >['title'];
   defaultKeyCommand?: KeyCommand | false;
   defaultSyntax?: string | false;
   getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
   getBeforeInputHandler?: (
-    syntax: EEEditorStyleButtonProps['syntax'],
+    syntax: string | false,
   ) => EditorPlugin['handleBeforeInput'];
 }
 
@@ -36,8 +39,14 @@ export default function createBlockStyleButton({
   getKeyBindingFn,
   buttonKeyCommandHandler,
   getBeforeInputHandler,
-}: CreateBlockStyleButtonProps): EEEditorStyleButtonType {
-  const ToggleBlockTypeButton: EEEditorStyleButtonType = (props) => {
+}: CreateBlockStyleButtonProps): EEEditorStyleButtonType<
+  KeyCommand | false,
+  string | false
+> {
+  const ToggleBlockTypeButton: EEEditorStyleButtonType<
+    KeyCommand | false,
+    string | false
+  > = (props) => {
     const {
       prefixCls = 'eee',
       className,

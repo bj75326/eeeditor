@@ -1,5 +1,5 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
-import { RichUtils } from '@eeeditor/editor';
+import { RichUtils, KeyBindingUtil } from '@eeeditor/editor';
 
 export const defaultItalicIcon = (
   <svg
@@ -40,6 +40,29 @@ export default createToggleInlineStyleButton({
   defaultTitle: {
     name: 'eeeditor.button.italic.tip.name',
     shortcut: 'eeeditor.button.italic.tip.shortcut',
+  },
+  defaultKeyCommand: {
+    keyCode: 73,
+    hasCommandModifier: true,
+  },
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (
+      keyCommand.keyCode === event.keyCode &&
+      (keyCommand.isShiftKeyCommand === undefined ||
+        keyCommand.isShiftKeyCommand === event.shiftKey) &&
+      (keyCommand.isCtrlKeyCommand === undefined ||
+        keyCommand.isCtrlKeyCommand ===
+          KeyBindingUtil.isCtrlKeyCommand(event)) &&
+      (keyCommand.isOptionKeyCommand === undefined ||
+        keyCommand.isOptionKeyCommand ===
+          KeyBindingUtil.isOptionKeyCommand(event)) &&
+      (keyCommand.hasCommandModifier === undefined ||
+        keyCommand.hasCommandModifier ===
+          KeyBindingUtil.hasCommandModifier(event))
+    ) {
+      return 'italic';
+    }
+    return undefined;
   },
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'italic') {

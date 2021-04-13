@@ -1,5 +1,10 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
-import { RichUtils, Modifier, EditorState } from '@eeeditor/editor';
+import {
+  RichUtils,
+  Modifier,
+  EditorState,
+  KeyBindingUtil,
+} from '@eeeditor/editor';
 
 export const defaultUnorderedListIcon = (
   <svg
@@ -90,7 +95,41 @@ export default createToggleBlockTypeButton({
     name: 'eeeditor.button.ul.tip.name',
     shortcut: 'eeeditor.button.ul.tip.shortcut',
   },
-  buttonBeforeInputHandler(chars, editorState, { setEditorState }) {
+  defaultKeyCommand: false,
+  defaultSyntax: '- ',
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (
+      keyCommand.keyCode === event.keyCode &&
+      (keyCommand.isShiftKeyCommand === undefined ||
+        keyCommand.isShiftKeyCommand === event.shiftKey) &&
+      (keyCommand.isCtrlKeyCommand === undefined ||
+        keyCommand.isCtrlKeyCommand ===
+          KeyBindingUtil.isCtrlKeyCommand(event)) &&
+      (keyCommand.isOptionKeyCommand === undefined ||
+        keyCommand.isOptionKeyCommand ===
+          KeyBindingUtil.isOptionKeyCommand(event)) &&
+      (keyCommand.hasCommandModifier === undefined ||
+        keyCommand.hasCommandModifier ===
+          KeyBindingUtil.hasCommandModifier(event))
+    ) {
+      return 'unordered-list-item';
+    }
+    return undefined;
+  },
+  buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
+    if (command === 'unordered-list-item') {
+      setEditorState(
+        RichUtils.toggleBlockType(editorState, 'unordered-list-item'),
+      );
+      return 'handled';
+    }
+    return 'not-handled';
+  },
+  getBeforeInputHandler: (syntax) => (
+    chars,
+    editorState,
+    { setEditorState },
+  ) => {
     const selection = editorState.getSelection();
     const contentState = editorState.getCurrentContent();
     const strBefore = contentState
@@ -98,7 +137,7 @@ export default createToggleBlockTypeButton({
       .getText()
       .slice(0, selection.getStartOffset());
 
-    if (`${strBefore}${chars}` === '- ' && selection.isCollapsed()) {
+    if (`${strBefore}${chars}` === syntax && selection.isCollapsed()) {
       const newContentState = Modifier.removeRange(
         RichUtils.toggleBlockType(
           editorState,

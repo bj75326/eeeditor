@@ -84,29 +84,27 @@ export default createToggleBlockTypeButton({
   //   }
   //   return 'not-handled';
   // },
-  getKeyBindingFn(keyCommand) {
-    return (event) => {
-      if (
-        keyCommand.keyCode === event.keyCode &&
-        (keyCommand.isShiftKeyCommand === undefined ||
-          keyCommand.isShiftKeyCommand === event.shiftKey) &&
-        (keyCommand.isCtrlKeyCommand === undefined ||
-          keyCommand.isCtrlKeyCommand ===
-            KeyBindingUtil.isCtrlKeyCommand(event)) &&
-        (keyCommand.isOptionKeyCommand === undefined ||
-          keyCommand.isOptionKeyCommand ===
-            KeyBindingUtil.isOptionKeyCommand(event)) &&
-        (keyCommand.hasCommandModifier === undefined ||
-          keyCommand.hasCommandModifier ===
-            KeyBindingUtil.hasCommandModifier(event))
-      ) {
-        return 'header-one';
-      }
-      return undefined;
-    };
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (
+      keyCommand.keyCode === event.keyCode &&
+      (keyCommand.isShiftKeyCommand === undefined ||
+        keyCommand.isShiftKeyCommand === event.shiftKey) &&
+      (keyCommand.isCtrlKeyCommand === undefined ||
+        keyCommand.isCtrlKeyCommand ===
+          KeyBindingUtil.isCtrlKeyCommand(event)) &&
+      (keyCommand.isOptionKeyCommand === undefined ||
+        keyCommand.isOptionKeyCommand ===
+          KeyBindingUtil.isOptionKeyCommand(event)) &&
+      (keyCommand.hasCommandModifier === undefined ||
+        keyCommand.hasCommandModifier ===
+          KeyBindingUtil.hasCommandModifier(event))
+    ) {
+      return 'header-one';
+    }
+    return undefined;
   },
 
-  buttonKeyCommandHandler(command, editorState, { setEditorState }) {
+  buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-one') {
       setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
       return 'handled';
@@ -114,35 +112,37 @@ export default createToggleBlockTypeButton({
     return 'not-handled';
   },
 
-  getBeforeInputHandler(syntax) {
-    return (chars, editorState, { setEditorState }) => {
-      const selection = editorState.getSelection();
-      const contentState = editorState.getCurrentContent();
-      const strBefore = contentState
-        .getBlockForKey(selection.getStartKey())
-        .getText()
-        .slice(0, selection.getStartOffset());
+  getBeforeInputHandler: (syntax) => (
+    chars,
+    editorState,
+    { setEditorState },
+  ) => {
+    const selection = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    const strBefore = contentState
+      .getBlockForKey(selection.getStartKey())
+      .getText()
+      .slice(0, selection.getStartOffset());
 
-      // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
-      if (`${strBefore}${chars}` === syntax && selection.isCollapsed()) {
-        const newContentState = Modifier.removeRange(
-          RichUtils.toggleBlockType(
-            editorState,
-            'header-one',
-          ).getCurrentContent(),
-          selection.merge({
-            anchorOffset: 0,
-            focusOffset: selection.getEndOffset(),
-            isBackward: false,
-          }),
-          'backward',
-        );
-        setEditorState(
-          EditorState.push(editorState, newContentState, 'change-block-type'),
-        );
-        return 'handled';
-      }
-      return 'not-handled';
-    };
+    // 默认只有在 selection anchor & focus offset 相同的情况下，依次输入 '#'，' ' 才会通过 shortcut toggle block type
+    if (`${strBefore}${chars}` === syntax && selection.isCollapsed()) {
+      const newContentState = Modifier.removeRange(
+        RichUtils.toggleBlockType(
+          editorState,
+          'header-one',
+        ).getCurrentContent(),
+        selection.merge({
+          anchorOffset: 0,
+          focusOffset: selection.getEndOffset(),
+          isBackward: false,
+        }),
+        'backward',
+      );
+      setEditorState(
+        EditorState.push(editorState, newContentState, 'change-block-type'),
+      );
+      return 'handled';
+    }
+    return 'not-handled';
   },
 });

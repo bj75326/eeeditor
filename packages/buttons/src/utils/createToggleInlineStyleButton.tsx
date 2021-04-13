@@ -16,11 +16,10 @@ interface CreateInlineStyleButtonProps {
   inlineStyle: string;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps['title'];
+  defaultTitle?: EEEditorStyleButtonProps<KeyCommand | false, false>['title'];
   defaultKeyCommand?: KeyCommand | false;
   getKeyBindingFn?: (keyCommand: KeyCommand) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
-  //getBeforeInputHandler?: (syntax: EEEditorStyleButtonProps['syntax']) => EditorPlugin['handleBeforeInput'];
 }
 
 export default function CreateInlineStyleButton({
@@ -31,9 +30,14 @@ export default function CreateInlineStyleButton({
   defaultKeyCommand = false,
   getKeyBindingFn,
   buttonKeyCommandHandler,
-}: //getBeforeInputHandler,
-CreateInlineStyleButtonProps): EEEditorStyleButtonType {
-  const ToggleInlineStyleButton: EEEditorStyleButtonType = (props) => {
+}: CreateInlineStyleButtonProps): EEEditorStyleButtonType<
+  KeyCommand | false,
+  false
+> {
+  const ToggleInlineStyleButton: EEEditorStyleButtonType<
+    KeyCommand | false,
+    false
+  > = (props) => {
     const {
       prefixCls = 'eee',
       className,
