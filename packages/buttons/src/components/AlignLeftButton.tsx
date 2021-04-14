@@ -72,6 +72,7 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
   defaultChildren: defaultAlignLeftIcon,
   defaultTitle: {
     name: 'eeeditor.button.align.left.tip.name',
+    shortcut: 'eeeditor.button.align.left.tip.shortcut',
   },
   defaultKeyCommand: {
     keyCode: 76,

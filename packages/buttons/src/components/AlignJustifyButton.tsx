@@ -51,6 +51,7 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
   defaultChildren: defaultAlignJustifyIcon,
   defaultTitle: {
     name: 'eeeditor.button.align.justify.tip.name',
+    shortcut: 'eeeditor.button.align.justify.tip.shortcut',
   },
   defaultKeyCommand: {
     keyCode: 74,
