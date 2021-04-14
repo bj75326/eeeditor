@@ -58,7 +58,6 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
   },
   defaultSyntax: false,
   getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    console.log('run justify bindingfn');
     if (
       keyCommand.keyCode === event.keyCode &&
       (keyCommand.isShiftKeyCommand === undefined ||
@@ -73,7 +72,6 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
         keyCommand.hasCommandModifier ===
           KeyBindingUtil.hasCommandModifier(event))
     ) {
-      console.log('align-justi');
       return 'align-justify';
     }
     return undefined;

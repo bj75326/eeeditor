@@ -1,3 +1,7 @@
+import UserAgent from 'fbjs/lib/UserAgent';
+
+const isOSX = UserAgent.isPlatform('Mac OS X');
+
 export default {
   'eeeditor.button.h1.tip.name': 'Heading 1',
   'eeeditor.button.h1.tip.shortcut': '# space',
@@ -25,7 +29,11 @@ export default {
   'eeeditor.button.blockquote.tip.name': 'Blockquote',
   'eeeditor.button.blockquote.tip.shortcut': '> space',
   'eeeditor.button.align.center.tip.name': 'Center align',
+  'eeeditor.button.align.center.tip.shortcut': '⌘ + e',
   'eeeditor.button.align.left.tip.name': 'Left align',
+  'eeeditor.button.align.left.tip.shortcut': '⌘ + l',
   'eeeditor.button.align.right.tip.name': 'Right align',
+  'eeeditor.button.align.right.tip.shortcut': '⌘ + r',
   'eeeditor.button.align.justify.tip.name': 'Justify',
+  'eeeditor.button.align.justify.tip.shortcut': '⌘ + j',
 };

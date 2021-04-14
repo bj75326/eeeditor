@@ -40,10 +40,7 @@ export default createToggleInlineStyleButton<KeyCommand | false, false>({
   defaultTitle: {
     name: 'eeeditor.button.code.tip.name',
   },
-  defaultKeyCommand: {
-    keyCode: 74,
-    hasCommandModifier: true,
-  },
+  defaultKeyCommand: false,
   defaultSyntax: false,
   getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
     if (

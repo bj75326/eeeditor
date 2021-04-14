@@ -1,3 +1,7 @@
+import UserAgent from 'fbjs/lib/UserAgent';
+
+const isOSX = UserAgent.isPlatform('Mac OS X');
+
 export default {
   'eeeditor.button.h1.tip.name': '一级标题',
   'eeeditor.button.h1.tip.shortcut': '# 空格',
@@ -25,7 +29,11 @@ export default {
   'eeeditor.button.blockquote.tip.name': '引用',
   'eeeditor.button.blockquote.tip.shortcut': '> 空格',
   'eeeditor.button.align.center.tip.name': '居中对齐',
+  'eeeditor.button.align.center.tip.shortcut': '⌘ + e',
   'eeeditor.button.align.left.tip.name': '左对齐',
+  'eeeditor.button.align.left.tip.shortcut': '⌘ + l',
   'eeeditor.button.align.right.tip.name': '右对齐',
+  'eeeditor.button.align.right.tip.shortcut': '⌘ + r',
   'eeeditor.button.align.justify.tip.name': '两端对齐',
+  'eeeditor.button.align.justify.tip.shortcut': '⌘ + j',
 };
