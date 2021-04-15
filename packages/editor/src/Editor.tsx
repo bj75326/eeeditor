@@ -5,6 +5,7 @@ import {
   convertToRaw,
   ContentBlock,
   KeyBindingUtil,
+  getDefaultKeyBinding,
   PluginEditorProps,
 } from './';
 import classNames from 'classnames';
@@ -13,11 +14,11 @@ import createFocusPlugin from './built-in/focus';
 import createDefaultPlugin from './built-in/default';
 
 const { decorator: focusDecorator, ...focusPlugin } = createFocusPlugin();
+const defaultPlugin = createDefaultPlugin();
 
 export interface Locale {}
 
-export interface EEEditorProps
-  extends Omit<PluginEditorProps, 'defaultKeyBindings'> {
+export interface EEEditorProps extends PluginEditorProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
@@ -83,7 +84,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange,
     blockStyleFn = defaultBlockStyleFn,
     customStyleMap = defaultCustomStyleMap,
-    plugins,
+    plugins = [],
+    defaultKeyBindings = false,
     ...restProps
   } = props;
 
@@ -98,9 +100,10 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   // const editorRef = useRef(null);
 
   const handleChange = (editorState: EditorState) => {
-    console.log('handleChange run -------------: ', editorState.getDecorator());
     onChange(editorState);
   };
+
+  const eeeditorPlugins = [focusPlugin, ...plugins, defaultPlugin];
 
   return (
     <div
@@ -129,8 +132,9 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         onChange={handleChange}
         blockStyleFn={blockStyleFn}
         customStyleMap={customStyleMap}
-        // EEEditor 支持自定义 keyCommand 或者 syntax，因此需要禁用 getDefaultKeyBinding
-        defaultKeyBindings={false}
+        plugins={eeeditorPlugins}
+        // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
+        defaultKeyBindings={defaultKeyBindings}
         // ref={editorRef}
         {...restProps}
       />
