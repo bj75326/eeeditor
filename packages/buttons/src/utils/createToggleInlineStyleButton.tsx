@@ -5,7 +5,6 @@ import {
   EEEditorStyleButtonType,
   EEEditorStyleButtonProps,
   EEEditorButtonType,
-  KeyCommand,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';

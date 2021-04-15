@@ -1,5 +1,10 @@
-import { CSSProperties, ReactNode, KeyboardEvent } from 'react';
-import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
+import { CSSProperties, ReactNode } from 'react';
+import {
+  EditorState,
+  EditorPlugin,
+  EditorProps,
+  KeyCommand,
+} from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -101,14 +106,6 @@ export type EEEditorButtonType =
   | 'code'
   | 'underline'
   | 'align';
-
-export interface KeyCommand {
-  keyCode: KeyboardEvent['keyCode'];
-  isShiftKeyCommand?: boolean; // e.shiftKey
-  isCtrlKeyCommand?: boolean; // !!e.ctrlKey && !e.altKey
-  isOptionKeyCommand?: boolean; // isOSX && e.altKey
-  hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
-}
 
 export interface EEEditorButtonProps {
   prefixCls?: string;

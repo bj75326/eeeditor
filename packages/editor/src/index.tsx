@@ -7,15 +7,28 @@ export * from 'draft-js';
 
 /* eslint-disable no-undef */
 // import { BlockNodeRecord } from 'draft-js/lib/BlockNodeRecord';
-import { ContentBlock, DraftInlineStyle } from 'draft-js';
-import { DraftDragType } from 'draft-js';
-import { EditorProps } from 'draft-js';
-import { DraftEditorCommand } from 'draft-js';
-import { CompositeDecorator, DraftDecorator } from 'draft-js';
-import { DraftHandleValue } from 'draft-js';
-//import { BidiDirection } from 'fbjs/lib/UnicodeBidiDirection';
-import { DraftBlockRenderMap } from 'draft-js';
-import { EditorState, SelectionState } from 'draft-js';
+// import { ContentBlock, DraftInlineStyle } from 'draft-js';
+// import { DraftDragType } from 'draft-js';
+// import { EditorProps } from 'draft-js';
+// import { DraftEditorCommand } from 'draft-js';
+// import { CompositeDecorator, DraftDecorator } from 'draft-js';
+// import { DraftHandleValue } from 'draft-js';
+// import { BidiDirection } from 'fbjs/lib/UnicodeBidiDirection';
+// import { DraftBlockRenderMap } from 'draft-js';
+// import { EditorState, SelectionState } from 'draft-js';
+import {
+  ContentBlock,
+  DraftInlineStyle,
+  DraftDragType,
+  EditorProps,
+  DraftEditorCommand,
+  CompositeDecorator,
+  DraftDecorator,
+  DraftHandleValue,
+  DraftBlockRenderMap,
+  EditorState,
+  SelectionState,
+} from 'draft-js';
 import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
 import { composeDecoratorsFn } from 'draft-js-plugins-editor';
 // eslint-disable-next-line import/no-named-as-default
@@ -217,5 +230,14 @@ export type EditorPlugin = {
   willUnmount?: (arg0: PluginMethods) => void;
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
+
+// button 自定义按键
+export interface KeyCommand {
+  keyCode: KeyboardEvent['keyCode'];
+  isShiftKeyCommand?: boolean; // e.shiftKey
+  isCtrlKeyCommand?: boolean; // !!e.ctrlKey && !e.altKey
+  isOptionKeyCommand?: boolean; // isOSX && e.altKey
+  hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
+}
 
 export default EEEditor;

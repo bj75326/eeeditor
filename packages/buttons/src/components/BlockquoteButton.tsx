@@ -1,10 +1,10 @@
 import createToggleBlockTypeButton from '../utils/createToggleBlockTypeButton';
-import { KeyCommand } from '..';
 import {
   RichUtils,
   Modifier,
   EditorState,
   KeyBindingUtil,
+  KeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultBlockquoteIcon = (

@@ -1,6 +1,5 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
-import { RichUtils, KeyBindingUtil } from '@eeeditor/editor';
-import { KeyCommand } from '..';
+import { RichUtils, KeyBindingUtil, KeyCommand } from '@eeeditor/editor';
 
 export const defaultCodeIcon = (
   <svg

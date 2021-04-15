@@ -1,6 +1,10 @@
 import createSetBlockDataButton from '../utils/createSetBlockDataButton';
-import { KeyCommand } from '..';
-import { KeyBindingUtil, EditorState, Modifier } from '@eeeditor/editor';
+import {
+  KeyBindingUtil,
+  EditorState,
+  Modifier,
+  KeyCommand,
+} from '@eeeditor/editor';
 import Immutable from 'immutable';
 
 export const defaultAlignLeftIcon = (

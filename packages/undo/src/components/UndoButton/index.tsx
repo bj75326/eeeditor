@@ -1,8 +1,8 @@
-import React, { ReactNode, MouseEvent } from 'react';
-import { UndoRedoButtonProps, UndoPluginStore } from '../../';
+import React, { ReactNode, MouseEvent, useEffect } from 'react';
+import { UndoRedoButtonProps, UndoPluginStore } from '../..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import { EditorState } from '@eeeditor/editor';
+import { EditorPlugin, EditorState, KeyBindingUtil } from '@eeeditor/editor';
 import zhCN from '../../locale/zh_CN';
 
 const defaultUndoIcon = (
@@ -30,11 +30,7 @@ const defaultUndoIcon = (
   </svg>
 );
 
-export interface UndoButtonProps extends UndoRedoButtonProps {
-  store?: UndoPluginStore;
-}
-
-const UndoButton: React.FC<UndoButtonProps> = (props) => {
+const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
   const {
     prefixCls = 'eee',
     className,
@@ -45,8 +41,18 @@ const UndoButton: React.FC<UndoButtonProps> = (props) => {
       shortcut: 'eeeditor.undo.tip.shortcut',
     },
     tipProps,
+    tipReverse,
     children = defaultUndoIcon,
+    keyCommand = {
+      keyCode: 90,
+      hasCommandModifier: true,
+      isShiftKeyCommand: false,
+    },
     store,
+    addKeyBindingFn,
+    removeKeyBindingFn,
+    addKeyCommandHandler,
+    removeKeyCommandHandler,
   } = props;
 
   const preventBubblingUp = (event: MouseEvent): void => {
@@ -63,6 +69,49 @@ const UndoButton: React.FC<UndoButtonProps> = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (keyCommand) {
+      const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
+        if (
+          keyCommand.keyCode === event.keyCode &&
+          (keyCommand.isShiftKeyCommand === undefined ||
+            keyCommand.isShiftKeyCommand === event.shiftKey) &&
+          (keyCommand.isCtrlKeyCommand === undefined ||
+            keyCommand.isCtrlKeyCommand ===
+              KeyBindingUtil.isCtrlKeyCommand(event)) &&
+          (keyCommand.isOptionKeyCommand === undefined ||
+            keyCommand.isOptionKeyCommand ===
+              KeyBindingUtil.isOptionKeyCommand(event)) &&
+          (keyCommand.hasCommandModifier === undefined ||
+            keyCommand.hasCommandModifier ===
+              KeyBindingUtil.hasCommandModifier(event))
+        ) {
+          return 'undo';
+        }
+        return undefined;
+      };
+
+      const handleKeyCommand: EditorPlugin['handleKeyCommand'] = (
+        command,
+        editorState,
+        { setEditorState },
+      ) => {
+        if (command === 'undo') {
+          setEditorState(EditorState.undo(editorState));
+          return 'handled';
+        }
+        return 'not-handled';
+      };
+
+      addKeyBindingFn(keyBindingFn);
+      addKeyCommandHandler(handleKeyCommand);
+      return () => {
+        removeKeyBindingFn(keyBindingFn);
+        removeKeyCommandHandler(handleKeyCommand);
+      };
+    }
+  }, []);
+
   const checkButtonShouldDisabled = (): boolean =>
     !store ||
     !store.getItem('getEditorState') ||
@@ -72,9 +121,16 @@ const UndoButton: React.FC<UndoButtonProps> = (props) => {
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
   });
 
+  const tipClassName = classNames(`${prefixCls}-tip`, {
+    [`${prefixCls}-tip-reverse`]:
+      tipReverse !== undefined
+        ? tipReverse
+        : tipProps.placement.startsWith('top'),
+  });
+
   const tipTitle: ReactNode =
     title && title.name ? (
-      <span className={`${prefixCls}-tip`}>
+      <span className={tipClassName}>
         <span className={`${prefixCls}-tip-name`}>
           {locale[title.name] || title.name}
         </span>

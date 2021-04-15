@@ -56,7 +56,6 @@ StaticToolbarPlugin => {
 
   return {
     initialize: ({ getEditorState, setEditorState, getProps }) => {
-      console.log('static toolbar init getProps ----> ', getProps);
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
       store.updateItem('getProps', getProps);
