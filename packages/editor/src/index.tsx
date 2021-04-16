@@ -241,27 +241,10 @@ export interface KeyCommand {
   hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
 }
 
-export const bindCommandForKeyBindingFn = (
-  command: DraftEditorCommand | string,
-): ((keyCommand: KeyCommand) => EditorPlugin['keyBindingFn']) => (
-  keyCommand,
-) => (event) => {
-  if (
-    keyCommand.keyCode === event.keyCode &&
-    (keyCommand.isShiftKeyCommand === undefined ||
-      keyCommand.isShiftKeyCommand === event.shiftKey) &&
-    (keyCommand.isCtrlKeyCommand === undefined ||
-      keyCommand.isCtrlKeyCommand === KeyBindingUtil.isCtrlKeyCommand(event)) &&
-    (keyCommand.isOptionKeyCommand === undefined ||
-      keyCommand.isOptionKeyCommand ===
-        KeyBindingUtil.isOptionKeyCommand(event)) &&
-    (keyCommand.hasCommandModifier === undefined ||
-      keyCommand.hasCommandModifier ===
-        KeyBindingUtil.hasCommandModifier(event))
-  ) {
-    return command;
-  }
-  return undefined;
-};
+export * from './utils/bindCommandForKeyBindingFn';
+export * from './utils/blockInSelection';
+export * from './utils/createBlockKeyStore';
+export * from './utils/getBlockMapKeys';
+export * from './utils/getSelectedBlocksMapKeys';
 
 export default EEEditor;

@@ -5,7 +5,12 @@ import {
   EEEditorStyleButtonProps,
 } from '..';
 import zhCN from '../locale/zh_CN';
-import { EditorState, EditorPlugin, Modifier } from '@eeeditor/editor';
+import {
+  EditorState,
+  EditorPlugin,
+  Modifier,
+  getSelectedBlocksMapKeys,
+} from '@eeeditor/editor';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -65,17 +70,44 @@ export default function createSetBlockDataButton<K, S>({
       event.preventDefault();
       if (getEditorState && setEditorState) {
         const editorState = getEditorState();
-        setEditorState(
-          EditorState.push(
-            editorState,
-            Modifier.mergeBlockData(
-              editorState.getCurrentContent(),
-              editorState.getSelection(),
-              Immutable.Map<string, string | boolean | number>(blockMetaData),
+        if (
+          getSelectedBlocksMapKeys(editorState).some((value) => {
+            const block = editorState.getCurrentContent().getBlockForKey(value);
+            return Object.keys(blockMetaData).some(
+              (key) => blockMetaData[key] !== block.getData().get(key),
+            );
+          })
+        ) {
+          // 1. selectionState 选中的所有 block 至少有一个没有设置对应的 metaData，则进行 merge metaData
+          setEditorState(
+            EditorState.push(
+              editorState,
+              Modifier.mergeBlockData(
+                editorState.getCurrentContent(),
+                editorState.getSelection(),
+                Immutable.Map<string, string | boolean | number>(blockMetaData),
+              ),
+              'change-block-data',
             ),
-            'change-block-data',
-          ),
-        );
+          );
+        } else {
+          // 2. selectionState 选中的所有 block 全都已经设置了对应的 metaData，则进行 toggle metaData
+          const initMetaData = {};
+          Object.keys(blockMetaData).forEach(
+            (key) => (initMetaData[key] = undefined),
+          );
+          setEditorState(
+            EditorState.push(
+              editorState,
+              Modifier.mergeBlockData(
+                editorState.getCurrentContent(),
+                editorState.getSelection(),
+                Immutable.Map<string, string | boolean | number>(initMetaData),
+              ),
+              'change-block-data',
+            ),
+          );
+        }
       }
     };
 
@@ -93,7 +125,7 @@ export default function createSetBlockDataButton<K, S>({
         .getBlockForKey(editorState.getSelection().getStartKey())
         .getData();
 
-      // align buttons 会根据 Editor props textDirectionality 进行判断状态
+      // 如果 block metaData 没有 align 值或者为假值时， align buttons 会根据 Editor props textDirectionality 进行判断状态
       if (buttonType === 'align' && !metaData.get('align')) {
         if (
           (getProps().textDirectionality === 'LTR' &&
@@ -108,7 +140,7 @@ export default function createSetBlockDataButton<K, S>({
       }
 
       return !Object.keys(blockMetaData).some(
-        // setBlockData 判断是否 active 时，只能比较直接量 etc. number | string | boolean
+        // setBlockData 判断是否 active 时，只能比较直接量 number | string | boolean
         (key) => metaData.get(key) !== blockMetaData[key],
       );
     };
