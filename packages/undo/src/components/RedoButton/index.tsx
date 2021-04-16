@@ -1,8 +1,12 @@
 import React, { ReactNode, MouseEvent, useEffect } from 'react';
-import { UndoRedoButtonProps, UndoPluginStore } from '../..';
+import { UndoRedoButtonProps } from '../..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import { EditorState, EditorPlugin, KeyBindingUtil } from '@eeeditor/editor';
+import {
+  EditorState,
+  EditorPlugin,
+  bindCommandForKeyBindingFn,
+} from '@eeeditor/editor';
 import zhCN from '../../locale/zh_CN';
 
 const defaultRedoIcon = (
@@ -71,25 +75,9 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
 
   useEffect(() => {
     if (keyCommand) {
-      const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
-        if (
-          keyCommand.keyCode === event.keyCode &&
-          (keyCommand.isShiftKeyCommand === undefined ||
-            keyCommand.isShiftKeyCommand === event.shiftKey) &&
-          (keyCommand.isCtrlKeyCommand === undefined ||
-            keyCommand.isCtrlKeyCommand ===
-              KeyBindingUtil.isCtrlKeyCommand(event)) &&
-          (keyCommand.isOptionKeyCommand === undefined ||
-            keyCommand.isOptionKeyCommand ===
-              KeyBindingUtil.isOptionKeyCommand(event)) &&
-          (keyCommand.hasCommandModifier === undefined ||
-            keyCommand.hasCommandModifier ===
-              KeyBindingUtil.hasCommandModifier(event))
-        ) {
-          return 'redo';
-        }
-        return undefined;
-      };
+      const keyBindingFn: EditorPlugin['keyBindingFn'] = bindCommandForKeyBindingFn(
+        'redo',
+      )(keyCommand);
 
       const handleKeyCommand: EditorPlugin['handleKeyCommand'] = (
         command,

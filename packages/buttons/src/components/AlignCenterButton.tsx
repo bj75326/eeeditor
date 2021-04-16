@@ -1,9 +1,9 @@
 import createSetBlockDataButton from '../utils/createSetBlockDataButton';
 import {
-  KeyBindingUtil,
   EditorState,
   Modifier,
   KeyCommand,
+  bindCommandForKeyBindingFn,
 } from '@eeeditor/editor';
 import Immutable from 'immutable';
 
@@ -83,25 +83,9 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
     hasCommandModifier: true,
   },
   defaultSyntax: false,
-  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    if (
-      keyCommand.keyCode === event.keyCode &&
-      (keyCommand.isShiftKeyCommand === undefined ||
-        keyCommand.isShiftKeyCommand === event.shiftKey) &&
-      (keyCommand.isCtrlKeyCommand === undefined ||
-        keyCommand.isCtrlKeyCommand ===
-          KeyBindingUtil.isCtrlKeyCommand(event)) &&
-      (keyCommand.isOptionKeyCommand === undefined ||
-        keyCommand.isOptionKeyCommand ===
-          KeyBindingUtil.isOptionKeyCommand(event)) &&
-      (keyCommand.hasCommandModifier === undefined ||
-        keyCommand.hasCommandModifier ===
-          KeyBindingUtil.hasCommandModifier(event))
-    ) {
-      return 'align-center';
-    }
-    return undefined;
-  },
+
+  getKeyBindingFn: bindCommandForKeyBindingFn('align-center'),
+
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'align-center') {
       setEditorState(

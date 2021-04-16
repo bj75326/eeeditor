@@ -3,8 +3,8 @@ import {
   RichUtils,
   Modifier,
   EditorState,
-  KeyBindingUtil,
   KeyCommand,
+  bindCommandForKeyBindingFn,
 } from '@eeeditor/editor';
 
 export const defaultOrderedListIcon = (
@@ -98,25 +98,8 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   },
   defaultKeyCommand: false,
   defaultSyntax: '1. ',
-  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    if (
-      keyCommand.keyCode === event.keyCode &&
-      (keyCommand.isShiftKeyCommand === undefined ||
-        keyCommand.isShiftKeyCommand === event.shiftKey) &&
-      (keyCommand.isCtrlKeyCommand === undefined ||
-        keyCommand.isCtrlKeyCommand ===
-          KeyBindingUtil.isCtrlKeyCommand(event)) &&
-      (keyCommand.isOptionKeyCommand === undefined ||
-        keyCommand.isOptionKeyCommand ===
-          KeyBindingUtil.isOptionKeyCommand(event)) &&
-      (keyCommand.hasCommandModifier === undefined ||
-        keyCommand.hasCommandModifier ===
-          KeyBindingUtil.hasCommandModifier(event))
-    ) {
-      return 'ordered-list-item';
-    }
-    return undefined;
-  },
+  getKeyBindingFn: bindCommandForKeyBindingFn('ordered-list-item'),
+
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'ordered-list-item') {
       setEditorState(
@@ -126,6 +109,7 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
     }
     return 'not-handled';
   },
+
   getBeforeInputHandler: (syntax: string) => (
     chars,
     editorState,

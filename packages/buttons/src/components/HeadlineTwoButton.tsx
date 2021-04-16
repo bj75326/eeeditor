@@ -3,8 +3,8 @@ import {
   RichUtils,
   Modifier,
   EditorState,
-  KeyBindingUtil,
   KeyCommand,
+  bindCommandForKeyBindingFn,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineTwoIcon = (
@@ -84,25 +84,8 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   //   }
   //   return 'not-handled';
   // },
-  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    if (
-      keyCommand.keyCode === event.keyCode &&
-      (keyCommand.isShiftKeyCommand === undefined ||
-        keyCommand.isShiftKeyCommand === event.shiftKey) &&
-      (keyCommand.isCtrlKeyCommand === undefined ||
-        keyCommand.isCtrlKeyCommand ===
-          KeyBindingUtil.isCtrlKeyCommand(event)) &&
-      (keyCommand.isOptionKeyCommand === undefined ||
-        keyCommand.isOptionKeyCommand ===
-          KeyBindingUtil.isOptionKeyCommand(event)) &&
-      (keyCommand.hasCommandModifier === undefined ||
-        keyCommand.hasCommandModifier ===
-          KeyBindingUtil.hasCommandModifier(event))
-    ) {
-      return 'header-two';
-    }
-    return undefined;
-  },
+  getKeyBindingFn: bindCommandForKeyBindingFn('header-two'),
+
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-two') {
       setEditorState(RichUtils.toggleBlockType(editorState, 'header-two'));
@@ -110,6 +93,7 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
     }
     return 'not-handled';
   },
+
   getBeforeInputHandler: (syntax: string) => (
     chars,
     editorState,

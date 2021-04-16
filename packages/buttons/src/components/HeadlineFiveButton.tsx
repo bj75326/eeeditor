@@ -3,8 +3,8 @@ import {
   RichUtils,
   Modifier,
   EditorState,
-  KeyBindingUtil,
   KeyCommand,
+  bindCommandForKeyBindingFn,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineFiveIcon = (
@@ -56,25 +56,9 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   },
   defaultKeyCommand: false,
   defaultSyntax: '##### ',
-  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    if (
-      keyCommand.keyCode === event.keyCode &&
-      (keyCommand.isShiftKeyCommand === undefined ||
-        keyCommand.isShiftKeyCommand === event.shiftKey) &&
-      (keyCommand.isCtrlKeyCommand === undefined ||
-        keyCommand.isCtrlKeyCommand ===
-          KeyBindingUtil.isCtrlKeyCommand(event)) &&
-      (keyCommand.isOptionKeyCommand === undefined ||
-        keyCommand.isOptionKeyCommand ===
-          KeyBindingUtil.isOptionKeyCommand(event)) &&
-      (keyCommand.hasCommandModifier === undefined ||
-        keyCommand.hasCommandModifier ===
-          KeyBindingUtil.hasCommandModifier(event))
-    ) {
-      return 'header-five';
-    }
-    return undefined;
-  },
+
+  getKeyBindingFn: bindCommandForKeyBindingFn('header-five'),
+
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-five') {
       setEditorState(RichUtils.toggleBlockType(editorState, 'header-five'));

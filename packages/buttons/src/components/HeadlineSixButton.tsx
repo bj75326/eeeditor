@@ -3,8 +3,8 @@ import {
   RichUtils,
   Modifier,
   EditorState,
-  KeyBindingUtil,
   KeyCommand,
+  bindCommandForKeyBindingFn,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineSixIcon = (
@@ -61,25 +61,9 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   },
   defaultKeyCommand: false,
   defaultSyntax: '###### ',
-  getKeyBindingFn: (keyCommand: KeyCommand) => (event) => {
-    if (
-      keyCommand.keyCode === event.keyCode &&
-      (keyCommand.isShiftKeyCommand === undefined ||
-        keyCommand.isShiftKeyCommand === event.shiftKey) &&
-      (keyCommand.isCtrlKeyCommand === undefined ||
-        keyCommand.isCtrlKeyCommand ===
-          KeyBindingUtil.isCtrlKeyCommand(event)) &&
-      (keyCommand.isOptionKeyCommand === undefined ||
-        keyCommand.isOptionKeyCommand ===
-          KeyBindingUtil.isOptionKeyCommand(event)) &&
-      (keyCommand.hasCommandModifier === undefined ||
-        keyCommand.hasCommandModifier ===
-          KeyBindingUtil.hasCommandModifier(event))
-    ) {
-      return 'header-six';
-    }
-    return undefined;
-  },
+
+  getKeyBindingFn: bindCommandForKeyBindingFn('header-six'),
+
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-six') {
       setEditorState(RichUtils.toggleBlockType(editorState, 'header-six'));
@@ -87,6 +71,7 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
     }
     return 'not-handled';
   },
+
   getBeforeInputHandler: (syntax: string) => (
     chars,
     editorState,

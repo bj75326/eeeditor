@@ -28,6 +28,7 @@ import {
   DraftBlockRenderMap,
   EditorState,
   SelectionState,
+  KeyBindingUtil,
 } from 'draft-js';
 import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
 import { composeDecoratorsFn } from 'draft-js-plugins-editor';
@@ -239,5 +240,28 @@ export interface KeyCommand {
   isOptionKeyCommand?: boolean; // isOSX && e.altKey
   hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
 }
+
+export const bindCommandForKeyBindingFn = (
+  command: DraftEditorCommand | string,
+): ((keyCommand: KeyCommand) => EditorPlugin['keyBindingFn']) => (
+  keyCommand,
+) => (event) => {
+  if (
+    keyCommand.keyCode === event.keyCode &&
+    (keyCommand.isShiftKeyCommand === undefined ||
+      keyCommand.isShiftKeyCommand === event.shiftKey) &&
+    (keyCommand.isCtrlKeyCommand === undefined ||
+      keyCommand.isCtrlKeyCommand === KeyBindingUtil.isCtrlKeyCommand(event)) &&
+    (keyCommand.isOptionKeyCommand === undefined ||
+      keyCommand.isOptionKeyCommand ===
+        KeyBindingUtil.isOptionKeyCommand(event)) &&
+    (keyCommand.hasCommandModifier === undefined ||
+      keyCommand.hasCommandModifier ===
+        KeyBindingUtil.hasCommandModifier(event))
+  ) {
+    return command;
+  }
+  return undefined;
+};
 
 export default EEEditor;
