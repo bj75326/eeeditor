@@ -7,6 +7,7 @@ import {
 } from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
+import createSetBlockDataButton from './utils/createSetBlockDataButton';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import shouldButtonDisabled from './utils/disableStrategy';
 import { defaultHeadIcon } from './assets/extraIcons';
@@ -161,6 +162,7 @@ export type EEEditorStyleButtonType<K, S> = React.FC<
 export {
   createToggleBlockTypeButton,
   createToggleInlineStyleButton,
+  createSetBlockDataButton,
   shouldButtonDisabled,
   zhCN,
   enUS,

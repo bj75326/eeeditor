@@ -400,12 +400,7 @@ const Page: React.FC<PageProps> = (props) => {
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <StaticToolbar>
-              <BoldButton
-                keyCommand={{
-                  keyCode: 70,
-                  hasCommandModifier: true,
-                }}
-              />
+              <BoldButton />
               <ItalicButton />
               <UnderlineButton />
               <CodeButton />

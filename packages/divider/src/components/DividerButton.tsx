@@ -88,7 +88,7 @@ export interface DividerButtonProps {
   children?: ReactNode;
   // shortcut 自定义
   keyCommand?: string;
-  grammar?: string;
+  syntax?: string;
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
@@ -126,7 +126,7 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
     tipReverse,
     children = defaultDividerIcon,
     keyCommand,
-    grammar,
+    syntax,
     getEditorState,
     setEditorState,
     addKeyCommandHandler,
