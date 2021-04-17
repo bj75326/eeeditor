@@ -3,8 +3,9 @@ import { RichUtils, DraftBlockType } from 'draft-js';
 import { EditorPlugin } from '@eeeditor/editor';
 import {
   EEEditorStyleButtonType,
+  EEEditorExtraButtonProps,
   EEEditorButtonType,
-  EEEditorStyleButtonProps,
+  EEEditorButtonProps,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -15,7 +16,7 @@ interface CreateToggleBlockTypeButtonProps<K, S> {
   blockType: DraftBlockType;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultTitle?: EEEditorButtonProps<K, S>['title'];
   defaultKeyCommand?: K;
   defaultSyntax?: S;
   getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
@@ -34,7 +35,9 @@ export default function createToggleBlockTypeButton<K, S>({
   buttonKeyCommandHandler,
   getBeforeInputHandler,
 }: CreateToggleBlockTypeButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
-  const ToggleBlockTypeButton: EEEditorStyleButtonType<K, S> = (props) => {
+  const ToggleBlockTypeButton: React.FC<
+    EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
+  > = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -162,7 +165,7 @@ export default function createToggleBlockTypeButton<K, S>({
       [`${prefixCls}-tip-reverse`]:
         tipReverse !== undefined
           ? tipReverse
-          : tipProps.placement.startsWith('top'),
+          : tipProps && tipProps.placement.startsWith('top'),
     });
 
     const tipTitle: ReactNode =
@@ -205,5 +208,9 @@ export default function createToggleBlockTypeButton<K, S>({
     );
   };
 
-  return ToggleBlockTypeButton;
+  const DecoratedToggleBlockTypeButton: EEEditorStyleButtonType<K, S> = (
+    props,
+  ) => <ToggleBlockTypeButton {...props} />;
+
+  return DecoratedToggleBlockTypeButton;
 }

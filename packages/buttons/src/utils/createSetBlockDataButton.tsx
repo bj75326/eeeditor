@@ -1,8 +1,9 @@
 import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import {
   EEEditorStyleButtonType,
+  EEEditorExtraButtonProps,
   EEEditorButtonType,
-  EEEditorStyleButtonProps,
+  EEEditorButtonProps,
 } from '..';
 import zhCN from '../locale/zh_CN';
 import {
@@ -20,7 +21,7 @@ interface CreateSetBlockDataButtonProps<K, S> {
   blockMetaData: Record<string, string | boolean | number>;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultTitle?: EEEditorButtonProps<K, S>['title'];
   defaultKeyCommand?: K;
   defaultSyntax?: S;
   getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
@@ -39,7 +40,9 @@ export default function createSetBlockDataButton<K, S>({
   buttonKeyCommandHandler,
   getBeforeInputHandler,
 }: CreateSetBlockDataButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
-  const SetBlockDataButton: EEEditorStyleButtonType<K, S> = (props) => {
+  const SetBlockDataButton: React.FC<
+    EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
+  > = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -211,7 +214,7 @@ export default function createSetBlockDataButton<K, S>({
       [`${prefixCls}-tip-reverse`]:
         tipReverse !== undefined
           ? tipReverse
-          : tipProps.placement.startsWith('top'),
+          : tipProps && tipProps.placement.startsWith('top'),
     });
 
     const tipTitle: ReactNode =
@@ -258,5 +261,9 @@ export default function createSetBlockDataButton<K, S>({
     );
   };
 
-  return SetBlockDataButton;
+  const DecoratedSetBlockDataButton: EEEditorStyleButtonType<K, S> = (
+    props,
+  ) => <SetBlockDataButton {...props} />;
+
+  return DecoratedSetBlockDataButton;
 }

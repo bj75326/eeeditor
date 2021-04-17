@@ -1,10 +1,5 @@
 import { CSSProperties, ReactNode } from 'react';
-import {
-  EditorState,
-  EditorPlugin,
-  EditorProps,
-  KeyCommand,
-} from '@eeeditor/editor';
+import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import createSetBlockDataButton from './utils/createSetBlockDataButton';
@@ -108,7 +103,7 @@ export type EEEditorButtonType =
   | 'underline'
   | 'align';
 
-export interface EEEditorButtonProps {
+export interface EEEditorButtonProps<K, S> {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
@@ -121,15 +116,11 @@ export interface EEEditorButtonProps {
   tipReverse?: boolean;
   children?: ReactNode;
   // shortcut 自定义
-  keyCommand?: KeyCommand | false;
-  syntax?: string | false;
-}
-
-export interface EEEditorStyleButtonProps<K, S>
-  extends Omit<EEEditorButtonProps, 'syntax' | 'keyCommand'> {
-  // 部分 button 不支持 keyCommand 或 syntax
   keyCommand?: K;
   syntax?: S;
+}
+
+export interface EEEditorExtraButtonProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
@@ -155,9 +146,7 @@ export interface EEEditorStyleButtonProps<K, S>
   setSelectorBtnIcon?: (icon?: ReactNode) => void;
 }
 
-export type EEEditorStyleButtonType<K, S> = React.FC<
-  EEEditorStyleButtonProps<K, S>
->;
+export type EEEditorStyleButtonType<K, S> = React.FC<EEEditorButtonProps<K, S>>;
 
 export {
   createToggleBlockTypeButton,

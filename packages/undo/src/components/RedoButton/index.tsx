@@ -74,6 +74,10 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
   };
 
   useEffect(() => {
+    store.updateItem(
+      'redoButtonRendered',
+      store.getItem('redoButtonRendered') + 1,
+    );
     if (keyCommand) {
       const keyBindingFn: EditorPlugin['keyBindingFn'] = bindCommandForKeyBindingFn(
         'redo',
@@ -94,10 +98,20 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
       addKeyBindingFn(keyBindingFn);
       addKeyCommandHandler(handleKeyCommand);
       return () => {
+        store.updateItem(
+          'redoButtonRendered',
+          store.getItem('redoButtonRendered') - 1,
+        );
         removeKeyBindingFn(keyBindingFn);
         removeKeyCommandHandler(handleKeyCommand);
       };
     }
+    return () => {
+      store.updateItem(
+        'undoButtonRendered',
+        store.getItem('undoButtonRendered') - 1,
+      );
+    };
   }, []);
 
   const checkButtonShouldDisabled = (): boolean =>
@@ -113,7 +127,7 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
     [`${prefixCls}-tip-reverse`]:
       tipReverse !== undefined
         ? tipReverse
-        : tipProps.placement.startsWith('top'),
+        : tipProps && tipProps.placement.startsWith('top'),
   });
 
   const tipTitle: ReactNode =

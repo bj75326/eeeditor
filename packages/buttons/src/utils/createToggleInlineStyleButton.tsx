@@ -3,8 +3,9 @@ import { RichUtils } from 'draft-js';
 import { EditorPlugin } from '@eeeditor/editor';
 import {
   EEEditorStyleButtonType,
-  EEEditorStyleButtonProps,
+  EEEditorExtraButtonProps,
   EEEditorButtonType,
+  EEEditorButtonProps,
 } from '..';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
@@ -15,7 +16,7 @@ interface CreateToggleInlineStyleButtonProps<K, S> {
   inlineStyle: string;
   buttonType: EEEditorButtonType;
   defaultChildren: ReactNode;
-  defaultTitle?: EEEditorStyleButtonProps<K, S>['title'];
+  defaultTitle?: EEEditorButtonProps<K, S>['title'];
   defaultKeyCommand?: K;
   defaultSyntax?: S;
   getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
@@ -34,7 +35,9 @@ export default function CreateToggleInlineStyleButton<K, S>({
   buttonKeyCommandHandler,
   getBeforeInputHandler,
 }: CreateToggleInlineStyleButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
-  const ToggleInlineStyleButton: EEEditorStyleButtonType<K, S> = (props) => {
+  const ToggleInlineStyleButton: React.FC<
+    EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
+  > = (props) => {
     const {
       prefixCls = 'eee',
       className,
@@ -148,7 +151,7 @@ export default function CreateToggleInlineStyleButton<K, S>({
       [`${prefixCls}-tip-reverse`]:
         tipReverse !== undefined
           ? tipReverse
-          : tipProps.placement.startsWith('top'),
+          : tipProps && tipProps.placement.startsWith('top'),
     });
 
     const tipTitle: ReactNode =
@@ -191,5 +194,9 @@ export default function CreateToggleInlineStyleButton<K, S>({
     );
   };
 
-  return ToggleInlineStyleButton;
+  const DecoratedToggleInlineStyleButton: EEEditorStyleButtonType<K, S> = (
+    props,
+  ) => <ToggleInlineStyleButton {...props} />;
+
+  return DecoratedToggleInlineStyleButton;
 }

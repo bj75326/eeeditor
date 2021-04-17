@@ -21,7 +21,7 @@ import {
   enUS,
   zhCN,
   defaultHeadIcon,
-  EEEditorStyleButtonProps,
+  EEEditorButtonProps,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
@@ -60,6 +60,7 @@ import {
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import { Spin } from 'antd';
+import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 
 import './index.less';
 
@@ -249,10 +250,10 @@ const Page: React.FC<PageProps> = (props) => {
   console.log('title: ', title);
   console.log('rtl: ', rtl);
 
-  const selectBtnChildrenTip: EEEditorStyleButtonProps['tipProps'] = {
+  const selectBtnChildrenTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
     placement: rtl ? 'left' : 'right',
   };
-  const staticToolbarBtnTip: EEEditorStyleButtonProps['tipProps'] = {
+  const staticToolbarBtnTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
     placement: 'bottom',
   };
 

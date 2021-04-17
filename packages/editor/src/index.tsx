@@ -242,6 +242,7 @@ export interface KeyCommand {
 }
 
 export * from './utils/bindCommandForKeyBindingFn';
+export * from './utils/checkKeyCommand';
 export * from './utils/blockInSelection';
 export * from './utils/createBlockKeyStore';
 export * from './utils/getBlockMapKeys';

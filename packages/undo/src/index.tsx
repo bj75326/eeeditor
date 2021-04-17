@@ -1,5 +1,11 @@
 import React, { CSSProperties, ReactNode } from 'react';
-import { EditorPlugin, EditorState, KeyCommand } from '@eeeditor/editor';
+import {
+  EditorPlugin,
+  EditorState,
+  KeyCommand,
+  KeyBindingUtil,
+  checkKeyCommand,
+} from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import UndoButton from './components/UndoButton';
@@ -33,6 +39,8 @@ export interface StoreItemMap {
   setEditorState?(state: EditorState): void;
   keyCommandHandlers?: Array<EditorPlugin['handleKeyCommand']>;
   keyBindingFns?: Array<EditorPlugin['keyBindingFn']>;
+  undoButtonRendered: number;
+  redoButtonRendered: number;
 }
 
 export type UndoPluginStore = Store<StoreItemMap>;
@@ -54,10 +62,36 @@ export type UndoPlugin = EditorPlugin & {
   DecoratedRedoButton: React.FC<DecoratedUndoRedoButtonProps>;
 };
 
-export default (): UndoPlugin => {
+// 与其他 eeeditor plugins 需要通过在 toolbar 下添加 button 的方式动态添加 KeyBindingFn & HandleKeyCommand 不同，
+// Undo plugin 支持在未添加 Undo/Redo button 的前提下，提供 key command 的支持
+// 关于 Undo/Redo 自定义快捷键：
+// 1. 如果使用 Undo/Redo button 组件，则通过 keyCommand prop 设置
+// 2. 如果未使用 Undo/Redo button 组件，则通过 createUndoPlugin config 设置
+
+export interface UndoPluginConfig {
+  undoKeyCommand?: KeyCommand | false;
+  redoKeyCommand?: KeyCommand | false;
+}
+
+export default (
+  config: UndoPluginConfig = {
+    undoKeyCommand: {
+      keyCode: 90,
+      hasCommandModifier: true,
+      isShiftKeyCommand: false,
+    },
+    redoKeyCommand: {
+      keyCode: 90,
+      hasCommandModifier: true,
+      isShiftKeyCommand: true,
+    },
+  },
+): UndoPlugin => {
   const store = createStore<StoreItemMap>({
     keyCommandHandlers: [],
     keyBindingFns: [],
+    undoButtonRendered: 0,
+    redoButtonRendered: 0,
   });
 
   const extraProps: Omit<
@@ -113,25 +147,65 @@ export default (): UndoPlugin => {
       store.updateItem('setEditorState', setEditorState);
     },
 
+    // keyBindingFn: (event, pluginFunctions) => {
+    //   const keyBindingFns = store.getItem('keyBindingFns');
+    //   let result: string | null | undefined = undefined;
+    //   return keyBindingFns.some((fn) => {
+    //     result = fn(event, pluginFunctions);
+    //     return result !== undefined;
+    //   })
+    //     ? result
+    //     : undefined;
+    // },
+
+    // handleKeyCommand: (command, editorState, pluginFunctions) => {
+    //   const keyCommandHandlers = store.getItem('keyCommandHandlers');
+    //   return keyCommandHandlers.some(
+    //     (handler) =>
+    //       handler(command, editorState, pluginFunctions) === 'handled',
+    //   )
+    //     ? 'handled'
+    //     : 'not-handled';
+    // },
+
     keyBindingFn: (event, pluginFunctions) => {
       const keyBindingFns = store.getItem('keyBindingFns');
       let result: string | null | undefined = undefined;
-      return keyBindingFns.some((fn) => {
-        result = fn(event, pluginFunctions);
-        return result !== undefined;
-      })
-        ? result
-        : undefined;
+      if (keyBindingFns) {
+        return keyBindingFns.some((fn) => {
+          result = fn(event, pluginFunctions);
+          return result !== undefined;
+        })
+          ? result
+          : undefined;
+      }
+      if (config.undoKeyCommand && !!!store.getItem('undoButtonRendered')) {
+        if (checkKeyCommand(config.undoKeyCommand, event)) {
+          return 'undo';
+        }
+      }
+      if (config.redoKeyCommand && !!!store.getItem('redoButtonRendered')) {
+        if (checkKeyCommand(config.redoKeyCommand, event)) {
+          return 'redo';
+        }
+      }
+      return undefined;
     },
 
     handleKeyCommand: (command, editorState, pluginFunctions) => {
       const keyCommandHandlers = store.getItem('keyCommandHandlers');
-      return keyCommandHandlers.some(
-        (handler) =>
-          handler(command, editorState, pluginFunctions) === 'handled',
-      )
-        ? 'handled'
-        : 'not-handled';
+      if (keyCommandHandlers) {
+        return keyCommandHandlers.some(
+          (handler) =>
+            handler(command, editorState, pluginFunctions) === 'handled',
+        )
+          ? 'handled'
+          : 'not-handled';
+      }
+      if (config.undoKeyCommand && !!!store.getItem('undoButtonRendered')) {
+        // if () {
+        // }
+      }
     },
 
     DecoratedUndoButton,
