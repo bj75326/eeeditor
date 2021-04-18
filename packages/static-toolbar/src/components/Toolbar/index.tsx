@@ -9,9 +9,9 @@ import {
   HeadlineFourButton,
   HeadlineFiveButton,
   HeadlineSixButton,
-  //EEEditorStyleButtonProps,
 } from '@eeeditor/buttons';
 import classNames from 'classnames';
+import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import SelectorButton from '../SelectorButton';
 
 export interface ToolbarChildrenProps {
@@ -35,8 +35,7 @@ export interface ToolbarChildrenProps {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
-  // static toolbar 默认的 button tip props
-  // tipProps?: EEEditorStyleButtonProps<false, false>['tipProps'];
+  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
 }
 
 export interface ToolbarPubProps {
@@ -44,6 +43,7 @@ export interface ToolbarPubProps {
   className?: string;
   style?: CSSProperties;
   locale?: Locale;
+  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children?: ReactElement | ReactElement[];
 }
 
@@ -57,6 +57,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     className,
     style,
     locale,
+    tipProps = { placement: 'bottom' },
     children,
     store,
   } = props;
@@ -115,9 +116,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       );
     },
     // static toolbar 默认的 button tip props
-    // tipProps: {
-    //   placement: 'bottom',
-    // },
+    tipProps,
   };
 
   const defaultButtons = (

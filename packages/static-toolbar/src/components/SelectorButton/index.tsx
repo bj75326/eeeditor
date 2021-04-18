@@ -1,6 +1,7 @@
-import React, { ReactElement, ReactNode, useState } from 'react';
-import { EEEditorStyleButtonProps } from '@eeeditor/buttons';
+import React, { CSSProperties, ReactElement, ReactNode, useState } from 'react';
 import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
+import { ToolbarChildrenProps } from '../Toolbar';
+import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
 
 export interface SelectorBtnChildrenProps {
@@ -25,25 +26,21 @@ export interface SelectorBtnChildrenProps {
   setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
   setSelectorBtnIcon: (icon: SelectorButtonProps['icon']) => void;
   // selector button  默认的 button tip props
-  tipProps?: EEEditorStyleButtonProps<false, false>['tipProps'];
+  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
 }
 
-export interface SelectorButtonProps
-  extends Omit<
-    EEEditorStyleButtonProps<false, false>,
-    | 'title'
-    | 'locale'
-    | 'children'
-    | 'tipProps'
-    | 'tipReverse'
-    | 'keyCommand'
-    | 'syntax'
-  > {
+export interface SelectorButtonProps {
+  prefixCls?: string;
+  className?: string;
+  style?: CSSProperties;
   icon?: ReactNode;
+  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children: ReactElement | ReactElement[];
 }
 
-const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
+const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
+  props,
+) => {
   const {
     prefixCls = 'eee',
     className,
@@ -113,9 +110,7 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
     setSelectorBtnActive,
     setSelectorBtnDisabled,
     setSelectorBtnIcon,
-    tipProps: {
-      placement: 'right',
-    },
+    //tipProps,
   };
 
   const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {
@@ -158,4 +153,8 @@ const SelectorButton: React.FC<SelectorButtonProps> = (props) => {
   );
 };
 
-export default SelectorButton;
+const DecoratedSelectorButton: React.FC<SelectorButtonProps> = (props) => (
+  <SelectorButton {...props} />
+);
+
+export default DecoratedSelectorButton;
