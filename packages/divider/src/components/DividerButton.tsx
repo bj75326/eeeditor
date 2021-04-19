@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, MouseEvent } from 'react';
+import React, { CSSProperties, ReactNode, MouseEvent, useEffect } from 'react';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -7,8 +7,11 @@ import {
   EditorPlugin,
   ContentBlock,
   DraftBlockType,
+  KeyCommand,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 import zhCN from '../locale/zh_CN';
+import { Locale } from '..';
 
 export const defaultDividerIcon = (
   <svg
@@ -70,10 +73,6 @@ export const defaultDividerIcon = (
   </svg>
 );
 
-export interface Locale {
-  'eeeditor.divider.button.tip.name': string;
-}
-
 export interface DividerButtonProps {
   prefixCls?: string;
   className?: string;
@@ -87,8 +86,10 @@ export interface DividerButtonProps {
   tipReverse?: boolean;
   children?: ReactNode;
   // shortcut 自定义
-  keyCommand?: string;
-  syntax?: string;
+  keyCommand?: KeyCommand | false;
+}
+
+export interface DividerButtonExtraProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
@@ -107,13 +108,15 @@ export interface DividerButtonProps {
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
   // 使用 static toolbar 时，selector button 提供的 props
-  setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
-  setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
-  optionKey?: number;
-  setSelectorBtnIcon?: (icon?: ReactNode) => void;
+  // setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
+  // setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
+  // optionKey?: number;
+  // setSelectorBtnIcon?: (icon?: ReactNode) => void;
 }
 
-const DividerButton: React.FC<DividerButtonProps> = (props) => {
+const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
+  props,
+) => {
   const {
     prefixCls = 'eee',
     className,
@@ -126,24 +129,44 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
     tipReverse,
     children = defaultDividerIcon,
     keyCommand,
-    syntax,
     getEditorState,
     setEditorState,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,
     removeKeyBindingFn,
-    addBeforeInputHandler,
-    removeBeforeInputHandler,
-    setSelectorBtnActive,
-    setSelectorBtnDisabled,
-    optionKey,
-    setSelectorBtnIcon,
   } = props;
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
+
+  const addDivider = (event: MouseEvent): void => {
+    event.preventDefault();
+    const editorState = getEditorState();
+    //const newEditorState =
+  };
+
+  useEffect(() => {
+    if (keyCommand) {
+      const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
+        if (checkKeyCommand(keyCommand, event)) {
+          return 'add-divider';
+        }
+        return undefined;
+      };
+
+      const handleKeyCommand: EditorPlugin['handleKeyCommand'] = (
+        command,
+        editorState,
+        { setEditorState },
+      ) => {
+        if (command === 'add-divider') {
+        }
+        return 'not-handled';
+      };
+    }
+  }, []);
 
   const checkButtonShouldDisabled = (): boolean => {
     if (getEditorState) {
@@ -169,7 +192,7 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
     [`${prefixCls}-tip-reverse`]:
       tipReverse !== undefined
         ? tipReverse
-        : tipProps.placement.startsWith('top'),
+        : tipProps && tipProps.placement.startsWith('top'),
   });
 
   const tipTitle: ReactNode =
@@ -195,7 +218,15 @@ const DividerButton: React.FC<DividerButtonProps> = (props) => {
           {children}
         </div>
       ) : (
-        <Tooltip title={tipTitle}></Tooltip>
+        <Tooltip
+          title={tipTitle}
+          overlayClassName={`${prefixCls}-tip-wrapper`}
+          {...tipProps}
+        >
+          <div className={btnClassName} style={style} onClick={addDivider}>
+            {children}
+          </div>
+        </Tooltip>
       )}
     </div>
   );
