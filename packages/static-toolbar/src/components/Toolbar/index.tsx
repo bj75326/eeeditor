@@ -43,7 +43,7 @@ export interface ToolbarPubProps {
   className?: string;
   style?: CSSProperties;
   locale?: Locale;
-  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
+  childrenTipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children?: ReactElement | ReactElement[];
 }
 
@@ -57,7 +57,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     className,
     style,
     locale,
-    tipProps = { placement: 'bottom' },
+    childrenTipProps = { placement: 'bottom' },
     children,
     store,
   } = props;
@@ -116,7 +116,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       );
     },
     // static toolbar 默认的 button tip props
-    tipProps,
+    tipProps: childrenTipProps,
   };
 
   const defaultButtons = (

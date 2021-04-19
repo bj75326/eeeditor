@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineTwoIcon = (
@@ -84,7 +84,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   //   }
   //   return 'not-handled';
   // },
-  getKeyBindingFn: bindCommandForKeyBindingFn('header-two'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'header-two';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-two') {

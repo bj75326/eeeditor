@@ -34,7 +34,7 @@ export interface SelectorButtonProps {
   className?: string;
   style?: CSSProperties;
   icon?: ReactNode;
-  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
+  childrenTipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children: ReactElement | ReactElement[];
 }
 
@@ -46,6 +46,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     className,
     style,
     icon,
+    childrenTipProps = { placement: 'right' },
     children,
     getEditorState,
     setEditorState,
@@ -110,7 +111,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     setSelectorBtnActive,
     setSelectorBtnDisabled,
     setSelectorBtnIcon,
-    //tipProps,
+    tipProps: childrenTipProps,
   };
 
   const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {

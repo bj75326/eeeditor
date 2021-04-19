@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineFourIcon = (
@@ -57,7 +57,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   defaultKeyCommand: false,
   defaultSyntax: '#### ',
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('header-four'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'header-four';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-four') {

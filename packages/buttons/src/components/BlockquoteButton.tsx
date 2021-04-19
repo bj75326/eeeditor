@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultBlockquoteIcon = (
@@ -41,7 +41,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   defaultKeyCommand: false,
   defaultSyntax: '> ',
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('blockquote'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'blockquote';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'blockquote') {

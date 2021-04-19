@@ -241,7 +241,6 @@ export interface KeyCommand {
   hasCommandModifier?: boolean; // isOSX ? !!e.metaKey && !e.altKey : !!e.ctrlKey && !e.altKey
 }
 
-export * from './utils/bindCommandForKeyBindingFn';
 export * from './utils/checkKeyCommand';
 export * from './utils/blockInSelection';
 export * from './utils/createBlockKeyStore';

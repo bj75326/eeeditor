@@ -253,9 +253,9 @@ const Page: React.FC<PageProps> = (props) => {
   const selectBtnChildrenTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
     placement: rtl ? 'left' : 'right',
   };
-  const staticToolbarBtnTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
-    placement: 'bottom',
-  };
+  // const staticToolbarBtnTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
+  //   placement: 'bottom',
+  // };
 
   const sidebar = (
     <CSSTransition
@@ -406,19 +406,22 @@ const Page: React.FC<PageProps> = (props) => {
               <UnderlineButton />
               <CodeButton />
               <Separator />
-              <SelectorButton icon={defaultHeadIcon}>
-                <HeadlineOneButton tipProps={selectBtnChildrenTip} />
-                <HeadlineTwoButton tipProps={selectBtnChildrenTip} />
-                <HeadlineThreeButton tipProps={selectBtnChildrenTip} />
-                <HeadlineFourButton tipProps={selectBtnChildrenTip} />
-                <HeadlineFiveButton tipProps={selectBtnChildrenTip} />
-                <HeadlineSixButton tipProps={selectBtnChildrenTip} />
+              <SelectorButton
+                icon={defaultHeadIcon}
+                childrenTipProps={selectBtnChildrenTip}
+              >
+                <HeadlineOneButton />
+                <HeadlineTwoButton />
+                <HeadlineThreeButton />
+                <HeadlineFourButton />
+                <HeadlineFiveButton />
+                <HeadlineSixButton />
               </SelectorButton>
-              <SelectorButton>
-                <AlignLeftButton tipProps={selectBtnChildrenTip} />
-                <AlignCenterButton tipProps={selectBtnChildrenTip} />
-                <AlignRightButton tipProps={selectBtnChildrenTip} />
-                <AlignJustifyButton tipProps={selectBtnChildrenTip} />
+              <SelectorButton childrenTipProps={selectBtnChildrenTip}>
+                <AlignLeftButton />
+                <AlignCenterButton />
+                <AlignRightButton />
+                <AlignJustifyButton />
               </SelectorButton>
               <UnorderedListButton />
               <OrderedListButton />

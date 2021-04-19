@@ -1,9 +1,5 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
-import {
-  RichUtils,
-  KeyCommand,
-  bindCommandForKeyBindingFn,
-} from '@eeeditor/editor';
+import { RichUtils, KeyCommand, checkKeyCommand } from '@eeeditor/editor';
 
 export const defaultUnderlineIcon = (
   <svg
@@ -44,7 +40,12 @@ export default createToggleInlineStyleButton<KeyCommand | false, false>({
   },
   defaultSyntax: false,
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('underline'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'underline';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'underline') {

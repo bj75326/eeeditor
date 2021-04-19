@@ -37,24 +37,18 @@ export interface DecoratedUndoRedoButtonProps {
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(state: EditorState): void;
-  keyCommandHandlers?: Array<EditorPlugin['handleKeyCommand']>;
-  keyBindingFns?: Array<EditorPlugin['keyBindingFn']>;
-  undoButtonRendered: number;
-  redoButtonRendered: number;
+  undoButtonRendered?: number;
+  undoButtonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  undoButtonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
+  redoButtonRendered?: number;
+  redoButtonKeyBindingFn?: EditorPlugin['keyBindingFn'];
+  redoButtonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
 }
 
 export type UndoPluginStore = Store<StoreItemMap>;
 
 export interface UndoRedoButtonProps extends DecoratedUndoRedoButtonProps {
   store: UndoPluginStore;
-  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
-  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
-  addKeyCommandHandler?: (
-    keyCommandHandler: EditorPlugin['handleKeyCommand'],
-  ) => void;
-  removeKeyCommandHandler?: (
-    keyCommandHandler: EditorPlugin['handleKeyCommand'],
-  ) => void;
 }
 
 export type UndoPlugin = EditorPlugin & {
@@ -88,58 +82,56 @@ export default (
   },
 ): UndoPlugin => {
   const store = createStore<StoreItemMap>({
-    keyCommandHandlers: [],
-    keyBindingFns: [],
     undoButtonRendered: 0,
     redoButtonRendered: 0,
   });
 
-  const extraProps: Omit<
-    UndoRedoButtonProps,
-    keyof DecoratedUndoRedoButtonProps
-  > = {
-    store,
-    // 提供方法给 buttons 动态增减 handleKeyCommand
-    addKeyCommandHandler: (keyCommandHandler) => {
-      const keyCommandHandlers = store.getItem('keyCommandHandlers');
-      store.updateItem('keyCommandHandlers', [
-        ...keyCommandHandlers.filter(
-          (handler) => handler !== keyCommandHandler,
-        ),
-        keyCommandHandler,
-      ]);
-    },
-    removeKeyCommandHandler: (keyCommandHandler) => {
-      const keyCommandHandlers = store.getItem('keyCommandHandlers');
-      store.updateItem(
-        'keyCommandHandlers',
-        keyCommandHandlers.filter((handler) => handler !== keyCommandHandler),
-      );
-    },
-    // 提供方法给 buttons 动态增减 keyBindingFn
-    addKeyBindingFn: (keyBindingFn) => {
-      const keyBindingFns = store.getItem('keyBindingFns');
-      store.updateItem('keyBindingFns', [
-        ...keyBindingFns.filter((fn) => fn !== keyBindingFn),
-        keyBindingFn,
-      ]);
-    },
-    removeKeyBindingFn: (keyBindingFn) => {
-      const keyBindingFns = store.getItem('keyBindingFns');
-      store.updateItem(
-        'keyBindingFns',
-        keyBindingFns.filter((fn) => fn !== keyBindingFn),
-      );
-    },
-  };
+  // const extraProps: Omit<
+  //   UndoRedoButtonProps,
+  //   keyof DecoratedUndoRedoButtonProps
+  // > = {
+  //   store,
+  //   // 提供方法给 buttons 动态增减 handleKeyCommand
+  //   addKeyCommandHandler: (keyCommandHandler) => {
+  //     const keyCommandHandlers = store.getItem('keyCommandHandlers');
+  //     store.updateItem('keyCommandHandlers', [
+  //       ...keyCommandHandlers.filter(
+  //         (handler) => handler !== keyCommandHandler,
+  //       ),
+  //       keyCommandHandler,
+  //     ]);
+  //   },
+  //   removeKeyCommandHandler: (keyCommandHandler) => {
+  //     const keyCommandHandlers = store.getItem('keyCommandHandlers');
+  //     store.updateItem(
+  //       'keyCommandHandlers',
+  //       keyCommandHandlers.filter((handler) => handler !== keyCommandHandler),
+  //     );
+  //   },
+  //   // 提供方法给 buttons 动态增减 keyBindingFn
+  //   addKeyBindingFn: (keyBindingFn) => {
+  //     const keyBindingFns = store.getItem('keyBindingFns');
+  //     store.updateItem('keyBindingFns', [
+  //       ...keyBindingFns.filter((fn) => fn !== keyBindingFn),
+  //       keyBindingFn,
+  //     ]);
+  //   },
+  //   removeKeyBindingFn: (keyBindingFn) => {
+  //     const keyBindingFns = store.getItem('keyBindingFns');
+  //     store.updateItem(
+  //       'keyBindingFns',
+  //       keyBindingFns.filter((fn) => fn !== keyBindingFn),
+  //     );
+  //   },
+  // };
 
   const DecoratedUndoButton: React.FC<DecoratedUndoRedoButtonProps> = (
     props,
-  ) => <UndoButton {...props} {...extraProps} />;
+  ) => <UndoButton {...props} store={store} />;
 
   const DecoratedRedoButton: React.FC<DecoratedUndoRedoButtonProps> = (
     props,
-  ) => <RedoButton {...props} {...extraProps} />;
+  ) => <RedoButton {...props} store={store} />;
 
   return {
     initialize: ({ getEditorState, setEditorState }) => {
@@ -169,22 +161,29 @@ export default (
     // },
 
     keyBindingFn: (event, pluginFunctions) => {
-      const keyBindingFns = store.getItem('keyBindingFns');
-      let result: string | null | undefined = undefined;
-      if (keyBindingFns) {
-        return keyBindingFns.some((fn) => {
-          result = fn(event, pluginFunctions);
-          return result !== undefined;
-        })
-          ? result
-          : undefined;
+      const undoButtonRendered = store.getItem('undoButtonRendered');
+      const redoButtonRendered = store.getItem('redoButtonRendered');
+      const undoButtonKeyBindingFn = store.getItem('undoButtonKeyBindingFn');
+      const redoButtonKeyBindingFn = store.getItem('redoButtonKeyBindingFn');
+
+      if (!!undoButtonRendered && undoButtonKeyBindingFn) {
+        const command = undoButtonKeyBindingFn(event, pluginFunctions);
+        if (command !== undefined) {
+          return command;
+        }
       }
-      if (config.undoKeyCommand && !!!store.getItem('undoButtonRendered')) {
+      if (!!redoButtonRendered && redoButtonKeyBindingFn) {
+        const command = redoButtonKeyBindingFn(event, pluginFunctions);
+        if (command !== undefined) {
+          return command;
+        }
+      }
+      if (config.undoKeyCommand && !!!undoButtonRendered) {
         if (checkKeyCommand(config.undoKeyCommand, event)) {
           return 'undo';
         }
       }
-      if (config.redoKeyCommand && !!!store.getItem('redoButtonRendered')) {
+      if (config.redoKeyCommand && !!!redoButtonRendered) {
         if (checkKeyCommand(config.redoKeyCommand, event)) {
           return 'redo';
         }
@@ -193,19 +192,48 @@ export default (
     },
 
     handleKeyCommand: (command, editorState, pluginFunctions) => {
-      const keyCommandHandlers = store.getItem('keyCommandHandlers');
-      if (keyCommandHandlers) {
-        return keyCommandHandlers.some(
-          (handler) =>
-            handler(command, editorState, pluginFunctions) === 'handled',
-        )
-          ? 'handled'
-          : 'not-handled';
+      const undoButtonRendered = store.getItem('undoButtonRendered');
+      const redoButtonRendered = store.getItem('redoButtonRendered');
+      const undoButtonKeyCommandHandler = store.getItem(
+        'undoButtonKeyCommandHandler',
+      );
+      const redoButtonKeyCommandHandler = store.getItem(
+        'redoButtonKeyCommandHandler',
+      );
+
+      if (!!undoButtonRendered && undoButtonKeyCommandHandler) {
+        const result = undoButtonKeyCommandHandler(
+          command,
+          editorState,
+          pluginFunctions,
+        );
+        if (result === 'handled') {
+          return 'handled';
+        }
       }
-      if (config.undoKeyCommand && !!!store.getItem('undoButtonRendered')) {
-        // if () {
-        // }
+      if (!!redoButtonRendered && redoButtonKeyCommandHandler) {
+        const result = redoButtonKeyCommandHandler(
+          command,
+          editorState,
+          pluginFunctions,
+        );
+        if (result === 'handled') {
+          return 'handled';
+        }
       }
+      if (!!!undoButtonRendered) {
+        if (command === 'undo') {
+          pluginFunctions.setEditorState(EditorState.undo(editorState));
+          return 'handled';
+        }
+      }
+      if (!!!redoButtonRendered) {
+        if (command === 'redo') {
+          pluginFunctions.setEditorState(EditorState.redo(editorState));
+          return 'handled';
+        }
+      }
+      return 'not-handled';
     },
 
     DecoratedUndoButton,

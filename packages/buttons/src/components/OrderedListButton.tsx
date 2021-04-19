@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultOrderedListIcon = (
@@ -98,7 +98,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   },
   defaultKeyCommand: false,
   defaultSyntax: '1. ',
-  getKeyBindingFn: bindCommandForKeyBindingFn('ordered-list-item'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'ordered-list-item';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'ordered-list-item') {

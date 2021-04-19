@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultHeadlineSixIcon = (
@@ -62,7 +62,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   defaultKeyCommand: false,
   defaultSyntax: '###### ',
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('header-six'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'header-six';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'header-six') {

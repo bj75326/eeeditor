@@ -4,7 +4,7 @@ import {
   Modifier,
   EditorState,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 
 export const defaultUnorderedListIcon = (
@@ -98,7 +98,12 @@ export default createToggleBlockTypeButton<KeyCommand | false, string | false>({
   },
   defaultKeyCommand: false,
   defaultSyntax: '- ',
-  getKeyBindingFn: bindCommandForKeyBindingFn('unordered-list-item'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'unordered-list-item';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'unordered-list-item') {

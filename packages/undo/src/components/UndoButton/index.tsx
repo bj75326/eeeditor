@@ -2,11 +2,7 @@ import React, { ReactNode, MouseEvent, useEffect } from 'react';
 import { UndoRedoButtonProps } from '../..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import {
-  bindCommandForKeyBindingFn,
-  EditorPlugin,
-  EditorState,
-} from '@eeeditor/editor';
+import { checkKeyCommand, EditorPlugin, EditorState } from '@eeeditor/editor';
 import zhCN from '../../locale/zh_CN';
 
 const defaultUndoIcon = (
@@ -53,10 +49,6 @@ const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
       isShiftKeyCommand: false,
     },
     store,
-    addKeyBindingFn,
-    removeKeyBindingFn,
-    addKeyCommandHandler,
-    removeKeyCommandHandler,
   } = props;
 
   const preventBubblingUp = (event: MouseEvent): void => {
@@ -79,9 +71,12 @@ const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
       store.getItem('undoButtonRendered') + 1,
     );
     if (keyCommand) {
-      const keyBindingFn: EditorPlugin['keyBindingFn'] = bindCommandForKeyBindingFn(
-        'undo',
-      )(keyCommand);
+      const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
+        if (checkKeyCommand(keyCommand, event)) {
+          return 'undo';
+        }
+        return undefined;
+      };
 
       const handleKeyCommand: EditorPlugin['handleKeyCommand'] = (
         command,
@@ -95,15 +90,15 @@ const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
         return 'not-handled';
       };
 
-      addKeyBindingFn(keyBindingFn);
-      addKeyCommandHandler(handleKeyCommand);
+      store.updateItem('undoButtonKeyBindingFn', keyBindingFn);
+      store.updateItem('undoButtonKeyCommandHandler', handleKeyCommand);
       return () => {
         store.updateItem(
           'undoButtonRendered',
           store.getItem('undoButtonRendered') - 1,
         );
-        removeKeyBindingFn(keyBindingFn);
-        removeKeyCommandHandler(handleKeyCommand);
+        store.updateItem('undoButtonKeyBindingFn', undefined);
+        store.updateItem('undoButtonKeyCommandHandler', undefined);
       };
     }
     return () => {

@@ -1,9 +1,5 @@
 import createToggleInlineStyleButton from '../utils/createToggleInlineStyleButton';
-import {
-  RichUtils,
-  KeyCommand,
-  bindCommandForKeyBindingFn,
-} from '@eeeditor/editor';
+import { RichUtils, KeyCommand, checkKeyCommand } from '@eeeditor/editor';
 
 export const defaultCodeIcon = (
   <svg
@@ -46,7 +42,12 @@ export default createToggleInlineStyleButton<KeyCommand | false, false>({
   defaultKeyCommand: false,
   defaultSyntax: false,
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('code'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'code';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'code') {

@@ -3,7 +3,7 @@ import {
   EditorState,
   Modifier,
   KeyCommand,
-  bindCommandForKeyBindingFn,
+  checkKeyCommand,
   getSelectedBlocksMapKeys,
 } from '@eeeditor/editor';
 import Immutable from 'immutable';
@@ -64,7 +64,12 @@ export default createSetBlockDataButton<KeyCommand | false, false>({
   },
   defaultSyntax: false,
 
-  getKeyBindingFn: bindCommandForKeyBindingFn('align-right'),
+  getKeyBindingFn: (keyCommand) => (event) => {
+    if (keyCommand && checkKeyCommand(keyCommand, event)) {
+      return 'align-right';
+    }
+    return undefined;
+  },
 
   buttonKeyCommandHandler: (command, editorState, { setEditorState }) => {
     if (command === 'align-right') {
