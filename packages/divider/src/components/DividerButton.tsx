@@ -90,6 +90,11 @@ export interface DividerButtonProps {
 }
 
 export interface DividerButtonExtraProps {
+  // createDividerPlugin 提供的 addDivider
+  addDivider: (
+    editorState: EditorState,
+    data?: Record<string, unknown>,
+  ) => EditorState;
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
@@ -129,6 +134,7 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     tipReverse,
     children = defaultDividerIcon,
     keyCommand,
+    addDivder,
     getEditorState,
     setEditorState,
     addKeyCommandHandler,
@@ -141,10 +147,10 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     event.preventDefault();
   };
 
-  const addDivider = (event: MouseEvent): void => {
+  const handleAddDivider = (event: MouseEvent): void => {
     event.preventDefault();
     const editorState = getEditorState();
-    //const newEditorState =
+    // todo
   };
 
   useEffect(() => {
@@ -162,8 +168,18 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
         { setEditorState },
       ) => {
         if (command === 'add-divider') {
+          // todo
+          return 'handled';
         }
         return 'not-handled';
+      };
+
+      addKeyBindingFn(keyBindingFn);
+      addKeyCommandHandler(handleKeyCommand);
+
+      return () => {
+        removeKeyBindingFn(keyBindingFn);
+        removeKeyCommandHandler(handleKeyCommand);
       };
     }
   }, []);
@@ -223,7 +239,11 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
           overlayClassName={`${prefixCls}-tip-wrapper`}
           {...tipProps}
         >
-          <div className={btnClassName} style={style} onClick={addDivider}>
+          <div
+            className={btnClassName}
+            style={style}
+            onClick={handleAddDivider}
+          >
             {children}
           </div>
         </Tooltip>
