@@ -1,4 +1,4 @@
-import EEEditor from './Editor';
+import EEEditor, { focusDecorator, BlockFocusDecoratorProps } from './Editor';
 
 export * from 'draft-js';
 
@@ -28,7 +28,6 @@ import {
   DraftBlockRenderMap,
   EditorState,
   SelectionState,
-  KeyBindingUtil,
 } from 'draft-js';
 import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
 import { composeDecoratorsFn } from 'draft-js-plugins-editor';
@@ -246,5 +245,7 @@ export * from './utils/blockInSelection';
 export * from './utils/createBlockKeyStore';
 export * from './utils/getBlockMapKeys';
 export * from './utils/getSelectedBlocksMapKeys';
+
+export { focusDecorator, BlockFocusDecoratorProps };
 
 export default EEEditor;

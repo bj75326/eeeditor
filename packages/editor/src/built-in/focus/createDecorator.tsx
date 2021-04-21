@@ -13,7 +13,7 @@ interface DecoratorProps {
   blockKeyStore: BlockKeyStore;
 }
 
-interface BlockFocusDecoratorProps {
+export interface BlockFocusDecoratorProps {
   className: string;
   blockProps: {
     isFocused: boolean;

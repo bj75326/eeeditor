@@ -10,11 +10,13 @@ import {
 } from './';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
-import createFocusPlugin from './built-in/focus';
+import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
 import createDefaultPlugin from './built-in/default';
 
 const { decorator: focusDecorator, ...focusPlugin } = createFocusPlugin();
 const defaultPlugin = createDefaultPlugin();
+
+export { focusDecorator, BlockFocusDecoratorProps };
 
 export interface Locale {}
 

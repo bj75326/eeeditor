@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
   prefixCls?: string;
   className?: string;
-  style?: CSSProperties;
+  // style?: CSSProperties;
   //removed types
   block: unknown;
   blockProps: unknown;
@@ -24,7 +24,6 @@ const Divider: React.FC<DividerProps> = (props) => {
   const {
     prefixCls = 'eee',
     className,
-    style,
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...otherProps
   } = props;
@@ -46,7 +45,7 @@ const Divider: React.FC<DividerProps> = (props) => {
 
   const dividerClassName = classNames(`${prefixCls}-divider`, className);
 
-  return <hr className={dividerClassName} style={style} {...elementProps} />;
+  return <hr className={dividerClassName} {...elementProps} />;
 };
 
 export default Divider;

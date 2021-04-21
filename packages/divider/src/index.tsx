@@ -1,5 +1,11 @@
 import React, { ComponentType } from 'react';
-import { ContentBlock, EditorPlugin, EditorState } from '@eeeditor/editor';
+import {
+  ContentBlock,
+  EditorPlugin,
+  EditorState,
+  focusDecorator,
+  BlockFocusDecoratorProps,
+} from '@eeeditor/editor';
 import Divider, { DividerProps } from './components/Divider';
 import DividerButton, {
   DividerButtonProps,
@@ -19,6 +25,7 @@ interface DividerPluginConfig {
     DividerButtonProps & DividerButtonExtraProps
   >;
   decorator?: unknown;
+  focusable?: boolean;
 }
 
 const createDividerPlugin = ({
@@ -26,11 +33,20 @@ const createDividerPlugin = ({
   dividerComponent = Divider,
   dividerButtonComponent: Button = DividerButton,
   decorator,
+  focusable = true,
 }: DividerPluginConfig): EditorPlugin & {
   DividerButton: ComponentType<DividerButtonProps>;
   addDivider: ReturnType<typeof addDivider>;
 } => {
   let Divider = dividerComponent;
+
+  // focusable = true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
+  if (focusable) {
+    // todo
+    Divider = focusDecorator(
+      (Divider as unknown) as React.FC<BlockFocusDecoratorProps>,
+    );
+  }
 
   if (typeof decorator === 'function') {
     Divider = decorator(Divider);

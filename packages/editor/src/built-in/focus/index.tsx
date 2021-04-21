@@ -2,7 +2,7 @@ import { EditorState, SelectionState, ContentState, EditorPlugin } from '../..';
 import insertNewLineBefore from './modifiers/insertNewLineBefore';
 import setSelection from './modifiers/setSelection';
 import setSelectionToBlock from './modifiers/setSelectionToBlock';
-import createDecorator from './createDecorator';
+import createDecorator, { BlockFocusDecoratorProps } from './createDecorator';
 import createBlockKeyStore, {
   BlockKeyStore,
 } from './utils/createBlockKeyStore';
@@ -32,6 +32,8 @@ const deleteCommands = [
   'delete-word',
   'delete-to-end-of-block',
 ];
+
+export { BlockFocusDecoratorProps };
 
 export interface FocusEditorPluginConfig {}
 
