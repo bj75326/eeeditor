@@ -17,10 +17,11 @@ const addDivider = (entityType: string) => (
     ' ',
   );
 
-  return EditorState.forceSelection(
-    newEditorState,
-    newEditorState.getCurrentContent().getSelectionAfter(),
-  );
+  // return EditorState.forceSelection(
+  //   newEditorState,
+  //   newEditorState.getCurrentContent().getSelectionAfter(),
+  // );
+  return newEditorState;
 };
 
 export default addDivider;

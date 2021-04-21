@@ -1,5 +1,5 @@
 import React, { ComponentType } from 'react';
-import { EditorPlugin } from '@eeeditor/editor';
+import { ContentBlock, EditorPlugin, EditorState } from '@eeeditor/editor';
 import Divider, { DividerProps } from './components/Divider';
 import DividerButton, {
   DividerButtonProps,
@@ -40,16 +40,35 @@ const createDividerPlugin = ({
     <Button {...props} addDivider={addDivider(entityType)} />
   );
 
+  const isDividerBlock = (
+    block: ContentBlock,
+    editorState: EditorState,
+  ): boolean => {
+    if (block.getType() === 'atomic') {
+      const contentState = editorState.getCurrentContent();
+      const entity = block.getEntityAt(0);
+      if (!entity) return false;
+      return contentState.getEntity(entity).getType() === entityType;
+    }
+    return false;
+  };
+
   return {
     blockRendererFn(block, { getEditorState }) {
-      if (block.getType() === 'atomic') {
-        const contentState = getEditorState().getCurrentContent();
-        const entity = block.getEntityAt(0);
-        if (!entity) return null;
-        const type = contentState.getEntity(entity).getType();
+      if (isDividerBlock(block, getEditorState())) {
+        return {
+          component: Divider,
+          editable: false,
+        };
       }
-
       return null;
+    },
+
+    blockStyleFn(block, { getEditorState }) {
+      if (isDividerBlock(block, getEditorState())) {
+        return 'pagebreak';
+      }
+      return '';
     },
 
     DividerButton,
@@ -57,3 +76,5 @@ const createDividerPlugin = ({
     addDivider: addDivider(entityType),
   };
 };
+
+export default createDividerPlugin;

@@ -134,7 +134,7 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     tipReverse,
     children = defaultDividerIcon,
     keyCommand,
-    addDivder,
+    addDivider,
     getEditorState,
     setEditorState,
     addKeyCommandHandler,
@@ -150,7 +150,9 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
   const handleAddDivider = (event: MouseEvent): void => {
     event.preventDefault();
     const editorState = getEditorState();
-    // todo
+    const newEditorState = addDivider(editorState);
+
+    setEditorState(newEditorState);
   };
 
   useEffect(() => {
@@ -168,7 +170,8 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
         { setEditorState },
       ) => {
         if (command === 'add-divider') {
-          // todo
+          const newEditorState = addDivider(editorState);
+          setEditorState(newEditorState);
           return 'handled';
         }
         return 'not-handled';
@@ -185,7 +188,7 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
   }, []);
 
   const checkButtonShouldDisabled = (): boolean => {
-    if (getEditorState) {
+    if (!getEditorState) {
       return true;
     }
     const editorState: EditorState = getEditorState();

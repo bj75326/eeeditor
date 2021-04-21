@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@eeeditor/buttons": "1.0.0",
+    "@eeeditor/divider": "1.0.0",
     "@eeeditor/editor": "1.0.0",
     "@eeeditor/static-toolbar": "1.0.0",
     "@eeeditor/undo": "1.0.0",

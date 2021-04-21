@@ -17,6 +17,7 @@ import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
 } from '@eeeditor/static-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
+import createDividerPlugin from '@eeeditor/divider';
 import {
   enUS,
   zhCN,
@@ -66,6 +67,7 @@ import './index.less';
 
 import '@eeeditor/editor/es/style';
 import '@eeeditor/static-toolbar/es/style';
+import '@eeeditor/divider/es/style';
 
 const {
   StaticToolbar,
@@ -77,10 +79,16 @@ const {
 const {
   DecoratedUndoButton,
   DecoratedRedoButton,
-  ...UndoPlugin
+  ...undoPlugin
 } = createUndoPlugin();
 
-const plugins: EditorPlugin[] = [staticToolbarPlugin, UndoPlugin];
+const { DividerButton, ...dividerPlugin } = createDividerPlugin({});
+
+const plugins: EditorPlugin[] = [
+  staticToolbarPlugin,
+  undoPlugin,
+  dividerPlugin,
+];
 
 export interface PageProps extends ConnectProps {
   title: StateType['title'];
@@ -132,10 +140,6 @@ const Page: React.FC<PageProps> = (props) => {
 
   const handleChange = (nextEditorState: EditorState) => {
     console.log('Page handleChange run');
-    console.log(
-      'nextEditorState decorator----> ',
-      nextEditorState.getDecorator(),
-    );
     setEditorState(nextEditorState);
     // sync with server side
     // editorState 包含 selectionState 和 contentState，selectionState 的改动不应该也不需要与服务器同步
@@ -426,6 +430,7 @@ const Page: React.FC<PageProps> = (props) => {
               <UnorderedListButton />
               <OrderedListButton />
               <BlockquoteButton />
+              <DividerButton />
               <Separator />
               <DecoratedUndoButton />
               <DecoratedRedoButton />
