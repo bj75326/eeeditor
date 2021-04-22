@@ -40,12 +40,16 @@ const createDividerPlugin = ({
 } => {
   let Divider = dividerComponent;
 
-  // focusable = true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
+  // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
+  let FocusableDivider = null;
   if (focusable) {
     // todo
-    Divider = focusDecorator(
+    FocusableDivider = focusDecorator(
       (Divider as unknown) as React.FC<BlockFocusDecoratorProps>,
     );
+    if (typeof decorator === 'function') {
+      FocusableDivider = decorator(FocusableDivider);
+    }
   }
 
   if (typeof decorator === 'function') {
@@ -73,7 +77,7 @@ const createDividerPlugin = ({
     blockRendererFn(block, { getEditorState }) {
       if (isDividerBlock(block, getEditorState())) {
         return {
-          component: Divider,
+          component: focusable ? FocusableDivider : Divider,
           editable: false,
         };
       }

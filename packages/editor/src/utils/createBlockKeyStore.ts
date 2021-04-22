@@ -27,3 +27,5 @@ export const createBlockKeyStore = (): BlockKeyStore => {
     },
   };
 };
+
+export default createBlockKeyStore;

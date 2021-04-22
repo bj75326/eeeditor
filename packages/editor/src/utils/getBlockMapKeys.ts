@@ -11,3 +11,5 @@ export const getBlockMapKeys = (
     .takeUntil((key) => key === endKey)
     .concat([endKey]);
 };
+
+export default getBlockMapKeys;

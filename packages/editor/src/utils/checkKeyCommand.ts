@@ -16,3 +16,5 @@ export const checkKeyCommand = (
       KeyBindingUtil.isOptionKeyCommand(event)) &&
   (keyCommand.hasCommandModifier === undefined ||
     keyCommand.hasCommandModifier === KeyBindingUtil.hasCommandModifier(event));
+
+export default checkKeyCommand;

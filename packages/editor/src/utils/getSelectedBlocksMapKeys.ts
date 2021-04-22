@@ -1,5 +1,5 @@
 import { EditorState } from 'draft-js';
-import { getBlockMapKeys } from './getBlockMapKeys';
+import getBlockMapKeys from './getBlockMapKeys';
 
 export const getSelectedBlocksMapKeys = (
   editorState: EditorState,
@@ -12,3 +12,5 @@ export const getSelectedBlocksMapKeys = (
     selectionState.getEndKey(),
   );
 };
+
+export default getSelectedBlocksMapKeys;

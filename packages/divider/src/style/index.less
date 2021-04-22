@@ -11,4 +11,9 @@
   width: @divider-length;
   border: none;
   border-top: 1px solid @divider-color;
+
+  &.isFocused {
+    //border-top-color: @divider-focused-color;
+    box-shadow: 0 0 0 1px @divider-focused-color;
+  }
 }

@@ -5,9 +5,9 @@ import setSelectionToBlock from './modifiers/setSelectionToBlock';
 import createDecorator, { BlockFocusDecoratorProps } from './createDecorator';
 import createBlockKeyStore, {
   BlockKeyStore,
-} from './utils/createBlockKeyStore';
-import blockInSelection from './utils/blockInSelection';
-import getBlockMapKeys from './utils/getBlockMapKeys';
+} from '../../utils/createBlockKeyStore';
+import blockInSelection from '../../utils/blockInSelection';
+import getBlockMapKeys from '../../utils/getBlockMapKeys';
 import removeBlock from './modifiers/removeBlock';
 
 // 有且仅有 focusable Block 被选中

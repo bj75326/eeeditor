@@ -1,9 +1,9 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
   prefixCls?: string;
-  className?: string;
+  className: string;
   // style?: CSSProperties;
   //removed types
   block: unknown;
