@@ -101,6 +101,10 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
 
   // const editorRef = useRef(null);
 
+  useEffect(() => {
+    console.log('EEEditor componentDidUpdate!!');
+  }, []);
+
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);
   };
@@ -127,6 +131,9 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
       }}
       onMouseUp={() => {
         console.log('editor wrapper mouseup');
+      }}
+      onSelect={() => {
+        console.log('editor wrapper select');
       }}
     >
       <PluginEditor

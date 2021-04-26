@@ -20,8 +20,9 @@ export interface BlockFocusDecoratorProps {
     setFocusToBlock(): void;
   };
   block: ContentBlock;
-  onClick(event: MouseEvent): void;
+  onMouseUp(event: MouseEvent): void;
   ref: Ref<unknown>;
+  onSelect: any;
 }
 
 type WrappedComponentType = ComponentType<BlockFocusDecoratorProps> & {
@@ -62,8 +63,11 @@ export default ({ blockKeyStore }: DecoratorProps) => (
         <WrappedComponent
           {...props}
           ref={ref}
-          onClick={onClick}
+          onMouseUp={onClick}
           className={combinedClassName}
+          onSelect={() => {
+            console.log('block select!!!!!!!!!');
+          }}
         />
       );
     },
