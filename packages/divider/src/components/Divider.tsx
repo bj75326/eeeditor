@@ -77,6 +77,7 @@ const Divider: React.FC<DividerProps> = (props) => {
   const hrNode = useRef(null);
 
   useEffect(() => {
+    console.log('divider componentDidUpdate run!!!!');
     if (selection == null || !selection.getHasFocus()) {
       return;
     }
@@ -108,13 +109,45 @@ const Divider: React.FC<DividerProps> = (props) => {
 
     const hasFocus = focusKey === blockKey && focusOffset === 0;
 
-    if (hasAnchor && hasFocus) {
+    if (hasAnchor || hasFocus) {
       documentSelection.removeAllRanges();
       addPointToSelection(documentSelection, hrNode.current, 0, selection);
       addFocusToSelection(documentSelection, hrNode.current, 0, selection);
     }
-    // todo
-  }, [selection]);
+
+    // if (hasAnchor && hasFocus) {
+    //   documentSelection.removeAllRanges();
+    //   addPointToSelection(documentSelection, hrNode.current, 0, selection);
+    //   addFocusToSelection(documentSelection, hrNode.current, 0, selection);
+    //   return;
+    // }
+
+    // if (!isBackward) {
+    //   if (hasAnchor) {
+    //     documentSelection.removeAllRanges();
+    //     addPointToSelection(documentSelection, hrNode.current, 0, selection);
+    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
+    //   }
+    //   if (hasFocus) {
+    //     documentSelection.removeAllRanges();
+    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
+    //   }
+    // } else {
+    //   if (hasFocus) {
+    //     //documentSelection.removeAllRanges();
+    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
+    //   }
+    //   if (hasAnchor) {
+    //     // const storedFocusNode = documentSelection.focusNode;
+    //     // const storedFocusOffset = documentSelection.focusOffset;
+
+    //     documentSelection.removeAllRanges();
+    //     addPointToSelection(documentSelection, hrNode.current, 0, selection);
+    //     // addFocusToSelection(documentSelection, storedFocusNode, storedFocusOffset, selection);
+    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
+    //   }
+    // }
+  });
 
   const dividerClassName = classNames(`${prefixCls}-divider`, className);
 
