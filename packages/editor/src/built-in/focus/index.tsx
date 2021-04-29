@@ -1,5 +1,5 @@
 import { EditorState, SelectionState, ContentState, EditorPlugin } from '../..';
-import insertNewLineBefore from './modifiers/insertNewLineBefore';
+import insertNewLineBefore from '../../modifiers/insertNewLineBefore';
 import setSelection from './modifiers/setSelection';
 import setSelectionToBlock from './modifiers/setSelectionToBlock';
 import createDecorator, { BlockFocusDecoratorProps } from './createDecorator';
@@ -8,7 +8,7 @@ import createBlockKeyStore, {
 } from '../../utils/createBlockKeyStore';
 import blockInSelection from '../../utils/blockInSelection';
 import getBlockMapKeys from '../../utils/getBlockMapKeys';
-import removeBlock from './modifiers/removeBlock';
+import removeBlock from '../../modifiers/removeBlock';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -48,22 +48,28 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
 
   return {
     handleReturn: (event, editorState, { setEditorState }) => {
-      // 如果当前有且仅有 focusable block 被选中，按下 Return 则会在 focusable block 前插入一个新的 text block 。
+      // 如果当前有且仅有 focusable block 被选中：
+      // 按下 Return 则会在 focusable block 前插入一个新的 text block
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setEditorState(insertNewLineBefore(editorState));
         return 'handled';
       }
-      // todo: 如果当前 selectionState start block 为 focusable block
+      // 如果当前 selectionState start block 为 focusable block ：
+      // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
+      // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
+      // 返回 'not-handled' 执行默认处理
 
-      // todo: 如果当前 selectionState end block 为 focusable block
+      // 如果当前 selectionState end block 为 focusable block ：
+      // 同上一种情况
 
-      // todo: 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
-      // 则返回 'not-handled' 执行默认处理
+      // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block ：
+      // 返回 'not-handled' 执行默认处理
       return 'not-handled';
     },
 
     handleKeyCommand: (command, editorState, { setEditorState }) => {
-      // 如果当前有且仅有 focusable block 被选中，delete command
+      // 如果当前有且仅有 focusable block 被选中：
+      // delete command
       if (
         deleteCommands.includes(command) &&
         focusableBlockIsSelected(editorState, blockKeyStore)
@@ -76,12 +82,16 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         }
       }
 
-      // todo: 如果当前 selectionState start block 为 focusable block
+      // 如果当前 selectionState start block 为 focusable block ：
+      // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
+      // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
+      // 返回 'not-handled' 执行默认处理
 
-      // todo: 如果当前 selectionState end block 为 focusable block
+      // 如果当前 selectionState end block 为 focusable block ：
+      // 同上一种情况
 
-      // todo: 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
-      // 则返回 'not-handled' 执行默认处理
+      // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
+      // 返回 'not-handled' 执行默认处理
 
       return 'not-handled';
     },
@@ -104,7 +114,8 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         return editorState;
       }
 
-      // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
+      // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
+      // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
       // Note: Only if the previous or current selection contained a focusableBlock a re-render is needed.
       const focusableBlockKeys = blockKeyStore.getAll();
       if (lastSelection) {

@@ -35,3 +35,9 @@
 @buttons-tip-font-size: @font-size-sm;
 @buttons-tip-background-color: rgb(40, 40, 40);
 @buttons-tip-radius: 4px;
+
+// focusable block
+@focusable-focused-color: @primary-color;
+@focusable-hover-color: color(
+  ~`colorPalette('@{focusable-focused-color}', 4) `
+);

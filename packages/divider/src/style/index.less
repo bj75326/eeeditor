@@ -3,6 +3,15 @@
 .pagebreak {
   padding: @divider-gap 0;
   margin: 0 0 @editor-block-gap;
+
+  &:hover {
+    .@{eeeditor-prefix-cls}-divider {
+      box-shadow: 0 0 0 1px @focusable-hover-color;
+      &.isFocused {
+        box-shadow: 0 0 0 1px @focusable-focused-color;
+      }
+    }
+  }
 }
 
 .@{eeeditor-prefix-cls}-divider {
@@ -13,7 +22,6 @@
   border-top: 1px solid @divider-color;
 
   &.isFocused {
-    //border-top-color: @divider-focused-color;
-    box-shadow: 0 0 0 1px @divider-focused-color;
+    box-shadow: 0 0 0 1px @focusable-focused-color;
   }
 }

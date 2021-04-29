@@ -6,7 +6,7 @@ import {
   genKey as generateRandomKey,
   ContentState,
   SelectionState,
-} from '../../..';
+} from '..';
 
 const insertBlockBeforeSelection = (
   contentState: ContentState,
