@@ -67,34 +67,34 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return 'not-handled';
     },
 
-    handleKeyCommand: (command, editorState, { setEditorState }) => {
-      // 如果当前有且仅有 focusable block 被选中：
-      // delete command
-      if (
-        deleteCommands.includes(command) &&
-        focusableBlockIsSelected(editorState, blockKeyStore)
-      ) {
-        const key = editorState.getSelection().getStartKey();
-        const newEditorState = removeBlock(editorState, key);
-        if (newEditorState !== editorState) {
-          setEditorState(newEditorState);
-          return 'handled';
-        }
-      }
+    // handleKeyCommand: (command, editorState, { setEditorState }) => {
+    //   // 如果当前有且仅有 focusable block 被选中：
+    //   // delete command
+    //   if (
+    //     deleteCommands.includes(command) &&
+    //     focusableBlockIsSelected(editorState, blockKeyStore)
+    //   ) {
+    //     const key = editorState.getSelection().getStartKey();
+    //     const newEditorState = removeBlock(editorState, key);
+    //     if (newEditorState !== editorState) {
+    //       setEditorState(newEditorState);
+    //       return 'handled';
+    //     }
+    //   }
 
-      // 如果当前 selectionState start block 为 focusable block ：
-      // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
-      // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
-      // 返回 'not-handled' 执行默认处理
+    //   // 如果当前 selectionState start block 为 focusable block ：
+    //   // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
+    //   // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
+    //   // 返回 'not-handled' 执行默认处理
 
-      // 如果当前 selectionState end block 为 focusable block ：
-      // 同上一种情况
+    //   // 如果当前 selectionState end block 为 focusable block ：
+    //   // 同上一种情况
 
-      // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
-      // 返回 'not-handled' 执行默认处理
+    //   // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
+    //   // 返回 'not-handled' 执行默认处理
 
-      return 'not-handled';
-    },
+    //   return 'not-handled';
+    // },
 
     onChange: (editorState) => {
       // in case the content changed there is no need to re-render blockRendererFn

@@ -5,9 +5,8 @@ import React, {
   Ref,
   useEffect,
 } from 'react';
-import { ContentBlock } from '../..';
+import { ContentBlock, BlockKeyStore } from '../..';
 import classNames from 'classnames';
-import { BlockKeyStore } from './utils/createBlockKeyStore';
 
 interface DecoratorProps {
   blockKeyStore: BlockKeyStore;

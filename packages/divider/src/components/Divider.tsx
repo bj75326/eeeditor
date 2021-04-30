@@ -84,6 +84,10 @@ const Divider: React.FC<DividerProps> = (props) => {
 
     const blockKey = block.getKey();
 
+    console.log(
+      'divider hasEdgeWithin ',
+      selection.hasEdgeWithin(blockKey, 0, 0),
+    );
     if (!selection.hasEdgeWithin(blockKey, 0, 0)) {
       return;
     }
@@ -108,6 +112,9 @@ const Divider: React.FC<DividerProps> = (props) => {
     const hasAnchor = anchorKey === blockKey && anchorOffset === 0;
 
     const hasFocus = focusKey === blockKey && focusOffset === 0;
+
+    console.log('hasAnchor after ', hasAnchor);
+    console.log('hasFocus after ', hasFocus);
 
     if (hasAnchor || hasFocus) {
       documentSelection.removeAllRanges();
