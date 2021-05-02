@@ -245,6 +245,8 @@ export * from './utils/blockInSelection';
 export * from './utils/createBlockKeyStore';
 export * from './utils/getBlockMapKeys';
 export * from './utils/getSelectedBlocksMapKeys';
+export * from './utils/isFirstBlock';
+export * from './utils/isLastBlock';
 
 export { focusDecorator, BlockFocusDecoratorProps };
 
