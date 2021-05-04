@@ -248,6 +248,8 @@ export * from './utils/getSelectedBlocksMapKeys';
 export * from './utils/isFirstBlock';
 export * from './utils/isLastBlock';
 
+export * from './modifiers/insertAtomicBlockWithoutSplit';
+
 export { focusDecorator, BlockFocusDecoratorProps };
 
 export default EEEditor;

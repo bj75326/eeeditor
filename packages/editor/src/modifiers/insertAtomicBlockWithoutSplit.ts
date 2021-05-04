@@ -17,8 +17,22 @@ const checkSelectionAfter = (
   withAtomicBlock: ContentState,
   dividerBlockNeeded: boolean,
 ): SelectionState => {
-  // todo
-  return;
+  if (dividerBlockNeeded) {
+    return withAtomicBlock
+      .getSelectionAfter()
+      .set('hasFocus', true) as SelectionState;
+  }
+  const blockAfterKey = withAtomicBlock
+    .getBlockAfter(withAtomicBlock.getSelectionAfter().getStartKey())
+    .getKey();
+  return withAtomicBlock.getSelectionAfter().merge({
+    anchorKey: blockAfterKey,
+    anchorOffset: 0,
+    focusKey: blockAfterKey,
+    focusOffset: 0,
+    isBackward: false,
+    hasFocus: true,
+  });
 };
 
 export const insertAtomicBlockWithoutSplit = (
@@ -72,7 +86,7 @@ export const insertAtomicBlockWithoutSplit = (
       'atomic',
     );
 
-    if (isLastBlock(startKey, afterRemoval)) {
+    if (isLastBlock(startKey, asAtomicBlock)) {
       fragmentArray.push(new ContentBlock(atomicDividerBlockConfig));
     }
 
@@ -84,18 +98,61 @@ export const insertAtomicBlockWithoutSplit = (
       fragment,
     );
 
-    // return EditorState.push(editorState, withAtomicBlock.merge({
-    //   selectionBefore: selectionState,
-    //   // selectionAfter:
-    // }), 'insert-fragment');
+    return EditorState.push(
+      editorState,
+      withAtomicBlock.merge({
+        selectionBefore: selectionState,
+        selectionAfter: checkSelectionAfter(
+          withAtomicBlock,
+          isLastBlock(startKey, asAtomicBlock),
+        ),
+      }) as ContentState,
+      'insert-fragment',
+    );
   }
 
   const afterSplit = Modifier.splitBlock(afterRemoval, targetSelection);
 
   let insertionTarget = afterSplit.getSelectionAfter();
-  const insertionTargetBlock = afterSplit.getBlockForKey(insertionTarget);
 
-  return;
+  const insertionTargetBlock = afterSplit.getBlockForKey(
+    insertionTarget.getStartKey(),
+  );
+
+  let dividerBlockNeeded = !!(
+    insertionTargetBlock.getText() ||
+    (!!!insertionTargetBlock.getText() &&
+      isLastBlock(insertionTarget.getStartKey(), afterSplit))
+  );
+
+  const prevBlock = afterSplit.getBlockBefore(insertionTarget.getStartKey());
+
+  if (!prevBlock.getText() && !isFirstBlock(prevBlock.getKey(), afterSplit)) {
+    insertionTarget = afterSplit.getSelectionBefore();
+    dividerBlockNeeded = false;
+  }
+
+  if (dividerBlockNeeded) {
+    fragmentArray.push(new ContentBlock(atomicDividerBlockConfig));
+  }
+  fragment = BlockMapBuilder.createFromArray(fragmentArray);
+
+  asAtomicBlock = Modifier.setBlockType(afterSplit, insertionTarget, 'atomic');
+
+  withAtomicBlock = Modifier.replaceWithFragment(
+    asAtomicBlock,
+    insertionTarget,
+    fragment,
+  );
+
+  return EditorState.push(
+    editorState,
+    withAtomicBlock.merge({
+      selectionBefore: selectionState,
+      selectionAfter: checkSelectionAfter(withAtomicBlock, dividerBlockNeeded),
+    }) as ContentState,
+    'insert-fragment',
+  );
 };
 
 export default insertAtomicBlockWithoutSplit;
