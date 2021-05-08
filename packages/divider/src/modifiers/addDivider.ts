@@ -1,4 +1,4 @@
-import { EditorState, AtomicBlockUtils } from '@eeeditor/editor';
+import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
 
 const addDivider = (entityType: string) => (
   editorState: EditorState,
@@ -11,7 +11,7 @@ const addDivider = (entityType: string) => (
     data,
   );
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  const newEditorState = AtomicBlockUtils.insertAtomicBlock(
+  const newEditorState = insertAtomicBlockWithoutSplit(
     editorState,
     entityKey,
     ' ',

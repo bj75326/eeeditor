@@ -45,7 +45,9 @@ export default ({ blockKeyStore }: DecoratorProps) => (
         };
       }, []);
 
-      // custom block component 参照 DraftEditorLeaf setDraftEditorSelection 在 useEffect(didUpdate&didMount) 时重新计算 selection，因此不再需要在 decorator 里添加 click 事件来手动 focus
+      // custom block component 参照 DraftEditorLeaf setDraftEditorSelection 在
+      // useEffect(didUpdate & didMount) 时重新计算 selection，因此不再需要在 decorator
+      // 里添加 click 事件来手动 focus
       // const onClick = (evt: MouseEvent): void => {
       //   evt.preventDefault();
       //   if (!props.blockProps.isFocused) {

@@ -67,6 +67,7 @@ StaticToolbarPlugin => {
     },
 
     keyBindingFn: (event, pluginFunctions) => {
+      console.log('static toolabr keyBindingFn');
       const keyBindingFns = store.getItem('keyBindingFns');
       let result: string | null | undefined = undefined;
       return keyBindingFns.some((fn) => {

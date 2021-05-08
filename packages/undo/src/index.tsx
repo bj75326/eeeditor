@@ -161,6 +161,7 @@ export default (
     // },
 
     keyBindingFn: (event, pluginFunctions) => {
+      console.log('undo keyBindingFn');
       const undoButtonRendered = store.getItem('undoButtonRendered');
       const redoButtonRendered = store.getItem('redoButtonRendered');
       const undoButtonKeyBindingFn = store.getItem('undoButtonKeyBindingFn');

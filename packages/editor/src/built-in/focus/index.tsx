@@ -116,7 +116,6 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
 
       // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
       // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
-      // Note: Only if the previous or current selection contained a focusableBlock a re-render is needed.
       const focusableBlockKeys = blockKeyStore.getAll();
       if (lastSelection) {
         const lastBlockMapKeys = getBlockMapKeys(
@@ -156,100 +155,204 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
     },
 
     // TODO edgecase: if one block is selected and the user wants to expand the selection using the shift key
-    keyBindingFn(evt, { getEditorState, setEditorState }) {
+    // keyBindingFn (evt, { getEditorState, setEditorState }) {
+    //   console.log('focus keyBindingFn');
+    //   const editorState = getEditorState();
+    //   // TODO match by entitiy instead of block type
+    //   if (focusableBlockIsSelected(editorState, blockKeyStore)) {
+    //     // arrow left
+    //     if (evt.keyCode === 37) {
+    //       setSelection(getEditorState, setEditorState, 'up', evt);
+    //     }
+    //     // arrow right
+    //     if (evt.keyCode === 39) {
+    //       setSelection(getEditorState, setEditorState, 'down', evt);
+    //     }
+    //     // arrow up
+    //     if (evt.keyCode === 38) {
+    //       setSelection(getEditorState, setEditorState, 'up', evt);
+    //     }
+    //     // arrow down
+    //     if (evt.keyCode === 40) {
+    //       setSelection(getEditorState, setEditorState, 'down', evt);
+    //     }
+    //     return undefined;
+    //   }
+
+    //   // Don't manually overwrite in case the shift key is used to avoid breaking
+    //   // native behaviour that works anyway.
+    //   if (evt.shiftKey) {
+    //     return undefined;
+    //   }
+
+    //   // arrow left
+    //   if (evt.keyCode === 37) {
+    //     // Covering the case to select the before block
+    //     const selection = editorState.getSelection();
+    //     const selectionKey = selection.getAnchorKey();
+    //     const beforeBlock = editorState
+    //       .getCurrentContent()
+    //       .getBlockBefore(selectionKey);
+    //     // only if the selection caret is a the left most position
+    //     if (
+    //       beforeBlock &&
+    //       selection.getAnchorOffset() === 0 &&
+    //       blockKeyStore.includes(beforeBlock.getKey())
+    //     ) {
+    //       setSelection(getEditorState, setEditorState, 'up', evt);
+    //     }
+    //   }
+
+    //   // arrow right
+    //   if (evt.keyCode === 39) {
+    //     // Covering the case to select the after block
+    //     const selection = editorState.getSelection();
+    //     const selectionKey = selection.getFocusKey();
+    //     const currentBlock = editorState
+    //       .getCurrentContent()
+    //       .getBlockForKey(selectionKey);
+    //     const afterBlock = editorState
+    //       .getCurrentContent()
+    //       .getBlockAfter(selectionKey);
+    //     const notAtomicAndLastPost =
+    //       currentBlock.getType() !== 'atomic' &&
+    //       currentBlock.getLength() === selection.getFocusOffset();
+    //     if (
+    //       afterBlock &&
+    //       notAtomicAndLastPost &&
+    //       blockKeyStore.includes(afterBlock.getKey())
+    //     ) {
+    //       setSelection(getEditorState, setEditorState, 'down', evt);
+    //     }
+    //   }
+
+    //   // arrow up
+    //   if (evt.keyCode === 38) {
+    //     // Covering the case to select the before block with arrow up
+    //     const selectionKey = editorState.getSelection().getAnchorKey();
+    //     const beforeBlock = editorState
+    //       .getCurrentContent()
+    //       .getBlockBefore(selectionKey);
+    //     if (beforeBlock && blockKeyStore.includes(beforeBlock.getKey())) {
+    //       setSelection(getEditorState, setEditorState, 'up', evt);
+    //     }
+    //   }
+
+    //   // arrow down
+    //   if (evt.keyCode === 40) {
+    //     // Covering the case to select the after block with arrow down
+    //     console.log('focus plugin keyBindingFn arrow down !!!');
+    //     const selectionKey = editorState.getSelection().getAnchorKey();
+    //     const afterBlock = editorState
+    //       .getCurrentContent()
+    //       .getBlockAfter(selectionKey);
+    //     if (afterBlock && blockKeyStore.includes(afterBlock.getKey())) {
+    //       setSelection(getEditorState, setEditorState, 'down', evt);
+    //     }
+    //   }
+    //   return undefined;
+    // },
+
+    onDownArrow: (evt, { getEditorState, setEditorState }) => {
       const editorState = getEditorState();
-      // TODO match by entitiy instead of block type
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
-        // arrow left
-        if (evt.keyCode === 37) {
-          setSelection(getEditorState, setEditorState, 'up', evt);
-        }
-        // arrow right
-        if (evt.keyCode === 39) {
-          setSelection(getEditorState, setEditorState, 'down', evt);
-        }
-        // arrow up
-        if (evt.keyCode === 38) {
-          setSelection(getEditorState, setEditorState, 'up', evt);
-        }
-        // arrow down
-        if (evt.keyCode === 40) {
-          setSelection(getEditorState, setEditorState, 'down', evt);
-        }
-        return undefined;
+        setSelection(getEditorState, setEditorState, 'down', evt);
+        return;
       }
 
-      // Don't manually overwrite in case the shift key is used to avoid breaking
-      // native behaviour that works anyway.
       if (evt.shiftKey) {
-        return undefined;
+        return;
       }
 
-      // arrow left
-      if (evt.keyCode === 37) {
-        // Covering the case to select the before block
-        const selection = editorState.getSelection();
-        const selectionKey = selection.getAnchorKey();
-        const beforeBlock = editorState
-          .getCurrentContent()
-          .getBlockBefore(selectionKey);
-        // only if the selection caret is a the left most position
-        if (
-          beforeBlock &&
-          selection.getAnchorOffset() === 0 &&
-          blockKeyStore.includes(beforeBlock.getKey())
-        ) {
-          setSelection(getEditorState, setEditorState, 'up', evt);
-        }
-      }
-
-      // arrow right
-      if (evt.keyCode === 39) {
-        // Covering the case to select the after block
-        const selection = editorState.getSelection();
-        const selectionKey = selection.getFocusKey();
-        const currentBlock = editorState
-          .getCurrentContent()
-          .getBlockForKey(selectionKey);
-        const afterBlock = editorState
-          .getCurrentContent()
-          .getBlockAfter(selectionKey);
-        const notAtomicAndLastPost =
-          currentBlock.getType() !== 'atomic' &&
-          currentBlock.getLength() === selection.getFocusOffset();
-        if (
-          afterBlock &&
-          notAtomicAndLastPost &&
-          blockKeyStore.includes(afterBlock.getKey())
-        ) {
-          setSelection(getEditorState, setEditorState, 'down', evt);
-        }
-      }
-
-      // arrow up
-      if (evt.keyCode === 38) {
-        // Covering the case to select the before block with arrow up
-        const selectionKey = editorState.getSelection().getAnchorKey();
-        const beforeBlock = editorState
-          .getCurrentContent()
-          .getBlockBefore(selectionKey);
-        if (beforeBlock && blockKeyStore.includes(beforeBlock.getKey())) {
-          setSelection(getEditorState, setEditorState, 'up', evt);
-        }
-      }
-
-      // arrow down
-      if (evt.keyCode === 40) {
-        // Covering the case to select the after block with arrow down
-        const selectionKey = editorState.getSelection().getAnchorKey();
-        const afterBlock = editorState
-          .getCurrentContent()
-          .getBlockAfter(selectionKey);
-        if (afterBlock && blockKeyStore.includes(afterBlock.getKey())) {
-          setSelection(getEditorState, setEditorState, 'down', evt);
-        }
+      const selectionKey = editorState.getSelection().getEndKey();
+      const afterBlock = editorState
+        .getCurrentContent()
+        .getBlockAfter(selectionKey);
+      if (afterBlock && blockKeyStore.includes(afterBlock.getKey())) {
+        setSelection(getEditorState, setEditorState, 'down', evt);
       }
       return undefined;
+    },
+
+    onUpArrow: (evt, { getEditorState, setEditorState }) => {
+      const editorState = getEditorState();
+      if (focusableBlockIsSelected(editorState, blockKeyStore)) {
+        setSelection(getEditorState, setEditorState, 'up', evt);
+        return;
+      }
+
+      if (evt.shiftKey) {
+        return;
+      }
+
+      const selectionKey = editorState.getSelection().getStartKey();
+      const beforeBlock = editorState
+        .getCurrentContent()
+        .getBlockBefore(selectionKey);
+      if (beforeBlock && blockKeyStore.includes(beforeBlock.getKey())) {
+        setSelection(getEditorState, setEditorState, 'up', evt);
+      }
+
+      return undefined;
+    },
+
+    onRightArrow: (evt, { getEditorState, setEditorState }) => {
+      const editorState = getEditorState();
+      if (focusableBlockIsSelected(editorState, blockKeyStore)) {
+        setSelection(getEditorState, setEditorState, 'down', evt);
+        return;
+      }
+
+      if (evt.shiftKey) {
+        return;
+      }
+
+      const selection = editorState.getSelection();
+      const selectionKey = selection.getFocusKey();
+      const currentBlock = editorState
+        .getCurrentContent()
+        .getBlockForKey(selectionKey);
+      const afterBlock = editorState
+        .getCurrentContent()
+        .getBlockAfter(selectionKey);
+      const notAtomicAndLastPost =
+        currentBlock.getType() !== 'atomic' &&
+        currentBlock.getLength() === selection.getFocusOffset();
+      if (
+        afterBlock &&
+        notAtomicAndLastPost &&
+        blockKeyStore.includes(afterBlock.getKey())
+      ) {
+        setSelection(getEditorState, setEditorState, 'down', evt);
+      }
+      return true;
+    },
+
+    onLeftArrow: (evt, { getEditorState, setEditorState }) => {
+      const editorState = getEditorState();
+      if (focusableBlockIsSelected(editorState, blockKeyStore)) {
+        setSelection(getEditorState, setEditorState, 'up', evt);
+        return;
+      }
+
+      if (evt.shiftKey) {
+        return;
+      }
+
+      const selection = editorState.getSelection();
+      const selectionKey = selection.getAnchorKey();
+      const beforeBlock = editorState
+        .getCurrentContent()
+        .getBlockBefore(selectionKey);
+      // only if the selection caret is a the left most position
+      if (
+        beforeBlock &&
+        selection.getAnchorOffset() === 0 &&
+        blockKeyStore.includes(beforeBlock.getKey())
+      ) {
+        setSelection(getEditorState, setEditorState, 'up', evt);
+      }
+      return true;
     },
 
     // Wrap all block-types in block-focus decorator
@@ -258,6 +361,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // since all the selection checks are not necessary.
       // In case there is a use-case where focus makes sense for none atomic blocks we can add it
       // in the future.
+      console.log('focus plugin blockRendererFn run!!!!');
       if (contentBlock.getType() !== 'atomic') {
         return undefined;
       }
