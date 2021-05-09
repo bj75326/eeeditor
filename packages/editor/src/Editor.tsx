@@ -7,7 +7,8 @@ import {
   KeyBindingUtil,
   getDefaultKeyBinding,
   PluginEditorProps,
-} from './';
+  RichUtils,
+} from '.';
 import classNames from 'classnames';
 import zhCN from './locale/zh_CN';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
@@ -72,6 +73,16 @@ const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
   },
 };
 
+const defaultOnTab: PluginEditorProps['onTab'] = (
+  e,
+  { getEditorState, setEditorState },
+) => {
+  console.log('defaultOnTab run!!!');
+  const editorState = getEditorState();
+  setEditorState(RichUtils.onTab(e, editorState, 4));
+  return false;
+};
+
 const PluginEditor: React.FC<PluginEditorProps> = (props) => (
   <Editor {...props} />
 );
@@ -86,6 +97,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange,
     blockStyleFn = defaultBlockStyleFn,
     customStyleMap = defaultCustomStyleMap,
+    onTab = defaultOnTab,
     plugins = [],
     defaultKeyBindings = false,
     ...restProps
@@ -141,6 +153,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         onChange={handleChange}
         blockStyleFn={blockStyleFn}
         customStyleMap={customStyleMap}
+        onTab={onTab}
         plugins={eeeditorPlugins}
         // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
         defaultKeyBindings={defaultKeyBindings}

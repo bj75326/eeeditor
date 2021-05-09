@@ -1,6 +1,6 @@
 import { KeyboardEvent } from 'react';
 import { EditorPlugin, DraftEditorCommand } from '../..';
-import { KeyBindingUtil } from 'draft-js';
+import { KeyBindingUtil, RichUtils } from 'draft-js';
 import UserAgent from 'fbjs/lib/UserAgent';
 import Keys from 'fbjs/lib/Keys';
 
@@ -37,6 +37,7 @@ const getBackspaceCommand = (e: KeyboardEvent): DraftEditorCommand | null => {
 
 export default (): EditorPlugin => ({
   keyBindingFn: (e: KeyboardEvent): DraftEditorCommand | null => {
+    console.log('default keyBindingFn');
     switch (e.keyCode) {
       // bold command 会在 @eeeditor/buttons BoldButton 中设置
       // case 66: // B

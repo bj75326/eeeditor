@@ -12,7 +12,10 @@ export default (
   event: KeyboardEvent,
 ): void => {
   const editorState = getEditorState();
-  const selectionKey = editorState.getSelection().getAnchorKey();
+  const selectionKey =
+    mode === 'up'
+      ? editorState.getSelection().getStartKey()
+      : editorState.getSelection().getEndKey();
   const newActiveBlock =
     mode === 'up'
       ? editorState.getCurrentContent().getBlockBefore(selectionKey)

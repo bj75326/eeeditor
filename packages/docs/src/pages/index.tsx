@@ -158,6 +158,7 @@ const Page: React.FC<PageProps> = (props) => {
     );
 
     if (dispatch && !is(currContentState, nextContentState)) {
+      console.log('xxx', convertToRaw(nextContentState));
       dispatch({
         type: 'draft/syncContent',
         payload: {

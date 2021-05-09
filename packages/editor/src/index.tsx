@@ -247,6 +247,7 @@ export * from './utils/getBlockMapKeys';
 export * from './utils/getSelectedBlocksMapKeys';
 export * from './utils/isFirstBlock';
 export * from './utils/isLastBlock';
+export * from './utils/getSelectionCoords';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 

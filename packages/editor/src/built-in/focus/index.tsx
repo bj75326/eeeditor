@@ -8,6 +8,7 @@ import createBlockKeyStore, {
 } from '../../utils/createBlockKeyStore';
 import blockInSelection from '../../utils/blockInSelection';
 import getBlockMapKeys from '../../utils/getBlockMapKeys';
+import getSelectionCoords from '../../utils/getSelectionCoords';
 import removeBlock from '../../modifiers/removeBlock';
 
 // 有且仅有 focusable Block 被选中
@@ -265,6 +266,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       }
 
       const selectionKey = editorState.getSelection().getEndKey();
+      //getSelectionCoords();
       const afterBlock = editorState
         .getCurrentContent()
         .getBlockAfter(selectionKey);
