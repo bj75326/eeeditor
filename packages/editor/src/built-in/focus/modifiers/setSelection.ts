@@ -43,7 +43,7 @@ export default (
     const offset = mode === 'up' ? newActiveBlock.getLength() : 0;
     event.preventDefault();
     setEditorState(
-      EditorState.forceSelection(
+      EditorState.acceptSelection(
         editorState,
         new SelectionState({
           anchorKey: newActiveBlock.getKey(),

@@ -277,6 +277,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
     },
 
     onUpArrow: (evt, { getEditorState, setEditorState }) => {
+      console.log('onUpArrow');
       const editorState = getEditorState();
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setSelection(getEditorState, setEditorState, 'up', evt);

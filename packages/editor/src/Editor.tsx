@@ -77,7 +77,6 @@ const defaultOnTab: PluginEditorProps['onTab'] = (
   e,
   { getEditorState, setEditorState },
 ) => {
-  console.log('defaultOnTab run!!!');
   const editorState = getEditorState();
   setEditorState(RichUtils.onTab(e, editorState, 4));
   return false;

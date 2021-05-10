@@ -44,10 +44,76 @@
   padding: 0;
 }
 
-.unordered-list-item,
-.ordered-list-item {
+.public-DraftStyleDefault-unorderedListItem,
+.public-DraftStyleDefault-orderedListItem {
   margin: 0 0 0 @editor-list-item-margin;
   padding: 0 0 0 @editor-list-item-padding;
+  &.public-DraftStyleDefault-depth1 {
+    margin: 0 0 0 @editor-list-item-margin-depth1;
+  }
+
+  &.public-DraftStyleDefault-depth2 {
+    margin: 0 0 0 @editor-list-item-margin-depth2;
+  }
+
+  &.public-DraftStyleDefault-depth3 {
+    margin: 0 0 0 @editor-list-item-margin-depth3;
+  }
+}
+
+.public-DraftStyleDefault-unorderedListItem {
+  list-style-type: disc;
+  &.public-DraftStyleDefault-depth0 {
+    list-style-type: disc;
+  }
+  &.public-DraftStyleDefault-depth1 {
+    list-style-type: circle;
+  }
+  &.public-DraftStyleDefault-depth2,
+  &.public-DraftStyleDefault-depth3 {
+    list-style-type: square;
+  }
+}
+
+.public-DraftStyleDefault-reset {
+  counter-reset: ol0;
+}
+.public-DraftStyleDefault-depth1.public-DraftStyleDefault-reset {
+  counter-reset: ol1;
+}
+.public-DraftStyleDefault-depth2.public-DraftStyleDefault-reset {
+  counter-reset: ol2;
+}
+.public-DraftStyleDefault-depth3.public-DraftStyleDefault-reset {
+  counter-reset: ol3;
+}
+
+.public-DraftStyleDefault-orderedListItem {
+  list-style-type: none;
+  position: relative;
+}
+.public-DraftStyleDefault-orderedListItem:before {
+  content: counter(ol0) '. ';
+  counter-increment: ol0;
+}
+.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth1:before {
+  content: counter(ol1, lower-alpha) '. ';
+  counter-increment: ol1;
+}
+.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth2:before {
+  content: counter(ol2, lower-roman) '. ';
+  counter-increment: ol2;
+}
+.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth3:before {
+  content: counter(ol3) '. ';
+  counter-increment: ol3;
+}
+
+.public-DraftStyleDefault-orderedListItem:before {
+  left: -34px;
+  position: absolute;
+  text-align: right;
+  width: 30px;
 }
 
 .header-one,
@@ -86,10 +152,27 @@
 .@{eeeditor-prefix-cls}-rtl {
   direction: rtl;
 
-  .unordered-list-item,
-  .ordered-list-item {
+  .public-DraftStyleDefault-unorderedListItem,
+  .public-DraftStyleDefault-orderedListItem {
     margin: 0 @editor-list-item-margin 0 0;
     padding: 0 @editor-list-item-padding 0 0;
+    &.public-DraftStyleDefault-depth1 {
+      margin: 0 @editor-list-item-margin-depth1 0 0;
+    }
+
+    &.public-DraftStyleDefault-depth2 {
+      margin: 0 @editor-list-item-margin-depth2 0 0;
+    }
+
+    &.public-DraftStyleDefault-depth3 {
+      margin: 0 @editor-list-item-margin-depth3 0 0;
+    }
+  }
+
+  .public-DraftStyleDefault-orderedListItem:before {
+    right: -34px;
+    text-align: left;
+    width: 30px;
   }
 }
 
