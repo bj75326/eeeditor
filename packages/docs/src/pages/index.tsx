@@ -141,6 +141,7 @@ const Page: React.FC<PageProps> = (props) => {
   const handleChange = (nextEditorState: EditorState) => {
     console.log('Page handleChange run');
     setEditorState(nextEditorState);
+    console.log('forceSelection: ', nextEditorState.mustForceSelection());
     // sync with server side
     // editorState 包含 selectionState 和 contentState，selectionState 的改动不应该也不需要与服务器同步
     // contentState 的比较可以选择 '===' 或者 Immutable.is()

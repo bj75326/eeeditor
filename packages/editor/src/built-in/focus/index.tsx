@@ -155,6 +155,9 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return editorState;
     },
 
+    // keyBindingFn 不会处理 arrow key 事件，而是通过 Plugin 的 onDownArrow/onUpArrow/onRightArrow/onLeftArrow 处理
+    // 因此这里不需要设置 keyBindingFn
+
     // TODO edgecase: if one block is selected and the user wants to expand the selection using the shift key
     // keyBindingFn (evt, { getEditorState, setEditorState }) {
     //   console.log('focus keyBindingFn');
@@ -258,11 +261,11 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       const editorState = getEditorState();
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setSelection(getEditorState, setEditorState, 'down', evt);
-        return;
+        return false;
       }
 
       if (evt.shiftKey) {
-        return;
+        return false;
       }
 
       const selectionKey = editorState.getSelection().getEndKey();
@@ -273,7 +276,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       if (afterBlock && blockKeyStore.includes(afterBlock.getKey())) {
         setSelection(getEditorState, setEditorState, 'down', evt);
       }
-      return undefined;
+      return false;
     },
 
     onUpArrow: (evt, { getEditorState, setEditorState }) => {
@@ -281,11 +284,11 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       const editorState = getEditorState();
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setSelection(getEditorState, setEditorState, 'up', evt);
-        return;
+        return false;
       }
 
       if (evt.shiftKey) {
-        return;
+        return false;
       }
 
       const selectionKey = editorState.getSelection().getStartKey();
@@ -296,18 +299,18 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         setSelection(getEditorState, setEditorState, 'up', evt);
       }
 
-      return undefined;
+      return false;
     },
 
     onRightArrow: (evt, { getEditorState, setEditorState }) => {
       const editorState = getEditorState();
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setSelection(getEditorState, setEditorState, 'down', evt);
-        return;
+        return false;
       }
 
       if (evt.shiftKey) {
-        return;
+        return false;
       }
 
       const selection = editorState.getSelection();
@@ -328,18 +331,18 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       ) {
         setSelection(getEditorState, setEditorState, 'down', evt);
       }
-      return true;
+      return false;
     },
 
     onLeftArrow: (evt, { getEditorState, setEditorState }) => {
       const editorState = getEditorState();
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
         setSelection(getEditorState, setEditorState, 'up', evt);
-        return;
+        return false;
       }
 
       if (evt.shiftKey) {
-        return;
+        return false;
       }
 
       const selection = editorState.getSelection();
@@ -355,7 +358,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       ) {
         setSelection(getEditorState, setEditorState, 'up', evt);
       }
-      return true;
+      return false;
     },
 
     // Wrap all block-types in block-focus decorator
