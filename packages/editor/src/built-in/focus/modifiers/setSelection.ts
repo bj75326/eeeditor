@@ -43,7 +43,12 @@ export default (
     // selection.removeAllRanges();
     // selection.addRange(range);
 
-    const offset = mode === 'up' ? newActiveBlock.getLength() : 0;
+    const offset =
+      mode === 'up'
+        ? newActiveBlock.getType() === 'atomic'
+          ? 0
+          : newActiveBlock.getLength()
+        : 0;
     event.preventDefault();
     setEditorState(
       EditorState.forceSelection(

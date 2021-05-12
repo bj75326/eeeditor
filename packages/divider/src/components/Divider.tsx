@@ -108,10 +108,9 @@ const Divider: React.FC<DividerProps> = (props) => {
       focusOffset = tempOffset;
       isBackward = false;
     }
-
-    const hasAnchor = anchorKey === blockKey && anchorOffset === 0;
-
-    const hasFocus = focusKey === blockKey && focusOffset === 0;
+    // atomic editable === false 的 block 不需要比较 offset
+    const hasAnchor = anchorKey === blockKey;
+    const hasFocus = focusKey === blockKey;
 
     console.log('hasAnchor after ', hasAnchor);
     console.log('hasFocus after ', hasFocus);

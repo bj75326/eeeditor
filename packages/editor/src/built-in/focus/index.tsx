@@ -64,7 +64,7 @@ const textLineInBetweenExisted = (
     offset = 0;
   } else {
     if ((leafNode as Text).length && (leafNode as Text).length >= 0) {
-      offset = (leafNode as Text).length - 1;
+      offset = (leafNode as Text).length;
     } else {
       offset = 0;
     }
@@ -381,7 +381,12 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       }
 
       const selection = editorState.getSelection();
-      const selectionKey = selection.getFocusKey();
+
+      if (!selection.isCollapsed()) {
+        return false;
+      }
+
+      const selectionKey = selection.getEndKey();
       const currentBlock = editorState
         .getCurrentContent()
         .getBlockForKey(selectionKey);
@@ -390,7 +395,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         .getBlockAfter(selectionKey);
       const notAtomicAndLastPost =
         currentBlock.getType() !== 'atomic' &&
-        currentBlock.getLength() === selection.getFocusOffset();
+        currentBlock.getLength() === selection.getEndOffset();
       if (
         afterBlock &&
         notAtomicAndLastPost &&
@@ -413,14 +418,19 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       }
 
       const selection = editorState.getSelection();
-      const selectionKey = selection.getAnchorKey();
+
+      if (!selection.isCollapsed()) {
+        return false;
+      }
+
+      const selectionKey = selection.getStartKey();
       const beforeBlock = editorState
         .getCurrentContent()
         .getBlockBefore(selectionKey);
       // only if the selection caret is a the left most position
       if (
         beforeBlock &&
-        selection.getAnchorOffset() === 0 &&
+        selection.getStartOffset() === 0 &&
         blockKeyStore.includes(beforeBlock.getKey())
       ) {
         setSelection(getEditorState, setEditorState, 'up', evt);
