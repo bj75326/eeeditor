@@ -28,4 +28,29 @@ export const getSelectionCoords = (
   return { x, y };
 };
 
-export default getSelectionCoords;
+export const getRangeCoords = (
+  range: Range,
+  toStart?: boolean,
+): { x: number; y: number } => {
+  let x = 0,
+    y = 0;
+
+  if (!range.collapsed) {
+    range.collapse(toStart);
+  }
+
+  if (range.getClientRects) {
+    const rects = range.getClientRects();
+    if (rects.length > 0) {
+      const rect = rects[0];
+      if (rect) {
+        x = rect.left;
+        y = rect.top;
+      }
+    }
+  }
+
+  return { x, y };
+};
+
+export default getRangeCoords;
