@@ -12,6 +12,7 @@ import {
   isLastBlock,
 } from '..';
 import { List, Repeat } from 'immutable';
+import { Editor } from 'es';
 
 const checkSelectionAfter = (
   withAtomicBlock: ContentState,
@@ -51,7 +52,12 @@ export const insertAtomicBlockWithoutSplit = (
 
   const targetSelection = afterRemoval.getSelectionAfter();
 
+  // console.log('targetSleection: ', targetSelection);
+  // test
+  // return EditorState.push(editorState, afterRemoval, 'remove-range');
+
   const startKey = targetSelection.getStartKey();
+  // console.log('startKey: ', startKey);
   const currentBlock = afterRemoval.getBlockForKey(startKey);
 
   const charData = CharacterMetadata.create({ entity: entityKey });
@@ -74,9 +80,10 @@ export const insertAtomicBlockWithoutSplit = (
   let fragment: BlockMap = null;
   let withAtomicBlock: ContentState = null;
 
+  // console.log('current block: ', currentBlock);
+
   if (
-    (currentBlock.getType() === 'unstyled' ||
-      currentBlock.getType() === 'paragraph') &&
+    currentBlock.getType() !== 'atomic' &&
     !!!currentBlock.getText() &&
     !isFirstBlock(startKey, afterRemoval)
   ) {
@@ -115,9 +122,13 @@ export const insertAtomicBlockWithoutSplit = (
 
   let insertionTarget = afterSplit.getSelectionAfter();
 
+  console.log('isnertionTarget: ', insertionTarget.getStartKey());
+
   const insertionTargetBlock = afterSplit.getBlockForKey(
     insertionTarget.getStartKey(),
   );
+  // test
+  // return EditorState.push(editorState, afterSplit, 'split-block');
 
   let dividerBlockNeeded = !!(
     insertionTargetBlock.getText() ||

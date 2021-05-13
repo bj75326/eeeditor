@@ -7,8 +7,7 @@ import {
   getSelectionCoords,
 } from '../..';
 import insertNewLineBefore from '../../modifiers/insertNewLineBefore';
-import setSelection from './modifiers/setSelection';
-import setSelectionToBlock from './modifiers/setSelectionToBlock';
+import setSelection from '../../modifiers/setSelection';
 import createDecorator, { BlockFocusDecoratorProps } from './createDecorator';
 import createBlockKeyStore, {
   BlockKeyStore,
@@ -456,9 +455,9 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         props: {
           isFocused,
           isCollapsedSelection: editorState.getSelection().isCollapsed(),
-          setFocusToBlock: () => {
-            setSelectionToBlock(getEditorState, setEditorState, contentBlock);
-          },
+          // setFocusToBlock: () => {
+          //   setSelectionToBlock(getEditorState, setEditorState, contentBlock);
+          // },
         },
       };
     },

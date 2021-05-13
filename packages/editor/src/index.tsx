@@ -250,6 +250,8 @@ export * from './utils/isLastBlock';
 export * from './utils/getSelectionCoords';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
+export * from './modifiers/setSelection';
+export * from './modifiers/insertNewLineBefore';
 
 export { focusDecorator, BlockFocusDecoratorProps };
 

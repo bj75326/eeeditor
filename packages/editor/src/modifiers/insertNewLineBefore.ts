@@ -34,9 +34,7 @@ const insertBlockBeforeSelection = (
   }) as ContentState;
 };
 
-export default function insertNewLineBefore(
-  editorState: EditorState,
-): EditorState {
+export const insertNewLineBefore = (editorState: EditorState): EditorState => {
   const contentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
   const newLineBlock = new ContentBlock({
@@ -54,4 +52,6 @@ export default function insertNewLineBefore(
     selectionAfter: withNewLine.getSelectionAfter().set('hasFocus', true),
   }) as ContentState;
   return EditorState.push(editorState, newContent, 'insert-fragment');
-}
+};
+
+export default insertNewLineBefore;

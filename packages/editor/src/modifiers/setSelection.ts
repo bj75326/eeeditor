@@ -5,7 +5,7 @@ import { SelectionState, EditorState } from 'draft-js';
 import { KeyboardEvent } from 'react';
 
 // Set selection of editor to next/previous block
-export default (
+export const setSelection = (
   getEditorState: () => EditorState,
   setEditorState: (state: EditorState) => void,
   mode: string,
@@ -64,3 +64,5 @@ export default (
     );
   }
 };
+
+export default setSelection;
