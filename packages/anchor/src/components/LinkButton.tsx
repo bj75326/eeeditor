@@ -1,5 +1,12 @@
 import React, { CSSProperties, ReactNode, MouseEvent } from 'react';
-import { EditorState, KeyCommand } from '@eeeditor/editor';
+import {
+  EditorState,
+  KeyCommand,
+  EditorPlugin,
+  ContentBlock,
+  DraftBlockType,
+  SelectionState,
+} from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Locale } from '..';
@@ -64,6 +71,14 @@ export interface LinkButtonExtraProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  addKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  removeKeyCommandHandler?: (
+    keyCommandHandler: EditorPlugin['handleKeyCommand'],
+  ) => void;
+  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
 }
 
 const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
@@ -92,13 +107,38 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
 
   const checkButtonShouldDisabled = (): boolean => {
     if (!getEditorState) {
-      return false;
+      return true;
     }
+    const editorState: EditorState = getEditorState();
+    const selection: SelectionState = editorState.getSelection();
+    const currentBlock: ContentBlock = editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey());
+    const currentBlockType: DraftBlockType = currentBlock.getType();
+    // 当 selection start block type 为 'atomic' 或者 'code-block' 时，
+    // 当 selection collapsed === true 时，
+    // disabled
+    if (
+      currentBlockType === 'atomic' ||
+      currentBlockType === 'code-block' ||
+      selection.isCollapsed()
+    ) {
+      return true;
+    }
+    return false;
   };
+
+  const btnClassName = classNames(`${prefixCls}-btn`, className, {
+    [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
+  });
 
   return (
     <div className={`${prefixCls}-btn-wrapper`} onMouseDown={preventBubblingUp}>
-      {}
+      {checkButtonShouldDisabled() ? (
+        <div className={btnClassName} style={style}>
+          {children}
+        </div>
+      ) : null}
     </div>
   );
 };
