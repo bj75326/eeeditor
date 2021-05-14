@@ -12,7 +12,6 @@ import {
   isLastBlock,
 } from '..';
 import { List, Repeat } from 'immutable';
-import { Editor } from 'es';
 
 const checkSelectionAfter = (
   withAtomicBlock: ContentState,
@@ -122,7 +121,7 @@ export const insertAtomicBlockWithoutSplit = (
 
   let insertionTarget = afterSplit.getSelectionAfter();
 
-  console.log('isnertionTarget: ', insertionTarget.getStartKey());
+  // console.log('isnertionTarget: ', insertionTarget.getStartKey());
 
   const insertionTargetBlock = afterSplit.getBlockForKey(
     insertionTarget.getStartKey(),
