@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, MouseEvent } from 'react';
+import React, { CSSProperties, ReactNode, MouseEvent, useEffect } from 'react';
 import {
   EditorState,
   KeyCommand,
@@ -9,6 +9,7 @@ import {
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
+import { Tooltip } from 'antd';
 import { Locale } from '..';
 import zhCN from '../locale/zh_CN';
 
@@ -99,11 +100,21 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     keyCommand,
     getEditorState,
     setEditorState,
+    addKeyBindingFn,
+    removeKeyBindingFn,
+    addKeyCommandHandler,
+    removeKeyCommandHandler,
   } = props;
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
+
+  const handleBtnClick = (event: MouseEvent): void => {
+    event.preventDefault();
+  };
+
+  useEffect(() => {}, []);
 
   const checkButtonShouldDisabled = (): boolean => {
     if (!getEditorState) {
@@ -132,13 +143,46 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
   });
 
+  const tipClassName = classNames(`${prefixCls}-tip`, {
+    [`${prefixCls}-tip-reverse`]:
+      tipReverse !== undefined
+        ? tipReverse
+        : tipProps && tipProps.placement.startsWith('top'),
+  });
+
+  const tipTitle: ReactNode =
+    title && title.name ? (
+      <span className={tipClassName}>
+        <span className={`${prefixCls}-tip-name`}>
+          {locale[title.name] || title.name}
+        </span>
+        {title.shortcut && (
+          <span className={`${prefixCls}-tip-shortcut`}>
+            {locale[title.shortcut] || title.shortcut}
+          </span>
+        )}
+      </span>
+    ) : (
+      ''
+    );
+
   return (
     <div className={`${prefixCls}-btn-wrapper`} onMouseDown={preventBubblingUp}>
       {checkButtonShouldDisabled() ? (
         <div className={btnClassName} style={style}>
           {children}
         </div>
-      ) : null}
+      ) : (
+        <Tooltip
+          title={tipTitle}
+          overlayClassName={`${prefixCls}-tip-wrapper`}
+          {...tipProps}
+        >
+          <div className={btnClassName} style={style} onClick={handleBtnClick}>
+            {children}
+          </div>
+        </Tooltip>
+      )}
     </div>
   );
 };
