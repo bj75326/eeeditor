@@ -12,6 +12,7 @@ import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Tooltip } from 'antd';
 import { Locale } from '..';
 import zhCN from '../locale/zh_CN';
+import EditorUtils from '@draft-js-plugins/utils';
 
 export const defaultLinkIcon = (
   <svg
@@ -80,6 +81,7 @@ export interface LinkButtonExtraProps {
   ) => void;
   addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
+  // anchor plugin createAnchorPlugin 内添加的内置 props
 }
 
 const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
@@ -106,12 +108,15 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     removeKeyCommandHandler,
   } = props;
 
+  const { createLinkAtSelection, removeLinkAtSelection } = EditorUtils;
+
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
 
   const handleBtnClick = (event: MouseEvent): void => {
     event.preventDefault();
+    createLinkAtSelection(getEditorState(), 'www.baidu.com');
   };
 
   useEffect(() => {}, []);

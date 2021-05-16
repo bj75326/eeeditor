@@ -24,13 +24,15 @@ const createAnchorPlugin = ({
 }: AnchorPluginConfig): AnchorPlugin => {
   let Link = linkComponent;
 
-  // todo
+  const LinkButton: React.FC<LinkButtonProps> = (props) => (
+    <Button {...props} />
+  );
 
   return {
     decorators: [
       {
         strategy: linkStrategy,
-        component: Link || De,
+        component: Link,
       },
     ],
 
