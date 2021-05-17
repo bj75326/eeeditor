@@ -1,34 +1,60 @@
 import React, { ComponentType, AnchorHTMLAttributes } from 'react';
 import { EditorPlugin, EditorState } from '@eeeditor/editor';
-import Link from './components/Link';
-import LinkButton, {
+import DefaultLink, { LinkProps, LinkExtraProps } from './components/Link';
+import DefaultLinkButton, {
   LinkButtonProps,
   LinkButtonExtraProps,
 } from './components/LinkButton';
 import linkStrategy from './linkStrategy';
+import { createStore, Store } from '@draft-js-plugins/utils';
 
 export interface Locale {}
+
+export interface StoreItemMap {
+  getEditorState?(): EditorState;
+  setEditorState?(editorState: EditorState): void;
+}
+
+export type AnchorPluginStore = Store<StoreItemMap>;
 
 export type AnchorPlugin = EditorPlugin & {
   LinkButton: ComponentType<LinkButtonProps>;
 };
 
 export interface AnchorPluginConfig {
-  linkComponent?: ComponentType<AnchorHTMLAttributes<HTMLAnchorElement>>;
-  linkButtonComponent?: ComponentType<LinkButtonProps & LinkButtonExtraProps>;
+  prefixCls?: string;
+  linkClassName?: string;
+  linkComponent?: ComponentType<LinkProps & LinkExtraProps>;
+  linkButtonComponent?: ComponentType<LinkButtonProps>;
 }
 
 const createAnchorPlugin = ({
-  linkComponent = Link,
-  linkButtonComponent: Button = LinkButton,
+  prefixCls = 'eee',
+  linkClassName,
+  linkComponent: LinkComponent = DefaultLink,
+  linkButtonComponent: LinkButtonComponent = DefaultLinkButton,
 }: AnchorPluginConfig): AnchorPlugin => {
-  let Link = linkComponent;
+  const store = createStore<StoreItemMap>();
+
+  let Link: React.FC<LinkProps> = (props) => (
+    <LinkComponent
+      {...props}
+      store={store}
+      className={linkClassName}
+      prefixCls={prefixCls}
+    />
+  );
 
   const LinkButton: React.FC<LinkButtonProps> = (props) => (
-    <Button {...props} />
+    <LinkButtonComponent {...props} />
   );
 
   return {
+    initialize: ({ getEditorState, setEditorState }) => {
+      store.updateItem('getEditorState', getEditorState);
+      store.updateItem('setEditorState', setEditorState);
+    },
+
     decorators: [
       {
         strategy: linkStrategy,

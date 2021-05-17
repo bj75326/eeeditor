@@ -114,7 +114,8 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
 
   useEffect(() => {
     console.log('EEEditor componentDidUpdate!!');
-  }, []);
+    //console.log(editorState.getDecorator())
+  });
 
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);

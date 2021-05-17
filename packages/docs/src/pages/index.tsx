@@ -18,6 +18,7 @@ import createStaticToolbarPlugin, {
 } from '@eeeditor/static-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
+import createAnchorPlugin from '@eeeditor/anchor';
 import {
   enUS,
   zhCN,
@@ -84,10 +85,13 @@ const {
 
 const { DividerButton, ...dividerPlugin } = createDividerPlugin({});
 
+const { LinkButton, ...anchorPlugin } = createAnchorPlugin({});
+
 const plugins: EditorPlugin[] = [
   staticToolbarPlugin,
   undoPlugin,
   dividerPlugin,
+  anchorPlugin,
 ];
 
 export interface PageProps extends ConnectProps {
@@ -157,7 +161,7 @@ const Page: React.FC<PageProps> = (props) => {
       'Immutable.is() 比较 contentState: ',
       is(currContentState, nextContentState),
     );
-
+    // console.log('raw: ', convertToRaw(nextContentState));
     if (dispatch && !is(currContentState, nextContentState)) {
       // console.log('xxx', convertToRaw(nextContentState));
       dispatch({
@@ -411,6 +415,7 @@ const Page: React.FC<PageProps> = (props) => {
               <ItalicButton />
               <UnderlineButton />
               <CodeButton />
+              <LinkButton />
               <Separator />
               <SelectorButton
                 icon={defaultHeadIcon}

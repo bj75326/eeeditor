@@ -25,28 +25,28 @@ export const defaultLinkIcon = (
     <path
       d="M26.24 16.373L17.1 7.23303C14.4386 4.57168 10.0651 4.6303 7.33143 7.36397C4.59776 10.0976 4.53913 14.4712 7.20049 17.1325L15.1358 25.0678"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M32.9027 23.0033L40.838 30.9386C43.4994 33.5999 43.4408 37.9734 40.7071 40.7071C37.9734 43.4408 33.5999 43.4994 30.9386 40.8381L21.7985 31.698"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M26.1091 26.1416C28.8427 23.4079 28.9014 19.0344 26.24 16.373"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M21.7985 21.7985C19.0649 24.5322 19.0062 28.9057 21.6676 31.5671"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -116,7 +116,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
 
   const handleBtnClick = (event: MouseEvent): void => {
     event.preventDefault();
-    createLinkAtSelection(getEditorState(), 'www.baidu.com');
+    setEditorState(createLinkAtSelection(getEditorState(), 'www.baidu.com'));
   };
 
   useEffect(() => {}, []);

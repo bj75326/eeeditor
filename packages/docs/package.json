@@ -8,6 +8,7 @@
     "clean": "rm -rf node_modules src/.umi src/.umi-production dist yarn-error.log"
   },
   "dependencies": {
+    "@eeeditor/anchor": "1.0.0",
     "@eeeditor/buttons": "1.0.0",
     "@eeeditor/divider": "1.0.0",
     "@eeeditor/editor": "1.0.0",
