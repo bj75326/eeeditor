@@ -1,6 +1,6 @@
 import { ContentBlock, ContentState } from '@eeeditor/editor';
 
-const matchesEntityType = (type: string): boolean => type === 'LINK';
+export const matchesEntityType = (type: string): boolean => type === 'LINK';
 
 const strategy = (
   contentBlock: ContentBlock,

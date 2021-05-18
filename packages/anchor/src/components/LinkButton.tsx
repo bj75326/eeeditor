@@ -27,28 +27,28 @@ export const defaultLinkIcon = (
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinejoin="bevel"
     />
     <path
       d="M32.9027 23.0033L40.838 30.9386C43.4994 33.5999 43.4408 37.9734 40.7071 40.7071C37.9734 43.4408 33.5999 43.4994 30.9386 40.8381L21.7985 31.698"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinejoin="bevel"
     />
     <path
       d="M26.1091 26.1416C28.8427 23.4079 28.9014 19.0344 26.24 16.373"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinejoin="bevel"
     />
     <path
       d="M21.7985 21.7985C19.0649 24.5322 19.0062 28.9057 21.6676 31.5671"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinejoin="bevel"
     />
   </svg>
 );
@@ -132,15 +132,25 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       .getBlockForKey(selection.getStartKey());
     const currentBlockType: DraftBlockType = currentBlock.getType();
     // 当 selection start block type 为 'atomic' 或者 'code-block' 时，
-    // 当 selection collapsed === true 时，
+    // 当 selection startKey !== endKey 时，
     // disabled
     if (
       currentBlockType === 'atomic' ||
       currentBlockType === 'code-block' ||
-      selection.isCollapsed()
+      selection.getStartKey() !== selection.getEndKey()
     ) {
       return true;
     }
+    return false;
+  };
+
+  const linkButtonIsActive = (): boolean => {
+    if (!getEditorState) {
+      return false;
+    }
+    const editorState: EditorState = getEditorState();
+    const selection: SelectionState = editorState.getSelection();
+
     return false;
   };
 
