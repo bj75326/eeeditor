@@ -8,7 +8,16 @@ import DefaultLinkButton, {
 import linkStrategy from './linkStrategy';
 import { createStore, Store } from '@draft-js-plugins/utils';
 
-export interface Locale {}
+export interface Locale {
+  'eeeditor.anchor.button.tip.name'?: string;
+  'eeeditor.anchor.button.tip.shortcut'?: string;
+}
+
+export interface LinkEntityData {
+  url: string;
+  mode: 'edit' | 'normal';
+  visible: boolean;
+}
 
 export interface StoreItemMap {
   getEditorState?(): EditorState;

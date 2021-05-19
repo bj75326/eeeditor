@@ -11,9 +11,11 @@ import {
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Tooltip } from 'antd';
-import { Locale } from '..';
+import { Locale, LinkEntityData } from '..';
 import zhCN from '../locale/zh_CN';
+// todo
 import EditorUtils from '@draft-js-plugins/utils';
+import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 import linkInSelection from '../utils/linkInSelection';
 
 export const defaultLinkIcon = (
@@ -110,7 +112,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     removeKeyCommandHandler,
   } = props;
 
-  const { createLinkAtSelection, removeLinkAtSelection } = EditorUtils;
+  const { removeLinkAtSelection } = EditorUtils;
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
@@ -118,12 +120,21 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
 
   const handleBtnClick = (event: MouseEvent): void => {
     event.preventDefault();
+    const editorState = getEditorState();
+
     if (linkButtonIsActive()) {
       setEditorState(removeLinkAtSelection(getEditorState()));
       return;
     }
 
-    // setEditorState(createLinkAtSelection(getEditorState(), 'www.baidu.com'));
+    const linkEntityData: LinkEntityData = {
+      url: '',
+      mode: 'edit',
+      visible: true,
+    };
+    const contentState = editorState
+      .getCurrentContent()
+      .createEntity('LINK', 'MUTABLE', linkEntityData);
   };
 
   useEffect(() => {}, []);

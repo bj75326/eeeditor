@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Popover } from 'antd';
 import { EditorState } from '@eeeditor/editor';
-import { AnchorPluginStore } from '..';
+import { AnchorPluginStore, LinkEntityData } from '..';
 import classNames from 'classnames';
 import { editIcon, copyIcon, deleteIcon } from '../assets/extraIcons';
 
