@@ -1,7 +1,7 @@
 {
-  "name": "@eeeditor/undo",
+  "name": "@eeeditor/inline-toolbar",
   "version": "1.0.0",
-  "description": "undo & redo plugin for EEEditor",
+  "description": "Inline toolbar plugin for EEEditor",
   "author": "bj75326 <superice_gy@163.com>",
   "scripts": {
     "build": "father build",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@babel/runtime": "^7.13.8",
     "@draft-js-plugins/utils": "^4.1.0",
+    "@eeeditor/buttons": "1.0.0",
     "classnames": "^2.2.6"
   }
 }

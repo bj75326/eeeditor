@@ -9,9 +9,13 @@ const linkInSelection = (
   const startOffset = selection.getStartOffset();
   const endOffset = selection.getEndOffset();
 
-  if (selection.getStartKey() !== selection.getEndKey()) {
+  if (
+    selection.getStartKey() !== selection.getEndKey() ||
+    selection.isCollapsed()
+  ) {
     return false;
   }
+
   const linkRangeArray: Array<{ start: number; end: number }> = [];
 
   block.findEntityRanges(
@@ -27,5 +31,12 @@ const linkInSelection = (
     },
   );
 
-  return linkRangeArray.some(({ start, end }) => {});
+  return linkRangeArray.some(
+    ({ start, end }) =>
+      (start <= startOffset && end > startOffset) ||
+      (start >= startOffset && end <= endOffset) ||
+      (start < endOffset && end >= endOffset),
+  );
 };
+
+export default linkInSelection;

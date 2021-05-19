@@ -3,6 +3,7 @@ import {
   EditorState,
   KeyCommand,
   EditorPlugin,
+  ContentState,
   ContentBlock,
   DraftBlockType,
   SelectionState,
@@ -13,6 +14,7 @@ import { Tooltip } from 'antd';
 import { Locale } from '..';
 import zhCN from '../locale/zh_CN';
 import EditorUtils from '@draft-js-plugins/utils';
+import linkInSelection from '../utils/linkInSelection';
 
 export const defaultLinkIcon = (
   <svg
@@ -116,7 +118,12 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
 
   const handleBtnClick = (event: MouseEvent): void => {
     event.preventDefault();
-    setEditorState(createLinkAtSelection(getEditorState(), 'www.baidu.com'));
+    if (linkButtonIsActive()) {
+      setEditorState(removeLinkAtSelection(getEditorState()));
+      return;
+    }
+
+    // setEditorState(createLinkAtSelection(getEditorState(), 'www.baidu.com'));
   };
 
   useEffect(() => {}, []);
@@ -150,11 +157,14 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     }
     const editorState: EditorState = getEditorState();
     const selection: SelectionState = editorState.getSelection();
+    const contentState: ContentState = editorState.getCurrentContent();
 
-    return false;
+    const currentBlock = contentState.getBlockForKey(selection.getStartKey());
+    return linkInSelection(currentBlock, selection, contentState);
   };
 
   const btnClassName = classNames(`${prefixCls}-btn`, className, {
+    [`${prefixCls}-btn-active`]: linkButtonIsActive(),
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
   });
 
