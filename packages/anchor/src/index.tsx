@@ -11,6 +11,9 @@ import { createStore, Store } from '@draft-js-plugins/utils';
 export interface Locale {
   'eeeditor.anchor.button.tip.name'?: string;
   'eeeditor.anchor.button.tip.shortcut'?: string;
+  'eeeditor.anchor.edit.button.tip'?: string;
+  'eeeditor.anchor.copy.button.tip'?: string;
+  'eeeditor.anchor.delete.button.tip'?: string;
 }
 
 export interface LinkEntityData {

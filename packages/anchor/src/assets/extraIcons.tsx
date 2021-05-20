@@ -97,3 +97,9 @@ export const deleteIcon = (
     />
   </svg>
 );
+
+export default {
+  editIcon,
+  copyIcon,
+  deleteIcon,
+};

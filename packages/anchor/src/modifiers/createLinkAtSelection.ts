@@ -9,12 +9,12 @@ const createLinkAtSelection = (
     .getCurrentContent()
     .createEntity('LINK', 'MUTABLE', data);
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  const withLink = RichUtils.toggleLink(
+  return RichUtils.toggleLink(
     editorState,
     editorState.getSelection(),
     entityKey,
   );
-  return EditorState.forceSelection(withLink, editorState.getSelection());
+  //return EditorState.forceSelection(withLink, editorState.getSelection());
 };
 
 export default createLinkAtSelection;

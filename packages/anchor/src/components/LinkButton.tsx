@@ -123,7 +123,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     const editorState = getEditorState();
 
     if (linkButtonIsActive()) {
-      setEditorState(removeLinkAtSelection(getEditorState()));
+      setEditorState(removeLinkAtSelection(editorState));
       return;
     }
 
@@ -132,9 +132,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       mode: 'edit',
       visible: true,
     };
-    const contentState = editorState
-      .getCurrentContent()
-      .createEntity('LINK', 'MUTABLE', linkEntityData);
+    setEditorState(createLinkAtSelection(editorState, linkEntityData));
   };
 
   useEffect(() => {}, []);

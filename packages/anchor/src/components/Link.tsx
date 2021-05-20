@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
-import { Popover } from 'antd';
+import { Popover, Tooltip, Form, Input } from 'antd';
 import { EditorState } from '@eeeditor/editor';
-import { AnchorPluginStore, LinkEntityData } from '..';
+import { AnchorPluginStore, LinkEntityData, Locale } from '..';
 import classNames from 'classnames';
-import { editIcon, copyIcon, deleteIcon } from '../assets/extraIcons';
+import extraIcons from '../assets/extraIcons';
 
 const formatUrl = (href: string): string => {
   if (!/^((ht|f)tps?):\/\//.test(href)) {
@@ -22,27 +22,41 @@ export interface LinkProps {
 export interface LinkExtraProps {
   prefixCls?: string;
   className?: string;
+  locale?: Locale;
   store: AnchorPluginStore;
 }
 
 const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   console.log('Link Props: ', props);
-  const { prefixCls = 'eee', className, store, children, entityKey } = props;
+  const {
+    prefixCls = 'eee',
+    className,
+    locale,
+    store,
+    children,
+    entityKey,
+  } = props;
 
   const getEditorState = store.getItem('getEditorState');
   const setEditorState = store.getItem('setEditorState');
 
   const entity = getEditorState().getCurrentContent().getEntity(entityKey);
 
-  const entityData = entity ? entity.getData() : undefined;
+  const entityData: LinkEntityData = entity ? entity.getData() : undefined;
   const href = (entityData && entityData.url) || '';
-  const visible = (entityData && entityData.visible) || undefined;
-
-  const linkClassName = classNames(className, `${prefixCls}-link`);
+  const visible = (entityData && entityData.visible) || false;
+  const mode = (entityData && entityData.mode) || 'normal';
 
   const formattedHref = formatUrl(href);
-  const popoverContent = (
-    <div className={`${prefixCls}-link-popover`}>
+
+  const getTipTitle = (name: string): ReactNode => (
+    <span className={`${prefixCls}-tip`}>
+      <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
+    </span>
+  );
+
+  const normalModeContent = (
+    <div className={`${prefixCls}-popover`}>
       <a
         className={`${prefixCls}-link-url`}
         title={formattedHref}
@@ -52,14 +66,39 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
       >
         {formattedHref}
       </a>
-      <span className={`${prefixCls}-link-btn`}>{editIcon}</span>
-      <span className={`${prefixCls}-link-btn`}>{copyIcon}</span>
-      <span className={`${prefixCls}-link-btn`}>{deleteIcon}</span>
+      {[
+        {
+          type: 'edit',
+        },
+        {
+          type: 'copy',
+        },
+        {
+          type: 'delete',
+        },
+      ].map(({ type }) => (
+        <Tooltip
+          title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
+          overlayClassName={`${prefixCls}-tip-wrapper`}
+          placement="top"
+        >
+          <span className={`${prefixCls}-popover-btn`}>
+            {extraIcons[`${type}Icon`]}
+          </span>
+        </Tooltip>
+      ))}
     </div>
   );
 
+  const editModeContent = <div className={`${prefixCls}-popover`}></div>;
+
+  const linkClassName = classNames(className, `${prefixCls}-link`);
+
   return (
-    <Popover content={popoverContent} visible={visible}>
+    <Popover
+      content={mode === 'normal' ? normalModeContent : editModeContent}
+      visible={visible}
+    >
       <a className={linkClassName} rel="noopener noreferrer">
         {children}
       </a>
