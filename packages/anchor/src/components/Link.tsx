@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Popover, Tooltip, Form, Input } from 'antd';
 import { EditorState } from '@eeeditor/editor';
-import { AnchorPluginStore, LinkEntityData, Locale } from '..';
+import { AnchorPluginStore, LinkEntityData, Languages } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
 
@@ -22,7 +22,7 @@ export interface LinkProps {
 export interface LinkExtraProps {
   prefixCls?: string;
   className?: string;
-  locale?: Locale;
+  languages?: Languages;
   store: AnchorPluginStore;
 }
 
@@ -31,7 +31,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const {
     prefixCls = 'eee',
     className,
-    locale,
+    languages,
     store,
     children,
     entityKey,
@@ -39,6 +39,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   const getEditorState = store.getItem('getEditorState');
   const setEditorState = store.getItem('setEditorState');
+  const getProps = store.getItem('getProps');
 
   const entity = getEditorState().getCurrentContent().getEntity(entityKey);
 
@@ -48,6 +49,9 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const mode = (entityData && entityData.mode) || 'normal';
 
   const formattedHref = formatUrl(href);
+
+  const { locale: currLocale } = getProps();
+  const locale = languages[currLocale];
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>

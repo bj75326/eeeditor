@@ -8,9 +8,9 @@ import {
   getDefaultKeyBinding,
   PluginEditorProps,
   RichUtils,
+  SupportedLanguage,
 } from '.';
 import classNames from 'classnames';
-import zhCN from './locale/zh_CN';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
 import createDefaultPlugin from './built-in/default';
 
@@ -19,13 +19,11 @@ const defaultPlugin = createDefaultPlugin();
 
 export { focusDecorator, BlockFocusDecoratorProps };
 
-export interface Locale {}
-
 export interface EEEditorProps extends PluginEditorProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
-  locale?: Locale;
+  locale?: SupportedLanguage;
 }
 
 const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
@@ -91,7 +89,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     prefixCls = 'eee',
     className,
     style,
-    locale = zhCN,
+    locale = 'zh_CN',
     editorState,
     onChange,
     blockStyleFn = defaultBlockStyleFn,
@@ -158,6 +156,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
         defaultKeyBindings={defaultKeyBindings}
         // ref={editorRef}
+        locale={locale}
         {...restProps}
       />
     </div>

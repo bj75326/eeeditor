@@ -37,13 +37,14 @@ export const createEditorStateWithText = createEditorStateWithTextFn;
 export const composeDecorators = composeDecoratorsFn;
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;
-  getProps: () => EditorProps;
+  getProps: () => EditorProps & ExtraPluginEditorProps;
   setEditorState: (arg0: EditorState) => void;
   getEditorState: () => EditorState;
   getReadOnly: () => boolean;
   setReadOnly: (arg0: boolean) => void;
   getEditorRef: () => HTMLElement | null | undefined;
 };
+export type SupportedLanguage = 'zh_CN' | 'en_US';
 type HandleReturn = (
   e: React.KeyboardEvent,
   editorState: EditorState,
@@ -88,6 +89,9 @@ export type Handler =
   | HandlePastedFiles
   | HandleDroppedFiles
   | HandleDrop;
+export type ExtraPluginEditorProps = {
+  locale?: SupportedLanguage;
+};
 export type PluginEditorProps = {
   editorState: EditorState;
   onChange: (arg0: EditorState, arg1?: PluginMethods) => void;
@@ -148,7 +152,7 @@ export type PluginEditorProps = {
   ariaLabelledBy?: string;
   ariaMultiline?: boolean;
   ariaHasPopup?: boolean;
-};
+} & ExtraPluginEditorProps;
 type OnEscape = (
   e: React.KeyboardEvent,
   arg1: PluginMethods,

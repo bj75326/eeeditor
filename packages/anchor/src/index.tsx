@@ -1,5 +1,5 @@
 import React, { ComponentType, AnchorHTMLAttributes } from 'react';
-import { EditorPlugin, EditorState } from '@eeeditor/editor';
+import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
 import DefaultLink, { LinkProps, LinkExtraProps } from './components/Link';
 import DefaultLinkButton, {
   LinkButtonProps,
@@ -7,14 +7,9 @@ import DefaultLinkButton, {
 } from './components/LinkButton';
 import linkStrategy from './linkStrategy';
 import { createStore, Store } from '@draft-js-plugins/utils';
+import languages from './locale';
 
-export interface Locale {
-  'eeeditor.anchor.button.tip.name'?: string;
-  'eeeditor.anchor.button.tip.shortcut'?: string;
-  'eeeditor.anchor.edit.button.tip'?: string;
-  'eeeditor.anchor.copy.button.tip'?: string;
-  'eeeditor.anchor.delete.button.tip'?: string;
-}
+export * from './locale';
 
 export interface LinkEntityData {
   url: string;
@@ -25,6 +20,7 @@ export interface LinkEntityData {
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(editorState: EditorState): void;
+  getProps?: PluginMethods['getProps'];
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -54,6 +50,7 @@ const createAnchorPlugin = ({
       store={store}
       className={linkClassName}
       prefixCls={prefixCls}
+      languages={languages}
     />
   );
 
@@ -62,9 +59,10 @@ const createAnchorPlugin = ({
   );
 
   return {
-    initialize: ({ getEditorState, setEditorState }) => {
+    initialize: ({ getEditorState, setEditorState, getProps }) => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
+      store.updateItem('getProps', getProps);
     },
 
     decorators: [
