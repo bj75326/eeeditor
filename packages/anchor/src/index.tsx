@@ -1,4 +1,4 @@
-import React, { ComponentType, AnchorHTMLAttributes } from 'react';
+import React, { ComponentType } from 'react';
 import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
 import DefaultLink, { LinkProps, LinkExtraProps } from './components/Link';
 import DefaultLinkButton, {
@@ -33,7 +33,7 @@ export interface AnchorPluginConfig {
   prefixCls?: string;
   linkClassName?: string;
   linkComponent?: ComponentType<LinkProps & LinkExtraProps>;
-  linkButtonComponent?: ComponentType<LinkButtonProps>;
+  linkButtonComponent?: ComponentType<LinkButtonProps & LinkButtonExtraProps>;
 }
 
 const createAnchorPlugin = ({
@@ -55,7 +55,7 @@ const createAnchorPlugin = ({
   );
 
   const LinkButton: React.FC<LinkButtonProps> = (props) => (
-    <LinkButtonComponent {...props} />
+    <LinkButtonComponent {...props} languages={languages} />
   );
 
   return {

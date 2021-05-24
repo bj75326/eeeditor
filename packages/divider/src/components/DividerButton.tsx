@@ -9,9 +9,9 @@ import {
   DraftBlockType,
   KeyCommand,
   checkKeyCommand,
+  PluginMethods,
 } from '@eeeditor/editor';
-import zhCN from '../locale/zh_CN';
-import { Locale } from '..';
+import { Languages, zhCN, Locale } from '..';
 
 export const defaultDividerIcon = (
   <svg
@@ -77,7 +77,6 @@ export interface DividerButtonProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
-  locale?: Locale;
   title?: {
     name?: string;
     shortcut?: string;
@@ -95,9 +94,11 @@ export interface DividerButtonExtraProps {
     editorState: EditorState,
     data?: Record<string, unknown>,
   ) => EditorState;
+  languages?: Languages;
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  getProps?: PluginMethods['getProps'];
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -126,7 +127,6 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     prefixCls = 'eee',
     className,
     style,
-    locale = zhCN,
     title = {
       name: 'eeeditor.divider.button.tip.name',
     },
@@ -135,13 +135,21 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     children = defaultDividerIcon,
     keyCommand,
     addDivider,
+    languages,
     getEditorState,
     setEditorState,
+    getProps,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,
     removeKeyBindingFn,
   } = props;
+
+  let locale: Locale = zhCN;
+  if (getProps && languages) {
+    const { locale: currLocale } = getProps();
+    locale = languages[currLocale];
+  }
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();

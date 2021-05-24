@@ -3,11 +3,8 @@ import en_US from './en_US';
 import { SupportedLanguage } from '@eeeditor/editor';
 
 export interface Locale {
-  'eeeditor.anchor.button.tip.name'?: string;
-  'eeeditor.anchor.button.tip.shortcut'?: string;
-  'eeeditor.anchor.edit.button.tip'?: string;
-  'eeeditor.anchor.copy.button.tip'?: string;
-  'eeeditor.anchor.delete.button.tip'?: string;
+  'eeeditor.divider.button.tip.name'?: string;
+  'eeeditor.divider.button.tip.shortcut'?: string;
 }
 
 export const zhCN: Locale = zh_CN;

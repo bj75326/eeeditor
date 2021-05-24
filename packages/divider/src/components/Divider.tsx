@@ -32,11 +32,7 @@ const addPointToSelection = (
   selection.addRange(range);
 };
 
-export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
-  prefixCls?: string;
-  className: string;
-  // style?: CSSProperties;
-  //removed types
+export interface DividerProps {
   block: ContentBlock;
   blockProps: unknown;
   customStyleMap: unknown;
@@ -51,7 +47,12 @@ export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
   preventScroll: unknown;
 }
 
-const Divider: React.FC<DividerProps> = (props) => {
+export interface DividerExtraProps extends React.HTMLAttributes<HTMLHRElement> {
+  prefixCls?: string;
+  className: string;
+}
+
+const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   const {
     prefixCls = 'eee',
     className,

@@ -7,12 +7,12 @@ import {
   ContentBlock,
   DraftBlockType,
   SelectionState,
+  PluginMethods,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Tooltip } from 'antd';
-import { Locale, LinkEntityData } from '..';
-import zhCN from '../locale/zh_CN';
+import { LinkEntityData, Languages, Locale, zhCN } from '..';
 // todo
 import EditorUtils from '@draft-js-plugins/utils';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
@@ -61,7 +61,6 @@ export interface LinkButtonProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
-  locale?: Locale;
   title?: {
     name?: string;
     shortcut?: string;
@@ -77,6 +76,7 @@ export interface LinkButtonExtraProps {
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
+  getProps?: PluginMethods['getProps'];
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -86,6 +86,7 @@ export interface LinkButtonExtraProps {
   addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   // anchor plugin createAnchorPlugin 内添加的内置 props
+  languages?: Languages;
 }
 
 const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
@@ -95,7 +96,6 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     prefixCls = 'eee',
     className,
     style,
-    locale = zhCN,
     title = {
       name: 'eeeditor.anchor.button.tip.name',
       shortcut: 'eeeditor.anchor.button.tip.shortcut',
@@ -106,11 +106,19 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     keyCommand,
     getEditorState,
     setEditorState,
+    getProps,
     addKeyBindingFn,
     removeKeyBindingFn,
     addKeyCommandHandler,
     removeKeyCommandHandler,
+    languages,
   } = props;
+
+  let locale: Locale = zhCN;
+  if (getProps && languages) {
+    const { locale: currLocale } = getProps();
+    locale = languages[currLocale];
+  }
 
   const { removeLinkAtSelection } = EditorUtils;
 

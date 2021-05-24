@@ -6,21 +6,24 @@ import {
   focusDecorator,
   BlockFocusDecoratorProps,
 } from '@eeeditor/editor';
-import Divider, { DividerProps } from './components/Divider';
-import DividerButton, {
+import DefaultDivider, {
+  DividerProps,
+  DividerExtraProps,
+} from './components/Divider';
+import DefaultDividerButton, {
   DividerButtonProps,
   DividerButtonExtraProps,
 } from './components/DividerButton';
 import addDivider from './modifiers/addDivider';
+import languages from './locale';
 
-export interface Locale {
-  'eeeditor.divider.button.tip.name'?: string;
-  'eeeditor.divider.button.tip.shortcut'?: string;
-}
+export * from './locale';
 
 interface DividerPluginConfig {
+  prefixCls?: string;
+  dividerClassName?: string;
   entityType?: string;
-  dividerComponent?: ComponentType<DividerProps>;
+  dividerComponent?: ComponentType<DividerProps & DividerExtraProps>;
   dividerButtonComponent?: ComponentType<
     DividerButtonProps & DividerButtonExtraProps
   >;
@@ -29,16 +32,24 @@ interface DividerPluginConfig {
 }
 
 const createDividerPlugin = ({
+  prefixCls = 'eee',
+  dividerClassName,
   entityType = 'divider',
-  dividerComponent = Divider,
-  dividerButtonComponent: Button = DividerButton,
+  dividerComponent: DividerComponent = DefaultDivider,
+  dividerButtonComponent: DividerButtonComponent = DefaultDividerButton,
   decorator,
   focusable = true,
 }: DividerPluginConfig): EditorPlugin & {
   DividerButton: ComponentType<DividerButtonProps>;
   addDivider: ReturnType<typeof addDivider>;
 } => {
-  let Divider = dividerComponent;
+  let Divider: React.FC<DividerProps> = (props) => (
+    <DividerComponent
+      {...props}
+      prefixCls={prefixCls}
+      className={dividerClassName}
+    />
+  );
 
   // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
   let FocusableDivider = null;
@@ -57,7 +68,11 @@ const createDividerPlugin = ({
   }
 
   const DividerButton: React.FC<DividerButtonProps> = (props) => (
-    <Button {...props} addDivider={addDivider(entityType)} />
+    <Button
+      {...props}
+      languages={languages}
+      addDivider={addDivider(entityType)}
+    />
   );
 
   const isDividerBlock = (

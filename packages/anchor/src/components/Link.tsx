@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Popover, Tooltip, Form, Input } from 'antd';
 import { EditorState } from '@eeeditor/editor';
-import { AnchorPluginStore, LinkEntityData, Languages } from '..';
+import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
 
@@ -50,8 +50,11 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   const formattedHref = formatUrl(href);
 
-  const { locale: currLocale } = getProps();
-  const locale = languages[currLocale];
+  let locale: Locale = zhCN;
+  if (getProps && languages) {
+    const { locale: currLocale } = getProps();
+    locale = languages[currLocale];
+  }
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
