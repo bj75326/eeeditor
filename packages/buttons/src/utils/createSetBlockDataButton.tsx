@@ -5,7 +5,6 @@ import {
   EEEditorButtonType,
   EEEditorButtonProps,
 } from '..';
-import zhCN from '../locale/zh_CN';
 import {
   EditorState,
   EditorPlugin,
@@ -16,6 +15,7 @@ import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import shouldButtonDisabled from './disableStrategy';
 import Immutable from 'immutable';
+import languages, { Languages, zhCN, Locale } from '../locale';
 
 interface CreateSetBlockDataButtonProps<K, S> {
   blockMetaData: Record<string, string | boolean | number>;
@@ -27,6 +27,7 @@ interface CreateSetBlockDataButtonProps<K, S> {
   getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
   getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
+  languages?: Languages;
 }
 
 export default function createSetBlockDataButton<K, S>({
@@ -47,7 +48,6 @@ export default function createSetBlockDataButton<K, S>({
       prefixCls = 'eee',
       className,
       style,
-      locale = zhCN,
       title = defaultTitle,
       tipProps,
       tipReverse,
@@ -68,6 +68,8 @@ export default function createSetBlockDataButton<K, S>({
       optionKey,
       setSelectorBtnIcon,
     } = props;
+
+    let locale: Locale = zhCN;
 
     const mergeBlockData = (event: MouseEvent): void => {
       event.preventDefault();

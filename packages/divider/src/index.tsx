@@ -68,7 +68,7 @@ const createDividerPlugin = ({
   }
 
   const DividerButton: React.FC<DividerButtonProps> = (props) => (
-    <Button
+    <DividerButtonComponent
       {...props}
       languages={languages}
       addDivider={addDivider(entityType)}
