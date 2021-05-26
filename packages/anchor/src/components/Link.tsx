@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, MouseEvent } from 'react';
 import { Popover, Tooltip, Form, Input } from 'antd';
 import { EditorState } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
@@ -56,6 +56,14 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     locale = languages[currLocale];
   }
 
+  const toggleVisible = (e: MouseEvent): void => {
+    const editorState = getEditorState();
+
+    editorState.getCurrentContent().mergeEntityData(entityKey, {
+      visible,
+    });
+  };
+
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
       <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
@@ -106,7 +114,13 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
       content={mode === 'normal' ? normalModeContent : editModeContent}
       visible={visible}
     >
-      <a className={linkClassName} rel="noopener noreferrer">
+      <a
+        className={linkClassName}
+        rel="noopener noreferrer"
+        href={formattedHref}
+        target="_blank"
+        onClick={toggleVisible}
+      >
         {children}
       </a>
     </Popover>

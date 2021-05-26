@@ -404,6 +404,7 @@ const Page: React.FC<PageProps> = (props) => {
                 id: 'page.draft.editor.placeholder',
               })}
               plugins={plugins}
+              locale="zh_CN"
             />
           </div>
           <div
