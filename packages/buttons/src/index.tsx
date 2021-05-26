@@ -1,10 +1,5 @@
 import { CSSProperties, ReactNode } from 'react';
-import {
-  EditorState,
-  EditorPlugin,
-  EditorProps,
-  PluginMethods,
-} from '@eeeditor/editor';
+import { EditorState, EditorPlugin, PluginMethods } from '@eeeditor/editor';
 import createToggleBlockTypeButton from './utils/createToggleBlockTypeButton';
 import createToggleInlineStyleButton from './utils/createToggleInlineStyleButton';
 import createSetBlockDataButton from './utils/createSetBlockDataButton';

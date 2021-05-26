@@ -3,26 +3,21 @@ import {
   EditorPlugin,
   EditorState,
   KeyCommand,
-  KeyBindingUtil,
   checkKeyCommand,
+  PluginMethods,
 } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import UndoButton from './components/UndoButton';
 import RedoButton from './components/RedoButton';
+import lang, { Languages } from './locale';
 
-export interface Locale {
-  'eeeditor.undo.tip.name'?: string;
-  'eeeditor.undo.tip.shortcut'?: string;
-  'eeeditor.redo.tip.name'?: string;
-  'eeeditor.redo.tip.shortcut'?: string;
-}
+export * from './locale';
 
 export interface DecoratedUndoRedoButtonProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
-  locale?: Locale;
   title?: {
     name?: string;
     shortcut?: string;
@@ -37,6 +32,7 @@ export interface DecoratedUndoRedoButtonProps {
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(state: EditorState): void;
+  getProps?: PluginMethods['getProps'];
   undoButtonRendered?: number;
   undoButtonKeyBindingFn?: EditorPlugin['keyBindingFn'];
   undoButtonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
@@ -49,6 +45,7 @@ export type UndoPluginStore = Store<StoreItemMap>;
 
 export interface UndoRedoButtonProps extends DecoratedUndoRedoButtonProps {
   store: UndoPluginStore;
+  languages?: Languages;
 }
 
 export type UndoPlugin = EditorPlugin & {
@@ -65,22 +62,22 @@ export type UndoPlugin = EditorPlugin & {
 export interface UndoPluginConfig {
   undoKeyCommand?: KeyCommand | false;
   redoKeyCommand?: KeyCommand | false;
+  languages?: Languages;
 }
 
-export default (
-  config: UndoPluginConfig = {
-    undoKeyCommand: {
-      keyCode: 90,
-      hasCommandModifier: true,
-      isShiftKeyCommand: false,
-    },
-    redoKeyCommand: {
-      keyCode: 90,
-      hasCommandModifier: true,
-      isShiftKeyCommand: true,
-    },
+export default ({
+  undoKeyCommand = {
+    keyCode: 90,
+    hasCommandModifier: true,
+    isShiftKeyCommand: false,
   },
-): UndoPlugin => {
+  redoKeyCommand = {
+    keyCode: 90,
+    hasCommandModifier: true,
+    isShiftKeyCommand: true,
+  },
+  languages = lang,
+}: UndoPluginConfig): UndoPlugin => {
   const store = createStore<StoreItemMap>({
     undoButtonRendered: 0,
     redoButtonRendered: 0,
@@ -127,16 +124,17 @@ export default (
 
   const DecoratedUndoButton: React.FC<DecoratedUndoRedoButtonProps> = (
     props,
-  ) => <UndoButton {...props} store={store} />;
+  ) => <UndoButton {...props} store={store} languages={languages} />;
 
   const DecoratedRedoButton: React.FC<DecoratedUndoRedoButtonProps> = (
     props,
-  ) => <RedoButton {...props} store={store} />;
+  ) => <RedoButton {...props} store={store} languages={languages} />;
 
   return {
-    initialize: ({ getEditorState, setEditorState }) => {
+    initialize: ({ getEditorState, setEditorState, getProps }) => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
+      store.updateItem('getProps', getProps);
     },
 
     // keyBindingFn: (event, pluginFunctions) => {
@@ -179,13 +177,13 @@ export default (
           return command;
         }
       }
-      if (config.undoKeyCommand && !!!undoButtonRendered) {
-        if (checkKeyCommand(config.undoKeyCommand, event)) {
+      if (undoKeyCommand && !!!undoButtonRendered) {
+        if (checkKeyCommand(undoKeyCommand, event)) {
           return 'undo';
         }
       }
-      if (config.redoKeyCommand && !!!redoButtonRendered) {
-        if (checkKeyCommand(config.redoKeyCommand, event)) {
+      if (redoKeyCommand && !!!redoButtonRendered) {
+        if (checkKeyCommand(redoKeyCommand, event)) {
           return 'redo';
         }
       }

@@ -81,7 +81,7 @@ const {
   DecoratedUndoButton,
   DecoratedRedoButton,
   ...undoPlugin
-} = createUndoPlugin();
+} = createUndoPlugin({});
 
 const { DividerButton, ...dividerPlugin } = createDividerPlugin({});
 

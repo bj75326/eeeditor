@@ -1,9 +1,8 @@
 import React, { ReactNode, MouseEvent, useEffect } from 'react';
-import { UndoRedoButtonProps } from '../..';
+import { UndoRedoButtonProps, Locale, zhCN } from '../..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import { EditorState, EditorPlugin, checkKeyCommand } from '@eeeditor/editor';
-import zhCN from '../../locale/zh_CN';
 
 const defaultRedoIcon = (
   <svg
@@ -35,7 +34,6 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
     prefixCls = 'eee',
     className,
     style,
-    locale = zhCN,
     title = {
       name: 'eeeditor.redo.tip.name',
       shortcut: 'eeeditor.redo.tip.shortcut',
@@ -49,7 +47,14 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
       isShiftKeyCommand: true,
     },
     store,
+    languages,
   } = props;
+
+  let locale: Locale = zhCN;
+  if (store.getItem('getProps') && languages) {
+    const { locale: currLocale } = store.getItem('getProps')();
+    locale = languages[currLocale];
+  }
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();

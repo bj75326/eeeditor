@@ -13,9 +13,9 @@ import {
 } from '@eeeditor/editor';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
-import shouldButtonDisabled from './disableStrategy';
+import shouldButtonDisabled, { StrategyType } from './disableStrategy';
 import Immutable from 'immutable';
-import languages, { Languages, zhCN, Locale } from '../locale';
+import lang, { Languages, zhCN, Locale } from '../locale';
 
 interface CreateSetBlockDataButtonProps<K, S> {
   blockMetaData: Record<string, string | boolean | number>;
@@ -28,6 +28,7 @@ interface CreateSetBlockDataButtonProps<K, S> {
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
   getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
   languages?: Languages;
+  disableStrategy?: Record<EEEditorButtonType, StrategyType>;
 }
 
 export default function createSetBlockDataButton<K, S>({
@@ -40,6 +41,8 @@ export default function createSetBlockDataButton<K, S>({
   getKeyBindingFn,
   buttonKeyCommandHandler,
   getBeforeInputHandler,
+  languages = lang,
+  disableStrategy,
 }: CreateSetBlockDataButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
   const SetBlockDataButton: React.FC<
     EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
@@ -70,6 +73,10 @@ export default function createSetBlockDataButton<K, S>({
     } = props;
 
     let locale: Locale = zhCN;
+    if (getProps && languages) {
+      const { locale: currLocale } = getProps();
+      locale = languages[currLocale];
+    }
 
     const mergeBlockData = (event: MouseEvent): void => {
       event.preventDefault();
@@ -197,7 +204,11 @@ export default function createSetBlockDataButton<K, S>({
         return true;
       }
       const editorState = getEditorState();
-      const status = shouldButtonDisabled(editorState, buttonType);
+      const status = shouldButtonDisabled(
+        editorState,
+        buttonType,
+        disableStrategy,
+      );
       return status;
     };
 

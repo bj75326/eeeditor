@@ -8,9 +8,9 @@ import {
   EEEditorButtonProps,
 } from '..';
 import classNames from 'classnames';
-import shouldButtonDisabled from './disableStrategy';
+import shouldButtonDisabled, { StrategyType } from './disableStrategy';
 import { Tooltip } from 'antd';
-import zhCN from '../locale/zh_CN';
+import lang, { Languages, zhCN, Locale } from '../locale';
 
 interface CreateToggleBlockTypeButtonProps<K, S> {
   blockType: DraftBlockType;
@@ -22,6 +22,8 @@ interface CreateToggleBlockTypeButtonProps<K, S> {
   getKeyBindingFn?: (keyCommand: K) => EditorPlugin['keyBindingFn'];
   buttonKeyCommandHandler?: EditorPlugin['handleKeyCommand'];
   getBeforeInputHandler?: (syntax: S) => EditorPlugin['handleBeforeInput'];
+  languages?: Languages;
+  disableStrategy?: Record<EEEditorButtonType, StrategyType>;
 }
 
 export default function createToggleBlockTypeButton<K, S>({
@@ -34,6 +36,8 @@ export default function createToggleBlockTypeButton<K, S>({
   getKeyBindingFn,
   buttonKeyCommandHandler,
   getBeforeInputHandler,
+  languages = lang,
+  disableStrategy,
 }: CreateToggleBlockTypeButtonProps<K, S>): EEEditorStyleButtonType<K, S> {
   const ToggleBlockTypeButton: React.FC<
     EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
@@ -42,7 +46,6 @@ export default function createToggleBlockTypeButton<K, S>({
       prefixCls = 'eee',
       className,
       style,
-      locale = zhCN,
       title = defaultTitle,
       tipProps,
       tipReverse,
@@ -51,6 +54,7 @@ export default function createToggleBlockTypeButton<K, S>({
       syntax = defaultSyntax,
       getEditorState,
       setEditorState,
+      getProps,
       addKeyCommandHandler,
       removeKeyCommandHandler,
       addKeyBindingFn,
@@ -62,6 +66,12 @@ export default function createToggleBlockTypeButton<K, S>({
       optionKey,
       setSelectorBtnIcon,
     } = props;
+
+    let locale: Locale = zhCN;
+    if (getProps && languages) {
+      const { locale: currLocale } = getProps();
+      locale = languages[currLocale];
+    }
 
     const toggleStyle = (event: MouseEvent): void => {
       event.preventDefault();
@@ -143,7 +153,11 @@ export default function createToggleBlockTypeButton<K, S>({
         return true;
       }
       const editorState = getEditorState();
-      const status = shouldButtonDisabled(editorState, buttonType);
+      const status = shouldButtonDisabled(
+        editorState,
+        buttonType,
+        disableStrategy,
+      );
       // if (setSelectorBtnDisabled) {
       //   setSelectorBtnDisabled(status, optionKey);
       // }

@@ -11,8 +11,6 @@ import SelectorButton, {
 import Separator, { SeparatorProps } from './components/Separator';
 import { SelectionState, EditorState } from 'draft-js';
 
-export interface Locale {}
-
 // export interface StaticToolbarPluginConfig {
 //   prefixCls?: string;
 //   className?: string;

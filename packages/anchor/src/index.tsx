@@ -7,7 +7,7 @@ import DefaultLinkButton, {
 } from './components/LinkButton';
 import linkStrategy from './linkStrategy';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import languages from './locale';
+import lang, { Languages } from './locale';
 
 export * from './locale';
 
@@ -34,6 +34,7 @@ export interface AnchorPluginConfig {
   linkClassName?: string;
   linkComponent?: ComponentType<LinkProps & LinkExtraProps>;
   linkButtonComponent?: ComponentType<LinkButtonProps & LinkButtonExtraProps>;
+  languages?: Languages;
 }
 
 const createAnchorPlugin = ({
@@ -41,7 +42,8 @@ const createAnchorPlugin = ({
   linkClassName,
   linkComponent: LinkComponent = DefaultLink,
   linkButtonComponent: LinkButtonComponent = DefaultLinkButton,
-}: AnchorPluginConfig): AnchorPlugin => {
+  languages = lang,
+}: AnchorPluginConfig = {}): AnchorPlugin => {
   const store = createStore<StoreItemMap>();
 
   let Link: React.FC<LinkProps> = (props) => (

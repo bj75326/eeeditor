@@ -1,12 +1,12 @@
 import { EditorState, DraftBlockType, DraftInlineStyle } from 'draft-js';
 import { EEEditorButtonType } from '..';
 
-interface StrategyType {
+export interface StrategyType {
   block?: string[];
   inline?: string[];
 }
 
-const disableStrategy: { [key: string]: StrategyType } = {
+const defaultDisableStrategy: Record<EEEditorButtonType, StrategyType> = {
   header: {
     block: ['atomic'],
     inline: [],
@@ -20,6 +20,10 @@ const disableStrategy: { [key: string]: StrategyType } = {
 const shouldButtonDisabled = (
   editorState: EditorState,
   buttonType: EEEditorButtonType,
+  disableStrategy: Record<
+    EEEditorButtonType,
+    StrategyType
+  > = defaultDisableStrategy,
 ) => {
   const strategy: StrategyType = disableStrategy[buttonType] || {};
   const currentBlock = editorState

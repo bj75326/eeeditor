@@ -1,6 +1,6 @@
 import React, { CSSProperties, ReactElement, useEffect, useRef } from 'react';
 import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
-import { StaticToolbarPluginStore, Locale } from '../..';
+import { StaticToolbarPluginStore } from '../..';
 import {
   defaultHeadIcon,
   HeadlineOneButton,
@@ -42,7 +42,6 @@ export interface ToolbarPubProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
-  locale?: Locale;
   childrenTipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children?: ReactElement | ReactElement[];
 }
@@ -56,7 +55,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     prefixCls = 'eee',
     className,
     style,
-    locale,
     childrenTipProps = { placement: 'bottom' },
     children,
     store,

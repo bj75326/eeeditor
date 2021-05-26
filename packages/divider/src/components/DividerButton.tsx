@@ -89,7 +89,7 @@ export interface DividerButtonProps {
 }
 
 export interface DividerButtonExtraProps {
-  // createDividerPlugin 提供的 addDivider
+  // createDividerPlugin 提供的 props
   addDivider: (
     editorState: EditorState,
     data?: Record<string, unknown>,

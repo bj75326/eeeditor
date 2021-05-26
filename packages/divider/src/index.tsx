@@ -15,7 +15,7 @@ import DefaultDividerButton, {
   DividerButtonExtraProps,
 } from './components/DividerButton';
 import addDivider from './modifiers/addDivider';
-import languages from './locale';
+import lang, { Languages } from './locale';
 
 export * from './locale';
 
@@ -29,6 +29,7 @@ interface DividerPluginConfig {
   >;
   decorator?: unknown;
   focusable?: boolean;
+  languages?: Languages;
 }
 
 const createDividerPlugin = ({
@@ -39,6 +40,7 @@ const createDividerPlugin = ({
   dividerButtonComponent: DividerButtonComponent = DefaultDividerButton,
   decorator,
   focusable = true,
+  languages = lang,
 }: DividerPluginConfig): EditorPlugin & {
   DividerButton: ComponentType<DividerButtonProps>;
   addDivider: ReturnType<typeof addDivider>;
