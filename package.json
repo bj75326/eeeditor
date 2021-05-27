@@ -4,7 +4,7 @@
   "decription": "A rich text editor based on draft.js & antd",
   "scripts": {
     "build": "lerna run --stream --sort build",
-    "clean": "tyarn workspaces run clean && rm -rf node_modules yarn.lock",
+    "clean": "tyarn workspaces run clean && rm -rf node_modules yarn.lock yarn-error.log",
     "start": "tyarn workspace @eeeditor/docs start",
     "build:editor": "tyarn workspace @eeeditor/editor run build:watch",
     "test": "tyarn workspaces run test",

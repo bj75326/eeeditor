@@ -60,13 +60,13 @@ const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
 const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
   CODE: {
     display: 'inline',
-    'font-size': '85%',
+    fontSize: '85%',
     margin: '0 .2em',
     padding: '.2em .4em .1em',
     border: '1px solid hsla(0,0%,39.2%,.2)',
-    'border-radius': '3px',
-    'background-color': 'hsla(0,0%,58.8%,.1)',
-    'font-family':
+    borderRadius: '3px',
+    backgroundColor: 'hsla(0,0%,58.8%,.1)',
+    fontFamily:
       'SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace',
   },
 };

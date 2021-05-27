@@ -60,8 +60,13 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     const editorState = getEditorState();
 
     editorState.getCurrentContent().mergeEntityData(entityKey, {
-      visible,
+      visible: !visible,
     });
+    // entity data 的改变并不会按照 immutable 规则
+    // link popover visible 的改变不应该 push 到 undo/redo stack
+    setEditorState(
+      EditorState.forceSelection(editorState, editorState.getSelection()),
+    );
   };
 
   const getTipTitle = (name: string): ReactNode => (

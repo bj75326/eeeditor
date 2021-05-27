@@ -1,1 +1,28 @@
 @import './theme.less';
+
+// todo
+.@{eeeditor-prefix-cls}-popover {
+  display: flex;
+  align-items: center;
+
+  font-size: 12px;
+}
+
+.@{eeeditor-prefix-cls}-link-url {
+}
+
+//todo
+.@{eeeditor-prefix-cls}-popover-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: @buttons-text-color;
+  font-size: @buttons-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @buttons-hover-bg;
+  }
+}
