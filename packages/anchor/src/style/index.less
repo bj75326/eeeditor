@@ -1,6 +1,5 @@
 @import './theme.less';
 
-// todo
 .@{eeeditor-prefix-cls}-popover {
   display: flex;
   align-items: center;
@@ -9,20 +8,25 @@
 }
 
 .@{eeeditor-prefix-cls}-link-url {
+  width: 195px;
+  margin: 0 15px 0 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: @anchor-text-color;
 }
 
-//todo
 .@{eeeditor-prefix-cls}-popover-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  color: @buttons-text-color;
-  font-size: @buttons-icon-size;
+  width: @popover-button-size;
+  height: @popover-button-size;
+  color: @button-text-color;
+  font-size: @popover-button-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: @buttons-hover-bg;
+    background-color: @button-hover-bg;
   }
 }

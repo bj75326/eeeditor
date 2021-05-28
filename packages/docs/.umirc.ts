@@ -9,8 +9,8 @@ export default defineConfig({
     '@text-color': 'var(--color-tint-7)',
     '@message-notice-content-bg': 'var(--color-tint-1)',
     '@static-toolbar-bg-color': 'var(--color-inverse)',
-    '@buttons-text-disabled-color': 'var(--color-tint-4)',
-    '@buttons-hover-bg': 'var(--color-tint-2)',
+    '@button-text-disabled-color': 'var(--color-tint-4)',
+    '@button-hover-bg': 'var(--color-tint-2)',
     '@static-toolbar-separator-color': 'var(--color-tint-6)',
   },
   nodeModulesTransform: {

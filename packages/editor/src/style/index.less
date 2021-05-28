@@ -187,22 +187,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: @buttons-size;
-  height: @buttons-size;
-  color: @buttons-text-color;
-  font-size: @buttons-icon-size;
+  width: @button-size;
+  height: @button-size;
+  color: @button-text-color;
+  font-size: @button-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: @buttons-hover-bg;
+    background-color: @button-hover-bg;
   }
 
   &.@{eeeditor-prefix-cls}-btn-active {
-    color: @buttons-text-active-color;
+    color: @button-text-active-color;
   }
 
   &.@{eeeditor-prefix-cls}-btn-disabled {
-    color: @buttons-text-disabled-color;
+    color: @button-text-disabled-color;
     cursor: not-allowed;
     &:hover {
       background: none;
@@ -215,11 +215,11 @@
     min-width: 0;
     min-height: 0;
     padding: 4px 6px;
-    background-color: @buttons-tip-background-color;
-    border-radius: @buttons-tip-radius;
+    background-color: @button-tip-background-color;
+    border-radius: @button-tip-radius;
   }
   .ant-tooltip-arrow-content {
-    background-color: @buttons-tip-background-color;
+    background-color: @button-tip-background-color;
   }
 }
 
@@ -227,8 +227,8 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  color: @buttons-tip-color;
-  font-size: @buttons-tip-font-size;
+  color: @button-tip-color;
+  font-size: @button-tip-font-size;
 
   &.@{eeeditor-prefix-cls}-tip-reverse {
     flex-direction: column-reverse;
@@ -244,4 +244,10 @@
   display: block;
   text-align: center;
   opacity: 0.6;
+}
+
+.@{eeeditor-prefix-cls}-popover-wrapper {
+  .ant-popover-inner-content {
+    padding: 6px;
+  }
 }

@@ -118,6 +118,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     <Popover
       content={mode === 'normal' ? normalModeContent : editModeContent}
       visible={visible}
+      overlayClassName={`${prefixCls}-popover-wrapper`}
     >
       <a
         className={linkClassName}
