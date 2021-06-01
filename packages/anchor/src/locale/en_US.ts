@@ -8,4 +8,6 @@ export default {
   'eeeditor.anchor.edit.button.tip': 'Edit link',
   'eeeditor.anchor.copy.button.tip': 'Copy link',
   'eeeditor.anchor.delete.button.tip': 'Delete link',
+  'eeeditor.anchor.edit.text.label': 'Text',
+  'eeeditor.anchor.edit.link.label': 'Link',
 };

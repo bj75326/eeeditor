@@ -1,10 +1,24 @@
 @import './theme.less';
 
-.@{eeeditor-prefix-cls}-popover {
+.@{eeeditor-prefix-cls}-link-popover {
   display: flex;
   align-items: center;
-
-  font-size: 12px;
+  font-size: @popover-font-size;
+  .ant-form-item {
+    font-size: @popover-font-size;
+    margin-bottom: 0;
+    padding: 3px;
+  }
+  .ant-form-item-label > label {
+    height: @popover-line-height;
+    font-size: @popover-font-size;
+  }
+  .ant-form-item-control-input {
+    min-height: @popover-line-height;
+  }
+  .ant-input {
+    font-size: @popover-font-size;
+  }
 }
 
 .@{eeeditor-prefix-cls}-link-url {
@@ -16,12 +30,12 @@
   color: @anchor-text-color;
 }
 
-.@{eeeditor-prefix-cls}-popover-btn {
+.@{eeeditor-prefix-cls}-link-popover-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: @popover-button-size;
-  height: @popover-button-size;
+  width: @popover-line-height;
+  height: @popover-line-height;
   color: @button-text-color;
   font-size: @popover-button-icon-size;
   cursor: pointer;

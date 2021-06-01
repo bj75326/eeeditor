@@ -1,5 +1,10 @@
 import React, { ComponentType } from 'react';
-import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
+import {
+  EditorPlugin,
+  PluginMethods,
+  EditorState,
+  SelectionState,
+} from '@eeeditor/editor';
 import DefaultLink, { LinkProps, LinkExtraProps } from './components/Link';
 import DefaultLinkButton, {
   LinkButtonProps,
@@ -13,14 +18,13 @@ export * from './locale';
 
 export interface LinkEntityData {
   url: string;
-  mode: 'edit' | 'normal';
-  visible: boolean;
 }
 
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(editorState: EditorState): void;
   getProps?: PluginMethods['getProps'];
+  getEditorRef?: PluginMethods['getEditorRef'];
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -61,10 +65,16 @@ const createAnchorPlugin = ({
   );
 
   return {
-    initialize: ({ getEditorState, setEditorState, getProps }) => {
+    initialize: ({
+      getEditorState,
+      setEditorState,
+      getProps,
+      getEditorRef,
+    }) => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
       store.updateItem('getProps', getProps);
+      store.updateItem('getEditorRef', getEditorRef);
     },
 
     decorators: [

@@ -1,5 +1,10 @@
 import React, { CSSProperties, ReactElement, ReactNode, useState } from 'react';
-import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
+import {
+  EditorState,
+  EditorPlugin,
+  EditorProps,
+  PluginMethods,
+} from '@eeeditor/editor';
 import { ToolbarChildrenProps } from '../Toolbar';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
@@ -8,6 +13,7 @@ export interface SelectorBtnChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
   getProps?: () => EditorProps;
+  getEditorRef?: PluginMethods['getEditorRef'];
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -51,6 +57,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     getEditorState,
     setEditorState,
     getProps,
+    getEditorRef,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,
@@ -102,6 +109,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     getEditorState,
     setEditorState,
     getProps,
+    getEditorRef,
     addKeyCommandHandler,
     removeKeyCommandHandler,
     addKeyBindingFn,

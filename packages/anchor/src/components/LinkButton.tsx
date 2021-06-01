@@ -1,4 +1,10 @@
-import React, { CSSProperties, ReactNode, MouseEvent, useEffect } from 'react';
+import React, {
+  CSSProperties,
+  ReactNode,
+  MouseEvent,
+  useEffect,
+  useState,
+} from 'react';
 import {
   EditorState,
   KeyCommand,
@@ -8,15 +14,17 @@ import {
   DraftBlockType,
   SelectionState,
   PluginMethods,
+  getPopoverPosition,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Tooltip } from 'antd';
-import { LinkEntityData, Languages, Locale, zhCN } from '..';
+import { Languages, Locale, zhCN } from '..';
 // todo
 import EditorUtils from '@draft-js-plugins/utils';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 import linkInSelection from '../utils/linkInSelection';
+import LinkEditPopover from './LinkEditPopover';
 
 export const defaultLinkIcon = (
   <svg
@@ -77,6 +85,7 @@ export interface LinkButtonExtraProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
   getProps?: PluginMethods['getProps'];
+  getEditorRef?: PluginMethods['getEditorRef'];
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -107,6 +116,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     getEditorState,
     setEditorState,
     getProps,
+    getEditorRef,
     addKeyBindingFn,
     removeKeyBindingFn,
     addKeyCommandHandler,
@@ -119,6 +129,10 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     const { locale: currLocale } = getProps();
     locale = languages[currLocale];
   }
+
+  const [editPopoverVisible, setEditPopoverVisible]: [boolean, any] = useState(
+    false,
+  );
 
   const { removeLinkAtSelection } = EditorUtils;
 
@@ -135,12 +149,16 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       return;
     }
 
-    const linkEntityData: LinkEntityData = {
-      url: '',
-      mode: 'edit',
-      visible: true,
-    };
-    setEditorState(createLinkAtSelection(editorState, linkEntityData));
+    const editorRef = getEditorRef();
+    if (!editorRef) {
+      return;
+    }
+
+    let editorRoot = editorRef.editor;
+    while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
+      editorRoot = editorRoot.parentNode as HTMLElement;
+    }
+    const position = getPopoverPosition(editorRoot);
   };
 
   useEffect(() => {}, []);

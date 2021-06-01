@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin, EditorProps } from '@eeeditor/editor';
+import { EditorPlugin, EditorProps, PluginMethods } from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -32,6 +32,7 @@ export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(state: EditorState): void;
   getProps?(): EditorProps;
+  getEditorRef?: PluginMethods['getEditorRef'];
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
@@ -53,10 +54,16 @@ StaticToolbarPlugin => {
   );
 
   return {
-    initialize: ({ getEditorState, setEditorState, getProps }) => {
+    initialize: ({
+      getEditorState,
+      setEditorState,
+      getProps,
+      getEditorRef,
+    }) => {
       store.updateItem('getEditorState', getEditorState);
       store.updateItem('setEditorState', setEditorState);
       store.updateItem('getProps', getProps);
+      store.updateItem('getEditorRef', getEditorRef);
     },
     // todo: Static toolbar plugin 是否需要这个 onChange
     onChange: (editorState) => {

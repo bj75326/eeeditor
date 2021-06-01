@@ -35,6 +35,10 @@ import { composeDecoratorsFn } from 'draft-js-plugins-editor';
 // import Editor from 'draft-js-plugins-editor/Editor';
 export const createEditorStateWithText = createEditorStateWithTextFn;
 export const composeDecorators = composeDecoratorsFn;
+export interface EditorRef {
+  refs?: { editor: HTMLElement };
+  editor: HTMLElement;
+}
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;
   getProps: () => EditorProps & ExtraPluginEditorProps;
@@ -42,7 +46,7 @@ export type PluginMethods = {
   getEditorState: () => EditorState;
   getReadOnly: () => boolean;
   setReadOnly: (arg0: boolean) => void;
-  getEditorRef: () => HTMLElement | null | undefined;
+  getEditorRef: () => EditorRef;
 };
 export type SupportedLanguage = 'zh_CN' | 'en_US';
 type HandleReturn = (
@@ -252,6 +256,7 @@ export * from './utils/getSelectedBlocksMapKeys';
 export * from './utils/isFirstBlock';
 export * from './utils/isLastBlock';
 export * from './utils/getSelectionCoords';
+export * from './utils/getPopoverPosition';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';

@@ -8,4 +8,6 @@ export default {
   'eeeditor.anchor.edit.button.tip': '编辑链接',
   'eeeditor.anchor.copy.button.tip': '拷贝链接',
   'eeeditor.anchor.delete.button.tip': '删除链接',
+  'eeeditor.anchor.edit.text.label': '文本',
+  'eeeditor.anchor.edit.link.label': '链接',
 };
