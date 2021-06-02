@@ -13,6 +13,9 @@ import DefaultLinkButton, {
 import linkStrategy from './linkStrategy';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import lang, { Languages } from './locale';
+import DefaultLinkEditPopover, {
+  LinkEditPopoverProps,
+} from './components/LinkEditPopover';
 
 export * from './locale';
 
@@ -25,6 +28,15 @@ export interface StoreItemMap {
   setEditorState?(editorState: EditorState): void;
   getProps?: PluginMethods['getProps'];
   getEditorRef?: PluginMethods['getEditorRef'];
+  // link edit popover props
+  visible?: boolean;
+  initText?: string;
+  initLink?: string;
+  entityKey?: string;
+  position?: {
+    top: number;
+    left: number;
+  };
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -36,16 +48,20 @@ export type AnchorPlugin = EditorPlugin & {
 export interface AnchorPluginConfig {
   prefixCls?: string;
   linkClassName?: string;
+  linkEditPopoverCls?: string;
   linkComponent?: ComponentType<LinkProps & LinkExtraProps>;
   linkButtonComponent?: ComponentType<LinkButtonProps & LinkButtonExtraProps>;
+  linkEditPopoverComponent?: ComponentType<LinkEditPopoverProps>;
   languages?: Languages;
 }
 
 const createAnchorPlugin = ({
   prefixCls = 'eee',
   linkClassName,
+  linkEditPopoverCls,
   linkComponent: LinkComponent = DefaultLink,
   linkButtonComponent: LinkButtonComponent = DefaultLinkButton,
+  linkEditPopoverComponent: LinkEditPopoverComponent = DefaultLinkEditPopover,
   languages = lang,
 }: AnchorPluginConfig = {}): AnchorPlugin => {
   const store = createStore<StoreItemMap>();
@@ -61,7 +77,17 @@ const createAnchorPlugin = ({
   );
 
   const LinkButton: React.FC<LinkButtonProps> = (props) => (
-    <LinkButtonComponent {...props} languages={languages} />
+    <LinkButtonComponent {...props} languages={languages} store={store} />
+  );
+
+  const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => (
+    <LinkEditPopoverComponent
+      {...props}
+      store={store}
+      className={linkEditPopoverCls}
+      prefixCls={prefixCls}
+      languages={languages}
+    />
   );
 
   return {
@@ -85,6 +111,8 @@ const createAnchorPlugin = ({
     ],
 
     LinkButton,
+
+    suffix: LinkEditPopover,
   };
 };
 

@@ -1,4 +1,4 @@
-import { getVisibleSelectionRect } from '@eeeditor/editor';
+import { getVisibleSelectionRect } from 'draft-js';
 
 export interface PopoverPosition {
   top: number;

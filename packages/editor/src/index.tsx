@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import EEEditor, { focusDecorator, BlockFocusDecoratorProps } from './Editor';
 
 export * from 'draft-js';
@@ -236,6 +237,7 @@ export type EditorPlugin = {
   initialize?: (arg0: PluginMethods) => void;
   decorators?: Array<CompositeDecorator | DraftDecorator>;
   willUnmount?: (arg0: PluginMethods) => void;
+  suffix?: ComponentType;
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
 

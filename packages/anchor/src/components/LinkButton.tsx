@@ -19,7 +19,7 @@ import {
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Tooltip } from 'antd';
-import { Languages, Locale, zhCN } from '..';
+import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 // todo
 import EditorUtils from '@draft-js-plugins/utils';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
@@ -96,6 +96,7 @@ export interface LinkButtonExtraProps {
   removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
   // anchor plugin createAnchorPlugin 内添加的内置 props
   languages?: Languages;
+  store?: AnchorPluginStore;
 }
 
 const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
@@ -122,6 +123,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     addKeyCommandHandler,
     removeKeyCommandHandler,
     languages,
+    store,
   } = props;
 
   let locale: Locale = zhCN;
@@ -129,10 +131,6 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     const { locale: currLocale } = getProps();
     locale = languages[currLocale];
   }
-
-  const [editPopoverVisible, setEditPopoverVisible]: [boolean, any] = useState(
-    false,
-  );
 
   const { removeLinkAtSelection } = EditorUtils;
 
@@ -159,6 +157,10 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       editorRoot = editorRoot.parentNode as HTMLElement;
     }
     const position = getPopoverPosition(editorRoot);
+    store.updateItem('position', position);
+    store.updateItem('initText', '');
+    store.updateItem('initLink', '');
+    store.updateItem('visible', true);
   };
 
   useEffect(() => {}, []);

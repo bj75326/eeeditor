@@ -119,7 +119,17 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange(editorState);
   };
 
-  const eeeditorPlugins = [focusPlugin, ...plugins, defaultPlugin];
+  let suffixes = [];
+
+  const eeeditorPlugins = [focusPlugin, ...plugins, defaultPlugin].map(
+    (plugin) => {
+      const { suffix, ...others } = plugin;
+      if (suffix) {
+        suffixes.push(suffix);
+      }
+      return others;
+    },
+  );
 
   return (
     <div
@@ -159,6 +169,9 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
         locale={locale}
         {...restProps}
       />
+      {suffixes.map((SuffixComponent, index) => (
+        <SuffixComponent key={index} />
+      ))}
     </div>
   );
 };
