@@ -46,6 +46,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   }, []);
 
   const linkEditPopoverCls = classNames(
+    `${prefixCls}-popover`,
     `${prefixCls}-link-edit-popover`,
     className,
   );
@@ -60,28 +61,33 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   return (
     <div className={linkEditPopoverCls} style={getStyle()}>
-      <Form form={form}>
-        <Form.Item
-          name="text"
-          label={
-            locale['eeeditor.anchor.edit.text.label'] ||
-            'eeeditor.anchor.edit.text.label'
-          }
-          initialValue={initText}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="link"
-          label={
-            locale['eeeditor.anchor.edit.link.label'] ||
-            'eeeditor.anchor.edit.link.label'
-          }
-          initialValue={initLink}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
+      <div className={`${prefixCls}-popover-arrow`}>
+        <span className={`${prefixCls}-popover-arrow-content`}></span>
+      </div>
+      <div className={`${prefixCls}-popover-inner`} role="tooltip">
+        <Form form={form}>
+          <Form.Item
+            name="text"
+            label={
+              locale['eeeditor.anchor.edit.text.label'] ||
+              'eeeditor.anchor.edit.text.label'
+            }
+            initialValue={initText}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="link"
+            label={
+              locale['eeeditor.anchor.edit.link.label'] ||
+              'eeeditor.anchor.edit.link.label'
+            }
+            initialValue={initLink}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };

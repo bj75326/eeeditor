@@ -248,20 +248,54 @@
 
 .@{eeeditor-prefix-cls}-popover-wrapper {
   .ant-popover-inner-content {
-    padding: 6px;
+    padding: @popover-inner-padding;
   }
 }
 
 .@{eeeditor-prefix-cls}-popover {
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  padding: 0 0 @popover-trigger-distance;
   color: @editor-text-color;
   font-size: @popover-font-size;
   position: absolute;
-  z-index: 1030;
+  z-index: @popover-zindex;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+}
+
+.@{eeeditor-prefix-cls}-popover-arrow {
+  position: absolute;
+  display: block;
+  width: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
+  height: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
+  background: transparent;
+  border-style: solid;
+  border-width: (sqrt(@popover-arrow-width * @popover-arrow-width * 2) / 2);
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  bottom: @popover-trigger-distance - @popover-arrow-size + 2.2px;
+  border-top-color: transparent;
+  border-right-color: @popover-background;
+  border-bottom-color: @popover-background;
+  border-left-color: transparent;
+  box-shadow: 3px 3px 7px fade(@black, 7%);
+}
+
+.@{eeeditor-prefix-cls}-popover-inner {
+  padding: @popover-inner-padding;
+  background-color: @popover-background;
+  background-clip: padding-box;
+  border-radius: @popover-border-radius;
+  box-shadow: @popover-box-shadow;
+  box-shadow: ~'0 0 8px @{popover-box-shadow} \9';
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* IE10+ */
+  .@{eeeditor-prefix-cls}-popover-inner {
+    box-shadow: @popover-box-shadow;
+  }
 }
