@@ -7,6 +7,7 @@ export interface PopoverPosition {
 
 export const getPopoverPosition = (
   editorRoot: HTMLElement,
+  popoverElement: HTMLElement,
 ): PopoverPosition | null => {
   const editorRootRect = editorRoot.getBoundingClientRect();
 
@@ -18,7 +19,10 @@ export const getPopoverPosition = (
   if (!selectionRect) return null;
 
   return {
-    top: editorRoot.offsetTop + (selectionRect.top - editorRootRect.top),
+    top:
+      editorRoot.offsetTop +
+      (selectionRect.top - editorRootRect.top) -
+      popoverElement.offsetHeight,
     left:
       editorRoot.offsetLeft +
       (selectionRect.left - editorRootRect.left) +

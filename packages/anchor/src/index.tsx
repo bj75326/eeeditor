@@ -28,15 +28,16 @@ export interface StoreItemMap {
   setEditorState?(editorState: EditorState): void;
   getProps?: PluginMethods['getProps'];
   getEditorRef?: PluginMethods['getEditorRef'];
+  selection?: SelectionState;
   // link edit popover props
   visible?: boolean;
-  initText?: string;
-  initLink?: string;
-  entityKey?: string;
-  position?: {
-    top: number;
-    left: number;
-  };
+  // initText?: string;
+  // initLink?: string;
+  // entityKey?: string;
+  // position?: {
+  //   top: number;
+  //   left: number;
+  // };
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -109,6 +110,11 @@ const createAnchorPlugin = ({
         component: Link,
       },
     ],
+
+    onChange: (editorState: EditorState): EditorState => {
+      store.updateItem('selection', editorState.getSelection());
+      return editorState;
+    },
 
     LinkButton,
 

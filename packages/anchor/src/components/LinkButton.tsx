@@ -14,7 +14,6 @@ import {
   DraftBlockType,
   SelectionState,
   PluginMethods,
-  getPopoverPosition,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -147,19 +146,19 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       return;
     }
 
-    const editorRef = getEditorRef();
-    if (!editorRef) {
-      return;
-    }
+    // const editorRef = getEditorRef();
+    // if (!editorRef) {
+    //   return;
+    // }
 
-    let editorRoot = editorRef.editor;
-    while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
-      editorRoot = editorRoot.parentNode as HTMLElement;
-    }
-    const position = getPopoverPosition(editorRoot);
-    store.updateItem('position', position);
-    store.updateItem('initText', '');
-    store.updateItem('initLink', '');
+    // let editorRoot = editorRef.editor;
+    // while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
+    //   editorRoot = editorRoot.parentNode as HTMLElement;
+    // }
+    // const position = getPopoverPosition(editorRoot);
+    // store.updateItem('position', position);
+    // store.updateItem('initText', '');
+    // store.updateItem('initLink', '');
     store.updateItem('visible', true);
   };
 
