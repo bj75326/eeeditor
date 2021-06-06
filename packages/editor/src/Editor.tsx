@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef, forwardRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import {
   EditorState,
@@ -80,9 +80,9 @@ const defaultOnTab: PluginEditorProps['onTab'] = (
   return false;
 };
 
-const PluginEditor: React.FC<PluginEditorProps> = (props) => (
-  <Editor {...props} />
-);
+const PluginEditor: React.FC<PluginEditorProps> = forwardRef((props, ref) => (
+  <Editor {...props} ref={ref} />
+));
 
 const EEEditor: React.FC<EEEditorProps> = (props) => {
   const {
@@ -108,7 +108,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     className,
   );
 
-  // const editorRef = useRef(null);
+  // const editorRef = useRef();
 
   useEffect(() => {
     console.log('EEEditor componentDidUpdate!!');

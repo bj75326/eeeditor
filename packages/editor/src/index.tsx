@@ -259,6 +259,7 @@ export * from './utils/isFirstBlock';
 export * from './utils/isLastBlock';
 export * from './utils/getSelectionCoords';
 export * from './utils/getPopoverPosition';
+export * from './utils/getEditorRootDomNode';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';

@@ -1,8 +1,20 @@
-import React, { useState, useEffect, CSSProperties, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  CSSProperties,
+  useRef,
+  useCallback,
+} from 'react';
 import { Form, Input } from 'antd';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 import classNames from 'classnames';
-import { getPopoverPosition, PopoverPosition } from '@eeeditor/editor';
+import {
+  getPopoverPosition,
+  PopoverPosition,
+  getEditorRootDomNode,
+} from '@eeeditor/editor';
+import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import contains from 'rc-util/lib/Dom/contains';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -28,10 +40,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   }
 
   const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
-  const [popoverPosition, setPopoverPosition]: [
-    { top: number; left: number },
-    any,
-  ] = useState(null);
 
   const popoverRef = useRef<HTMLDivElement>();
 
@@ -46,32 +54,48 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     const selectionState = getEditorState().getSelection();
 
     // 通过 editorRef 计算 popover position
-    const editorRef = getEditorRef();
-    if (!editorRef) {
-      return;
-    }
-
-    let editorRoot = editorRef.editor;
-    while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
-      editorRoot = editorRoot.parentNode as HTMLElement;
-    }
+    const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
     position.current = getPopoverPosition(editorRoot, popoverRef.current);
 
     setPopoverVisible(visible);
   };
 
-  const onSelectionChange = () => {
-    setPopoverVisible(false);
-  };
-
   useEffect(() => {
     store.subscribeToItem('visible', onVisibleChange);
-    store.subscribeToItem('selection', onSelectionChange);
     return () => {
       store.unsubscribeFromItem('visible', onVisibleChange);
-      store.unsubscribeFromItem('selection', onSelectionChange);
     };
   }, []);
+
+  const getPopoverDomNode = (): HTMLElement => {
+    return popoverRef.current || null;
+  };
+
+  const onDocumentClick = useCallback(
+    (event) => {
+      if (popoverVisible) {
+        const { target } = event;
+        const popoverNode = getPopoverDomNode();
+        if (!contains(popoverNode, target)) {
+          setPopoverVisible(false);
+        }
+      }
+    },
+    [popoverVisible],
+  );
+
+  useEffect(() => {
+    let currentDocument: HTMLDocument =
+      getEditorRootDomNode(getEditorRef()).ownerDocument || window.document;
+    const cleanOutsiderHandler = addEventListener(
+      currentDocument,
+      'mousedown',
+      onDocumentClick,
+    );
+    return () => {
+      cleanOutsiderHandler.remove();
+    };
+  }, [onDocumentClick]);
 
   const linkEditPopoverCls = classNames(
     `${prefixCls}-popover`,
@@ -87,14 +111,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     return style;
   };
   return (
-    <div
-      className={linkEditPopoverCls}
-      style={getStyle()}
-      ref={popoverRef}
-      onMouseDown={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <div className={linkEditPopoverCls} style={getStyle()} ref={popoverRef}>
       <div className={`${prefixCls}-popover-arrow`}>
         <span className={`${prefixCls}-popover-arrow-content`}></span>
       </div>
