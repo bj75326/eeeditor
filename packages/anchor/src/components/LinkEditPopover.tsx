@@ -12,6 +12,7 @@ import {
   getPopoverPosition,
   PopoverPosition,
   getEditorRootDomNode,
+  getVisibleSelectionRect,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
@@ -128,7 +129,16 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
             points: ['bc', 'tc'],
           }}
           // todo
-          //target
+          target={(() => {
+            const selectionRect = getVisibleSelectionRect(window);
+            if (selectionRect) {
+              return {
+                clientX: selectionRect.left,
+                clientY: selectionRect.top,
+              };
+            }
+            return undefined;
+          })()}
         >
           <div
             className={classNames(linkEditPopoverCls, className)}
