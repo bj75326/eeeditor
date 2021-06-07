@@ -15,6 +15,8 @@ import {
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
+import CSSMotion from 'rc-motion';
+import Align from 'rc-align';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -55,6 +57,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
     // 通过 editorRef 计算 popover position
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
+    console.log('popoverRef.current: ', popoverRef);
     position.current = getPopoverPosition(editorRoot, popoverRef.current);
 
     setPopoverVisible(visible);
@@ -68,6 +71,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   }, []);
 
   const getPopoverDomNode = (): HTMLElement => {
+    console.log('popoverRef.current', popoverRef.current);
     return popoverRef.current || null;
   };
 
@@ -105,41 +109,63 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const getStyle = (): CSSProperties => {
     const style: CSSProperties = { ...position.current };
-    if (!popoverVisible) {
-      style.visibility = 'hidden';
-    }
+
     return style;
   };
   return (
-    <div className={linkEditPopoverCls} style={getStyle()} ref={popoverRef}>
-      <div className={`${prefixCls}-popover-arrow`}>
-        <span className={`${prefixCls}-popover-arrow-content`}></span>
-      </div>
-      <div className={`${prefixCls}-popover-inner`} role="tooltip">
-        <Form form={form}>
-          <Form.Item
-            name="text"
-            label={
-              locale['eeeditor.anchor.edit.text.label'] ||
-              'eeeditor.anchor.edit.text.label'
-            }
-            initialValue={initText.current}
+    <CSSMotion
+      visible={popoverVisible}
+      motionName={'ant-zoom-big-fast'}
+      motionDeadline={1000}
+      leavedClassName={'ant-hidden'}
+      removeOnLeave={false}
+      ref={popoverRef}
+      forceRender
+    >
+      {({ style, className }, motionRef) => (
+        <Align
+          align={{
+            points: ['bc', 'tc'],
+          }}
+          // todo
+          //target
+        >
+          <div
+            className={classNames(linkEditPopoverCls, className)}
+            style={style}
+            ref={motionRef}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="link"
-            label={
-              locale['eeeditor.anchor.edit.link.label'] ||
-              'eeeditor.anchor.edit.link.label'
-            }
-            initialValue={initLink.current}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </div>
-    </div>
+            <div className={`${prefixCls}-popover-arrow`}>
+              <span className={`${prefixCls}-popover-arrow-content`}></span>
+            </div>
+            <div className={`${prefixCls}-popover-inner`} role="tooltip">
+              <Form form={form}>
+                <Form.Item
+                  name="text"
+                  label={
+                    locale['eeeditor.anchor.edit.text.label'] ||
+                    'eeeditor.anchor.edit.text.label'
+                  }
+                  initialValue={initText.current}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  name="link"
+                  label={
+                    locale['eeeditor.anchor.edit.link.label'] ||
+                    'eeeditor.anchor.edit.link.label'
+                  }
+                  initialValue={initLink.current}
+                >
+                  <Input />
+                </Form.Item>
+              </Form>
+            </div>
+          </div>
+        </Align>
+      )}
+    </CSSMotion>
   );
 };
 

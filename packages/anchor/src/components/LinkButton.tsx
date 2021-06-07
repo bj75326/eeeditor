@@ -234,15 +234,18 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
           {children}
         </div>
       ) : (
-        <Tooltip
-          title={tipTitle}
-          overlayClassName={`${prefixCls}-tip-wrapper`}
-          {...tipProps}
-        >
-          <div className={btnClassName} style={style} onClick={handleBtnClick}>
-            {children}
-          </div>
-        </Tooltip>
+        // <Tooltip
+        //   title={tipTitle}
+        //   overlayClassName={`${prefixCls}-tip-wrapper`}
+        //   {...tipProps}
+        // >
+        //   <div className={btnClassName} style={style} onClick={handleBtnClick}>
+        //     {children}
+        //   </div>
+        // </Tooltip>
+        <div className={btnClassName} style={style} onClick={handleBtnClick}>
+          {children}
+        </div>
       )}
     </div>
   );
