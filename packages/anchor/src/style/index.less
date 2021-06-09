@@ -1,27 +1,10 @@
 @import './theme.less';
 
+// antd popover content className
 .@{eeeditor-prefix-cls}-link-popover {
   display: flex;
   align-items: center;
   font-size: @popover-font-size;
-}
-
-.@{eeeditor-prefix-cls}-link-edit-popover {
-  .ant-form-item {
-    font-size: @popover-font-size;
-    margin-bottom: 0;
-    padding: 3px;
-  }
-  .ant-form-item-label > label {
-    height: @popover-line-height;
-    font-size: @popover-font-size;
-  }
-  .ant-form-item-control-input {
-    min-height: @popover-line-height;
-  }
-  .ant-input {
-    font-size: @popover-font-size;
-  }
 }
 
 .@{eeeditor-prefix-cls}-link-url {
@@ -45,5 +28,24 @@
   transition: color 0.2s, background-color 0.2s;
   &:hover {
     background-color: @button-hover-bg;
+  }
+}
+
+.@{eeeditor-prefix-cls}-link-edit-popover {
+  .ant-form-item {
+    font-size: @popover-font-size;
+    margin-bottom: 0;
+    padding: 3px;
+  }
+  .ant-form-item-label > label {
+    height: @popover-line-height;
+    font-size: @popover-font-size;
+  }
+  .ant-form-item-control-input {
+    min-height: @popover-line-height;
+  }
+  .ant-input {
+    font-size: @popover-font-size;
+    width: 21.25em;
   }
 }

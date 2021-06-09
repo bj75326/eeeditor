@@ -140,26 +140,14 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
   const handleBtnClick = (event: MouseEvent): void => {
     event.preventDefault();
     const editorState = getEditorState();
+    if (editorState.getSelection().getHasFocus()) {
+      if (linkButtonIsActive()) {
+        setEditorState(removeLinkAtSelection(editorState));
+        return;
+      }
 
-    if (linkButtonIsActive()) {
-      setEditorState(removeLinkAtSelection(editorState));
-      return;
+      store.updateItem('visible', true);
     }
-
-    // const editorRef = getEditorRef();
-    // if (!editorRef) {
-    //   return;
-    // }
-
-    // let editorRoot = editorRef.editor;
-    // while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
-    //   editorRoot = editorRoot.parentNode as HTMLElement;
-    // }
-    // const position = getPopoverPosition(editorRoot);
-    // store.updateItem('position', position);
-    // store.updateItem('initText', '');
-    // store.updateItem('initLink', '');
-    store.updateItem('visible', true);
   };
 
   useEffect(() => {}, []);
@@ -234,18 +222,15 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
           {children}
         </div>
       ) : (
-        // <Tooltip
-        //   title={tipTitle}
-        //   overlayClassName={`${prefixCls}-tip-wrapper`}
-        //   {...tipProps}
-        // >
-        //   <div className={btnClassName} style={style} onClick={handleBtnClick}>
-        //     {children}
-        //   </div>
-        // </Tooltip>
-        <div className={btnClassName} style={style} onClick={handleBtnClick}>
-          {children}
-        </div>
+        <Tooltip
+          title={tipTitle}
+          overlayClassName={`${prefixCls}-tip-wrapper`}
+          {...tipProps}
+        >
+          <div className={btnClassName} style={style} onClick={handleBtnClick}>
+            {children}
+          </div>
+        </Tooltip>
       )}
     </div>
   );

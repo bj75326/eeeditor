@@ -12,12 +12,11 @@ import {
   getPopoverPosition,
   PopoverPosition,
   getEditorRootDomNode,
-  getVisibleSelectionRect,
+  getSelectedText,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
-import Align from 'rc-align';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -48,18 +47,17 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const [form] = Form.useForm();
 
-  const position = useRef<PopoverPosition>({ top: 0, left: 0 });
+  const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
   const initText = useRef<string>('');
   const initLink = useRef<string>('');
 
   const onVisibleChange = (visible: boolean) => {
-    // 通过 selectionState 获取当前选中 text
-    const selectionState = getEditorState().getSelection();
+    if (visible) {
+      initText.current = getSelectedText(getEditorState()) || '';
 
-    // 通过 editorRef 计算 popover position
-    // const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-    //position.current = getPopoverPosition(editorRoot, popoverRef.current);
-
+      console.log('initText.current ', initText.current);
+    }
+    // setPopoverVisible 触发重新渲染
     setPopoverVisible(visible);
   };
 
@@ -103,7 +101,14 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-    position.current = getPopoverPosition(editorRoot, popoverElement);
+    const position = getPopoverPosition(editorRoot, popoverElement);
+    styleRef.current = {
+      top: `${position.top}px`,
+      left: `${position.left}px`,
+      transformOrigin: `50% ${
+        popoverElement.getBoundingClientRect().height + 4
+      }px`,
+    };
   };
 
   const linkEditPopoverCls = classNames(
@@ -115,7 +120,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   return (
     <CSSMotion
       visible={popoverVisible}
-      motionName={'ant-zoom-big-fast'}
+      motionName={'ant-zoom-big'}
       motionDeadline={1000}
       leavedClassName={'ant-popover-hidden'}
       removeOnLeave={false}
@@ -128,8 +133,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
             className={classNames(linkEditPopoverCls, className)}
             style={{
               ...style,
-              top: `${position.current.top}px`,
-              left: `${position.current.left}px`,
+              ...styleRef.current,
             }}
             ref={motionRef}
           >
@@ -137,7 +141,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
               <span className={`${prefixCls}-popover-arrow-content`}></span>
             </div>
             <div className={`${prefixCls}-popover-inner`} role="tooltip">
-              <Form form={form}>
+              <Form form={form} autoComplete="off">
                 <Form.Item
                   name="text"
                   label={

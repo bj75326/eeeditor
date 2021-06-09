@@ -22,11 +22,13 @@ export const getPopoverPosition = (
     top:
       editorRoot.offsetTop +
       (selectionRect.top - editorRootRect.top) -
-      popoverElement.offsetHeight,
+      popoverElement.offsetHeight -
+      4,
     left:
       editorRoot.offsetLeft +
       (selectionRect.left - editorRootRect.left) +
-      selectionRect.width / 2,
+      selectionRect.width / 2 -
+      popoverElement.offsetWidth / 2,
   };
 };
 
