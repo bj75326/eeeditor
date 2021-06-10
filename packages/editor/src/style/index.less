@@ -270,19 +270,28 @@
 .@{eeeditor-prefix-cls}-popover-arrow {
   position: absolute;
   display: block;
-  width: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
-  height: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
+  // style bug fix
+  // width: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
+  // height: sqrt(@popover-arrow-size * @popover-arrow-size * 2);
+  width: @popover-arrow-size + 2px;
+  height: @popover-arrow-size + 2px;
   background: transparent;
   border-style: solid;
-  border-width: (sqrt(@popover-arrow-width * @popover-arrow-width * 2) / 2);
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
+  // style bug fix
+  // border-width: (sqrt(@popover-arrow-size * @popover-arrow-size * 2) / 2);
+  border-width: (@popover-arrow-size + 2) / 2;
+  transform: rotate(45deg);
+}
+
+.@{eeeditor-prefix-cls}-popover-arrow-top {
   bottom: @popover-trigger-distance - @popover-arrow-size + 2.2px;
   border-top-color: transparent;
-  border-right-color: @popover-background;
-  border-bottom-color: @popover-background;
+  border-right-color: @popover-bg;
+  border-bottom-color: @popover-bg;
   border-left-color: transparent;
   box-shadow: 3px 3px 7px fade(@black, 7%);
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .@{eeeditor-prefix-cls}-popover-inner {

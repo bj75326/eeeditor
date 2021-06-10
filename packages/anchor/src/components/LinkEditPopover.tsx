@@ -48,14 +48,12 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   const [form] = Form.useForm();
 
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
-  const initText = useRef<string>('');
-  const initLink = useRef<string>('');
+  // const initText = useRef<string>('');
+  // const initLink = useRef<string>('');
 
   const onVisibleChange = (visible: boolean) => {
     if (visible) {
-      initText.current = getSelectedText(getEditorState()) || '';
-
-      console.log('initText.current ', initText.current);
+      form.setFieldsValue({ text: getSelectedText(getEditorState()) || '' });
     }
     // setPopoverVisible 触发重新渲染
     setPopoverVisible(visible);
@@ -137,32 +135,34 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
             }}
             ref={motionRef}
           >
-            <div className={`${prefixCls}-popover-arrow`}>
-              <span className={`${prefixCls}-popover-arrow-content`}></span>
-            </div>
-            <div className={`${prefixCls}-popover-inner`} role="tooltip">
-              <Form form={form} autoComplete="off">
-                <Form.Item
-                  name="text"
-                  label={
-                    locale['eeeditor.anchor.edit.text.label'] ||
-                    'eeeditor.anchor.edit.text.label'
-                  }
-                  initialValue={initText.current}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name="link"
-                  label={
-                    locale['eeeditor.anchor.edit.link.label'] ||
-                    'eeeditor.anchor.edit.link.label'
-                  }
-                  initialValue={initLink.current}
-                >
-                  <Input />
-                </Form.Item>
-              </Form>
+            <div className={`${prefixCls}-popover-content`}>
+              <div
+                className={`${prefixCls}-popover-arrow ${prefixCls}-popover-arrow-top`}
+              >
+                <span className={`${prefixCls}-popover-arrow-content`}></span>
+              </div>
+              <div className={`${prefixCls}-popover-inner`} role="tooltip">
+                <Form form={form} autoComplete="off">
+                  <Form.Item
+                    name="text"
+                    label={
+                      locale['eeeditor.anchor.edit.text.label'] ||
+                      'eeeditor.anchor.edit.text.label'
+                    }
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    name="link"
+                    label={
+                      locale['eeeditor.anchor.edit.link.label'] ||
+                      'eeeditor.anchor.edit.link.label'
+                    }
+                  >
+                    <Input />
+                  </Form.Item>
+                </Form>
+              </div>
             </div>
           </div>
         );
