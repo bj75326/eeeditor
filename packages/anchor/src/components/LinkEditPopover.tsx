@@ -52,8 +52,19 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   // const initLink = useRef<string>('');
 
   const onVisibleChange = (visible: boolean) => {
+    const mode = store.getItem('mode');
     if (visible) {
-      form.setFieldsValue({ text: getSelectedText(getEditorState()) || '' });
+      if (mode === 'new') {
+        form.setFieldsValue({
+          text: getSelectedText(getEditorState()) || '',
+          link: '',
+        });
+      } else if (mode === 'edit') {
+        form.setFieldsValue({
+          text: store.getItem('initText') || '',
+          link: store.getItem('initLink') || '',
+        });
+      }
     }
     // setPopoverVisible 触发重新渲染
     setPopoverVisible(visible);
@@ -67,7 +78,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   }, []);
 
   const getPopoverDomNode = (): HTMLElement => {
-    console.log('popoverRef.current', popoverRef.current);
     return popoverRef.current || null;
   };
 
@@ -99,10 +109,22 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-    const position = getPopoverPosition(editorRoot, popoverElement);
+    let position: PopoverPosition = null;
+    if (store.getItem('mode') === 'new') {
+      // position 由 selection 决定
+      position = getPopoverPosition(editorRoot, popoverElement);
+    } else {
+      const target = editorRoot.ownerDocument.querySelector(
+        `[data-offset-key="${store.getItem('offsetKey')}"]>[data-text="true"]`,
+      );
+      if (target) {
+        position = getPopoverPosition(editorRoot, popoverElement, target);
+      }
+    }
+
     styleRef.current = {
-      top: `${position.top}px`,
-      left: `${position.left}px`,
+      top: `${position.top || 0}px`,
+      left: `${position.left || 0}px`,
       transformOrigin: `50% ${
         popoverElement.getBoundingClientRect().height + 4
       }px`,

@@ -38,6 +38,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     children,
     entityKey,
     decoratedText,
+    offsetKey,
   } = props;
 
   const getEditorState = store.getItem('getEditorState');
@@ -63,6 +64,17 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     </span>
   );
 
+  const handleEdit = (): void => {
+    store.updateItem('initText', decoratedText);
+    store.updateItem('initLink', href);
+    store.updateItem('entityKey', entityKey);
+    store.updateItem('offsetKey', offsetKey);
+    store.updateItem('mode', 'edit');
+    store.updateItem('visible', true);
+  };
+  const handleCopy = (): void => {};
+  const handleDelete = (): void => {};
+
   const content = (
     <div className={`${prefixCls}-link-popover`}>
       <a
@@ -77,21 +89,24 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
       {[
         {
           type: 'edit',
+          onClick: handleEdit,
         },
         {
           type: 'copy',
+          onClick: handleCopy,
         },
         {
           type: 'delete',
+          onClick: handleDelete,
         },
-      ].map(({ type }) => (
+      ].map(({ type, onClick }) => (
         <Tooltip
           title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
           overlayClassName={`${prefixCls}-tip-wrapper`}
           placement="top"
           key={type}
         >
-          <span className={`${prefixCls}-link-popover-btn`}>
+          <span className={`${prefixCls}-link-popover-btn`} onClick={onClick}>
             {extraIcons[`${type}Icon`]}
           </span>
         </Tooltip>

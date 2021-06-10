@@ -31,13 +31,11 @@ export interface StoreItemMap {
   // selection?: SelectionState;
   // link edit popover props
   visible?: boolean;
-  // initText?: string;
-  // initLink?: string;
-  // entityKey?: string;
-  // position?: {
-  //   top: number;
-  //   left: number;
-  // };
+  mode?: 'edit' | 'new';
+  initText?: string;
+  initLink?: string;
+  entityKey?: string;
+  offsetKey?: string;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;

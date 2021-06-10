@@ -145,7 +145,8 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
         setEditorState(removeLinkAtSelection(editorState));
         return;
       }
-
+      // 点击 LinkButton 添加 link
+      store.updateItem('mode', 'new');
       store.updateItem('visible', true);
     }
   };

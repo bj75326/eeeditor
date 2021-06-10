@@ -8,26 +8,32 @@ export interface PopoverPosition {
 export const getPopoverPosition = (
   editorRoot: HTMLElement,
   popoverElement: HTMLElement,
+  target?: HTMLElement,
 ): PopoverPosition | null => {
   const editorRootRect = editorRoot.getBoundingClientRect();
 
   const parentWindow =
     editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
 
-  const selectionRect = getVisibleSelectionRect(parentWindow || window);
+  let targetRect = null;
+  if (target) {
+    targetRect = target.getBoundingClientRect();
+  }
 
-  if (!selectionRect) return null;
+  targetRect = getVisibleSelectionRect(parentWindow || window);
+
+  if (!targetRect) return null;
 
   return {
     top:
       editorRoot.offsetTop +
-      (selectionRect.top - editorRootRect.top) -
+      (targetRect.top - editorRootRect.top) -
       popoverElement.offsetHeight -
       4,
     left:
       editorRoot.offsetLeft +
-      (selectionRect.left - editorRootRect.left) +
-      selectionRect.width / 2 -
+      (targetRect.left - editorRootRect.left) +
+      targetRect.width / 2 -
       popoverElement.offsetWidth / 2,
   };
 };
