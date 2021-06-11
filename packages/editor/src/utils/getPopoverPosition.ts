@@ -12,15 +12,14 @@ export const getPopoverPosition = (
 ): PopoverPosition | null => {
   const editorRootRect = editorRoot.getBoundingClientRect();
 
-  const parentWindow =
-    editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
-
   let targetRect = null;
   if (target) {
     targetRect = target.getBoundingClientRect();
+  } else {
+    const parentWindow =
+      editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
+    targetRect = getVisibleSelectionRect(parentWindow || window);
   }
-
-  targetRect = getVisibleSelectionRect(parentWindow || window);
 
   if (!targetRect) return null;
 

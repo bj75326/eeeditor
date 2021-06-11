@@ -17,6 +17,7 @@ import {
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
+import formatUrl from '../utils/formatUrl';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -32,8 +33,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   const setEditorState = store.getItem('setEditorState');
   const getProps = store.getItem('getProps');
   const getEditorRef = store.getItem('getEditorRef');
-  // stored link edit popover props
-  // const visible = store.getItem('visible');
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -48,8 +47,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   const [form] = Form.useForm();
 
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
-  // const initText = useRef<string>('');
-  // const initLink = useRef<string>('');
 
   const onVisibleChange = (visible: boolean) => {
     const mode = store.getItem('mode');
@@ -114,7 +111,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       // position 由 selection 决定
       position = getPopoverPosition(editorRoot, popoverElement);
     } else {
-      const target = editorRoot.ownerDocument.querySelector(
+      // position 由 decorated link span element 决定
+      const target: HTMLElement = editorRoot.ownerDocument.querySelector(
         `[data-offset-key="${store.getItem('offsetKey')}"]>[data-text="true"]`,
       );
       if (target) {
@@ -180,8 +178,14 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                       locale['eeeditor.anchor.edit.link.label'] ||
                       'eeeditor.anchor.edit.link.label'
                     }
+                    rules={[{ type: 'url' }]}
                   >
-                    <Input />
+                    <Input
+                      placeholder={
+                        locale['eeeditor.anchor.edit.link.placeholder'] ||
+                        'eeeditor.anchor.edit.url.placeholder'
+                      }
+                    />
                   </Form.Item>
                 </Form>
               </div>

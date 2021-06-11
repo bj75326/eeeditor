@@ -10,4 +10,5 @@ export default {
   'eeeditor.anchor.delete.button.tip': 'Delete link',
   'eeeditor.anchor.edit.text.label': 'Text',
   'eeeditor.anchor.edit.link.label': 'Link',
+  'eeeditor.anchor.edit.link.placeholder': 'Press the Enter key to confirm',
 };

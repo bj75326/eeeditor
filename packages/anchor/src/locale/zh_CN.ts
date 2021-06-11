@@ -10,4 +10,5 @@ export default {
   'eeeditor.anchor.delete.button.tip': '删除链接',
   'eeeditor.anchor.edit.text.label': '文本',
   'eeeditor.anchor.edit.link.label': '链接',
+  'eeeditor.anchor.edit.link.placeholder': '输入链接，回车确定',
 };

@@ -1,16 +1,10 @@
-import React, { ReactNode, MouseEvent, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Popover, Tooltip, Form, Input } from 'antd';
 import { EditorState } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
-
-const formatUrl = (href: string): string => {
-  if (!/^((ht|f)tps?):\/\//.test(href)) {
-    return `http://${href}`;
-  }
-  return href;
-};
+import formatUrl from '../utils/formatUrl';
 
 export interface LinkProps {
   children: ReactNode;
@@ -58,6 +52,12 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     locale = languages[currLocale];
   }
 
+  const [visible, setVisible]: [boolean, any] = useState(false);
+
+  const onVisibleChange = (visible: boolean) => {
+    setVisible(visible);
+  };
+
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
       <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
@@ -65,6 +65,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   );
 
   const handleEdit = (): void => {
+    setVisible(false);
+
     store.updateItem('initText', decoratedText);
     store.updateItem('initLink', href);
     store.updateItem('entityKey', entityKey);
@@ -72,8 +74,12 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     store.updateItem('mode', 'edit');
     store.updateItem('visible', true);
   };
-  const handleCopy = (): void => {};
-  const handleDelete = (): void => {};
+  const handleCopy = (): void => {
+    setVisible(false);
+  };
+  const handleDelete = (): void => {
+    setVisible(false);
+  };
 
   const content = (
     <div className={`${prefixCls}-link-popover`}>
@@ -120,6 +126,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     <Popover
       content={content}
       overlayClassName={`${prefixCls}-popover-wrapper`}
+      visible={visible}
+      onVisibleChange={onVisibleChange}
     >
       <a
         className={linkClassName}
