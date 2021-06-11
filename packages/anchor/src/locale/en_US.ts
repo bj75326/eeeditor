@@ -11,4 +11,6 @@ export default {
   'eeeditor.anchor.edit.text.label': 'Text',
   'eeeditor.anchor.edit.link.label': 'Link',
   'eeeditor.anchor.edit.link.placeholder': 'Press the Enter key to confirm',
+  'eeeditor.anchor.edit.text.placeholder':
+    'Will use link url if no text provided',
 };

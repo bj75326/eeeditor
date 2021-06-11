@@ -4,6 +4,7 @@ import React, {
   CSSProperties,
   useRef,
   useCallback,
+  KeyboardEvent,
 } from 'react';
 import { Form, Input } from 'antd';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
@@ -17,7 +18,8 @@ import {
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
-import formatUrl from '../utils/formatUrl';
+import validateUrl from '../utils/validateUrl';
+import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -129,6 +131,18 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     };
   };
 
+  const handleInputKeyUp = (event: KeyboardEvent): void => {
+    if (event.keyCode === 13 && form.getFieldError(['link']).length <= 0) {
+      // mode === 'new'
+      setEditorState(
+        createLinkAtSelection(getEditorState(), {
+          url: form.getFieldValue(['link']),
+        }),
+      );
+      // mode === 'edit'
+    }
+  };
+
   const linkEditPopoverCls = classNames(
     `${prefixCls}-popover`,
     `${prefixCls}-link-edit-popover`,
@@ -170,7 +184,13 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                       'eeeditor.anchor.edit.text.label'
                     }
                   >
-                    <Input />
+                    <Input
+                      placeholder={
+                        locale['eeeditor.anchor.edit.text.placeholder'] ||
+                        'eeeditor.anchor.edit.text.placeholder'
+                      }
+                      onKeyUp={handleInputKeyUp}
+                    />
                   </Form.Item>
                   <Form.Item
                     name="link"
@@ -178,13 +198,23 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                       locale['eeeditor.anchor.edit.link.label'] ||
                       'eeeditor.anchor.edit.link.label'
                     }
-                    rules={[{ type: 'url' }]}
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          if (value && !validateUrl(value)) {
+                            return Promise.reject();
+                          }
+                          return Promise.resolve();
+                        },
+                      },
+                    ]}
                   >
                     <Input
                       placeholder={
                         locale['eeeditor.anchor.edit.link.placeholder'] ||
-                        'eeeditor.anchor.edit.url.placeholder'
+                        'eeeditor.anchor.edit.link.placeholder'
                       }
+                      onKeyUp={handleInputKeyUp}
                     />
                   </Form.Item>
                 </Form>

@@ -5,6 +5,7 @@ const createLinkAtSelection = (
   editorState: EditorState,
   data: LinkEntityData,
 ): EditorState => {
+  console.log('createLinkAtSelection seleciton:  ', editorState.getSelection());
   const contentStateWithEntity = editorState
     .getCurrentContent()
     .createEntity('LINK', 'MUTABLE', data);
