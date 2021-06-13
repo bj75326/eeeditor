@@ -14,6 +14,8 @@ import {
   PopoverPosition,
   getEditorRootDomNode,
   getSelectedText,
+  Modifier,
+  DraftInlineStyle,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
@@ -50,7 +52,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
 
-  const onVisibleChange = (visible: boolean) => {
+  const onStoreVisibleChange = (visible: boolean) => {
     const mode = store.getItem('mode');
     if (visible) {
       if (mode === 'new') {
@@ -70,9 +72,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   };
 
   useEffect(() => {
-    store.subscribeToItem('visible', onVisibleChange);
+    store.subscribeToItem('visible', onStoreVisibleChange);
     return () => {
-      store.unsubscribeFromItem('visible', onVisibleChange);
+      store.unsubscribeFromItem('visible', onStoreVisibleChange);
     };
   }, []);
 
@@ -133,13 +135,27 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const handleInputKeyUp = (event: KeyboardEvent): void => {
     if (event.keyCode === 13 && form.getFieldError(['link']).length <= 0) {
-      // mode === 'new'
-      setEditorState(
-        createLinkAtSelection(getEditorState(), {
-          url: form.getFieldValue(['link']),
-        }),
-      );
-      // mode === 'edit'
+      const editorState = getEditorState();
+      const mode = store.getItem('mode');
+      const text = form.getFieldValue(['text']);
+      const link = form.getFieldValue(['link']);
+
+      if (mode === 'new') {
+        if (link) {
+          setEditorState(
+            createLinkAtSelection(
+              editorState,
+              { url: link },
+              text || link, // text 为空，则使用 link 值作为 text
+            ),
+          );
+        }
+      }
+
+      if (mode === 'edit') {
+      }
+
+      setPopoverVisible(false);
     }
   };
 
