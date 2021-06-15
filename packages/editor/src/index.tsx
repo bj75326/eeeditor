@@ -29,6 +29,7 @@ import {
   DraftBlockRenderMap,
   EditorState,
   SelectionState,
+  Editor,
 } from 'draft-js';
 import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
 import { composeDecoratorsFn } from 'draft-js-plugins-editor';
@@ -39,6 +40,10 @@ export const composeDecorators = composeDecoratorsFn;
 export interface EditorRef {
   refs?: { editor: HTMLElement };
   editor: HTMLElement;
+  /** Force focus back onto the editor node. */
+  focus(): void;
+  /** Remove focus from the editor node. */
+  blur(): void;
 }
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;

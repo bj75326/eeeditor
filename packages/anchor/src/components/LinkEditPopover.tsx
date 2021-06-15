@@ -52,7 +52,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
 
-  const onStoreVisibleChange = (visible: boolean) => {
+  const onStoredVisibleChange = (visible: boolean) => {
     const mode = store.getItem('mode');
     if (visible) {
       if (mode === 'new') {
@@ -72,9 +72,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   };
 
   useEffect(() => {
-    store.subscribeToItem('visible', onStoreVisibleChange);
+    store.subscribeToItem('visible', onStoredVisibleChange);
     return () => {
-      store.unsubscribeFromItem('visible', onStoreVisibleChange);
+      store.unsubscribeFromItem('visible', onStoredVisibleChange);
     };
   }, []);
 
@@ -135,27 +135,36 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const handleInputKeyUp = (event: KeyboardEvent): void => {
     if (event.keyCode === 13 && form.getFieldError(['link']).length <= 0) {
-      const editorState = getEditorState();
-      const mode = store.getItem('mode');
-      const text = form.getFieldValue(['text']);
-      const link = form.getFieldValue(['link']);
-
-      if (mode === 'new') {
-        if (link) {
-          setEditorState(
-            createLinkAtSelection(
-              editorState,
-              { url: link },
-              text || link, // text 为空，则使用 link 值作为 text
-            ),
-          );
-        }
-      }
-
-      if (mode === 'edit') {
-      }
-
+      // 焦点需要先返回给 editor，使 selectionBefore hasFocus 为 true，确保 undo selection 正常工作
       setPopoverVisible(false);
+      const editorRef = getEditorRef();
+      if (editorRef) {
+        editorRef.focus();
+      }
+      // 焦点返回 editor 后，再修改 editorState
+      setTimeout(() => {
+        const editorState = getEditorState();
+        const mode = store.getItem('mode');
+        const text = form.getFieldValue(['text']);
+        const link = form.getFieldValue(['link']);
+
+        if (mode === 'new') {
+          if (link) {
+            setEditorState(
+              createLinkAtSelection(
+                editorState,
+                { url: link },
+                text || link, // text 为空，则使用 link 值作为 text
+              ),
+            );
+          }
+        }
+
+        if (mode === 'edit') {
+          if (!link) {
+          }
+        }
+      }, 0);
     }
   };
 

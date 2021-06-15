@@ -21,38 +21,28 @@ const createLinkAtSelection = (
 
   // 如果链接文本部分没有变化，则使用 RichUtils.toggleLink 保留原有的 inlineStyle
   if (getSelectedText(editorState) === text) {
-    const newEditorState = RichUtils.toggleLink(
+    return RichUtils.toggleLink(
       editorState,
       editorState.getSelection(),
       entityKey,
     );
 
-    const withLink = newEditorState.getCurrentContent();
-    console.log(
-      'withLink.getSelectionBefore() ',
-      withLink.getSelectionBefore(),
-    );
-    const withLinkRevisedSelection = withLink.merge({
-      selectionBefore: withLink.getSelectionBefore().merge({
-        hasFocus: true,
-      }),
-      selectionAfter: withLink.getSelectionAfter().merge({
-        hasFocus: true,
-      }),
-    });
-    console.log(
-      'withLinkRevisedSelection.getSelectionBefore() ',
-      (withLinkRevisedSelection as ContentState).getSelectionBefore(),
-    );
-    return EditorState.push(
-      editorState,
-      withLinkRevisedSelection as ContentState,
-      'apply-entity',
-    );
-    // 通过 forceSelection 将 selectionAfter 应用到 editor component 上
-    // return EditorState.forceSelection(newEditorState, newEditorState.getCurrentContent().getSelectionAfter().merge({
-    //   hasFocus: true,
-    // }));
+    // const withLink = newEditorState.getCurrentContent();
+
+    // eeeditor 所有的操作过程中如果使 editor 失去焦点，那么在最后 push editorState 之前，
+    // 务必确保焦点返还给 editor，以使 selectionBefore 数值正常
+    // 所以没有必要在这里校正 selection
+    // const withLinkRevisedSelection = withLink.merge({
+    //   selectionAfter: withLink.getSelectionAfter().merge({
+    //     hasFocus: true,
+    //   }),
+    // });
+
+    // return EditorState.push(
+    //   editorState,
+    //   withLinkRevisedSelection as ContentState,
+    //   'apply-entity',
+    // );
   }
 
   const withLink = Modifier.replaceText(
@@ -63,14 +53,10 @@ const createLinkAtSelection = (
     entityKey,
   );
   const withLinkRevisedSelection = withLink.merge({
-    selectionBefore: withLink.getSelectionBefore().merge({
-      hasFocus: true,
-    }),
     selectionAfter: withLink.getSelectionAfter().merge({
       anchorOffset:
         withLink.getSelectionAfter().getAnchorOffset() - text.length,
       isBackward: false,
-      hasFocus: true,
     }),
   });
 
@@ -79,13 +65,6 @@ const createLinkAtSelection = (
     withLinkRevisedSelection as ContentState,
     'apply-entity',
   );
-  // 通过 forceSelection 将 selectionAfter 应用到 editor component 上
-  // const selectionAfter = withLink.getSelectionAfter();
-  // return EditorState.forceSelection(newEditorState, selectionAfter.merge({
-  //   anchorOffset: selectionAfter.getAnchorOffset() - text.length,
-  //   isBackward: false,
-  //   hasFocus: true,
-  // }));
 };
 
 export default createLinkAtSelection;
