@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
-import { Popover, Tooltip, Form, Input } from 'antd';
-import { EditorState } from '@eeeditor/editor';
+import React, { ReactNode, useState, MouseEvent } from 'react';
+import { Popover, Tooltip } from 'antd';
+import { getEditorRootDomNode } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
@@ -38,6 +38,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const getEditorState = store.getItem('getEditorState');
   const setEditorState = store.getItem('setEditorState');
   const getProps = store.getItem('getProps');
+  const getEditorRef = store.getItem('getEditorRef');
 
   const entity = getEditorState().getCurrentContent().getEntity(entityKey);
 
@@ -64,9 +65,39 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     </span>
   );
 
-  const handleEdit = (): void => {
+  const setSelectionAtLink = () => {
+    // 使用原生 dom 提供的 selection 将当前 link leaf 设置为托蓝区
+    const editorRoot = getEditorRootDomNode(getEditorRef());
+    const ownerDocument = editorRoot.ownerDocument;
+
+    if (!ownerDocument) return;
+
+    const parentWindow = ownerDocument.defaultView;
+    const linkDom = ownerDocument.querySelector(
+      `a[data-offset-key="${offsetKey}"]`,
+    );
+
+    if (!linkDom) return;
+
+    const textSpanNodes = linkDom.querySelectorAll('[data-text=true]');
+
+    if (!textSpanNodes || textSpanNodes.length <= 0) return;
+
+    const range = parentWindow.getSelection().getRangeAt(0);
+
+    const firstTextLeafNode = textSpanNodes[0].firstChild;
+    const lastTextLeafNode = textSpanNodes[textSpanNodes.length - 1].lastChild;
+
+    if (!(firstTextLeafNode && lastTextLeafNode)) return;
+    range.setStart(firstTextLeafNode, 0);
+    range.setEnd(lastTextLeafNode, (lastTextLeafNode as Text).length);
+  };
+
+  const handleEdit = (event: MouseEvent): void => {
+    event.preventDefault();
     setVisible(false);
 
+    setSelectionAtLink();
     store.updateItem('initText', decoratedText);
     store.updateItem('initLink', href);
     store.updateItem('entityKey', entityKey);
@@ -74,10 +105,12 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     store.updateItem('mode', 'edit');
     store.updateItem('visible', true);
   };
-  const handleCopy = (): void => {
+  const handleCopy = (event: MouseEvent): void => {
+    event.preventDefault();
     setVisible(false);
   };
-  const handleDelete = (): void => {
+  const handleDelete = (event: MouseEvent): void => {
+    event.preventDefault();
     setVisible(false);
   };
 
@@ -134,6 +167,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
         rel="noopener noreferrer"
         href={formattedHref}
         target="_blank"
+        data-offset-key={offsetKey}
       >
         {children}
       </a>

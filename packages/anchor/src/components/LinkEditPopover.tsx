@@ -115,9 +115,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       // position 由 selection 决定
       position = getPopoverPosition(editorRoot, popoverElement);
     } else {
-      // position 由 decorated link span element 决定
+      // position 由 decorated link <a> element 决定
       const target: HTMLElement = editorRoot.ownerDocument.querySelector(
-        `[data-offset-key="${store.getItem('offsetKey')}"]>[data-text="true"]`,
+        `a[data-offset-key="${store.getItem('offsetKey')}"]`,
       );
       if (target) {
         position = getPopoverPosition(editorRoot, popoverElement, target);
