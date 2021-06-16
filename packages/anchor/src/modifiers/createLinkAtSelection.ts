@@ -21,28 +21,23 @@ const createLinkAtSelection = (
 
   // 如果链接文本部分没有变化，则使用 RichUtils.toggleLink 保留原有的 inlineStyle
   if (getSelectedText(editorState) === text) {
-    return RichUtils.toggleLink(
+    const withLink = RichUtils.toggleLink(
       editorState,
       editorState.getSelection(),
       entityKey,
+    ).getCurrentContent();
+
+    const withLinkRevisedSelection = withLink.merge({
+      selectionAfter: withLink.getSelectionAfter().merge({
+        hasFocus: true,
+      }),
+    });
+
+    return EditorState.push(
+      editorState,
+      withLinkRevisedSelection as ContentState,
+      'apply-entity',
     );
-
-    // const withLink = newEditorState.getCurrentContent();
-
-    // eeeditor 所有的操作过程中如果使 editor 失去焦点，那么在最后 push editorState 之前，
-    // 务必确保焦点返还给 editor，以使 selectionBefore 数值正常
-    // 所以没有必要在这里校正 selection
-    // const withLinkRevisedSelection = withLink.merge({
-    //   selectionAfter: withLink.getSelectionAfter().merge({
-    //     hasFocus: true,
-    //   }),
-    // });
-
-    // return EditorState.push(
-    //   editorState,
-    //   withLinkRevisedSelection as ContentState,
-    //   'apply-entity',
-    // );
   }
 
   const withLink = Modifier.replaceText(

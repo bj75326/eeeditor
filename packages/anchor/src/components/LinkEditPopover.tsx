@@ -14,8 +14,7 @@ import {
   PopoverPosition,
   getEditorRootDomNode,
   getSelectedText,
-  Modifier,
-  DraftInlineStyle,
+  EditorState,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
@@ -135,36 +134,38 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
   const handleInputKeyUp = (event: KeyboardEvent): void => {
     if (event.keyCode === 13 && form.getFieldError(['link']).length <= 0) {
-      // 焦点需要先返回给 editor，使 selectionBefore hasFocus 为 true，确保 undo selection 正常工作
-      setPopoverVisible(false);
-      const editorRef = getEditorRef();
-      if (editorRef) {
-        editorRef.focus();
+      const editorState = getEditorState();
+      // link 设置过程中导致的 editor 的失焦，会造成 undo 时，selectionBefore 的 bug，
+      // 所以这里使用 forceSelection 修改当前 selection(newContent.selectionBefore) hasFocus 为 true
+      // 或者也可以先使用 getEditorRef().focus(), 获取焦点之后 setTimeout 修改 editorState，但体验不好。
+      const editorStateWithFocus = EditorState.forceSelection(
+        editorState,
+        editorState.getSelection().merge({
+          hasFocus: true,
+        }),
+      );
+
+      const mode = store.getItem('mode');
+      const text = form.getFieldValue(['text']);
+      const link = form.getFieldValue(['link']);
+
+      if (mode === 'new') {
+        if (link) {
+          setEditorState(
+            createLinkAtSelection(
+              editorStateWithFocus,
+              { url: link },
+              text || link, // text 为空，则使用 link 值作为 text
+            ),
+          );
+        }
       }
-      // 焦点返回 editor 后，再修改 editorState
-      setTimeout(() => {
-        const editorState = getEditorState();
-        const mode = store.getItem('mode');
-        const text = form.getFieldValue(['text']);
-        const link = form.getFieldValue(['link']);
 
-        if (mode === 'new') {
-          if (link) {
-            setEditorState(
-              createLinkAtSelection(
-                editorState,
-                { url: link },
-                text || link, // text 为空，则使用 link 值作为 text
-              ),
-            );
-          }
+      if (mode === 'edit') {
+        if (!link) {
         }
-
-        if (mode === 'edit') {
-          if (!link) {
-          }
-        }
-      }, 0);
+      }
+      setPopoverVisible(false);
     }
   };
 
