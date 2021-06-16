@@ -155,7 +155,7 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     //   }
     // }
   });
-
+  console.log('divider className ', className);
   const dividerClassName = classNames(`${prefixCls}-divider`, className);
 
   return <hr className={dividerClassName} ref={hrNode} {...elementProps} />;

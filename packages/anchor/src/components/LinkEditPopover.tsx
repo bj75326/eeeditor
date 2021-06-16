@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   KeyboardEvent,
+  CompositionEvent,
 } from 'react';
 import { Form, Input } from 'antd';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
@@ -16,6 +17,7 @@ import {
   getSelectedText,
   EditorState,
 } from '@eeeditor/editor';
+import RichUtils from '@draft-js-plugins/utils';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
@@ -130,10 +132,31 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
         popoverElement.getBoundingClientRect().height + 4
       }px`,
     };
+
+    // focus link input
+    const linkElement = popoverElement.querySelector('#link');
+
+    if (linkElement) {
+      (linkElement as HTMLInputElement).focus();
+    }
+  };
+
+  const handlePopoverLeavePrepare = (): void => {
+    getEditorRef().focus();
+  };
+
+  // 切换输入法模式下， enter keyup 不应该进行提交
+  let compositionLock: boolean = false;
+  const handleCompositionEnd = (event: CompositionEvent) => {
+    compositionLock = true;
   };
 
   const handleInputKeyUp = (event: KeyboardEvent): void => {
-    if (event.keyCode === 13 && form.getFieldError(['link']).length <= 0) {
+    if (
+      event.keyCode === 13 &&
+      form.getFieldError(['link']).length <= 0 &&
+      !compositionLock
+    ) {
       const editorState = getEditorState();
       // link 设置过程中导致的 editor 的失焦，会造成 undo 时，selectionBefore 的 bug，
       // 所以这里使用 forceSelection 修改当前 selection(newContent.selectionBefore) hasFocus 为 true
@@ -167,6 +190,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       }
       setPopoverVisible(false);
     }
+
+    // 重置 compositionLock
+    compositionLock = false;
   };
 
   const linkEditPopoverCls = classNames(
@@ -184,6 +210,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       removeOnLeave={false}
       ref={popoverRef}
       onEnterPrepare={handlePopoverEnterPrepare}
+      onLeavePrepare={handlePopoverLeavePrepare}
     >
       {({ style, className }, motionRef) => {
         return (
@@ -215,6 +242,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                         locale['eeeditor.anchor.edit.text.placeholder'] ||
                         'eeeditor.anchor.edit.text.placeholder'
                       }
+                      onCompositionEnd={handleCompositionEnd}
                       onKeyUp={handleInputKeyUp}
                     />
                   </Form.Item>
@@ -240,6 +268,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                         locale['eeeditor.anchor.edit.link.placeholder'] ||
                         'eeeditor.anchor.edit.link.placeholder'
                       }
+                      onCompositionEnd={handleCompositionEnd}
                       onKeyUp={handleInputKeyUp}
                     />
                   </Form.Item>

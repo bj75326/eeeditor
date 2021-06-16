@@ -21,22 +21,10 @@ const createLinkAtSelection = (
 
   // 如果链接文本部分没有变化，则使用 RichUtils.toggleLink 保留原有的 inlineStyle
   if (getSelectedText(editorState) === text) {
-    const withLink = RichUtils.toggleLink(
+    return RichUtils.toggleLink(
       editorState,
       editorState.getSelection(),
       entityKey,
-    ).getCurrentContent();
-
-    const withLinkRevisedSelection = withLink.merge({
-      selectionAfter: withLink.getSelectionAfter().merge({
-        hasFocus: true,
-      }),
-    });
-
-    return EditorState.push(
-      editorState,
-      withLinkRevisedSelection as ContentState,
-      'apply-entity',
     );
   }
 

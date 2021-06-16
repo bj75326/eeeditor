@@ -73,13 +73,13 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     if (!ownerDocument) return;
 
     const parentWindow = ownerDocument.defaultView;
-    const linkDom = ownerDocument.querySelector(
+    const linkNode = ownerDocument.querySelector(
       `a[data-offset-key="${offsetKey}"]`,
     );
 
-    if (!linkDom) return;
+    if (!linkNode) return;
 
-    const textSpanNodes = linkDom.querySelectorAll('[data-text=true]');
+    const textSpanNodes = linkNode.querySelectorAll('[data-text=true]');
 
     if (!textSpanNodes || textSpanNodes.length <= 0) return;
 
