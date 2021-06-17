@@ -14,6 +14,7 @@ import DefaultDividerButton, {
   DividerButtonProps,
   DividerButtonExtraProps,
 } from './components/DividerButton';
+import classNames from 'classnames';
 import addDivider from './modifiers/addDivider';
 import lang, { Languages } from './locale';
 
@@ -58,7 +59,7 @@ const createDividerPlugin = ({
   if (focusable) {
     // todo
     FocusableDivider = focusDecorator(
-      (Divider as unknown) as React.FC<BlockFocusDecoratorProps>,
+      Divider as unknown as React.FC<BlockFocusDecoratorProps>,
     );
     if (typeof decorator === 'function') {
       FocusableDivider = decorator(FocusableDivider);

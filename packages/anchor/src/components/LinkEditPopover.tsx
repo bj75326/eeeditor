@@ -23,6 +23,7 @@ import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
 import validateUrl from '../utils/validateUrl';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
+import getAnchorOffset from '../utils/getAnchorOffset';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -182,13 +183,19 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
             ),
           );
         }
+        setPopoverVisible(false);
       }
 
       if (mode === 'edit') {
-        if (!link) {
+        if (link) {
+          getAnchorOffset(
+            editorState,
+            store.getItem('entityKey'),
+            store.getItem('offsetKey'),
+          );
+          setPopoverVisible(false);
         }
       }
-      setPopoverVisible(false);
     }
 
     // 重置 compositionLock

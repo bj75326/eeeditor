@@ -56,18 +56,17 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         //   }
         // };
 
-        const { blockProps, className } = props;
-        const { isFocused } = blockProps;
-        console.log('isFocused getted: ', isFocused);
-        const combinedClassName = classNames(className, {
-          isFocused: !!isFocused,
-        });
+        // const { blockProps } = props;
+        // const { isFocused } = blockProps;
+        // const combinedClassName = classNames(className, {
+        //   isFocused: !!isFocused,
+        // });
         return (
           <WrappedComponent
             {...props}
             ref={ref}
             // onClick={onClick}
-            className={combinedClassName}
+            // className={combinedClassName}
           />
         );
       },

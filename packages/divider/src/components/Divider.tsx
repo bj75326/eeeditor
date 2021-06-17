@@ -34,7 +34,9 @@ const addPointToSelection = (
 
 export interface DividerProps {
   block: ContentBlock;
-  blockProps: unknown;
+  blockProps: {
+    isFocused: boolean;
+  };
   customStyleMap: unknown;
   customStyleFn: unknown;
   decorator: unknown;
@@ -49,7 +51,7 @@ export interface DividerProps {
 
 export interface DividerExtraProps extends React.HTMLAttributes<HTMLHRElement> {
   prefixCls?: string;
-  className: string;
+  className?: string;
 }
 
 const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
@@ -75,7 +77,9 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
-  const hrNode = useRef(null);
+  const { isFocused } = blockProps;
+
+  const hrNode = useRef<HTMLHRElement>();
 
   useEffect(() => {
     console.log('divider componentDidUpdate run!!!!');
@@ -155,8 +159,9 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     //   }
     // }
   });
-  console.log('divider className ', className);
-  const dividerClassName = classNames(`${prefixCls}-divider`, className);
+  const dividerClassName = classNames(`${prefixCls}-divider`, className, {
+    isFocused: isFocused,
+  });
 
   return <hr className={dividerClassName} ref={hrNode} {...elementProps} />;
 };

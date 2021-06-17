@@ -97,7 +97,6 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     event.preventDefault();
     setVisible(false);
 
-    setSelectionAtLink();
     store.updateItem('initText', decoratedText);
     store.updateItem('initLink', href);
     store.updateItem('entityKey', entityKey);
