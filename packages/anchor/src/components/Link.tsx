@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, MouseEvent } from 'react';
 import { Popover, Tooltip } from 'antd';
-import { getEditorRootDomNode } from '@eeeditor/editor';
+import { getDecoratedLeavesOffset, DecoratedOffset } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
@@ -53,6 +53,17 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     locale = languages[currLocale];
   }
 
+  let linkOffset: DecoratedOffset = null;
+
+  if (children[0] && children[0].props.start >= 0) {
+    linkOffset = getDecoratedLeavesOffset(
+      getEditorState(),
+      entityKey,
+      offsetKey,
+      children[0].props.start,
+    );
+  }
+
   const [visible, setVisible]: [boolean, any] = useState(false);
 
   const onVisibleChange = (visible: boolean) => {
@@ -65,34 +76,6 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     </span>
   );
 
-  const setSelectionAtLink = () => {
-    // 使用原生 dom 提供的 selection 将当前 link leaf 设置为托蓝区
-    const editorRoot = getEditorRootDomNode(getEditorRef());
-    const ownerDocument = editorRoot.ownerDocument;
-
-    if (!ownerDocument) return;
-
-    const parentWindow = ownerDocument.defaultView;
-    const linkNode = ownerDocument.querySelector(
-      `a[data-offset-key="${offsetKey}"]`,
-    );
-
-    if (!linkNode) return;
-
-    const textSpanNodes = linkNode.querySelectorAll('[data-text=true]');
-
-    if (!textSpanNodes || textSpanNodes.length <= 0) return;
-
-    const range = parentWindow.getSelection().getRangeAt(0);
-
-    const firstTextLeafNode = textSpanNodes[0].firstChild;
-    const lastTextLeafNode = textSpanNodes[textSpanNodes.length - 1].lastChild;
-
-    if (!(firstTextLeafNode && lastTextLeafNode)) return;
-    range.setStart(firstTextLeafNode, 0);
-    range.setEnd(lastTextLeafNode, (lastTextLeafNode as Text).length);
-  };
-
   const handleEdit = (event: MouseEvent): void => {
     event.preventDefault();
     setVisible(false);
@@ -101,6 +84,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     store.updateItem('initLink', href);
     store.updateItem('entityKey', entityKey);
     store.updateItem('offsetKey', offsetKey);
+    store.updateItem('linkOffset', linkOffset);
     store.updateItem('mode', 'edit');
     store.updateItem('visible', true);
   };

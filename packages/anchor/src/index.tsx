@@ -3,7 +3,7 @@ import {
   EditorPlugin,
   PluginMethods,
   EditorState,
-  SelectionState,
+  DecoratedOffset,
 } from '@eeeditor/editor';
 import DefaultLink, { LinkProps, LinkExtraProps } from './components/Link';
 import DefaultLinkButton, {
@@ -36,6 +36,7 @@ export interface StoreItemMap {
   initLink?: string;
   entityKey?: string;
   offsetKey?: string;
+  linkOffset?: DecoratedOffset;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;

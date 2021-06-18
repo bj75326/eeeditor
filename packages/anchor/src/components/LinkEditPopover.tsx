@@ -23,7 +23,6 @@ import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
 import validateUrl from '../utils/validateUrl';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
-import getAnchorOffset from '../utils/getAnchorOffset';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -159,25 +158,24 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       !compositionLock
     ) {
       const editorState = getEditorState();
-      // link 设置过程中导致的 editor 的失焦，会造成 undo 时，selectionBefore 的 bug，
-      // 所以这里使用 forceSelection 修改当前 selection(newContent.selectionBefore) hasFocus 为 true
-      // 或者也可以先使用 getEditorRef().focus(), 获取焦点之后 setTimeout 修改 editorState，但体验不好。
-      const editorStateWithFocus = EditorState.forceSelection(
-        editorState,
-        editorState.getSelection().merge({
-          hasFocus: true,
-        }),
-      );
-
       const mode = store.getItem('mode');
       const text = form.getFieldValue(['text']);
       const link = form.getFieldValue(['link']);
+
+      // link 设置过程中导致的 editor 的失焦，会造成 undo 时，selectionBefore 的 bug，
+      // 所以这里使用 forceSelection 修改当前 selection(newContent.selectionBefore) hasFocus 为 true
+      // 或者也可以先使用 getEditorRef().focus(), 获取焦点之后 setTimeout 修改 editorState，但体验不好。
 
       if (mode === 'new') {
         if (link) {
           setEditorState(
             createLinkAtSelection(
-              editorStateWithFocus,
+              EditorState.forceSelection(
+                editorState,
+                editorState.getSelection().merge({
+                  hasFocus: true,
+                }),
+              ),
               { url: link },
               text || link, // text 为空，则使用 link 值作为 text
             ),
@@ -188,11 +186,26 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
       if (mode === 'edit') {
         if (link) {
-          getAnchorOffset(
-            editorState,
-            store.getItem('entityKey'),
-            store.getItem('offsetKey'),
-          );
+          if (link !== store.getItem('initLink')) {
+            const linkOffset = store.getItem('linkOffset');
+            setEditorState(
+              createLinkAtSelection(
+                EditorState.forceSelection(
+                  editorState,
+                  editorState.getSelection().merge({
+                    anchorKey: linkOffset.startKey,
+                    anchorOffset: linkOffset.startOffset,
+                    focusKey: linkOffset.endKey,
+                    focusOffset: linkOffset.endOffset,
+                    hasFocus: true,
+                    isBackward: false,
+                  }),
+                ),
+                { url: link },
+                text || link, // text 为空，则使用 link 值作为 text
+              ),
+            );
+          }
           setPopoverVisible(false);
         }
       }

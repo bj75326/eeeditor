@@ -21,9 +21,7 @@ import { Tooltip } from 'antd';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 // todo
 import EditorUtils from '@draft-js-plugins/utils';
-import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 import linkInSelection from '../utils/linkInSelection';
-import LinkEditPopover from './LinkEditPopover';
 
 export const defaultLinkIcon = (
   <svg
