@@ -10,10 +10,18 @@ import { LinkEntityData } from '..';
 
 const createLinkAtSelection = (
   editorState: EditorState,
-  data: LinkEntityData,
+  link: string,
   text: string,
   inlineStyle?: DraftInlineStyle,
 ): EditorState => {
+  if (!link) return;
+
+  if (!text) {
+    text = link;
+  }
+
+  const data: LinkEntityData = { url: link };
+
   const contentStateWithEntity = editorState
     .getCurrentContent()
     .createEntity('LINK', 'MUTABLE', data);

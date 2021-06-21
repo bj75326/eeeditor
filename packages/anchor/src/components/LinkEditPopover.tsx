@@ -23,6 +23,7 @@ import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
 import validateUrl from '../utils/validateUrl';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
+import updateLink from '../modifiers/updateLink';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -167,47 +168,46 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       // 或者也可以先使用 getEditorRef().focus(), 获取焦点之后 setTimeout 修改 editorState，但体验不好。
 
       if (mode === 'new') {
-        if (link) {
-          setEditorState(
-            createLinkAtSelection(
-              EditorState.forceSelection(
-                editorState,
-                editorState.getSelection().merge({
-                  hasFocus: true,
-                }),
-              ),
-              { url: link },
-              text || link, // text 为空，则使用 link 值作为 text
-            ),
-          );
+        const newEditorState = createLinkAtSelection(
+          EditorState.forceSelection(
+            editorState,
+            editorState.getSelection().merge({
+              hasFocus: true,
+            }),
+          ),
+          link,
+          text,
+        );
+        if (newEditorState) {
+          setEditorState(newEditorState);
         }
         setPopoverVisible(false);
       }
 
       if (mode === 'edit') {
-        if (link) {
-          if (link !== store.getItem('initLink')) {
-            const linkOffset = store.getItem('linkOffset');
-            setEditorState(
-              createLinkAtSelection(
-                EditorState.forceSelection(
-                  editorState,
-                  editorState.getSelection().merge({
-                    anchorKey: linkOffset.startKey,
-                    anchorOffset: linkOffset.startOffset,
-                    focusKey: linkOffset.endKey,
-                    focusOffset: linkOffset.endOffset,
-                    hasFocus: true,
-                    isBackward: false,
-                  }),
-                ),
-                { url: link },
-                text || link, // text 为空，则使用 link 值作为 text
-              ),
-            );
-          }
-          setPopoverVisible(false);
+        const linkOffset = store.getItem('linkOffset');
+        const newEditorState = updateLink(
+          EditorState.forceSelection(
+            editorState,
+            editorState.getSelection().merge({
+              anchorKey: linkOffset.startKey,
+              anchorOffset: linkOffset.startOffset,
+              focusKey: linkOffset.endKey,
+              focusOffset: linkOffset.endOffset,
+              hasFocus: true,
+              isBackward: false,
+            }),
+          ),
+          link,
+          text,
+          store.getItem('initLink'),
+          store.getItem('initText'),
+        );
+        if (newEditorState) {
+          setEditorState(newEditorState);
         }
+
+        setPopoverVisible(false);
       }
     }
 

@@ -1,4 +1,4 @@
-import { EditorState } from '@eeeditor/editor';
+import { EditorState } from 'draft-js';
 
 export type DecoratedOffset = {
   startKey: string;
