@@ -53,7 +53,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     locale = languages[currLocale];
   }
 
-  let linkOffset: DecoratedOffset = null;
+  let linkOffset: DecoratedOffset;
 
   if (children[0] && children[0].props.start >= 0) {
     linkOffset = getDecoratedLeavesOffset(
@@ -63,6 +63,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
       children[0].props.start,
     );
   }
+
+  if (!linkOffset) throw new Error('Link getDecoratedLeavesOffset error!');
 
   const [visible, setVisible]: [boolean, any] = useState(false);
 

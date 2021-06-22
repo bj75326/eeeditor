@@ -17,7 +17,6 @@ import {
   getSelectedText,
   EditorState,
 } from '@eeeditor/editor';
-import RichUtils from '@draft-js-plugins/utils';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
 import CSSMotion from 'rc-motion';
@@ -224,8 +223,10 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   return (
     <CSSMotion
       visible={popoverVisible}
+      // todo
       motionName={'ant-zoom-big'}
       motionDeadline={1000}
+      // todo
       leavedClassName={'ant-popover-hidden'}
       removeOnLeave={false}
       ref={popoverRef}

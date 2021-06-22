@@ -61,11 +61,18 @@ const updateLink = (
   }
 
   if (link === initLink && text !== initText) {
+    const selection = editorState.getSelection();
+    const contentBlock = editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey());
+    const entityKey = contentBlock.getEntityAt(selection.getStartOffset());
+
     const withTextReplaced = Modifier.replaceText(
       editorState.getCurrentContent(),
       editorState.getSelection(),
       text,
       inlineStyle,
+      entityKey,
     );
 
     const withTextReplacedRevisedSelection = withTextReplaced.merge({

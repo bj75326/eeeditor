@@ -15,7 +15,7 @@ export const getDecoratedLeavesOffset = (
 ): DecoratedOffset => {
   const blockKey = offsetKey.split('-')[0];
   const contentBlock = editorState.getCurrentContent().getBlockForKey(blockKey);
-  const offset: DecoratedOffset = null;
+  let offset: DecoratedOffset;
   contentBlock.findEntityRanges(
     (character) => {
       const charEntityKey = character.getEntity();
@@ -23,10 +23,12 @@ export const getDecoratedLeavesOffset = (
     },
     (start, end) => {
       if (start === childrenStart) {
-        offset.startKey = blockKey;
-        offset.startOffset = start;
-        offset.endKey = blockKey;
-        offset.endOffset = end;
+        offset = {
+          startKey: blockKey,
+          startOffset: start,
+          endKey: blockKey,
+          endOffset: end,
+        };
       }
     },
   );
