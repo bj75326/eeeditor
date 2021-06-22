@@ -205,8 +205,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
         if (newEditorState) {
           setEditorState(newEditorState);
         }
-
-        setPopoverVisible(false);
+        if (link) setPopoverVisible(false);
       }
     }
 

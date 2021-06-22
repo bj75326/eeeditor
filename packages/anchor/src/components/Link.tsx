@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, MouseEvent } from 'react';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tooltip, message } from 'antd';
 import { getDecoratedLeavesOffset, DecoratedOffset } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
@@ -93,6 +93,18 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const handleCopy = (event: MouseEvent): void => {
     event.preventDefault();
     setVisible(false);
+
+    navigator.clipboard.writeText(formattedHref).then(
+      () => {
+        message.info(
+          locale['eeeditor.anchor.copy.success.msg'] ||
+            'eeeditor.anchor.copy.success.msg',
+        );
+      },
+      (error) => {
+        throw new Error(error);
+      },
+    );
   };
   const handleDelete = (event: MouseEvent): void => {
     event.preventDefault();

@@ -13,4 +13,5 @@ export default {
   'eeeditor.anchor.edit.link.placeholder': 'Press the Enter key to confirm',
   'eeeditor.anchor.edit.text.placeholder':
     'Will use link url if no text provided',
+  'eeeditor.anchor.copy.success.msg': 'Link copyed',
 };
