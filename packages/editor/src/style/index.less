@@ -89,8 +89,8 @@
 }
 
 .public-DraftStyleDefault-orderedListItem {
-  list-style-type: none;
   position: relative;
+  list-style-type: none;
 }
 .public-DraftStyleDefault-orderedListItem:before {
   content: counter(ol0) '. ';
@@ -110,10 +110,10 @@
 }
 
 .public-DraftStyleDefault-orderedListItem:before {
-  left: -34px;
   position: absolute;
-  text-align: right;
+  left: -34px;
   width: 30px;
+  text-align: right;
 }
 
 .header-one,
@@ -171,8 +171,8 @@
 
   .public-DraftStyleDefault-orderedListItem:before {
     right: -34px;
-    text-align: left;
     width: 30px;
+    text-align: left;
   }
 }
 
@@ -254,13 +254,13 @@
 }
 
 .@{eeeditor-prefix-cls}-popover {
+  position: absolute;
+  z-index: @popover-zindex;
   box-sizing: border-box;
   margin: 0;
   padding: 0 0 @popover-trigger-distance;
   color: @editor-text-color;
   font-size: @popover-font-size;
-  position: absolute;
-  z-index: @popover-zindex;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
@@ -285,12 +285,12 @@
 
 .@{eeeditor-prefix-cls}-popover-arrow-top {
   bottom: @popover-trigger-distance - @popover-arrow-size + 2.2px;
+  left: 50%;
   border-top-color: transparent;
   border-right-color: @popover-bg;
   border-bottom-color: @popover-bg;
   border-left-color: transparent;
   box-shadow: 3px 3px 7px fade(@black, 7%);
-  left: 50%;
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -307,5 +307,12 @@
   /* IE10+ */
   .@{eeeditor-prefix-cls}-popover-inner {
     box-shadow: @popover-box-shadow;
+  }
+}
+
+.@{eeeditor-prefix-cls}-message {
+  font-size: @message-font-size;
+  .anticon {
+    font-size: @message-icon-size;
   }
 }

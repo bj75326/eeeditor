@@ -96,10 +96,15 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
     navigator.clipboard.writeText(formattedHref).then(
       () => {
-        message.info(
-          locale['eeeditor.anchor.copy.success.msg'] ||
+        message.open({
+          content:
+            locale['eeeditor.anchor.copy.success.msg'] ||
             'eeeditor.anchor.copy.success.msg',
-        );
+          type: 'info',
+          duration: 30,
+          className: `${prefixCls}-message`,
+          icon: null,
+        });
       },
       (error) => {
         throw new Error(error);
