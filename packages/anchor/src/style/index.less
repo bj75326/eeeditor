@@ -11,9 +11,9 @@
   width: 195px;
   margin: 0 15px 0 5px;
   overflow: hidden;
+  color: @anchor-text-color;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: @anchor-text-color;
 }
 
 .@{eeeditor-prefix-cls}-link-popover-btn {
@@ -27,15 +27,15 @@
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: @button-hover-bg;
+    background-color: @popover-button-hover-bg;
   }
 }
 
 .@{eeeditor-prefix-cls}-link-edit-popover {
   .ant-form-item {
-    font-size: @popover-font-size;
     margin-bottom: 0;
     padding: 3px;
+    font-size: @popover-font-size;
   }
   .ant-form-item-label > label {
     height: @popover-line-height;
@@ -45,8 +45,8 @@
     min-height: @popover-line-height;
   }
   .ant-input {
-    font-size: @popover-font-size;
     width: 21.25em;
+    font-size: @popover-font-size;
     text-overflow: ellipsis;
   }
 
