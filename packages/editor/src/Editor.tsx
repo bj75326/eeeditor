@@ -13,6 +13,11 @@ import {
 import classNames from 'classnames';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
 import createDefaultPlugin from './built-in/default';
+import { ConfigProvider } from 'antd';
+import { DirectionType } from 'antd/lib/config-provider';
+import { Locale } from 'antd/lib/locale-provider';
+import zhCN from 'antd/lib/locale/zh_CN';
+import enUS from 'antd/lib/locale/en_US';
 
 const { decorator: focusDecorator, ...focusPlugin } = createFocusPlugin();
 const defaultPlugin = createDefaultPlugin();
@@ -108,11 +113,29 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     className,
   );
 
-  // const editorRef = useRef();
+  // antd 组件的 Context 设置
+  let antdDirection: DirectionType;
+  let antdLocale: Locale;
+
+  if (restProps.textDirectionality === 'RTL') {
+    antdDirection = 'rtl';
+  } else {
+    antdDirection = 'ltr';
+  }
+
+  switch (locale) {
+    case 'zh_CN':
+      antdLocale = zhCN;
+      break;
+    case 'en_US':
+      antdLocale = enUS;
+      break;
+    default:
+      antdLocale = zhCN;
+  }
 
   useEffect(() => {
     console.log('EEEditor componentDidUpdate!!');
-    //console.log(editorState.getDecorator())
   });
 
   const handleChange = (editorState: EditorState) => {
@@ -132,47 +155,53 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   );
 
   return (
-    <div
-      className={eeeditorCls}
-      style={style}
-      onBlur={() => {
-        console.log('editor wrapper blur');
-        // editorRef.current.blur();
-      }}
-      onFocus={() => {
-        console.log('editor wrapper focus');
-      }}
-      onClick={() => {
-        console.log('editor wrapper click');
-        // editorRef.current.focus();
-      }}
-      onMouseDown={() => {
-        console.log('editor wrapper mousedown');
-      }}
-      onMouseUp={() => {
-        console.log('editor wrapper mouseup');
-      }}
-      onSelect={() => {
-        console.log('editor wrapper select');
-      }}
+    <ConfigProvider
+      direction={antdDirection}
+      locale={antdLocale}
+      prefixCls="test"
     >
-      <PluginEditor
-        editorState={editorState}
-        onChange={handleChange}
-        blockStyleFn={blockStyleFn}
-        customStyleMap={customStyleMap}
-        onTab={onTab}
-        plugins={eeeditorPlugins}
-        // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
-        defaultKeyBindings={defaultKeyBindings}
-        // ref={editorRef}
-        locale={locale}
-        {...restProps}
-      />
-      {suffixes.map((SuffixComponent, index) => (
-        <SuffixComponent key={index} />
-      ))}
-    </div>
+      <div
+        className={eeeditorCls}
+        style={style}
+        onBlur={() => {
+          console.log('editor wrapper blur');
+          // editorRef.current.blur();
+        }}
+        onFocus={() => {
+          console.log('editor wrapper focus');
+        }}
+        onClick={() => {
+          console.log('editor wrapper click');
+          // editorRef.current.focus();
+        }}
+        onMouseDown={() => {
+          console.log('editor wrapper mousedown');
+        }}
+        onMouseUp={() => {
+          console.log('editor wrapper mouseup');
+        }}
+        onSelect={() => {
+          console.log('editor wrapper select');
+        }}
+      >
+        <PluginEditor
+          editorState={editorState}
+          onChange={handleChange}
+          blockStyleFn={blockStyleFn}
+          customStyleMap={customStyleMap}
+          onTab={onTab}
+          plugins={eeeditorPlugins}
+          // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
+          defaultKeyBindings={defaultKeyBindings}
+          // ref={editorRef}
+          locale={locale}
+          {...restProps}
+        />
+        {suffixes.map((SuffixComponent, index) => (
+          <SuffixComponent key={index} />
+        ))}
+      </div>
+    </ConfigProvider>
   );
 };
 

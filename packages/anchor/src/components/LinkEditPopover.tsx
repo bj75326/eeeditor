@@ -6,8 +6,10 @@ import React, {
   useCallback,
   KeyboardEvent,
   CompositionEvent,
+  useContext,
 } from 'react';
 import { Form, Input } from 'antd';
+import { ConfigContext } from 'antd/lib/config-provider';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 import classNames from 'classnames';
 import {
@@ -213,6 +215,10 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     compositionLock = false;
   };
 
+  const { rootPrefixCls } = useContext(ConfigContext);
+
+  console.log('ConfigContext rootPrefixCls: ', rootPrefixCls);
+
   const linkEditPopoverCls = classNames(
     `${prefixCls}-popover`,
     `${prefixCls}-link-edit-popover`,
@@ -249,7 +255,12 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
                 <span className={`${prefixCls}-popover-arrow-content`}></span>
               </div>
               <div className={`${prefixCls}-popover-inner`} role="tooltip">
-                <Form form={form} autoComplete="off">
+                <Form
+                  form={form}
+                  autoComplete="off"
+                  labelCol={{ span: 3 }}
+                  wrapperCol={{ span: 21 }}
+                >
                   <Form.Item
                     name="text"
                     label={
