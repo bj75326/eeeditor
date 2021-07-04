@@ -215,9 +215,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     compositionLock = false;
   };
 
-  const { rootPrefixCls } = useContext(ConfigContext);
-
-  console.log('ConfigContext rootPrefixCls: ', rootPrefixCls);
+  const { getPrefixCls } = useContext(ConfigContext);
 
   const linkEditPopoverCls = classNames(
     `${prefixCls}-popover`,
@@ -228,11 +226,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   return (
     <CSSMotion
       visible={popoverVisible}
-      // todo
-      motionName={'ant-zoom-big'}
+      motionName={`${getPrefixCls()}-zoom-big}`}
       motionDeadline={1000}
-      // todo
-      leavedClassName={'ant-popover-hidden'}
+      leavedClassName={`${getPrefixCls('popover')}-hidden`}
       removeOnLeave={false}
       ref={popoverRef}
       onEnterPrepare={handlePopoverEnterPrepare}

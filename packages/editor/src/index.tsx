@@ -1,5 +1,9 @@
 import { ComponentType } from 'react';
-import EEEditor, { focusDecorator, BlockFocusDecoratorProps } from './Editor';
+import EEEditor, {
+  focusDecorator,
+  BlockFocusDecoratorProps,
+  EEEditorContext,
+} from './Editor';
 
 export * from 'draft-js';
 
@@ -272,6 +276,6 @@ export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
 export * from './modifiers/insertNewLineBefore';
 
-export { focusDecorator, BlockFocusDecoratorProps };
+export { focusDecorator, BlockFocusDecoratorProps, EEEditorContext };
 
 export default EEEditor;
