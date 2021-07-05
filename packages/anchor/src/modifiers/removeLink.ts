@@ -1,10 +1,8 @@
-import { EditorState, RichUtils } from '@eeeditor/editor';
+import { EditorState } from '@eeeditor/editor';
+import EditorUtil from '@draft-js-plugins/utils';
 
-const removeLink = (
-  editorState: EditorState,
-  entityKey: string,
-): EditorState => {
-  return;
+const removeLink = (editorState: EditorState): EditorState => {
+  return EditorUtil.removeLinkAtSelection(editorState);
 };
 
 export default removeLink;

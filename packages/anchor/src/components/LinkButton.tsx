@@ -16,6 +16,7 @@ import {
   SelectionState,
   PluginMethods,
   EEEditorContext,
+  checkKeyCommand,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -112,7 +113,10 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     tipProps,
     tipReverse,
     children = defaultLinkIcon,
-    keyCommand,
+    keyCommand = {
+      keyCode: 75,
+      hasCommandModifier: true,
+    },
     getEditorState,
     setEditorState,
     getProps,
@@ -154,7 +158,46 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (keyCommand) {
+      const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
+        if (checkKeyCommand(keyCommand, event)) {
+          return 'add-link';
+        }
+        return undefined;
+      };
+
+      const handleKeyCommand: EditorPlugin['handleKeyCommand'] = (
+        command,
+        editorState,
+        { setEditorState },
+      ) => {
+        if (command === 'add-link') {
+          if (
+            !checkButtonShouldDisabled() &&
+            editorState.getSelection().getHasFocus()
+          ) {
+            if (linkButtonIsActive()) {
+              setEditorState(removeLinkAtSelection(editorState));
+            } else {
+              store.updateItem('mode', 'new');
+              store.updateItem('visible', true);
+            }
+          }
+          return 'handled';
+        }
+        return 'not-handled';
+      };
+
+      addKeyBindingFn(keyBindingFn);
+      addKeyCommandHandler(handleKeyCommand);
+
+      return () => {
+        removeKeyBindingFn(keyBindingFn);
+        removeKeyCommandHandler(handleKeyCommand);
+      };
+    }
+  }, []);
 
   const checkButtonShouldDisabled = (): boolean => {
     if (!getEditorState) {

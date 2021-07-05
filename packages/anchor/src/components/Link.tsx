@@ -4,11 +4,13 @@ import {
   getDecoratedLeavesOffset,
   DecoratedOffset,
   EEEditorContext,
+  EditorState,
 } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
 import formatUrl from '../utils/formatUrl';
+import removeLink from '../modifiers/removeLink';
 
 export interface LinkProps {
   children: ReactNode;
@@ -109,9 +111,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
             locale['eeeditor.anchor.copy.success.msg'] ||
             'eeeditor.anchor.copy.success.msg',
           type: 'info',
-          duration: 30,
+          duration: 3,
           className: `${prefixCls}-message`,
-          icon: null,
         });
       },
       (error) => {
@@ -122,6 +123,22 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const handleDelete = (event: MouseEvent): void => {
     event.preventDefault();
     setVisible(false);
+    const editorState = getEditorState();
+    setEditorState(
+      removeLink(
+        EditorState.forceSelection(
+          editorState,
+          editorState.getSelection().merge({
+            anchorKey: linkOffset.startKey,
+            anchorOffset: linkOffset.startOffset,
+            focusKey: linkOffset.endKey,
+            focusOffset: linkOffset.endOffset,
+            hasFocus: true,
+            isBackward: false,
+          }),
+        ),
+      ),
+    );
   };
 
   const content = (
