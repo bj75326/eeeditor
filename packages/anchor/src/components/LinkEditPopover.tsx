@@ -18,6 +18,7 @@ import {
   getEditorRootDomNode,
   getSelectedText,
   EditorState,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
@@ -34,7 +35,7 @@ export interface LinkEditPopoverProps {
 }
 
 const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
-  const { prefixCls = 'eee', className, store, languages } = props;
+  const { prefixCls: customizePrefixCls, className, store, languages } = props;
 
   const getEditorState = store.getItem('getEditorState');
   const setEditorState = store.getItem('setEditorState');
@@ -46,6 +47,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     const { locale: currLocale } = getProps();
     locale = languages[currLocale];
   }
+
+  const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
   const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
 
@@ -215,7 +219,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     compositionLock = false;
   };
 
-  const { getPrefixCls } = useContext(ConfigContext);
+  const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
   const linkEditPopoverCls = classNames(
     `${prefixCls}-popover`,
@@ -226,9 +230,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   return (
     <CSSMotion
       visible={popoverVisible}
-      motionName={`${getPrefixCls()}-zoom-big}`}
+      motionName={`${getAntdPrefixCls()}-zoom-big`}
       motionDeadline={1000}
-      leavedClassName={`${getPrefixCls('popover')}-hidden`}
+      leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
       removeOnLeave={false}
       ref={popoverRef}
       onEnterPrepare={handlePopoverEnterPrepare}

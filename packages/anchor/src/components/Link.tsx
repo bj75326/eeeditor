@@ -1,6 +1,10 @@
-import React, { ReactNode, useState, MouseEvent } from 'react';
+import React, { ReactNode, useState, MouseEvent, useContext } from 'react';
 import { Popover, Tooltip, message } from 'antd';
-import { getDecoratedLeavesOffset, DecoratedOffset } from '@eeeditor/editor';
+import {
+  getDecoratedLeavesOffset,
+  DecoratedOffset,
+  EEEditorContext,
+} from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import extraIcons from '../assets/extraIcons';
@@ -25,7 +29,7 @@ export interface LinkExtraProps {
 const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   console.log('link props ----> ', props);
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     languages,
     store,
@@ -47,11 +51,15 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   const formattedHref = formatUrl(href);
 
+  // 通过 getProps 获取 locale
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
     locale = languages[currLocale];
   }
+  // 通过 context 获取 prefixCls
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   let linkOffset: DecoratedOffset;
 

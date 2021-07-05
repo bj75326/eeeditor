@@ -4,6 +4,7 @@ import React, {
   MouseEvent,
   useEffect,
   useState,
+  useContext,
 } from 'react';
 import {
   EditorState,
@@ -14,6 +15,7 @@ import {
   DraftBlockType,
   SelectionState,
   PluginMethods,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -100,7 +102,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
   props,
 ) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     title = {
@@ -128,6 +130,9 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
     const { locale: currLocale } = getProps();
     locale = languages[currLocale];
   }
+
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   const { removeLinkAtSelection } = EditorUtils;
 
