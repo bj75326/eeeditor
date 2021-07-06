@@ -3,6 +3,7 @@ import EEEditor, {
   focusDecorator,
   BlockFocusDecoratorProps,
   EEEditorContext,
+  EEEditorContextProps,
 } from './Editor';
 
 export * from 'draft-js';
@@ -104,6 +105,7 @@ export type Handler =
   | HandleDroppedFiles
   | HandleDrop;
 export type ExtraPluginEditorProps = {
+  prefixCls?: string;
   locale?: SupportedLanguage;
 };
 export type PluginEditorProps = {
@@ -276,6 +278,11 @@ export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
 export * from './modifiers/insertNewLineBefore';
 
-export { focusDecorator, BlockFocusDecoratorProps, EEEditorContext };
+export {
+  focusDecorator,
+  BlockFocusDecoratorProps,
+  EEEditorContext,
+  EEEditorContextProps,
+};
 
 export default EEEditor;

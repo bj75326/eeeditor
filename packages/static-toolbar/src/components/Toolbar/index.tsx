@@ -11,6 +11,7 @@ import {
   EditorProps,
   PluginMethods,
   EEEditorContext,
+  EEEditorContextProps,
 } from '@eeeditor/editor';
 import { StaticToolbarPluginStore } from '../..';
 import {
@@ -73,8 +74,27 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     store,
   } = props;
 
-  const { getPrefixCls } = useContext(EEEditorContext);
-  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
+  const getProps = store.getItem('getProps');
+
+  const {
+    prefixCls: editorPrefixCls,
+    locale: editorLocale,
+    textDirectionality,
+  } = getProps();
+
+  const eeeditorContextProps: EEEditorContextProps = {
+    getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => {
+      if (customizePrefixCls) return customizePrefixCls;
+      return suffixCls ? `${editorPrefixCls}-${suffixCls}` : editorPrefixCls;
+    },
+    textDirectionality: textDirectionality || 'LTR',
+    locale: editorLocale,
+  };
+
+  const prefixCls = eeeditorContextProps.getPrefixCls(
+    undefined,
+    customizePrefixCls,
+  );
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
@@ -148,13 +168,15 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const toolbarClassName = classNames(`${prefixCls}-static-toolbar`, className);
 
   return (
-    <div className={toolbarClassName} style={style}>
-      {React.Children.map<ReactElement, ReactElement>(
-        children || defaultButtons,
-        (child) =>
-          React.cloneElement(child, { ...childrenProps, ...child.props }),
-      )}
-    </div>
+    <EEEditorContext.Provider value={eeeditorContextProps}>
+      <div className={toolbarClassName} style={style}>
+        {React.Children.map<ReactElement, ReactElement>(
+          children || defaultButtons,
+          (child) =>
+            React.cloneElement(child, { ...childrenProps, ...child.props }),
+        )}
+      </div>
+    </EEEditorContext.Provider>
   );
 };
 

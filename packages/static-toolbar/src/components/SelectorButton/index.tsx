@@ -75,7 +75,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
 
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('selector-btn', customizePrefixCls);
-  console.log('prefixCls --- ', prefixCls);
+
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
@@ -131,25 +131,21 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     tipProps: childrenTipProps,
   };
 
-  const btnClassName = classNames(`${prefixCls}-selector-btn`, className, {
-    [`${prefixCls}-selector-btn-active`]: btnActive.some(
-      (status: boolean) => status,
-    ),
-    [`${prefixCls}-selector-btn-disabled`]: !btnDisabled.some(
-      (status: boolean) => !status,
-    ),
-    [`${prefixCls}-selector-btn-show`]:
+  const btnClassName = classNames(`${prefixCls}`, className, {
+    [`${prefixCls}-active`]: btnActive.some((status: boolean) => status),
+    [`${prefixCls}-disabled`]: !btnDisabled.some((status: boolean) => !status),
+    [`${prefixCls}-show`]:
       visible && btnDisabled.some((status: boolean) => !status),
   });
 
-  const optionsClassName = classNames(`${prefixCls}-selector-btn-options`, {
-    [`${prefixCls}-selector-btn-options-hidden`]:
+  const optionsClassName = classNames(`${prefixCls}-options`, {
+    [`${prefixCls}-options-hidden`]:
       !visible || !btnDisabled.some((status: boolean) => !status),
   });
 
   return (
     <div
-      className={`${prefixCls}-selector-btn-wrapper`}
+      className={`${prefixCls}-wrapper`}
       onMouseEnter={showOptions}
       onMouseLeave={hideOptions}
     >

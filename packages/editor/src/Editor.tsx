@@ -39,9 +39,9 @@ export interface EEEditorProps extends PluginEditorProps {
 }
 
 export interface EEEditorContextProps {
-  getPrefixCls?: (suffixCls?: string, customizePrefixCls?: string) => string;
-  textDirectionality?: 'LTR' | 'RTL' | 'NEUTRAL';
-  locale?: SupportedLanguage;
+  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => string;
+  textDirectionality: 'LTR' | 'RTL' | 'NEUTRAL';
+  locale: SupportedLanguage;
 }
 
 const defaultEEEditorContextProps: EEEditorContextProps = {
@@ -50,7 +50,9 @@ const defaultEEEditorContextProps: EEEditorContextProps = {
   locale: 'zh_CN',
 };
 
-export const EEEditorContext = createContext<EEEditorContextProps>({});
+export const EEEditorContext = createContext<EEEditorContextProps>(
+  defaultEEEditorContextProps,
+);
 
 const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
   const type = contentBlock.getType();
@@ -222,6 +224,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
             // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
             defaultKeyBindings={defaultKeyBindings}
             // ref={editorRef}
+            prefixCls={prefixCls}
             locale={locale}
             {...restProps}
           />

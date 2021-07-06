@@ -1,6 +1,13 @@
 import React from 'react';
 import { createStore, Store } from '@draft-js-plugins/utils';
-import { EditorPlugin, EditorProps, PluginMethods } from '@eeeditor/editor';
+import {
+  EditorPlugin,
+  EditorProps,
+  ExtraPluginEditorProps,
+  PluginMethods,
+  SelectionState,
+  EditorState,
+} from '@eeeditor/editor';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
@@ -9,7 +16,6 @@ import SelectorButton, {
   SelectorButtonProps,
 } from './components/SelectorButton';
 import Separator, { SeparatorProps } from './components/Separator';
-import { SelectionState, EditorState } from 'draft-js';
 
 // export interface StaticToolbarPluginConfig {
 //   prefixCls?: string;
@@ -31,7 +37,7 @@ export type StaticToolbarPlugin = EditorPlugin & {
 export interface StoreItemMap {
   getEditorState?(): EditorState;
   setEditorState?(state: EditorState): void;
-  getProps?(): EditorProps;
+  getProps?(): EditorProps & ExtraPluginEditorProps;
   getEditorRef?: PluginMethods['getEditorRef'];
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];

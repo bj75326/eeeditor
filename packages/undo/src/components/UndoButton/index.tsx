@@ -1,8 +1,13 @@
-import React, { ReactNode, MouseEvent, useEffect } from 'react';
+import React, { ReactNode, MouseEvent, useEffect, useContext } from 'react';
 import { UndoRedoButtonProps, Locale, zhCN } from '../..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import { checkKeyCommand, EditorPlugin, EditorState } from '@eeeditor/editor';
+import {
+  checkKeyCommand,
+  EditorPlugin,
+  EditorState,
+  EEEditorContext,
+} from '@eeeditor/editor';
 
 const defaultUndoIcon = (
   <svg
@@ -31,7 +36,7 @@ const defaultUndoIcon = (
 
 const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     title = {
@@ -55,6 +60,9 @@ const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
     const { locale: currLocale } = store.getItem('getProps')();
     locale = languages[currLocale];
   }
+
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
