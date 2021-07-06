@@ -13,7 +13,7 @@ import {
   EEEditorContext,
   EEEditorContextProps,
 } from '@eeeditor/editor';
-import { StaticToolbarPluginStore } from '../..';
+import { StaticToolbarPluginStore } from '..';
 import {
   defaultHeadIcon,
   HeadlineOneButton,
@@ -25,7 +25,7 @@ import {
 } from '@eeeditor/buttons';
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
-import SelectorButton from '../SelectorButton';
+import SelectorButton from './SelectorButton';
 
 export interface ToolbarChildrenProps {
   getEditorState?: () => EditorState;

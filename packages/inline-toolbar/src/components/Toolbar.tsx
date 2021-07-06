@@ -5,9 +5,15 @@ import React, {
   useEffect,
   ComponentType,
 } from 'react';
-import { EditorState, EditorPlugin, EditorProps } from '@eeeditor/editor';
+import {
+  EditorState,
+  EditorPlugin,
+  EditorProps,
+  EEEditorContextProps,
+  PluginMethods,
+} from '@eeeditor/editor';
 import { EEEditorStyleButtonType } from '@eeeditor/buttons';
-import { InlineToolbarPluginStore } from '../..';
+import { InlineToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
 
@@ -15,6 +21,7 @@ export interface ToolbarChildrenProps {
   getEditorState?: () => EditorState;
   setEditorState?: (editorState: EditorState) => void;
   getProps?: () => EditorProps;
+  getEditorRef?: PluginMethods['getEditorRef'];
   // 提供方法给 buttons 动态增减 handleKeyCommand
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
@@ -49,17 +56,15 @@ interface ToolbarProps extends ToolbarPubProps {
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [visible, setVisible]: [boolean, any] = useState(false);
-  const [position, setPosition]: [
-    { top: number; left: number },
-    any,
-  ] = useState(undefined);
+  const [position, setPosition]: [{ top: number; left: number }, any] =
+    useState(undefined);
   const [overrideContent, setOverrideContent]: [
     ReactElement | ReactElement[],
     any,
   ] = useState(undefined);
 
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     childrenTipProps = { placement: 'top' },
@@ -67,7 +72,34 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     store,
   } = props;
 
-  const childrenProps: ToolbarChildrenProps = {};
+  const getProps = store.getItem('getProps');
+
+  const {
+    prefixCls: editorPrefixCls,
+    locale: editorLocale,
+    textDirectionality,
+  } = getProps();
+
+  const eeeditorContextProps: EEEditorContextProps = {
+    getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => {
+      if (customizePrefixCls) return customizePrefixCls;
+      return suffixCls ? `${editorPrefixCls}-${suffixCls}` : editorPrefixCls;
+    },
+    textDirectionality: textDirectionality || 'LTR',
+    locale: editorLocale,
+  };
+
+  const prefixCls = eeeditorContextProps.getPrefixCls(
+    undefined,
+    customizePrefixCls,
+  );
+
+  const childrenProps: ToolbarChildrenProps = {
+    getEditorState: store.getItem('getEditorState'),
+    setEditorState: store.getItem('setEditorState'),
+    getProps: store.getItem('getProps'),
+    getEditorRef: store.getItem('getEditorRef'),
+  };
 
   useEffect(() => {}, []);
 

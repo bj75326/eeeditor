@@ -1,15 +1,15 @@
 import React, { ReactNode, MouseEvent, useEffect, useContext } from 'react';
-import { UndoRedoButtonProps, Locale, zhCN } from '../..';
+import { UndoRedoButtonProps, Locale, zhCN } from '..';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import {
-  EditorState,
-  EditorPlugin,
   checkKeyCommand,
+  EditorPlugin,
+  EditorState,
   EEEditorContext,
 } from '@eeeditor/editor';
 
-const defaultRedoIcon = (
+const defaultUndoIcon = (
   <svg
     width="1em"
     height="1em"
@@ -18,14 +18,14 @@ const defaultRedoIcon = (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M36 7L43 13.4615L36 21"
+      d="M12.9998 8L6 14L12.9998 21"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="bevel"
     />
     <path
-      d="M40 14H17.0062C10.1232 14 4.27787 19.6204 4.00964 26.5C3.72612 33.7696 9.73291 40 17.0062 40H34.0016"
+      d="M6 14H28.9938C35.8768 14 41.7221 19.6204 41.9904 26.5C42.2739 33.7696 36.2671 40 28.9938 40H11.9984"
       stroke="currentColor"
       strokeWidth="3"
       strokeLinecap="round"
@@ -34,22 +34,22 @@ const defaultRedoIcon = (
   </svg>
 );
 
-const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
+const UndoButton: React.FC<UndoRedoButtonProps> = (props) => {
   const {
     prefixCls: customizePrefixCls,
     className,
     style,
     title = {
-      name: 'eeeditor.redo.tip.name',
-      shortcut: 'eeeditor.redo.tip.shortcut',
+      name: 'eeeditor.undo.tip.name',
+      shortcut: 'eeeditor.undo.tip.shortcut',
     },
     tipProps,
     tipReverse,
-    children = defaultRedoIcon,
+    children = defaultUndoIcon,
     keyCommand = {
       keyCode: 90,
       hasCommandModifier: true,
-      isShiftKeyCommand: true,
+      isShiftKeyCommand: false,
     },
     store,
     languages,
@@ -68,25 +68,25 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
     event.preventDefault();
   };
 
-  const redoStateChange = (event: MouseEvent): void => {
+  const undoStateChange = (event: MouseEvent): void => {
     event.preventDefault();
     const setEditorState = store.getItem('setEditorState');
     const getEditorState = store.getItem('getEditorState');
 
     if (setEditorState && getEditorState) {
-      setEditorState(EditorState.redo(getEditorState()));
+      setEditorState(EditorState.undo(getEditorState()));
     }
   };
 
   useEffect(() => {
     store.updateItem(
-      'redoButtonRendered',
-      store.getItem('redoButtonRendered') + 1,
+      'undoButtonRendered',
+      store.getItem('undoButtonRendered') + 1,
     );
     if (keyCommand) {
       const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
         if (checkKeyCommand(keyCommand, event)) {
-          return 'redo';
+          return 'undo';
         }
         return undefined;
       };
@@ -96,22 +96,22 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
         editorState,
         { setEditorState },
       ) => {
-        if (command === 'redo') {
-          setEditorState(EditorState.redo(editorState));
+        if (command === 'undo') {
+          setEditorState(EditorState.undo(editorState));
           return 'handled';
         }
         return 'not-handled';
       };
 
-      store.updateItem('redoButtonKeyBindingFn', keyBindingFn);
-      store.updateItem('redoButtonKeyCommandHandler', handleKeyCommand);
+      store.updateItem('undoButtonKeyBindingFn', keyBindingFn);
+      store.updateItem('undoButtonKeyCommandHandler', handleKeyCommand);
       return () => {
         store.updateItem(
-          'redoButtonRendered',
-          store.getItem('redoButtonRendered') - 1,
+          'undoButtonRendered',
+          store.getItem('undoButtonRendered') - 1,
         );
-        store.updateItem('redoButtonKeyBindingFn', undefined);
-        store.updateItem('redoButtonKeyCommandHandler', undefined);
+        store.updateItem('undoButtonKeyBindingFn', undefined);
+        store.updateItem('undoButtonKeyCommandHandler', undefined);
       };
     }
     return () => {
@@ -125,7 +125,7 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
   const checkButtonShouldDisabled = (): boolean =>
     !store ||
     !store.getItem('getEditorState') ||
-    store.getItem('getEditorState')().getRedoStack().isEmpty();
+    store.getItem('getEditorState')().getUndoStack().isEmpty();
 
   const btnClassName = classNames(`${prefixCls}-btn`, className, {
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
@@ -166,7 +166,7 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
           overlayClassName={`${prefixCls}-tip-wrapper`}
           {...tipProps}
         >
-          <div className={btnClassName} style={style} onClick={redoStateChange}>
+          <div className={btnClassName} style={style} onClick={undoStateChange}>
             {children}
           </div>
         </Tooltip>
@@ -175,4 +175,4 @@ const RedoButton: React.FC<UndoRedoButtonProps> = (props) => {
   );
 };
 
-export default RedoButton;
+export default UndoButton;

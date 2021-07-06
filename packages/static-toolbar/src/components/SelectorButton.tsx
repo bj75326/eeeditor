@@ -12,7 +12,7 @@ import {
   PluginMethods,
   EEEditorContext,
 } from '@eeeditor/editor';
-import { ToolbarChildrenProps } from '../Toolbar';
+import { ToolbarChildrenProps } from './Toolbar';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
 
