@@ -1,4 +1,10 @@
-import React, { CSSProperties, ReactNode, MouseEvent, useEffect } from 'react';
+import React, {
+  CSSProperties,
+  ReactNode,
+  MouseEvent,
+  useEffect,
+  useContext,
+} from 'react';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -10,6 +16,7 @@ import {
   KeyCommand,
   checkKeyCommand,
   PluginMethods,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import { Languages, zhCN, Locale } from '..';
 
@@ -124,7 +131,7 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
   props,
 ) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     title = {
@@ -151,6 +158,9 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
     locale = languages[currLocale];
   }
 
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
+
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
@@ -158,9 +168,10 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
   const handleAddDivider = (event: MouseEvent): void => {
     event.preventDefault();
     const editorState = getEditorState();
-    const newEditorState = addDivider(editorState);
-
-    setEditorState(newEditorState);
+    if (editorState.getSelection().getHasFocus()) {
+      const newEditorState = addDivider(editorState);
+      setEditorState(newEditorState);
+    }
   };
 
   useEffect(() => {
@@ -178,8 +189,13 @@ const DividerButton: React.FC<DividerButtonProps & DividerButtonExtraProps> = (
         { setEditorState },
       ) => {
         if (command === 'add-divider') {
-          const newEditorState = addDivider(editorState);
-          setEditorState(newEditorState);
+          if (
+            !checkButtonShouldDisabled() &&
+            editorState.getSelection().getHasFocus()
+          ) {
+            const newEditorState = addDivider(editorState);
+            setEditorState(newEditorState);
+          }
           return 'handled';
         }
         return 'not-handled';

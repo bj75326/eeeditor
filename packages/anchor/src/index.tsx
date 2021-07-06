@@ -56,7 +56,7 @@ export interface AnchorPluginConfig {
 }
 
 const createAnchorPlugin = ({
-  prefixCls = 'eee',
+  prefixCls,
   linkClassName,
   linkEditPopoverCls,
   linkComponent: LinkComponent = DefaultLink,

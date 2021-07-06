@@ -34,7 +34,7 @@ interface DividerPluginConfig {
 }
 
 const createDividerPlugin = ({
-  prefixCls = 'eee',
+  prefixCls,
   dividerClassName,
   entityType = 'divider',
   dividerComponent: DividerComponent = DefaultDivider,

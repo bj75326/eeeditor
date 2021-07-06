@@ -39,9 +39,9 @@ export interface EEEditorProps extends PluginEditorProps {
 }
 
 export interface EEEditorContextProps {
-  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => string;
-  textDirectionality: 'LTR' | 'RTL' | 'NEUTRAL';
-  locale: SupportedLanguage;
+  getPrefixCls?: (suffixCls?: string, customizePrefixCls?: string) => string;
+  textDirectionality?: 'LTR' | 'RTL' | 'NEUTRAL';
+  locale?: SupportedLanguage;
 }
 
 const defaultEEEditorContextProps: EEEditorContextProps = {
@@ -50,9 +50,7 @@ const defaultEEEditorContextProps: EEEditorContextProps = {
   locale: 'zh_CN',
 };
 
-export const EEEditorContext = createContext<EEEditorContextProps>(
-  defaultEEEditorContextProps,
-);
+export const EEEditorContext = createContext<EEEditorContextProps>({});
 
 const defaultBlockStyleFn = (contentBlock: ContentBlock): string => {
   const type = contentBlock.getType();

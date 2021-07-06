@@ -1,4 +1,4 @@
-import React, { ReactNode, MouseEvent, useEffect } from 'react';
+import React, { ReactNode, MouseEvent, useEffect, useContext } from 'react';
 import {
   EEEditorStyleButtonType,
   EEEditorExtraButtonProps,
@@ -10,6 +10,7 @@ import {
   EditorPlugin,
   Modifier,
   getSelectedBlocksMapKeys,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
@@ -48,7 +49,7 @@ export default function createSetBlockDataButton<K, S>({
     EEEditorButtonProps<K, S> & EEEditorExtraButtonProps
   > = (props) => {
     const {
-      prefixCls = 'eee',
+      prefixCls: customizePrefixCls,
       className,
       style,
       title = defaultTitle,
@@ -77,6 +78,9 @@ export default function createSetBlockDataButton<K, S>({
       const { locale: currLocale } = getProps();
       locale = languages[currLocale];
     }
+
+    const { getPrefixCls } = useContext(EEEditorContext);
+    const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
     const mergeBlockData = (event: MouseEvent): void => {
       event.preventDefault();

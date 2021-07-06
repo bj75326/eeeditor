@@ -1,6 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { SelectionState, ContentBlock } from '@eeeditor/editor';
+import {
+  SelectionState,
+  ContentBlock,
+  EEEditorContext,
+} from '@eeeditor/editor';
 
 import getActiveElement from 'fbjs/lib/getActiveElement';
 import containsNode from 'fbjs/lib/containsNode';
@@ -56,7 +60,7 @@ export interface DividerExtraProps extends React.HTMLAttributes<HTMLHRElement> {
 
 const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...otherProps
@@ -76,6 +80,9 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     preventScroll, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...elementProps
   } = otherProps;
+
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   const { isFocused } = blockProps;
 

@@ -1,9 +1,16 @@
-import React, { CSSProperties, ReactElement, useEffect, useRef } from 'react';
+import React, {
+  CSSProperties,
+  ReactElement,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   EditorState,
   EditorPlugin,
   EditorProps,
   PluginMethods,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import { StaticToolbarPluginStore } from '../..';
 import {
@@ -58,13 +65,16 @@ interface ToolbarProps extends ToolbarPubProps {
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     childrenTipProps = { placement: 'bottom' },
     children,
     store,
   } = props;
+
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),

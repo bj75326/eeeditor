@@ -1,9 +1,16 @@
-import React, { CSSProperties, ReactElement, ReactNode, useState } from 'react';
+import React, {
+  CSSProperties,
+  ReactElement,
+  ReactNode,
+  useState,
+  useContext,
+} from 'react';
 import {
   EditorState,
   EditorPlugin,
   EditorProps,
   PluginMethods,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import { ToolbarChildrenProps } from '../Toolbar';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -48,7 +55,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
   props,
 ) => {
   const {
-    prefixCls = 'eee',
+    prefixCls: customizePrefixCls,
     className,
     style,
     icon,
@@ -66,12 +73,14 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     removeBeforeInputHandler,
   } = props;
 
+  const { getPrefixCls } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls('selector-btn', customizePrefixCls);
+  console.log('prefixCls --- ', prefixCls);
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
-  const [btnIcon, setBtnIcon]: [SelectorButtonProps['icon'], any] = useState(
-    icon,
-  );
+  const [btnIcon, setBtnIcon]: [SelectorButtonProps['icon'], any] =
+    useState(icon);
 
   const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
     if (active === btnActive[optionKey]) return;
