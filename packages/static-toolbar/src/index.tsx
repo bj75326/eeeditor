@@ -17,13 +17,6 @@ import SelectorButton, {
 } from './components/SelectorButton';
 import Separator, { SeparatorProps } from './components/Separator';
 
-// export interface StaticToolbarPluginConfig {
-//   prefixCls?: string;
-//   className?: string;
-//   style?: string;
-//   locale?: Locale;
-// }
-
 export type StaticToolbarProps = ToolbarPubProps;
 
 export type StaticToolbarChildrenProps = ToolbarChildrenProps;
@@ -34,11 +27,7 @@ export type StaticToolbarPlugin = EditorPlugin & {
   Separator: React.FC<SeparatorProps>;
 };
 
-export interface StoreItemMap {
-  getEditorState?(): EditorState;
-  setEditorState?(state: EditorState): void;
-  getProps?(): EditorProps & ExtraPluginEditorProps;
-  getEditorRef?: PluginMethods['getEditorRef'];
+export interface StoreItemMap extends Partial<PluginMethods> {
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
@@ -60,16 +49,13 @@ StaticToolbarPlugin => {
   );
 
   return {
-    initialize: ({
-      getEditorState,
-      setEditorState,
-      getProps,
-      getEditorRef,
-    }) => {
-      store.updateItem('getEditorState', getEditorState);
-      store.updateItem('setEditorState', setEditorState);
-      store.updateItem('getProps', getProps);
-      store.updateItem('getEditorRef', getEditorRef);
+    initialize: (pluginMethods) => {
+      Object.keys(pluginMethods).forEach((pluginMethod) => {
+        store.updateItem(
+          pluginMethod as keyof StoreItemMap,
+          pluginMethods[pluginMethod],
+        );
+      });
     },
     // todo: Static toolbar plugin 是否需要这个 onChange
     onChange: (editorState) => {

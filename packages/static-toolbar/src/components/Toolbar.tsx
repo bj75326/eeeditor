@@ -27,11 +27,7 @@ import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import SelectorButton from './SelectorButton';
 
-export interface ToolbarChildrenProps {
-  getEditorState?: () => EditorState;
-  setEditorState?: (editorState: EditorState) => void;
-  getProps?: () => EditorProps;
-  getEditorRef?: PluginMethods['getEditorRef'];
+export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],

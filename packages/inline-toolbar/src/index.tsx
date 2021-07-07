@@ -5,6 +5,7 @@ import {
   EditorProps,
   SelectionState,
   ExtraPluginEditorProps,
+  PluginMethods,
 } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
@@ -20,10 +21,7 @@ export type InlineToolbarPlugin = EditorPlugin & {
   InlineToolbar: React.FC<InlineToolbarProps>;
 };
 
-export interface StoreItemMap {
-  getEditorState?(): EditorState;
-  setEditorState?(state: EditorState): void;
-  getProps?(): EditorProps & ExtraPluginEditorProps;
+export interface StoreItemMap extends Partial<PluginMethods> {
   selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
@@ -44,16 +42,13 @@ export default (): InlineToolbarPlugin => {
   );
 
   return {
-    initialize: ({
-      getEditorState,
-      setEditorState,
-      getProps,
-      getEditorRef,
-    }) => {
-      store.updateItem('getEditorState', getEditorState);
-      store.updateItem('setEditorState', setEditorState);
-      store.updateItem('getProps', getProps);
-      // store.updateItem('get');
+    initialize: (pluginMethods) => {
+      Object.keys(pluginMethods).forEach((pluginMethod) => {
+        store.updateItem(
+          pluginMethod as keyof StoreItemMap,
+          pluginMethods[pluginMethod],
+        );
+      });
     },
     // todo: Static toolbar plugin 是否需要这个 onChange
     onChange: (editorState) => {
