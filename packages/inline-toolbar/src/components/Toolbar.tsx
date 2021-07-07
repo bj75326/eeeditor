@@ -3,7 +3,8 @@ import React, {
   ReactElement,
   useState,
   useEffect,
-  ComponentType,
+  useContext,
+  useRef,
 } from 'react';
 import {
   EditorState,
@@ -12,11 +13,22 @@ import {
   EEEditorContextProps,
   PluginMethods,
   EEEditorContext,
+  getEditorRootDomNode,
 } from '@eeeditor/editor';
 import { EEEditorStyleButtonType } from '@eeeditor/buttons';
 import { InlineToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
+import CSSMotion from 'rc-motion';
+import {
+  getInlineToolbarPosition,
+  InlineToolbarPosition,
+} from '../utils/getInlineToolbarPosition';
+import { ConfigProvider } from 'antd';
+import { DirectionType, ConfigContext } from 'antd/lib/config-provider';
+import { Locale } from 'antd/lib/locale-provider';
+import zhCN from 'antd/lib/locale/zh_CN';
+import enUS from 'antd/lib/locale/en_US';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -53,12 +65,11 @@ interface ToolbarProps extends ToolbarPubProps {
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [visible, setVisible]: [boolean, any] = useState(false);
-  const [position, setPosition]: [{ top: number; left: number }, any] =
-    useState(undefined);
+
   const [overrideContent, setOverrideContent]: [
     ReactElement | ReactElement[],
     any,
-  ] = useState(undefined);
+  ] = useState(null);
 
   const {
     prefixCls: customizePrefixCls,
@@ -70,6 +81,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   } = props;
 
   const getProps = store.getItem('getProps');
+  const getEditorRef = store.getItem('getEditorRef');
+
+  const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
 
   const {
     prefixCls: editorPrefixCls,
@@ -90,6 +104,27 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     undefined,
     customizePrefixCls,
   );
+
+  // antd 组件的 Context 设置
+  let antdDirection: DirectionType;
+  let antdLocale: Locale;
+
+  if (textDirectionality === 'RTL') {
+    antdDirection = 'rtl';
+  } else {
+    antdDirection = 'ltr';
+  }
+
+  switch (editorLocale) {
+    case 'zh_CN':
+      antdLocale = zhCN;
+      break;
+    case 'en_US':
+      antdLocale = enUS;
+      break;
+    default:
+      antdLocale = zhCN;
+  }
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
@@ -149,7 +184,15 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     tipProps: childrenTipProps,
   };
 
-  const onSelectionChanged = () => {};
+  const onSelectionChanged = () => {
+    const getEditorState = store.getItem('getEditorState');
+    const selection = getEditorState().getSelection();
+    if (selection && !selection.isCollapsed() && selection.getHasFocus()) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  };
 
   useEffect(() => {
     store.subscribeToItem('selection', onSelectionChanged);
@@ -158,11 +201,45 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     };
   }, []);
 
+  const handleToolbarEnterPrepare = (toolbarElement: HTMLElement): void => {
+    const editorRoot = getEditorRootDomNode(getEditorRef());
+
+    let position: InlineToolbarPosition = getInlineToolbarPosition(
+      editorRoot,
+      toolbarElement,
+    );
+  };
+
+  const handleToolbarLeavePrepare = () => {};
+
+  const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
+
   const toolbarClassName = classNames(`${prefixCls}-inline-toolbar`, className);
 
   return (
     <EEEditorContext.Provider value={eeeditorContextProps}>
-      <div className={toolbarClassName} style={style}></div>
+      <ConfigProvider direction={antdDirection} locale={antdLocale}>
+        <CSSMotion
+          visible={visible}
+          motionName={`${getAntdPrefixCls()}-zoom-big}`}
+          motionDeadline={1000}
+          leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+          removeOnLeave={false}
+          onEnterPrepare={handleToolbarEnterPrepare}
+          onLeavePrepare={handleToolbarLeavePrepare}
+        >
+          {({ style, className }, motionRef) => (
+            <div
+              className={classNames(toolbarClassName, className)}
+              style={{
+                ...style,
+                ...styleRef.current,
+              }}
+              ref={motionRef}
+            ></div>
+          )}
+        </CSSMotion>
+      </ConfigProvider>
     </EEEditorContext.Provider>
   );
 };

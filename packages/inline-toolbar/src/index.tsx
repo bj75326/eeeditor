@@ -56,6 +56,8 @@ export default (): InlineToolbarPlugin => {
       return editorState;
     },
 
+    suffix: () => <div className="inline-toolbar-plugin-suffix"></div>,
+
     InlineToolbar,
   };
 };

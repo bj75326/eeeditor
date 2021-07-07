@@ -26,6 +26,11 @@ import {
 import classNames from 'classnames';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import SelectorButton from './SelectorButton';
+import { ConfigProvider } from 'antd';
+import { DirectionType } from 'antd/lib/config-provider';
+import { Locale } from 'antd/lib/locale-provider';
+import zhCN from 'antd/lib/locale/zh_CN';
+import enUS from 'antd/lib/locale/en_US';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -91,6 +96,27 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     undefined,
     customizePrefixCls,
   );
+
+  // antd 组件的 Context 设置
+  let antdDirection: DirectionType;
+  let antdLocale: Locale;
+
+  if (textDirectionality === 'RTL') {
+    antdDirection = 'rtl';
+  } else {
+    antdDirection = 'ltr';
+  }
+
+  switch (editorLocale) {
+    case 'zh_CN':
+      antdLocale = zhCN;
+      break;
+    case 'en_US':
+      antdLocale = enUS;
+      break;
+    default:
+      antdLocale = zhCN;
+  }
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
@@ -165,13 +191,15 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   return (
     <EEEditorContext.Provider value={eeeditorContextProps}>
-      <div className={toolbarClassName} style={style}>
-        {React.Children.map<ReactElement, ReactElement>(
-          children || defaultButtons,
-          (child) =>
-            React.cloneElement(child, { ...childrenProps, ...child.props }),
-        )}
-      </div>
+      <ConfigProvider direction={antdDirection} locale={antdLocale}>
+        <div className={toolbarClassName} style={style}>
+          {React.Children.map<ReactElement, ReactElement>(
+            children || defaultButtons,
+            (child) =>
+              React.cloneElement(child, { ...childrenProps, ...child.props }),
+          )}
+        </div>
+      </ConfigProvider>
     </EEEditorContext.Provider>
   );
 };
