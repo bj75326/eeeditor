@@ -8,14 +8,22 @@ import React, {
 } from 'react';
 import {
   EditorState,
+  SelectionState,
   EditorPlugin,
   EditorProps,
   EEEditorContextProps,
   PluginMethods,
   EEEditorContext,
   getEditorRootDomNode,
+  setSelection,
 } from '@eeeditor/editor';
-import { EEEditorStyleButtonType } from '@eeeditor/buttons';
+import { createPortal } from 'react-dom';
+import {
+  BoldButton,
+  ItalicButton,
+  UnderlineButton,
+  CodeButton,
+} from '@eeeditor/buttons';
 import { InlineToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
@@ -64,7 +72,9 @@ interface ToolbarProps extends ToolbarPubProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const [visible, setVisible]: [boolean, any] = useState(false);
+  const [visible, setVisible]: [boolean, any] = useState(true);
+
+  const [_, setSelection]: [SelectionState, any] = useState(null);
 
   const [overrideContent, setOverrideContent]: [
     ReactElement | ReactElement[],
@@ -83,7 +93,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const getProps = store.getItem('getProps');
   const getEditorRef = store.getItem('getEditorRef');
 
-  const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
+  const styleRef = useRef<CSSProperties>({ top: 0, left: 0, ...style });
+
+  const toolbarRef = useRef<HTMLElement>(null);
 
   const {
     prefixCls: editorPrefixCls,
@@ -185,10 +197,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   };
 
   const onSelectionChanged = () => {
-    const getEditorState = store.getItem('getEditorState');
-    const selection = getEditorState().getSelection();
+    const selection = store.getItem('selection');
     if (selection && !selection.isCollapsed() && selection.getHasFocus()) {
       setVisible(true);
+      // visible 不变 selection 变化时，也需要触发重新渲染
+      setSelection(selection);
     } else {
       setVisible(false);
     }
@@ -208,40 +221,82 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       editorRoot,
       toolbarElement,
     );
+
+    styleRef.current = {
+      ...styleRef.current,
+      top: `${(position && position.top) || 0}px`,
+      left: `${(position && position.left) || 0}px`,
+      transformOrigin: `50% ${
+        toolbarElement.getBoundingClientRect().height + 4
+      }px`,
+    };
   };
 
-  const handleToolbarLeavePrepare = () => {};
+  const handleToolbarLeavePrepare = (toolbarELement: HTMLElement): void => {};
+
+  const defaultButtons = [
+    <BoldButton />,
+    <ItalicButton />,
+    <UnderlineButton />,
+    <CodeButton />,
+  ];
+
+  const getContainer = () => {
+    if (getEditorRef()) {
+      return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+        '.inline-toolbar-plugin-suffix',
+      );
+    }
+    return null;
+  };
+  useEffect(() => {
+    console.log('check getContainer()   执行');
+    setVisible(false);
+  }, [getContainer()]);
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
   const toolbarClassName = classNames(`${prefixCls}-inline-toolbar`, className);
 
-  return (
-    <EEEditorContext.Provider value={eeeditorContextProps}>
-      <ConfigProvider direction={antdDirection} locale={antdLocale}>
-        <CSSMotion
-          visible={visible}
-          motionName={`${getAntdPrefixCls()}-zoom-big}`}
-          motionDeadline={1000}
-          leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
-          removeOnLeave={false}
-          onEnterPrepare={handleToolbarEnterPrepare}
-          onLeavePrepare={handleToolbarLeavePrepare}
-        >
-          {({ style, className }, motionRef) => (
-            <div
-              className={classNames(toolbarClassName, className)}
-              style={{
-                ...style,
-                ...styleRef.current,
-              }}
-              ref={motionRef}
-            ></div>
-          )}
-        </CSSMotion>
-      </ConfigProvider>
-    </EEEditorContext.Provider>
-  );
+  return getContainer()
+    ? createPortal(
+        <EEEditorContext.Provider value={eeeditorContextProps}>
+          <ConfigProvider direction={antdDirection} locale={antdLocale}>
+            <CSSMotion
+              visible={visible}
+              motionName={`${getAntdPrefixCls()}-zoom-big`}
+              motionDeadline={1000}
+              leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+              removeOnLeave={false}
+              onEnterPrepare={handleToolbarEnterPrepare}
+              onLeavePrepare={handleToolbarLeavePrepare}
+              ref={toolbarRef}
+            >
+              {({ style, className }, motionRef) => (
+                <div
+                  className={classNames(toolbarClassName, className)}
+                  style={{
+                    ...style,
+                    ...styleRef.current,
+                  }}
+                  ref={motionRef}
+                >
+                  {React.Children.map<ReactElement, ReactElement>(
+                    children || defaultButtons,
+                    (child) =>
+                      React.cloneElement(child, {
+                        ...childrenProps,
+                        ...child.props,
+                      }),
+                  )}
+                </div>
+              )}
+            </CSSMotion>
+          </ConfigProvider>
+        </EEEditorContext.Provider>,
+        document.querySelector('.inline-toolbar-plugin-suffix'),
+      )
+    : null;
 };
 
 export default Toolbar;

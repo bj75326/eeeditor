@@ -16,6 +16,7 @@ import EEEditor, {
 import createStaticToolbarPlugin, {
   StaticToolbarPlugin,
 } from '@eeeditor/static-toolbar';
+import createInlineToolbarPlugin from '@eeeditor/inline-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
 import createAnchorPlugin from '@eeeditor/anchor';
@@ -78,6 +79,8 @@ const {
   ...staticToolbarPlugin
 }: StaticToolbarPlugin = createStaticToolbarPlugin();
 
+const { InlineToolbar, ...inlineToolbarPlugin } = createInlineToolbarPlugin();
+
 const {
   DecoratedUndoButton,
   DecoratedRedoButton,
@@ -90,6 +93,7 @@ const { LinkButton, ...anchorPlugin } = createAnchorPlugin({});
 
 const plugins: EditorPlugin[] = [
   staticToolbarPlugin,
+  inlineToolbarPlugin,
   undoPlugin,
   dividerPlugin,
   anchorPlugin,
@@ -444,6 +448,9 @@ const Page: React.FC<PageProps> = (props) => {
               <DecoratedUndoButton />
               <DecoratedRedoButton />
             </StaticToolbar>
+          </div>
+          <div>
+            <InlineToolbar></InlineToolbar>
           </div>
         </div>
         {sidebar}

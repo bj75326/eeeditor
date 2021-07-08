@@ -132,8 +132,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     }
 
     styleRef.current = {
-      top: `${position.top || 0}px`,
-      left: `${position.left || 0}px`,
+      top: `${(position && position.top) || 0}px`,
+      left: `${(position && position.left) || 0}px`,
       transformOrigin: `50% ${
         popoverElement.getBoundingClientRect().height + 4
       }px`,

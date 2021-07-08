@@ -50,7 +50,7 @@ export default (): InlineToolbarPlugin => {
         );
       });
     },
-    // todo: Static toolbar plugin 是否需要这个 onChange
+
     onChange: (editorState) => {
       store.updateItem('selection', editorState.getSelection());
       return editorState;

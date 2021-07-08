@@ -8,12 +8,14 @@ export interface InlineToolbarPosition {
 export const getInlineToolbarPosition = (
   editorRoot: HTMLElement,
   toolbarElement: HTMLElement,
-): InlineToolbarPosition => {
+): InlineToolbarPosition | null => {
   const editorRootRect = editorRoot.getBoundingClientRect();
 
   const parentWindow =
     editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
   const targetRect = getVisibleSelectionRect(parentWindow || window);
+
+  if (!targetRect) return null;
 
   return {
     top:
