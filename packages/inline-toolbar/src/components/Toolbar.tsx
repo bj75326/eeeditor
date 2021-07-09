@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useContext,
   useRef,
+  MouseEvent,
 } from 'react';
 import {
   EditorState,
@@ -18,6 +19,8 @@ import {
   setSelection,
 } from '@eeeditor/editor';
 import { createPortal } from 'react-dom';
+import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import contains from 'rc-util/lib/Dom/contains';
 import {
   BoldButton,
   ItalicButton,
@@ -73,8 +76,6 @@ interface ToolbarProps extends ToolbarPubProps {
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [visible, setVisible]: [boolean, any] = useState(true);
-
-  const [_, setSelection]: [SelectionState, any] = useState(null);
 
   const [overrideContent, setOverrideContent]: [
     ReactElement | ReactElement[],
@@ -200,8 +201,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     const selection = store.getItem('selection');
     if (selection && !selection.isCollapsed() && selection.getHasFocus()) {
       setVisible(true);
-      // visible 不变 selection 变化时，也需要触发重新渲染
-      setSelection(selection);
     } else {
       setVisible(false);
     }
@@ -211,6 +210,27 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     store.subscribeToItem('selection', onSelectionChanged);
     return () => {
       store.unsubscribeFromItem('selection', onSelectionChanged);
+    };
+  }, []);
+
+  const onDocumentClick = (event: MouseEvent) => {
+    const { target } = event;
+    const toolbarNode = toolbarRef.current || null;
+    if (!contains(toolbarNode, target as Node)) {
+      setVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    let currentDocument: HTMLDocument =
+      getEditorRootDomNode(getEditorRef()).ownerDocument || window.document;
+    const cleanOutsiderHandler = addEventListener(
+      currentDocument,
+      'mousedown',
+      onDocumentClick,
+    );
+    return () => {
+      cleanOutsiderHandler.remove();
     };
   }, []);
 

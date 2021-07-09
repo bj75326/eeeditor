@@ -71,6 +71,7 @@ import '@eeeditor/editor/es/style';
 import '@eeeditor/static-toolbar/es/style';
 import '@eeeditor/divider/es/style';
 import '@eeeditor/anchor/es/style';
+import '@eeeditor/inline-toolbar/es/style';
 
 const {
   StaticToolbar,

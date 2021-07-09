@@ -1,4 +1,12 @@
 @import './theme.less';
 
-.@{eeeditor-prefixCls-cls}-inline-toolbar {
+.@{eeeditor-prefix-cls}-inline-toolbar {
+  box-sizing: border-box;
+  height: @inline-toolbar-height;
+  background-color: @inline-toolbar-bg-color;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: absolute;
+  z-index: @inline-toolbar-zindex;
 }
