@@ -15,6 +15,7 @@ export default defineConfig({
     '@label-color': 'var(--color-tint-7)',
     '@component-background': 'var(--color-tint-extra-0)',
     '@popover-button-hover-bg': 'var(--color-tint-extra-1)',
+    '@inline-toolbar-btn-hover-bg': 'var(--color-tint-extra-1)',
     '@border-color-base': 'var(--color-tint-4)',
     '@input-placeholder-color': 'var(--color-tint-4)',
   },

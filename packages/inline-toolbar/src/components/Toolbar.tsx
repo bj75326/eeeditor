@@ -114,7 +114,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   };
 
   const prefixCls = eeeditorContextProps.getPrefixCls(
-    undefined,
+    'inline-toolbar',
     customizePrefixCls,
   );
 
@@ -252,8 +252,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     };
   };
 
-  const handleToolbarLeavePrepare = (toolbarELement: HTMLElement): void => {};
-
   const defaultButtons = [
     <BoldButton />,
     <ItalicButton />,
@@ -276,7 +274,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
-  const toolbarClassName = classNames(`${prefixCls}-inline-toolbar`, className);
+  const toolbarClassName = classNames(`${prefixCls}`, className);
 
   return getContainer()
     ? createPortal(
@@ -289,7 +287,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
               removeOnLeave={false}
               onEnterPrepare={handleToolbarEnterPrepare}
-              onLeavePrepare={handleToolbarLeavePrepare}
               ref={toolbarRef}
             >
               {({ style, className }, motionRef) => (
@@ -301,14 +298,23 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                   }}
                   ref={motionRef}
                 >
-                  {React.Children.map<ReactElement, ReactElement>(
-                    children || defaultButtons,
-                    (child) =>
-                      React.cloneElement(child, {
-                        ...childrenProps,
-                        ...child.props,
-                      }),
-                  )}
+                  <div className={`${prefixCls}-content`}>
+                    <div
+                      className={`${prefixCls}-arrow ${prefixCls}-arrow-top`}
+                    >
+                      <span className={`${prefixCls}-arrow-content`}></span>
+                    </div>
+                    <div className={`${prefixCls}-inner`} role="tooltip">
+                      {React.Children.map<ReactElement, ReactElement>(
+                        children || defaultButtons,
+                        (child) =>
+                          React.cloneElement(child, {
+                            ...childrenProps,
+                            ...child.props,
+                          }),
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
             </CSSMotion>

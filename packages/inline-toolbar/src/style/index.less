@@ -1,12 +1,61 @@
 @import './theme.less';
 
-.@{eeeditor-prefix-cls}-inline-toolbar {
+@prefix: ~'@{eeeditor-prefix-cls}-inline-toolbar';
+
+.@{prefix} {
   box-sizing: border-box;
-  height: @inline-toolbar-height;
-  background-color: @inline-toolbar-bg-color;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
   position: absolute;
   z-index: @inline-toolbar-zindex;
+  margin: 0;
+  padding: 0 0 @inline-toolbar-trigger-distance;
+}
+
+.@{prefix}-arrow {
+  position: absolute;
+  display: block;
+  width: @inline-toolbar-arrow-size + 2px;
+  height: @inline-toolbar-arrow-size + 2px;
+  background: transparent;
+  border-style: solid;
+  border-width: (@inline-toolbar-arrow-size + 2) / 2;
+  transform: rotate(45deg);
+}
+
+.@{prefix}-arrow-top {
+  bottom: @inline-toolbar-trigger-distance - @inline-toolbar-arrow-size + 2.2px;
+  left: 50%;
+  border-top-color: transparent;
+  border-right-color: @inline-toolbar-bg;
+  border-bottom-color: @inline-toolbar-bg;
+  border-left-color: transparent;
+  box-shadow: 3px 3px 7px fade(@black, 7%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.@{prefix}-inner {
+  padding: @inline-toolbar-inner-padding;
+  background-color: @inline-toolbar-bg;
+  background-clip: padding-box;
+  border-radius: @inline-toolbar-border-radius;
+  box-shadow: @inline-toolbar-box-shadow;
+  box-shadow: ~'0 0 8px @{inline-toolbar-box-shadow} \9';
+  .@{eeeditor-prefix-cls}-btn {
+    width: @inline-toolbar-btn-size;
+    height: @inline-toolbar-btn-size;
+    font-size: @inline-toolbar-btn-icon-size;
+    &:hover {
+      background-color: @inline-toolbar-btn-hover-bg;
+    }
+  }
+}
+
+// todo
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* IE10+ */
+  .@{prefix}-inner {
+    box-shadow: @inline-toolbar-box-shadow;
+  }
 }
