@@ -1,4 +1,10 @@
-import React, { ReactNode, useState, MouseEvent, useContext } from 'react';
+import React, {
+  ReactNode,
+  useState,
+  MouseEvent,
+  useContext,
+  useRef,
+} from 'react';
 import { Popover, Tooltip, message } from 'antd';
 import {
   getDecoratedLeavesOffset,
@@ -78,8 +84,48 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   const [visible, setVisible]: [boolean, any] = useState(false);
 
-  const onVisibleChange = (visible: boolean) => {
-    setVisible(visible);
+  // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
+  // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
+  // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
+  // 所以在这里 eeeditor anchor 插件手动实现 trigger 的 event bind
+  const delayTimer = useRef<number>();
+
+  const delaySetVisible = (visible: boolean) => {
+    const delay = 100; // 取 antd tooltip 组件 mouseEnterDelay & mouseLeaveDelay 默认值
+    clearDelayTimer();
+    delayTimer.current = window.setTimeout(() => {
+      setVisible(visible);
+      clearDelayTimer();
+    }, delay);
+  };
+
+  const clearDelayTimer = () => {
+    if (delayTimer.current) {
+      clearTimeout(delayTimer.current);
+      delayTimer.current = null;
+    }
+  };
+
+  const handleMouseEnter = (event: MouseEvent): void => {
+    if (event.buttons <= 0) {
+      delaySetVisible(true);
+    }
+  };
+
+  const handleMouseLeave = (event: MouseEvent): void => {
+    delaySetVisible(false);
+  };
+
+  const handleMouseDown = (event: MouseEvent): void => {
+    delaySetVisible(false);
+  };
+
+  const handlePopoverMouseEnter = (event: MouseEvent): void => {
+    clearDelayTimer();
+  };
+
+  const handlePopoverMouseLeave = (event: MouseEvent): void => {
+    delaySetVisible(false);
   };
 
   const getTipTitle = (name: string): ReactNode => (
@@ -142,7 +188,11 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   };
 
   const content = (
-    <div className={`${prefixCls}-link-popover`}>
+    <div
+      className={`${prefixCls}-link-popover`}
+      onMouseEnter={handlePopoverMouseEnter}
+      onMouseLeave={handlePopoverMouseLeave}
+    >
       <a
         className={`${prefixCls}-link-url`}
         title={formattedHref}
@@ -187,7 +237,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
       content={content}
       overlayClassName={`${prefixCls}-popover-wrapper`}
       visible={visible}
-      onVisibleChange={onVisibleChange}
+      // onVisibleChange={onVisibleChange}
+      trigger={[]}
     >
       <a
         className={linkClassName}
@@ -195,6 +246,9 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
         href={formattedHref}
         target="_blank"
         data-offset-key={offsetKey}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
       >
         {children}
       </a>
