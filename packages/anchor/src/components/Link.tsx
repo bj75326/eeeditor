@@ -14,7 +14,6 @@ import {
 } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
-import extraIcons from '../assets/extraIcons';
 import formatUrl from '../utils/formatUrl';
 import removeLink from '../modifiers/removeLink';
 
@@ -82,22 +81,12 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   if (!linkOffset) throw new Error('Link getDecoratedLeavesOffset error!');
 
-  const [visible, setVisible]: [boolean, any] = useState(false);
-
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
   // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
   // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
   // 所以在这里 eeeditor anchor 插件手动实现 trigger 的 event bind
-  const delayTimer = useRef<number>();
 
-  const delaySetVisible = (visible: boolean) => {
-    const delay = 100; // 取 antd tooltip 组件 mouseEnterDelay & mouseLeaveDelay 默认值
-    clearDelayTimer();
-    delayTimer.current = window.setTimeout(() => {
-      setVisible(visible);
-      clearDelayTimer();
-    }, delay);
-  };
+  const delayTimer = useRef<number>();
 
   const clearDelayTimer = () => {
     if (delayTimer.current) {
@@ -106,153 +95,172 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     }
   };
 
+  const showLinkPopover = () => {
+    store.updateItem('initText', decoratedText);
+    store.updateItem('initLink', href);
+    store.updateItem('entityKey', entityKey);
+    store.updateItem('offsetKey', offsetKey);
+    store.updateItem('linkOffset', linkOffset);
+    store.updateItem('clearDelayTimer', clearDelayTimer);
+    store.updateItem('linkPopoverVisible', true);
+  };
+
+  const hideLinkPopover = () => {
+    store.updateItem('linkPopoverVisible', false);
+  };
+
+  const delaySetVisible = (visible: boolean) => {
+    const delay = 100; // 取 antd tooltip 组件 mouseEnterDelay & mouseLeaveDelay 默认值
+    clearDelayTimer();
+    delayTimer.current = window.setTimeout(() => {
+      if (visible) {
+        showLinkPopover();
+      } else {
+        hideLinkPopover();
+      }
+      clearDelayTimer();
+    }, delay);
+  };
+
   const handleMouseEnter = (event: MouseEvent): void => {
     if (event.buttons <= 0) {
       delaySetVisible(true);
     }
   };
 
-  const handleMouseLeave = (event: MouseEvent): void => {
+  const handleMouseLeave = (): void => {
     delaySetVisible(false);
   };
 
-  const handleMouseDown = (event: MouseEvent): void => {
+  const handleMouseDown = (): void => {
     delaySetVisible(false);
   };
 
-  const handlePopoverMouseEnter = (event: MouseEvent): void => {
-    clearDelayTimer();
-  };
+  // const handlePopoverMouseEnter = (): void => {
+  //   clearDelayTimer();
+  // };
 
-  const handlePopoverMouseLeave = (event: MouseEvent): void => {
-    delaySetVisible(false);
-  };
+  // const handlePopoverMouseLeave = (): void => {
+  //   delaySetVisible(false);
+  // };
 
-  const getTipTitle = (name: string): ReactNode => (
-    <span className={`${prefixCls}-tip`}>
-      <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
-    </span>
-  );
+  // const getTipTitle = (name: string): ReactNode => (
+  //   <span className={`${prefixCls}-tip`}>
+  //     <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
+  //   </span>
+  // );
 
-  const handleEdit = (event: MouseEvent): void => {
-    event.preventDefault();
-    setVisible(false);
+  // const handleEdit = (event: MouseEvent): void => {
+  //   event.preventDefault();
+  //   setVisible(false);
 
-    store.updateItem('initText', decoratedText);
-    store.updateItem('initLink', href);
-    store.updateItem('entityKey', entityKey);
-    store.updateItem('offsetKey', offsetKey);
-    store.updateItem('linkOffset', linkOffset);
-    store.updateItem('mode', 'edit');
-    store.updateItem('editPopoverVisible', true);
-  };
-  const handleCopy = (event: MouseEvent): void => {
-    event.preventDefault();
-    setVisible(false);
+  //   store.updateItem('initText', decoratedText);
+  //   store.updateItem('initLink', href);
+  //   store.updateItem('entityKey', entityKey);
+  //   store.updateItem('offsetKey', offsetKey);
+  //   store.updateItem('linkOffset', linkOffset);
+  //   store.updateItem('mode', 'edit');
+  //   store.updateItem('editPopoverVisible', true);
+  // };
+  // const handleCopy = (event: MouseEvent): void => {
+  //   event.preventDefault();
+  //   setVisible(false);
 
-    navigator.clipboard.writeText(formattedHref).then(
-      () => {
-        message.open({
-          content:
-            locale['eeeditor.anchor.copy.success.msg'] ||
-            'eeeditor.anchor.copy.success.msg',
-          type: 'info',
-          duration: 3,
-          className: `${prefixCls}-message`,
-        });
-      },
-      (error) => {
-        throw new Error(error);
-      },
-    );
-  };
-  const handleDelete = (event: MouseEvent): void => {
-    event.preventDefault();
-    setVisible(false);
-    const editorState = getEditorState();
-    setEditorState(
-      removeLink(
-        EditorState.forceSelection(
-          editorState,
-          editorState.getSelection().merge({
-            anchorKey: linkOffset.startKey,
-            anchorOffset: linkOffset.startOffset,
-            focusKey: linkOffset.endKey,
-            focusOffset: linkOffset.endOffset,
-            hasFocus: true,
-            isBackward: false,
-          }),
-        ),
-      ),
-    );
-  };
+  //   navigator.clipboard.writeText(formattedHref).then(
+  //     () => {
+  //       message.open({
+  //         content:
+  //           locale['eeeditor.anchor.copy.success.msg'] ||
+  //           'eeeditor.anchor.copy.success.msg',
+  //         type: 'info',
+  //         duration: 3,
+  //         className: `${prefixCls}-message`,
+  //       });
+  //     },
+  //     (error) => {
+  //       throw new Error(error);
+  //     },
+  //   );
+  // };
+  // const handleDelete = (event: MouseEvent): void => {
+  //   event.preventDefault();
+  //   setVisible(false);
+  //   const editorState = getEditorState();
+  //   setEditorState(
+  //     removeLink(
+  //       EditorState.forceSelection(
+  //         editorState,
+  //         editorState.getSelection().merge({
+  //           anchorKey: linkOffset.startKey,
+  //           anchorOffset: linkOffset.startOffset,
+  //           focusKey: linkOffset.endKey,
+  //           focusOffset: linkOffset.endOffset,
+  //           hasFocus: true,
+  //           isBackward: false,
+  //         }),
+  //       ),
+  //     ),
+  //   );
+  // };
 
-  const content = (
-    <div
-      className={`${prefixCls}-link-popover`}
-      onMouseEnter={handlePopoverMouseEnter}
-      onMouseLeave={handlePopoverMouseLeave}
-    >
-      <a
-        className={`${prefixCls}-link-url`}
-        title={formattedHref}
-        href={formattedHref}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {formattedHref}
-      </a>
-      {[
-        {
-          type: 'edit',
-          onClick: handleEdit,
-        },
-        {
-          type: 'copy',
-          onClick: handleCopy,
-        },
-        {
-          type: 'delete',
-          onClick: handleDelete,
-        },
-      ].map(({ type, onClick }) => (
-        <Tooltip
-          title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
-          overlayClassName={`${prefixCls}-tip-wrapper`}
-          placement="top"
-          key={type}
-        >
-          <span className={`${prefixCls}-link-popover-btn`} onClick={onClick}>
-            {extraIcons[`${type}Icon`]}
-          </span>
-        </Tooltip>
-      ))}
-    </div>
-  );
+  // const content = (
+  //   <div
+  //     className={`${prefixCls}-link-popover`}
+  //     onMouseEnter={handlePopoverMouseEnter}
+  //     onMouseLeave={handlePopoverMouseLeave}
+  //   >
+  //     <a
+  //       className={`${prefixCls}-link-url`}
+  //       title={formattedHref}
+  //       href={formattedHref}
+  //       target="_blank"
+  //       rel="noopener noreferrer"
+  //     >
+  //       {formattedHref}
+  //     </a>
+  //     {[
+  //       {
+  //         type: 'edit',
+  //         onClick: handleEdit,
+  //       },
+  //       {
+  //         type: 'copy',
+  //         onClick: handleCopy,
+  //       },
+  //       {
+  //         type: 'delete',
+  //         onClick: handleDelete,
+  //       },
+  //     ].map(({ type, onClick }) => (
+  //       <Tooltip
+  //         title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
+  //         overlayClassName={`${prefixCls}-tip-wrapper`}
+  //         placement="top"
+  //         key={type}
+  //       >
+  //         <span className={`${prefixCls}-link-popover-btn`} onClick={onClick}>
+  //           {extraIcons[`${type}Icon`]}
+  //         </span>
+  //       </Tooltip>
+  //     ))}
+  //   </div>
+  // );
 
   const linkClassName = classNames(className, `${prefixCls}-link`);
 
   return (
-    <Popover
-      content={content}
-      overlayClassName={`${prefixCls}-popover-wrapper`}
-      visible={visible}
-      // onVisibleChange={onVisibleChange}
-      trigger={[]}
+    <a
+      className={linkClassName}
+      rel="noopener noreferrer"
+      href={formattedHref}
+      target="_blank"
+      data-offset-key={offsetKey}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
     >
-      <a
-        className={linkClassName}
-        rel="noopener noreferrer"
-        href={formattedHref}
-        target="_blank"
-        data-offset-key={offsetKey}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-      >
-        {children}
-      </a>
-    </Popover>
+      {children}
+    </a>
   );
 };
 

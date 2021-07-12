@@ -1,6 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  CSSProperties,
+  ReactNode,
+} from 'react';
 import { EEEditorContext } from '@eeeditor/editor';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
+import CSSMotion from 'rc-motion';
+import { ConfigContext } from 'antd/lib/config-provider';
+import classNames from 'classnames';
+import { Tooltip, message } from 'antd';
+import formatUrl from '../utils/formatUrl';
+import removeLink from '../modifiers/removeLink';
+import extraIcons from '../assets/extraIcons';
 
 export interface LinkPopoverProps {
   prefixCls?: string;
@@ -26,11 +40,17 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
+  const formattedHref = formatUrl(store.getItem('initLink'));
+
   const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
+
+  const popoverRef = useRef<HTMLDivElement>();
+
+  const styleRef = useRef<CSSProperties>({});
 
   const onStoredVisibleChange = (visible: boolean) => {
     // setPopoverVisible 触发重新渲染
-    setPopoverVisible(true);
+    setPopoverVisible(visible);
   };
 
   useEffect(() => {
@@ -40,7 +60,136 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
     };
   }, []);
 
-  return <div></div>;
+  const getTipTitle = (name: string): ReactNode => (
+    <span className={`${prefixCls}-tip`}>
+      <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
+    </span>
+  );
+
+  const handleEdit = (event: MouseEvent): void => {
+    event.preventDefault();
+    setPopoverVisible(false);
+
+    store.updateItem('mode', 'edit');
+    store.updateItem('editPopoverVisible', true);
+  };
+  const handleCopy = (event: MouseEvent): void => {
+    event.preventDefault();
+    setPopoverVisible(false);
+
+    navigator.clipboard.writeText(formattedHref).then(
+      () => {
+        message.open({
+          content:
+            locale['eeeditor.anchor.copy.success.msg'] ||
+            'eeeditor.anchor.copy.success.msg',
+          type: 'info',
+          duration: 3,
+          className: `${prefixCls}-message`,
+        });
+      },
+      (error) => {
+        throw new Error(error);
+      },
+    );
+  };
+  const handleDelete = (event: MouseEvent): void => {
+    event.preventDefault();
+    setPopoverVisible(false);
+    const editorState = getEditorState();
+    setEditorState(
+      removeLink(
+        EditorState.forceSelection(
+          editorState,
+          editorState.getSelection().merge({
+            anchorKey: linkOffset.startKey,
+            anchorOffset: linkOffset.startOffset,
+            focusKey: linkOffset.endKey,
+            focusOffset: linkOffset.endOffset,
+            hasFocus: true,
+            isBackward: false,
+          }),
+        ),
+      ),
+    );
+  };
+
+  const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
+
+  const linkPopoverCls = classNames(`${prefixCls}-popover`, className);
+
+  return (
+    <CSSMotion
+      visible={popoverVisible}
+      motionName={`${getAntdPrefixCls()}-zoom-big`}
+      motionDeadline={1000}
+      leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+      removeOnLeave={false}
+      ref={popoverRef}
+    >
+      {({ style, className }, motionRef) => (
+        <div
+          className={classNames(linkPopoverCls, className)}
+          style={{
+            ...style,
+            ...styleRef.current,
+          }}
+          ref={motionRef}
+          onMouseEnter={handlePopoverMouseEnter}
+          onMouseLeave={handlePopoverMouseLeave}
+        >
+          <div className={`${prefixCls}-popover-content`}>
+            <div
+              className={`${prefixCls}-popover-arrow ${prefixCls}-popover-arrow-top`}
+            >
+              <span className={`${prefixCls}-popover-arrow-content`} />
+            </div>
+            <div className={`${prefixCls}-popover-inner`}>
+              <div className={`${prefixCls}-link-popover`}>
+                <a
+                  className={`${prefixCls}-link-url`}
+                  title={formattedHref}
+                  href={formattedHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {formattedHref}
+                </a>
+                {[
+                  {
+                    type: 'edit',
+                    onClick: handleEdit,
+                  },
+                  {
+                    type: 'copy',
+                    onClick: handleCopy,
+                  },
+                  {
+                    type: 'delete',
+                    onClick: handleDelete,
+                  },
+                ].map(({ type, onClick }) => (
+                  <Tooltip
+                    title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
+                    overlayClassName={`${prefixCls}-tip-wrapper`}
+                    placement="top"
+                    key={type}
+                  >
+                    <span
+                      className={`${prefixCls}-link-popover-btn`}
+                      onClick={onClick}
+                    >
+                      {extraIcons[`${type}Icon`]}
+                    </span>
+                  </Tooltip>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </CSSMotion>
+  );
 };
 
 export default LinkPopover;

@@ -38,6 +38,7 @@ export interface StoreItemMap {
   linkOffset?: DecoratedOffset;
   // link popover
   linkPopoverVisible?: boolean;
+  clearDelayTimer?: () => void;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
