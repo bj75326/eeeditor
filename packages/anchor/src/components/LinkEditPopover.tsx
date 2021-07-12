@@ -79,9 +79,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   };
 
   useEffect(() => {
-    store.subscribeToItem('visible', onStoredVisibleChange);
+    store.subscribeToItem('editPopoverVisible', onStoredVisibleChange);
     return () => {
-      store.unsubscribeFromItem('visible', onStoredVisibleChange);
+      store.unsubscribeFromItem('editPopoverVisible', onStoredVisibleChange);
     };
   }, []);
 

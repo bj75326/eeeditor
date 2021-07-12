@@ -144,7 +144,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     store.updateItem('offsetKey', offsetKey);
     store.updateItem('linkOffset', linkOffset);
     store.updateItem('mode', 'edit');
-    store.updateItem('visible', true);
+    store.updateItem('editPopoverVisible', true);
   };
   const handleCopy = (event: MouseEvent): void => {
     event.preventDefault();

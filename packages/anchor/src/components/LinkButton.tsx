@@ -154,7 +154,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
       }
       // 点击 LinkButton 添加 link
       store.updateItem('mode', 'new');
-      store.updateItem('visible', true);
+      store.updateItem('editPopoverVisible', true);
     }
   };
 
@@ -181,7 +181,7 @@ const LinkButton: React.FC<LinkButtonProps & LinkButtonExtraProps> = (
               setEditorState(removeLinkAtSelection(editorState));
             } else {
               store.updateItem('mode', 'new');
-              store.updateItem('visible', true);
+              store.updateItem('editPopoverVisible', true);
             }
           }
           return 'handled';
