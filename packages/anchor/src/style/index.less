@@ -5,13 +5,18 @@
 }
 
 .@{eeeditor-prefix-cls}-link-popover {
+  width: @anchor-popover-width;
+}
+
+.@{eeeditor-prefix-cls}-link-popover-content {
   display: flex;
   align-items: center;
   font-size: @popover-font-size;
+  width: 100%;
 }
 
-.@{eeeditor-prefix-cls}-link-url {
-  width: 195px;
+.@{eeeditor-prefix-cls}-link-popover-url {
+  flex: 1 0;
   margin: 0 15px 0 5px;
   overflow: hidden;
   color: @anchor-text-color;

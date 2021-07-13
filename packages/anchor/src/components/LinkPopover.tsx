@@ -38,6 +38,8 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const getProps = store.getItem('getProps');
   const getEditorRef = store.getItem('getEditorRef');
 
+  const getLinkProps = store.getItem('getLinkProps');
+
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
@@ -49,8 +51,8 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
 
   const formattedHref = formatUrl(store.getItem('initLink'));
   const linkOffset = store.getItem('linkOffset');
-  const handlePopoverMouseEnter = store.getItem('onPopoverMouseLeave');
-  const handlePopoverMouseLeave = store.getItem('onPopoverMouseEnter');
+  const handlePopoverMouseEnter = store.getItem('onPopoverMouseEnter');
+  const handlePopoverMouseLeave = store.getItem('onPopoverMouseLeave');
 
   const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
 
@@ -145,7 +147,11 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
-  const linkPopoverCls = classNames(`${prefixCls}-popover`, className);
+  const linkPopoverCls = classNames(
+    `${prefixCls}-popover`,
+    `${prefixCls}-link-popover`,
+    className,
+  );
 
   return (
     <CSSMotion
@@ -175,9 +181,9 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
               <span className={`${prefixCls}-popover-arrow-content`} />
             </div>
             <div className={`${prefixCls}-popover-inner`}>
-              <div className={`${prefixCls}-link-popover`}>
+              <div className={`${prefixCls}-link-popover-content`}>
                 <a
-                  className={`${prefixCls}-link-url`}
+                  className={`${prefixCls}-link-popover-url`}
                   title={formattedHref}
                   href={formattedHref}
                   target="_blank"

@@ -29,18 +29,21 @@ export interface StoreItemMap {
   setEditorState?(editorState: EditorState): void;
   getProps?: PluginMethods['getProps'];
   getEditorRef?: PluginMethods['getEditorRef'];
+  // popover
+  getLinkProps?: () => LinkProps;
   // link edit popover
   editPopoverVisible?: boolean;
   mode?: 'edit' | 'new';
-  initText?: string;
-  initLink?: string;
-  entityKey?: string;
-  offsetKey?: string;
-  linkOffset?: DecoratedOffset;
   // link popover
   linkPopoverVisible?: boolean;
   onPopoverMouseEnter?: () => void;
   onPopoverMouseLeave?: () => void;
+
+  // initText?: string;
+  // initLink?: string;
+  // entityKey?: string;
+  // offsetKey?: string;
+  // linkOffset?: DecoratedOffset;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;

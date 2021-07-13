@@ -59,23 +59,33 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  let linkOffset: DecoratedOffset;
+  // let linkOffset: DecoratedOffset;
 
-  if (children[0] && children[0].props.start >= 0) {
-    linkOffset = getDecoratedLeavesOffset(
-      getEditorState(),
-      entityKey,
-      offsetKey,
-      children[0].props.start,
-    );
-  }
+  // if (children[0] && children[0].props.start >= 0) {
+  //   linkOffset = getDecoratedLeavesOffset(
+  //     getEditorState(),
+  //     entityKey,
+  //     offsetKey,
+  //     children[0].props.start,
+  //   );
+  // }
 
-  if (!linkOffset) throw new Error('Link getDecoratedLeavesOffset error!');
+  // if (!linkOffset) throw new Error('Link getDecoratedLeavesOffset error!');
+
+  const linkPropsRef = useRef<LinkProps>({
+    children,
+    entityKey,
+    decoratedText,
+    offsetKey,
+  });
+  const getLinkProps = (): LinkProps => {
+    return linkPropsRef.current || null;
+  };
 
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
   // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
   // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
-  // 所以 eeeditor 使用了 linkPopover 组件
+  // 所以 eeeditor 使用了自定义的 linkPopover 组件
 
   const delayTimer = useRef<number>();
 
@@ -87,12 +97,13 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   };
 
   const showLinkPopover = () => {
-    store.updateItem('initText', decoratedText);
-    store.updateItem('initLink', href);
-    store.updateItem('entityKey', entityKey);
-    store.updateItem('offsetKey', offsetKey);
-    store.updateItem('linkOffset', linkOffset);
+    // store.updateItem('initText', decoratedText);
+    // store.updateItem('initLink', href);
+    // store.updateItem('entityKey', entityKey);
+    // store.updateItem('offsetKey', offsetKey);
+    // store.updateItem('linkOffset', linkOffset);
 
+    store.updateItem('getLinkProps', getLinkProps);
     store.updateItem('onPopoverMouseEnter', handlePopoverMouseEnter);
     store.updateItem('onPopoverMouseLeave', handlePopoverMouseLeave);
     store.updateItem('linkPopoverVisible', true);
@@ -136,108 +147,6 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const handlePopoverMouseLeave = (): void => {
     delaySetVisible(false);
   };
-
-  // const getTipTitle = (name: string): ReactNode => (
-  //   <span className={`${prefixCls}-tip`}>
-  //     <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
-  //   </span>
-  // );
-
-  // const handleEdit = (event: MouseEvent): void => {
-  //   event.preventDefault();
-  //   setVisible(false);
-
-  //   store.updateItem('initText', decoratedText);
-  //   store.updateItem('initLink', href);
-  //   store.updateItem('entityKey', entityKey);
-  //   store.updateItem('offsetKey', offsetKey);
-  //   store.updateItem('linkOffset', linkOffset);
-  //   store.updateItem('mode', 'edit');
-  //   store.updateItem('editPopoverVisible', true);
-  // };
-  // const handleCopy = (event: MouseEvent): void => {
-  //   event.preventDefault();
-  //   setVisible(false);
-
-  //   navigator.clipboard.writeText(formattedHref).then(
-  //     () => {
-  //       message.open({
-  //         content:
-  //           locale['eeeditor.anchor.copy.success.msg'] ||
-  //           'eeeditor.anchor.copy.success.msg',
-  //         type: 'info',
-  //         duration: 3,
-  //         className: `${prefixCls}-message`,
-  //       });
-  //     },
-  //     (error) => {
-  //       throw new Error(error);
-  //     },
-  //   );
-  // };
-  // const handleDelete = (event: MouseEvent): void => {
-  //   event.preventDefault();
-  //   setVisible(false);
-  //   const editorState = getEditorState();
-  //   setEditorState(
-  //     removeLink(
-  //       EditorState.forceSelection(
-  //         editorState,
-  //         editorState.getSelection().merge({
-  //           anchorKey: linkOffset.startKey,
-  //           anchorOffset: linkOffset.startOffset,
-  //           focusKey: linkOffset.endKey,
-  //           focusOffset: linkOffset.endOffset,
-  //           hasFocus: true,
-  //           isBackward: false,
-  //         }),
-  //       ),
-  //     ),
-  //   );
-  // };
-
-  // const content = (
-  //   <div
-  //     className={`${prefixCls}-link-popover`}
-  //     onMouseEnter={handlePopoverMouseEnter}
-  //     onMouseLeave={handlePopoverMouseLeave}
-  //   >
-  //     <a
-  //       className={`${prefixCls}-link-url`}
-  //       title={formattedHref}
-  //       href={formattedHref}
-  //       target="_blank"
-  //       rel="noopener noreferrer"
-  //     >
-  //       {formattedHref}
-  //     </a>
-  //     {[
-  //       {
-  //         type: 'edit',
-  //         onClick: handleEdit,
-  //       },
-  //       {
-  //         type: 'copy',
-  //         onClick: handleCopy,
-  //       },
-  //       {
-  //         type: 'delete',
-  //         onClick: handleDelete,
-  //       },
-  //     ].map(({ type, onClick }) => (
-  //       <Tooltip
-  //         title={getTipTitle(`eeeditor.anchor.${type}.button.tip`)}
-  //         overlayClassName={`${prefixCls}-tip-wrapper`}
-  //         placement="top"
-  //         key={type}
-  //       >
-  //         <span className={`${prefixCls}-link-popover-btn`} onClick={onClick}>
-  //           {extraIcons[`${type}Icon`]}
-  //         </span>
-  //       </Tooltip>
-  //     ))}
-  //   </div>
-  // );
 
   const linkClassName = classNames(className, `${prefixCls}-link`);
 
