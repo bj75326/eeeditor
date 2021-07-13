@@ -1,21 +1,12 @@
-import React, {
-  ReactNode,
-  useState,
-  MouseEvent,
-  useContext,
-  useRef,
-} from 'react';
-import { Popover, Tooltip, message } from 'antd';
+import React, { ReactNode, MouseEvent, useContext, useRef } from 'react';
 import {
   getDecoratedLeavesOffset,
   DecoratedOffset,
   EEEditorContext,
-  EditorState,
 } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import formatUrl from '../utils/formatUrl';
-import removeLink from '../modifiers/removeLink';
 
 export interface LinkProps {
   children: ReactNode;
@@ -84,7 +75,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
   // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
   // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
-  // 所以在这里 eeeditor anchor 插件手动实现 trigger 的 event bind
+  // 所以 eeeditor 使用了 linkPopover 组件
 
   const delayTimer = useRef<number>();
 
@@ -101,7 +92,9 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     store.updateItem('entityKey', entityKey);
     store.updateItem('offsetKey', offsetKey);
     store.updateItem('linkOffset', linkOffset);
-    store.updateItem('clearDelayTimer', clearDelayTimer);
+
+    store.updateItem('onPopoverMouseEnter', handlePopoverMouseEnter);
+    store.updateItem('onPopoverMouseLeave', handlePopoverMouseLeave);
     store.updateItem('linkPopoverVisible', true);
   };
 
@@ -136,13 +129,13 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
     delaySetVisible(false);
   };
 
-  // const handlePopoverMouseEnter = (): void => {
-  //   clearDelayTimer();
-  // };
+  const handlePopoverMouseEnter = (): void => {
+    clearDelayTimer();
+  };
 
-  // const handlePopoverMouseLeave = (): void => {
-  //   delaySetVisible(false);
-  // };
+  const handlePopoverMouseLeave = (): void => {
+    delaySetVisible(false);
+  };
 
   // const getTipTitle = (name: string): ReactNode => (
   //   <span className={`${prefixCls}-tip`}>

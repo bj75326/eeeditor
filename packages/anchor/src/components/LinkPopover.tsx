@@ -5,8 +5,15 @@ import React, {
   useRef,
   CSSProperties,
   ReactNode,
+  MouseEvent,
 } from 'react';
-import { EEEditorContext } from '@eeeditor/editor';
+import {
+  EEEditorContext,
+  EditorState,
+  getEditorRootDomNode,
+  getPopoverPosition,
+  PopoverPosition,
+} from '@eeeditor/editor';
 import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
@@ -41,6 +48,9 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
   const formattedHref = formatUrl(store.getItem('initLink'));
+  const linkOffset = store.getItem('linkOffset');
+  const handlePopoverMouseEnter = store.getItem('onPopoverMouseLeave');
+  const handlePopoverMouseLeave = store.getItem('onPopoverMouseEnter');
 
   const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
 
@@ -114,6 +124,25 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
     );
   };
 
+  const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
+    const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
+    const target: HTMLElement = editorRoot.ownerDocument.querySelector(
+      `a[data-offset-key="${store.getItem('offsetKey')}"]`,
+    );
+    const position: PopoverPosition = getPopoverPosition(
+      editorRoot,
+      popoverElement,
+      target,
+    );
+    styleRef.current = {
+      top: `${(position && position.top) || 0}px`,
+      left: `${(position && position.left) || 0}px`,
+      transformOrigin: `50% ${
+        popoverElement.getBoundingClientRect().height + 4
+      }px`,
+    };
+  };
+
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
   const linkPopoverCls = classNames(`${prefixCls}-popover`, className);
@@ -123,9 +152,10 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
       visible={popoverVisible}
       motionName={`${getAntdPrefixCls()}-zoom-big`}
       motionDeadline={1000}
-      leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+      leavedClassName={`${getEEEPrefixCls()}-hidden`}
       removeOnLeave={false}
       ref={popoverRef}
+      onEnterPrepare={handlePopoverEnterPrepare}
     >
       {({ style, className }, motionRef) => (
         <div

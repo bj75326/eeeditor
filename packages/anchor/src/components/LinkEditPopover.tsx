@@ -232,7 +232,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       visible={popoverVisible}
       motionName={`${getAntdPrefixCls()}-zoom-big`}
       motionDeadline={1000}
-      leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+      leavedClassName={`${getEEEPrefixCls()}-hidden`}
       removeOnLeave={false}
       ref={popoverRef}
       onEnterPrepare={handlePopoverEnterPrepare}

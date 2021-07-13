@@ -16,6 +16,7 @@ import lang, { Languages } from './locale';
 import DefaultLinkEditPopover, {
   LinkEditPopoverProps,
 } from './components/LinkEditPopover';
+import DefaultLinkPopover, { LinkPopoverProps } from './components/LinkPopover';
 
 export * from './locale';
 
@@ -38,7 +39,8 @@ export interface StoreItemMap {
   linkOffset?: DecoratedOffset;
   // link popover
   linkPopoverVisible?: boolean;
-  clearDelayTimer?: () => void;
+  onPopoverMouseEnter?: () => void;
+  onPopoverMouseLeave?: () => void;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -51,9 +53,11 @@ export interface AnchorPluginConfig {
   prefixCls?: string;
   linkClassName?: string;
   linkEditPopoverCls?: string;
+  linkPopoverCls?: string;
   linkComponent?: ComponentType<LinkProps & LinkExtraProps>;
   linkButtonComponent?: ComponentType<LinkButtonProps & LinkButtonExtraProps>;
   linkEditPopoverComponent?: ComponentType<LinkEditPopoverProps>;
+  linkPopoverComponent?: ComponentType<LinkPopoverProps>;
   languages?: Languages;
 }
 
@@ -61,9 +65,11 @@ const createAnchorPlugin = ({
   prefixCls,
   linkClassName,
   linkEditPopoverCls,
+  linkPopoverCls,
   linkComponent: LinkComponent = DefaultLink,
   linkButtonComponent: LinkButtonComponent = DefaultLinkButton,
   linkEditPopoverComponent: LinkEditPopoverComponent = DefaultLinkEditPopover,
+  linkPopoverComponent: LinkPopoverComponent = DefaultLinkPopover,
   languages = lang,
 }: AnchorPluginConfig = {}): AnchorPlugin => {
   const store = createStore<StoreItemMap>();
@@ -82,11 +88,19 @@ const createAnchorPlugin = ({
     <LinkButtonComponent {...props} languages={languages} store={store} />
   );
 
-  const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => (
+  const LinkEditPopover: React.FC = () => (
     <LinkEditPopoverComponent
-      {...props}
       store={store}
       className={linkEditPopoverCls}
+      prefixCls={prefixCls}
+      languages={languages}
+    />
+  );
+
+  const LinkPopover: React.FC = () => (
+    <LinkPopoverComponent
+      store={store}
+      className={linkPopoverCls}
       prefixCls={prefixCls}
       languages={languages}
     />
@@ -114,7 +128,12 @@ const createAnchorPlugin = ({
 
     LinkButton,
 
-    suffix: LinkEditPopover,
+    suffix: () => (
+      <>
+        <LinkPopover />
+        <LinkEditPopover />
+      </>
+    ),
   };
 };
 

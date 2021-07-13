@@ -284,7 +284,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               visible={visible}
               motionName={`${getAntdPrefixCls()}-zoom-big`}
               motionDeadline={1000}
-              leavedClassName={`${getAntdPrefixCls('popover')}-hidden`}
+              leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
               removeOnLeave={false}
               onEnterPrepare={handleToolbarEnterPrepare}
               ref={toolbarRef}
