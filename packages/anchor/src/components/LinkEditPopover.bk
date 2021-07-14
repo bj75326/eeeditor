@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { Form, Input } from 'antd';
 import { ConfigContext } from 'antd/lib/config-provider';
-import { AnchorPluginStore, Languages, Locale, zhCN, LinkEntityData } from '..';
+import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
 import classNames from 'classnames';
 import {
   getPopoverPosition,
@@ -19,8 +19,6 @@ import {
   getSelectedText,
   EditorState,
   EEEditorContext,
-  DecoratedOffset,
-  getDecoratedLeavesOffset,
 } from '@eeeditor/editor';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import contains from 'rc-util/lib/Dom/contains';
@@ -28,7 +26,6 @@ import CSSMotion from 'rc-motion';
 import validateUrl from '../utils/validateUrl';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 import updateLink from '../modifiers/updateLink';
-import formatUrl from '../utils/formatUrl';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;
@@ -44,22 +41,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   const setEditorState = store.getItem('setEditorState');
   const getProps = store.getItem('getProps');
   const getEditorRef = store.getItem('getEditorRef');
-
-  const getLinkProps = store.getItem('getLinkProps');
-
-  const getHref = (): string => {
-    if (getLinkProps) {
-      const entity = getEditorState()
-        .getCurrentContent()
-        .getEntity(getLinkProps()['entityKey']);
-      const entityData: LinkEntityData = entity ? entity.getData() : undefined;
-      return (entityData && entityData.url) || '';
-    }
-
-    return;
-  };
-
-  // const formattedHref = formatUrl(getHref());
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -88,10 +69,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
         });
       } else if (mode === 'edit') {
         form.setFieldsValue({
-          // text: store.getItem('initText') || '',
-          // link: store.getItem('initLink') || '',
-          text: store.getItem('getLinkProps')()['decoratedText'],
-          link: getHref(),
+          text: store.getItem('initText') || '',
+          link: store.getItem('initLink') || '',
         });
       }
     }
@@ -145,7 +124,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     } else {
       // position 由 decorated link <a> element 决定
       const target: HTMLElement = editorRoot.ownerDocument.querySelector(
-        `a[data-offset-key="${getLinkProps()['offsetKey']}"]`,
+        `a[data-offset-key="${store.getItem('offsetKey')}"]`,
       );
       if (target) {
         position = getPopoverPosition(editorRoot, popoverElement, target);
@@ -155,9 +134,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     styleRef.current = {
       top: `${(position && position.top) || 0}px`,
       left: `${(position && position.left) || 0}px`,
-      transformOrigin: `50% ${
-        popoverElement.getBoundingClientRect().height + 4
-      }px`,
+      transformOrigin: `50% ${popoverElement.getBoundingClientRect().height + 4
+        }px`,
     };
 
     // focus link input
@@ -211,13 +189,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
       }
 
       if (mode === 'edit') {
-        // const linkOffset = store.getItem('linkOffset');
-        const linkOffset: DecoratedOffset = getDecoratedLeavesOffset(
-          getEditorState(),
-          getLinkProps()['entityKey'],
-          getLinkProps()['offsetKey'],
-          getLinkProps()['children'][0].props.start,
-        );
+        const linkOffset = store.getItem('linkOffset');
         const newEditorState = updateLink(
           EditorState.forceSelection(
             editorState,
@@ -232,10 +204,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
           ),
           link,
           text,
-          // store.getItem('initLink'),
-          // store.getItem('initText'),
-          getHref(),
-          getLinkProps()['decoratedText'],
+          store.getItem('initLink'),
+          store.getItem('initText'),
         );
         if (newEditorState) {
           setEditorState(newEditorState);

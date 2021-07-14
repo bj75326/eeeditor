@@ -13,8 +13,10 @@ import {
   getEditorRootDomNode,
   getPopoverPosition,
   PopoverPosition,
+  DecoratedOffset,
+  getDecoratedLeavesOffset,
 } from '@eeeditor/editor';
-import { AnchorPluginStore, Languages, Locale, zhCN } from '..';
+import { AnchorPluginStore, Languages, Locale, zhCN, LinkEntityData } from '..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
 import classNames from 'classnames';
@@ -40,6 +42,20 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
 
   const getLinkProps = store.getItem('getLinkProps');
 
+  const getHref = (): string => {
+    if (getLinkProps) {
+      const entity = getEditorState()
+        .getCurrentContent()
+        .getEntity(getLinkProps()['entityKey']);
+      const entityData: LinkEntityData = entity ? entity.getData() : undefined;
+      return (entityData && entityData.url) || '';
+    }
+
+    return;
+  };
+
+  const formattedHref = formatUrl(getHref());
+
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
@@ -49,8 +65,6 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
-  const formattedHref = formatUrl(store.getItem('initLink'));
-  const linkOffset = store.getItem('linkOffset');
   const handlePopoverMouseEnter = store.getItem('onPopoverMouseEnter');
   const handlePopoverMouseLeave = store.getItem('onPopoverMouseLeave');
 
@@ -109,6 +123,15 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
     event.preventDefault();
     setPopoverVisible(false);
     const editorState = getEditorState();
+
+    // todo
+    const linkOffset: DecoratedOffset = getDecoratedLeavesOffset(
+      getEditorState(),
+      getLinkProps()['entityKey'],
+      getLinkProps()['offsetKey'],
+      getLinkProps()['children'][0].props.start,
+    );
+
     setEditorState(
       removeLink(
         EditorState.forceSelection(
@@ -129,7 +152,7 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
     const target: HTMLElement = editorRoot.ownerDocument.querySelector(
-      `a[data-offset-key="${store.getItem('offsetKey')}"]`,
+      `a[data-offset-key="${getLinkProps()['offsetKey']}"]`,
     );
     const position: PopoverPosition = getPopoverPosition(
       editorRoot,

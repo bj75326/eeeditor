@@ -72,16 +72,17 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
 
   // if (!linkOffset) throw new Error('Link getDecoratedLeavesOffset error!');
 
-  const linkPropsRef = useRef<LinkProps>({
+  const linkPropsRef = useRef<LinkProps>();
+  linkPropsRef.current = {
     children,
     entityKey,
     decoratedText,
     offsetKey,
-  });
+  };
   const getLinkProps = (): LinkProps => {
     return linkPropsRef.current || null;
   };
-
+  console.log('store getLinkProps ', store.getItem('getLinkProps'));
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
   // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
   // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
