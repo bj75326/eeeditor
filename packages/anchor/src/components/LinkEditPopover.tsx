@@ -3,7 +3,6 @@ import React, {
   useEffect,
   CSSProperties,
   useRef,
-  useCallback,
   KeyboardEvent,
   CompositionEvent,
   useContext,
@@ -28,7 +27,6 @@ import CSSMotion from 'rc-motion';
 import validateUrl from '../utils/validateUrl';
 import createLinkAtSelection from '../modifiers/createLinkAtSelection';
 import updateLink from '../modifiers/updateLink';
-import formatUrl from '../utils/formatUrl';
 
 export interface LinkEditPopoverProps {
   prefixCls?: string;

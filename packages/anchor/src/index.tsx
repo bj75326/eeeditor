@@ -17,6 +17,7 @@ import DefaultLinkEditPopover, {
   LinkEditPopoverProps,
 } from './components/LinkEditPopover';
 import DefaultLinkPopover, { LinkPopoverProps } from './components/LinkPopover';
+import { is } from 'immutable';
 
 export * from './locale';
 
@@ -38,12 +39,6 @@ export interface StoreItemMap {
   linkPopoverVisible?: boolean;
   onPopoverMouseEnter?: () => void;
   onPopoverMouseLeave?: () => void;
-
-  // initText?: string;
-  // initLink?: string;
-  // entityKey?: string;
-  // offsetKey?: string;
-  // linkOffset?: DecoratedOffset;
 }
 
 export type AnchorPluginStore = Store<StoreItemMap>;
@@ -120,6 +115,23 @@ const createAnchorPlugin = ({
       store.updateItem('setEditorState', setEditorState);
       store.updateItem('getProps', getProps);
       store.updateItem('getEditorRef', getEditorRef);
+    },
+
+    // draft.js 在每次 render 时，不会对 decorated component 使用
+    // diff 算法进行区分，这会导致很多意想不到的 bug，所以
+    // eeeditor 选择在 ContentState 发生变化时，关闭 link popover（如果当前 visible 为 true）
+    onChange: (editorState: EditorState, { getEditorState }): EditorState => {
+      const currContentState = getEditorState().getCurrentContent();
+      const nextContentState = editorState.getCurrentContent();
+      if (!is(currContentState, nextContentState)) {
+        if (store.getItem('linkPopoverVisible')) {
+          store.updateItem('linkPopoverVisible', false);
+        }
+        if (store.getItem('editPopoverVisible')) {
+          store.updateItem('editPopoverVisible', false);
+        }
+      }
+      return editorState;
     },
 
     decorators: [

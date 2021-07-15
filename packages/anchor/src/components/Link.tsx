@@ -1,9 +1,5 @@
 import React, { ReactNode, MouseEvent, useContext, useRef } from 'react';
-import {
-  getDecoratedLeavesOffset,
-  DecoratedOffset,
-  EEEditorContext,
-} from '@eeeditor/editor';
+import { EEEditorContext } from '@eeeditor/editor';
 import { AnchorPluginStore, LinkEntityData, Languages, zhCN, Locale } from '..';
 import classNames from 'classnames';
 import formatUrl from '../utils/formatUrl';
@@ -13,8 +9,6 @@ export interface LinkProps {
   entityKey: string;
   decoratedText: string;
   offsetKey: string;
-  // getEditorState: () => EditorState;
-  // setEditorState: (editorState: EditorState) => void;
 }
 
 export interface LinkExtraProps {
@@ -38,9 +32,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   } = props;
 
   const getEditorState = store.getItem('getEditorState');
-  const setEditorState = store.getItem('setEditorState');
   const getProps = store.getItem('getProps');
-  const getEditorRef = store.getItem('getEditorRef');
 
   const entity = getEditorState().getCurrentContent().getEntity(entityKey);
 
@@ -84,8 +76,8 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   };
 
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
-  // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
-  // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
+  // e.g. 在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
+  // e.g. 在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
   // 所以 eeeditor 使用了自定义的 linkPopover 组件
 
   const delayTimer = useRef<number>();
@@ -142,11 +134,6 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const handlePopoverMouseLeave = (): void => {
     delaySetVisible(false);
   };
-
-  // todo
-  // draft.js 在每次 render 时，不会对 decorated component 使用
-  // diff 算法进行区分， 这会导致很多意想不到的 bug，所以
-  // eeeditor 选择在 editorState
 
   const linkClassName = classNames(className, `${prefixCls}-link`);
 
