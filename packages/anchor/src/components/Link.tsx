@@ -82,7 +82,7 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const getLinkProps = (): LinkProps => {
     return linkPropsRef.current || null;
   };
-  console.log('store getLinkProps ', store.getItem('getLinkProps'));
+
   // antd 自带的 tooltip/popover trigger 功能不满足 eeeditor anchor 的要求
   // 比如在按下左键后鼠标移动到 link，onMouseEnter 事件不应该使 visible 为 true
   // 比如在 link 叶子节点上按下鼠标开始选择文本时，onMouseDown 事件应该使 visible 为 false
@@ -98,12 +98,6 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   };
 
   const showLinkPopover = () => {
-    // store.updateItem('initText', decoratedText);
-    // store.updateItem('initLink', href);
-    // store.updateItem('entityKey', entityKey);
-    // store.updateItem('offsetKey', offsetKey);
-    // store.updateItem('linkOffset', linkOffset);
-
     store.updateItem('getLinkProps', getLinkProps);
     store.updateItem('onPopoverMouseEnter', handlePopoverMouseEnter);
     store.updateItem('onPopoverMouseLeave', handlePopoverMouseLeave);
@@ -148,6 +142,11 @@ const Link: React.FC<LinkProps & LinkExtraProps> = (props) => {
   const handlePopoverMouseLeave = (): void => {
     delaySetVisible(false);
   };
+
+  // todo
+  // draft.js 在每次 render 时，不会对 decorated component 使用
+  // diff 算法进行区分， 这会导致很多意想不到的 bug，所以
+  // eeeditor 选择在 editorState
 
   const linkClassName = classNames(className, `${prefixCls}-link`);
 

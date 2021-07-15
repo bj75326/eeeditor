@@ -59,8 +59,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     return;
   };
 
-  // const formattedHref = formatUrl(getHref());
-
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
@@ -79,22 +77,6 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
 
   const onStoredVisibleChange = (visible: boolean) => {
-    const mode = store.getItem('mode');
-    if (visible) {
-      if (mode === 'new') {
-        form.setFieldsValue({
-          text: getSelectedText(getEditorState()) || '',
-          link: '',
-        });
-      } else if (mode === 'edit') {
-        form.setFieldsValue({
-          // text: store.getItem('initText') || '',
-          // link: store.getItem('initLink') || '',
-          text: store.getItem('getLinkProps')()['decoratedText'],
-          link: getHref(),
-        });
-      }
-    }
     // setPopoverVisible 触发重新渲染
     setPopoverVisible(visible);
   };
@@ -106,22 +88,13 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     };
   }, []);
 
-  const getPopoverDomNode = (): HTMLElement => {
-    return popoverRef.current || null;
+  const onDocumentClick = (event) => {
+    const { target } = event;
+    const popoverNode = popoverRef.current || null;
+    if (!contains(popoverNode, target)) {
+      setPopoverVisible(false);
+    }
   };
-
-  const onDocumentClick = useCallback(
-    (event) => {
-      if (popoverVisible) {
-        const { target } = event;
-        const popoverNode = getPopoverDomNode();
-        if (!contains(popoverNode, target)) {
-          setPopoverVisible(false);
-        }
-      }
-    },
-    [popoverVisible],
-  );
 
   useEffect(() => {
     let currentDocument: HTMLDocument =
@@ -134,7 +107,26 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     return () => {
       cleanOutsiderHandler.remove();
     };
-  }, [onDocumentClick]);
+  }, []);
+
+  // 在每次显示 edit popover 时， 初始化 popover form 的值
+  const initForm = () => {
+    const mode = store.getItem('mode');
+
+    if (mode === 'new') {
+      form.setFieldsValue({
+        text: getSelectedText(getEditorState()) || '',
+        link: '',
+      });
+    } else if (mode === 'edit') {
+      form.setFieldsValue({
+        // text: store.getItem('initText') || '',
+        // link: store.getItem('initLink') || '',
+        text: getLinkProps()['decoratedText'],
+        link: getHref(),
+      });
+    }
+  };
 
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
@@ -159,6 +151,9 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
         popoverElement.getBoundingClientRect().height + 4
       }px`,
     };
+
+    // init form
+    initForm();
 
     // focus link input
     const linkElement = popoverElement.querySelector('#link');

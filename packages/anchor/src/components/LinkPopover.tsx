@@ -124,7 +124,6 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
     setPopoverVisible(false);
     const editorState = getEditorState();
 
-    // todo
     const linkOffset: DecoratedOffset = getDecoratedLeavesOffset(
       getEditorState(),
       getLinkProps()['entityKey'],
