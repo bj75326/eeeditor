@@ -17,6 +17,7 @@ import {
   EEEditorContext,
   getEditorRootDomNode,
   setSelection,
+  getVisibleSelectionRect,
 } from '@eeeditor/editor';
 import { createPortal } from 'react-dom';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
@@ -92,6 +93,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   } = props;
 
   const getProps = store.getItem('getProps');
+  const getEditorState = store.getItem('getEditorState');
   const getEditorRef = store.getItem('getEditorRef');
 
   const styleRef = useRef<CSSProperties>({ top: 0, left: 0, ...style });
@@ -199,7 +201,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const onSelectionChanged = () => {
     const selection = store.getItem('selection');
-    if (selection && !selection.isCollapsed() && selection.getHasFocus()) {
+    const currSelection = getEditorState().getSelection();
+    if (
+      selection &&
+      !selection.isCollapsed() &&
+      selection.getHasFocus() &&
+      currSelection.getHasFocus()
+    ) {
       setVisible(true);
     } else {
       setVisible(false);

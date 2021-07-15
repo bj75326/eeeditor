@@ -450,9 +450,7 @@ const Page: React.FC<PageProps> = (props) => {
               <DecoratedRedoButton />
             </StaticToolbar>
           </div>
-          <div>
-            <InlineToolbar></InlineToolbar>
-          </div>
+          <InlineToolbar></InlineToolbar>
         </div>
         {sidebar}
       </Spin>
