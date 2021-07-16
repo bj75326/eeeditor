@@ -27,6 +27,7 @@ import {
   ItalicButton,
   UnderlineButton,
   CodeButton,
+  EEEditorStyleButtonType,
 } from '@eeeditor/buttons';
 import { InlineToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -61,6 +62,8 @@ export interface ToolbarChildrenProps extends Partial<PluginMethods> {
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
+  // 提供给 override buttons 的方法
+  handleOverride?: (overrideContent: ReactElement | ReactElement[]) => void;
 }
 
 export interface ToolbarPubProps {
@@ -197,6 +200,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     },
     // inline toolbar 默认的 button tip props
     tipProps: childrenTipProps,
+    // override
+    handleOverride: (overrideContent) => {
+      setOverrideContent(overrideContent);
+    },
   };
 
   const onSelectionChanged = () => {

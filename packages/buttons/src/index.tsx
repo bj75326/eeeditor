@@ -51,7 +51,6 @@ import AlignLeftButton, {
 import AlignRightButton, {
   defaultAlignRightIcon,
 } from './components/AlignRightButton';
-import { Languages } from './locale';
 
 export * from './locale';
 
@@ -84,11 +83,8 @@ export interface EEEditorButtonProps<K, S> {
   syntax?: S;
 }
 
-export interface EEEditorExtraButtonProps {
+export interface EEEditorExtraButtonProps extends Partial<PluginMethods> {
   // toolbar plugin 提供的 props
-  getEditorState?: () => EditorState;
-  setEditorState?: (editorState: EditorState) => void;
-  getProps?: PluginMethods['getProps'];
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -103,6 +99,7 @@ export interface EEEditorExtraButtonProps {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
+  // todo
   // 使用 static toolbar 时，selector button 提供的 props
   setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
   setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;

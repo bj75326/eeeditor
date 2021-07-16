@@ -5,22 +5,12 @@ import React, {
   useState,
   useContext,
 } from 'react';
-import {
-  EditorState,
-  EditorPlugin,
-  EditorProps,
-  PluginMethods,
-  EEEditorContext,
-} from '@eeeditor/editor';
+import { EditorPlugin, PluginMethods, EEEditorContext } from '@eeeditor/editor';
 import { ToolbarChildrenProps } from './Toolbar';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import classNames from 'classnames';
 
-export interface SelectorBtnChildrenProps {
-  getEditorState?: () => EditorState;
-  setEditorState?: (editorState: EditorState) => void;
-  getProps?: () => EditorProps;
-  getEditorRef?: PluginMethods['getEditorRef'];
+export interface SelectorBtnChildrenProps extends Partial<PluginMethods> {
   addKeyCommandHandler?: (
     keyCommandHandler: EditorPlugin['handleKeyCommand'],
   ) => void;
@@ -79,8 +69,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
   const [visible, setVisible]: [boolean, any] = useState(false);
   const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
   const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
-  const [btnIcon, setBtnIcon]: [SelectorButtonProps['icon'], any] =
-    useState(icon);
+  const [btnIcon, setBtnIcon]: [ReactNode, any] = useState(icon);
 
   const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
     if (active === btnActive[optionKey]) return;
@@ -103,7 +92,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     });
   };
 
-  const setSelectorBtnIcon = (icon: SelectorButtonProps['icon']): void => {
+  const setSelectorBtnIcon = (icon: ReactNode): void => {
     setBtnIcon(icon);
   };
 
