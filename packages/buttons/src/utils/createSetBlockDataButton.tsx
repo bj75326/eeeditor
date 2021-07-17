@@ -67,10 +67,10 @@ export default function createSetBlockDataButton<K, S>({
       removeKeyBindingFn,
       addBeforeInputHandler,
       removeBeforeInputHandler,
-      setSelectorBtnActive,
-      setSelectorBtnDisabled,
+      setBtnActive,
+      setBtnDisabled,
       optionKey,
-      setSelectorBtnIcon,
+      setBtnIcon,
     } = props;
 
     let locale: Locale = zhCN;
@@ -195,11 +195,11 @@ export default function createSetBlockDataButton<K, S>({
     }, []);
 
     useEffect(() => {
-      if (setSelectorBtnActive) {
-        setSelectorBtnActive(blockTypeIsActive(), optionKey);
+      if (setBtnActive) {
+        setBtnActive(blockTypeIsActive(), optionKey);
       }
-      if (setSelectorBtnIcon && blockTypeIsActive()) {
-        setSelectorBtnIcon(children);
+      if (setBtnIcon && blockTypeIsActive()) {
+        setBtnIcon(children);
       }
     }, [blockTypeIsActive()]);
 
@@ -217,8 +217,8 @@ export default function createSetBlockDataButton<K, S>({
     };
 
     useEffect(() => {
-      if (setSelectorBtnDisabled) {
-        setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
+      if (setBtnDisabled) {
+        setBtnDisabled(checkButtonShouldDisabled(), optionKey);
       }
     }, [checkButtonShouldDisabled()]);
 

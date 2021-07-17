@@ -61,10 +61,10 @@ export default function CreateToggleInlineStyleButton<K, S>({
       removeKeyBindingFn,
       addBeforeInputHandler,
       removeBeforeInputHandler,
-      setSelectorBtnActive,
-      setSelectorBtnDisabled,
+      setBtnActive,
+      setBtnDisabled,
       optionKey,
-      setSelectorBtnIcon,
+      setBtnIcon,
     } = props;
 
     let locale: Locale = zhCN;
@@ -131,11 +131,11 @@ export default function CreateToggleInlineStyleButton<K, S>({
     }, []);
 
     useEffect(() => {
-      if (setSelectorBtnActive) {
-        setSelectorBtnActive(inlineStyleIsActive(), optionKey);
+      if (setBtnActive) {
+        setBtnActive(inlineStyleIsActive(), optionKey);
       }
-      if (setSelectorBtnIcon && inlineStyleIsActive()) {
-        setSelectorBtnIcon(children);
+      if (setBtnIcon && inlineStyleIsActive()) {
+        setBtnIcon(children);
       }
     }, [inlineStyleIsActive()]);
 
@@ -154,8 +154,8 @@ export default function CreateToggleInlineStyleButton<K, S>({
     };
 
     useEffect(() => {
-      if (setSelectorBtnDisabled) {
-        setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
+      if (setBtnDisabled) {
+        setBtnDisabled(checkButtonShouldDisabled(), optionKey);
       }
     }, [checkButtonShouldDisabled()]);
 

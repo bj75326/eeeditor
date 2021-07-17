@@ -2,6 +2,8 @@
 
 @prefix: ~'@{eeeditor-prefix-cls}-inline-toolbar';
 
+@override-btn-prefix: ~'@{eeeditor-prefix-cls}-override-btn';
+
 .@{prefix} {
   box-sizing: border-box;
   -webkit-user-select: none;
@@ -46,6 +48,7 @@
     width: @inline-toolbar-btn-size;
     height: @inline-toolbar-btn-size;
     font-size: @inline-toolbar-btn-icon-size;
+    color: @inline-toolbar-btn-color;
     &:hover {
       background-color: @inline-toolbar-btn-hover-bg;
     }
@@ -58,4 +61,22 @@
   .@{prefix}-inner {
     box-shadow: @inline-toolbar-box-shadow;
   }
+}
+
+.@{override-btn-prefix}-wrapper {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.@{override-btn-prefix} {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @inline-toolbar-btn-size;
+  height: @inline-toolbar-btn-size;
+  color: @inline-toolbar-btn-color;
+  font-size: @inline-toolbar-btn-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
 }

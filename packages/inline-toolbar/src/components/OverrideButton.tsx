@@ -13,6 +13,7 @@ import {
 } from '@eeeditor/editor';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { ToolbarChildrenProps } from './Toolbar';
+import classNames from 'classnames';
 
 export interface OverrideBtnChildrenProps extends Partial<PluginMethods> {
   addKeyCommandHandler?: (
@@ -29,9 +30,9 @@ export interface OverrideBtnChildrenProps extends Partial<PluginMethods> {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
-  setOverrideBtnActive: (active: boolean, optionKey: number) => void;
-  setOverrideBtnDisabled: (disabled: boolean, optionKey: number) => void;
-  setOverrideBtnIcon: (icon: OverrideButtonProps['icon']) => void;
+  setBtnActive: (active: boolean, optionKey: number) => void;
+  setBtnDisabled: (disabled: boolean, optionKey: number) => void;
+  setBtnIcon: (icon: OverrideButtonProps['icon']) => void;
   // selector button  默认的 button tip props
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
 }
@@ -71,15 +72,38 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('override-btn', customizePrefixCls);
 
-  const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
-  const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
-  const [btnIcon, setBtnIcon]: [ReactNode, any] = useState(icon);
+  const [overrideBtnActive, setOverrideBtnActive]: [boolean[], any] = useState(
+    [],
+  );
+  const [overrideBtnDisabled, setOverrideBtnDisabled]: [
+    boolean[],
+    any,
+  ] = useState([]);
+  const [overrideBtnIcon, setOverrideBtnIcon]: [ReactNode, any] = useState(
+    icon,
+  );
 
-  const setOverrideBtnActive = () => {};
+  const setBtnActive = (active: boolean, optionKey: number): void => {
+    if (active === overrideBtnActive[optionKey]) return;
+    setOverrideBtnActive((overrideBtnActive: boolean[]) => {
+      const newOverrideBtnActive: boolean[] = [...overrideBtnActive];
+      newOverrideBtnActive[optionKey] = active;
+      return newOverrideBtnActive;
+    });
+  };
 
-  const setOverrideBtnDisabled = () => {};
+  const setBtnDisabled = (disabled: boolean, optionKey: number): void => {
+    if (disabled === overrideBtnDisabled[optionKey]) return;
+    setOverrideBtnDisabled((overrideBtnDisabled: boolean[]) => {
+      const newOverrideBtnDisabled: boolean[] = [...overrideBtnDisabled];
+      newOverrideBtnDisabled[optionKey] = disabled;
+      return newOverrideBtnDisabled;
+    });
+  };
 
-  const setOverrideBtnIcon = (icon: ReactNode): void => {};
+  const setBtnIcon = (icon: ReactNode): void => {
+    setOverrideBtnIcon(icon);
+  };
 
   const childProps: OverrideBtnChildrenProps = {
     getEditorState,
@@ -92,12 +116,22 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
     removeKeyBindingFn,
     addBeforeInputHandler,
     removeBeforeInputHandler,
-    setOverrideBtnActive,
-    setOverrideBtnDisabled,
-    setOverrideBtnIcon,
+    setBtnActive,
+    setBtnDisabled,
+    setBtnIcon,
+    tipProps: childrenTipProps,
   };
 
-  return <div></div>;
+  const btnClassName = classNames(`${prefixCls}`, className, {
+    [`${prefixCls}-active`]: overrideBtnActive.some(
+      (status: boolean) => status,
+    ),
+    [`${prefixCls}-disabled`]: !overrideBtnDisabled.some(
+      (status: boolean) => !status,
+    ),
+  });
+
+  return <div className={``}></div>;
 };
 
 const DecoratedOverrideButton: React.FC<OverrideButtonProps> = (props) => (

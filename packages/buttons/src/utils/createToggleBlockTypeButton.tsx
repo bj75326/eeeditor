@@ -61,10 +61,10 @@ export default function createToggleBlockTypeButton<K, S>({
       removeKeyBindingFn,
       addBeforeInputHandler,
       removeBeforeInputHandler,
-      setSelectorBtnActive,
-      setSelectorBtnDisabled,
+      setBtnActive,
+      setBtnDisabled,
       optionKey,
-      setSelectorBtnIcon,
+      setBtnIcon,
     } = props;
 
     let locale: Locale = zhCN;
@@ -89,8 +89,8 @@ export default function createToggleBlockTypeButton<K, S>({
 
     const blockTypeIsActive = (): boolean => {
       if (!getEditorState) {
-        // if (setSelectorBtnActive) {
-        //   setSelectorBtnActive(false, optionKey);
+        // if (setBtnActive) {
+        //   setBtnActive(false, optionKey);
         // }
         return false;
       }
@@ -100,8 +100,8 @@ export default function createToggleBlockTypeButton<K, S>({
         .getBlockForKey(editorState.getSelection().getStartKey())
         .getType();
 
-      // if (setSelectorBtnActive) {
-      //   setSelectorBtnActive(type === blockType, optionKey);
+      // if (setBtnActive) {
+      //   setBtnActive(type === blockType, optionKey);
       // }
       return type === blockType;
     };
@@ -140,18 +140,18 @@ export default function createToggleBlockTypeButton<K, S>({
     }, []);
 
     useEffect(() => {
-      if (setSelectorBtnActive) {
-        setSelectorBtnActive(blockTypeIsActive(), optionKey);
+      if (setBtnActive) {
+        setBtnActive(blockTypeIsActive(), optionKey);
       }
-      if (setSelectorBtnIcon && blockTypeIsActive()) {
-        setSelectorBtnIcon(children);
+      if (setBtnIcon && blockTypeIsActive()) {
+        setBtnIcon(children);
       }
     }, [blockTypeIsActive()]);
 
     const checkButtonShouldDisabled = (): boolean => {
       if (!getEditorState) {
-        // if (setSelectorBtnDisabled) {
-        //   setSelectorBtnDisabled(true, optionKey);
+        // if (setBtnDisabled) {
+        //   setBtnDisabled(true, optionKey);
         // }
         return true;
       }
@@ -161,15 +161,15 @@ export default function createToggleBlockTypeButton<K, S>({
         buttonType,
         disableStrategy,
       );
-      // if (setSelectorBtnDisabled) {
-      //   setSelectorBtnDisabled(status, optionKey);
+      // if (setBtnDisabled) {
+      //   setBtnDisabled(status, optionKey);
       // }
       return status;
     };
 
     useEffect(() => {
-      if (setSelectorBtnDisabled) {
-        setSelectorBtnDisabled(checkButtonShouldDisabled(), optionKey);
+      if (setBtnDisabled) {
+        setBtnDisabled(checkButtonShouldDisabled(), optionKey);
       }
     }, [checkButtonShouldDisabled()]);
 

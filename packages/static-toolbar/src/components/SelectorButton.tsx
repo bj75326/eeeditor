@@ -25,9 +25,9 @@ export interface SelectorBtnChildrenProps extends Partial<PluginMethods> {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
-  setSelectorBtnActive: (active: boolean, optionKey: number) => void;
-  setSelectorBtnDisabled: (disabled: boolean, optionKey: number) => void;
-  setSelectorBtnIcon: (icon: SelectorButtonProps['icon']) => void;
+  setBtnActive: (active: boolean, optionKey: number) => void;
+  setBtnDisabled: (disabled: boolean, optionKey: number) => void;
+  setBtnIcon: (icon: SelectorButtonProps['icon']) => void;
   // selector button  默认的 button tip props
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
 }
@@ -67,33 +67,37 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
   const prefixCls = getPrefixCls('selector-btn', customizePrefixCls);
 
   const [visible, setVisible]: [boolean, any] = useState(false);
-  const [btnActive, setBtnActive]: [boolean[], any] = useState([]);
-  const [btnDisabled, setBtnDisabled]: [boolean[], any] = useState([]);
-  const [btnIcon, setBtnIcon]: [ReactNode, any] = useState(icon);
+  const [selectorBtnActive, setSelectorBtnActive]: [boolean[], any] = useState(
+    [],
+  );
+  const [selectorBtnDisabled, setSelectorBtnDisabled]: [
+    boolean[],
+    any,
+  ] = useState([]);
+  const [selectorBtnIcon, setSelectorBtnIcon]: [ReactNode, any] = useState(
+    icon,
+  );
 
-  const setSelectorBtnActive = (active: boolean, optionKey: number): void => {
-    if (active === btnActive[optionKey]) return;
-    setBtnActive((btnActive: boolean[]) => {
-      const newBtnActive: boolean[] = [...btnActive];
-      newBtnActive[optionKey] = active;
-      return newBtnActive;
+  const setBtnActive = (active: boolean, optionKey: number): void => {
+    if (active === selectorBtnActive[optionKey]) return;
+    setSelectorBtnActive((selectorBtnActive: boolean[]) => {
+      const newSelectorBtnActive: boolean[] = [...selectorBtnActive];
+      newSelectorBtnActive[optionKey] = active;
+      return newSelectorBtnActive;
     });
   };
 
-  const setSelectorBtnDisabled = (
-    disabled: boolean,
-    optionKey: number,
-  ): void => {
-    if (disabled === btnDisabled[optionKey]) return;
-    setBtnDisabled((btnDisabled: boolean[]) => {
-      const newBtnDisabled: boolean[] = [...btnDisabled];
-      newBtnDisabled[optionKey] = disabled;
-      return newBtnDisabled;
+  const setBtnDisabled = (disabled: boolean, optionKey: number): void => {
+    if (disabled === selectorBtnDisabled[optionKey]) return;
+    setSelectorBtnDisabled((selectorBtnDisabled: boolean[]) => {
+      const newSelectorBtnDisabled: boolean[] = [...selectorBtnDisabled];
+      newSelectorBtnDisabled[optionKey] = disabled;
+      return newSelectorBtnDisabled;
     });
   };
 
-  const setSelectorBtnIcon = (icon: ReactNode): void => {
-    setBtnIcon(icon);
+  const setBtnIcon = (icon: ReactNode): void => {
+    setSelectorBtnIcon(icon);
   };
 
   const showOptions = (): void => {
@@ -114,22 +118,26 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     removeKeyBindingFn,
     addBeforeInputHandler,
     removeBeforeInputHandler,
-    setSelectorBtnActive,
-    setSelectorBtnDisabled,
-    setSelectorBtnIcon,
+    setBtnActive,
+    setBtnDisabled,
+    setBtnIcon,
     tipProps: childrenTipProps,
   };
 
   const btnClassName = classNames(`${prefixCls}`, className, {
-    [`${prefixCls}-active`]: btnActive.some((status: boolean) => status),
-    [`${prefixCls}-disabled`]: !btnDisabled.some((status: boolean) => !status),
+    [`${prefixCls}-active`]: selectorBtnActive.some(
+      (status: boolean) => status,
+    ),
+    [`${prefixCls}-disabled`]: !selectorBtnDisabled.some(
+      (status: boolean) => !status,
+    ),
     [`${prefixCls}-show`]:
-      visible && btnDisabled.some((status: boolean) => !status),
+      visible && selectorBtnDisabled.some((status: boolean) => !status),
   });
 
   const optionsClassName = classNames(`${prefixCls}-options`, {
     [`${prefixCls}-options-hidden`]:
-      !visible || !btnDisabled.some((status: boolean) => !status),
+      !visible || !selectorBtnDisabled.some((status: boolean) => !status),
   });
 
   return (
@@ -139,7 +147,9 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
       onMouseLeave={hideOptions}
     >
       <div className={btnClassName} style={style}>
-        {btnActive.some((status: boolean) => status) ? btnIcon : icon}
+        {selectorBtnActive.some((status: boolean) => status)
+          ? selectorBtnIcon
+          : icon}
       </div>
       <div className={optionsClassName}>
         {React.Children.map<ReactElement, ReactElement>(

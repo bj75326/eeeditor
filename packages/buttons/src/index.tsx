@@ -99,12 +99,11 @@ export interface EEEditorExtraButtonProps extends Partial<PluginMethods> {
   removeBeforeInputHandler?: (
     beforeInputHandler: EditorPlugin['handleBeforeInput'],
   ) => void;
-  // todo
   // 使用 static toolbar 时，selector button 提供的 props
-  setSelectorBtnActive?: (active: boolean, optionKey: number) => void;
-  setSelectorBtnDisabled?: (disabled: boolean, optionKey: number) => void;
+  setBtnActive?: (active: boolean, optionKey: number) => void;
+  setBtnDisabled?: (disabled: boolean, optionKey: number) => void;
   optionKey?: number;
-  setSelectorBtnIcon?: (icon?: ReactNode) => void;
+  setBtnIcon?: (icon?: ReactNode) => void;
 }
 
 export type EEEditorStyleButtonType<K, S> = React.FC<EEEditorButtonProps<K, S>>;
