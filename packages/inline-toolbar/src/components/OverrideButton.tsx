@@ -6,36 +6,15 @@ import React, {
   useState,
   MouseEvent,
 } from 'react';
-import {
-  EditorState,
-  PluginMethods,
-  EditorPlugin,
-  EEEditorContext,
-} from '@eeeditor/editor';
-import { TooltipPropsWithTitle } from 'antd/es/tooltip';
+import { EEEditorContext } from '@eeeditor/editor';
 import { ToolbarChildrenProps } from './Toolbar';
 import classNames from 'classnames';
+import ReturnButton from './ReturnButton';
 
-export interface OverrideBtnChildrenProps extends Partial<PluginMethods> {
-  addKeyCommandHandler?: (
-    keyCommandHandler: EditorPlugin['handleKeyCommand'],
-  ) => void;
-  removeKeyCommandHandler?: (
-    keyCommandHandler: EditorPlugin['handleKeyCommand'],
-  ) => void;
-  addKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
-  removeKeyBindingFn?: (keyBindingFn: EditorPlugin['keyBindingFn']) => void;
-  addBeforeInputHandler?: (
-    beforeInputHandler: EditorPlugin['handleBeforeInput'],
-  ) => void;
-  removeBeforeInputHandler?: (
-    beforeInputHandler: EditorPlugin['handleBeforeInput'],
-  ) => void;
+export interface OverrideBtnChildrenProps {
   setBtnActive: (active: boolean, optionKey: number) => void;
   setBtnDisabled: (disabled: boolean, optionKey: number) => void;
   setBtnIcon: (icon: OverrideButtonProps['icon']) => void;
-  // selector button  默认的 button tip props
-  tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
 }
 
 export interface OverrideButtonProps {
@@ -43,7 +22,6 @@ export interface OverrideButtonProps {
   className?: string;
   style?: CSSProperties;
   icon?: ReactNode;
-  childrenTipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children: ReactElement | ReactElement[];
 }
 
@@ -55,19 +33,8 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
     className,
     style,
     icon,
-    childrenTipProps = { placement: 'top' },
     children,
-    getEditorState,
-    setEditorState,
-    getProps,
-    getEditorRef,
-    addKeyCommandHandler,
-    removeKeyCommandHandler,
-    addKeyBindingFn,
-    removeKeyBindingFn,
-    addBeforeInputHandler,
-    removeBeforeInputHandler,
-    handleOverride,
+    onOverride,
   } = props;
 
   const { getPrefixCls } = useContext(EEEditorContext);
@@ -106,28 +73,27 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
     setOverrideBtnIcon(icon);
   };
 
-  const childProps: OverrideBtnChildrenProps = {
-    getEditorState,
-    setEditorState,
-    getProps,
-    getEditorRef,
-    addKeyCommandHandler,
-    removeKeyCommandHandler,
-    addKeyBindingFn,
-    removeKeyBindingFn,
-    addBeforeInputHandler,
-    removeBeforeInputHandler,
-    setBtnActive,
-    setBtnDisabled,
-    setBtnIcon,
-    tipProps: childrenTipProps,
-  };
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
 
-  const onOverride = (event: MouseEvent): void => {
-    handleOverride(children);
+  const childProps: OverrideBtnChildrenProps = {
+    setBtnActive,
+    setBtnDisabled,
+    setBtnIcon,
+  };
+
+  const handleOverride = (event: MouseEvent): void => {
+    event.preventDefault();
+    const overrideContent = React.Children.map<ReactElement, ReactElement>(
+      children,
+      (child, index) =>
+        React.cloneElement(child, {
+          ...childProps,
+          optionKey: index,
+        }),
+    ).concat(<ReturnButton />);
+    onOverride(overrideContent);
   };
 
   const btnClassName = classNames(`${prefixCls}`, className, {
@@ -141,7 +107,7 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
 
   return (
     <div className={`${prefixCls}-wrapper`} onMouseDown={preventBubblingUp}>
-      <div className={btnClassName}>
+      <div className={btnClassName} style={style} onClick={handleOverride}>
         {overrideBtnActive.some((status: boolean) => status)
           ? overrideBtnIcon
           : icon}

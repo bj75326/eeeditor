@@ -12,6 +12,9 @@ import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
 } from './components/Toolbar';
+import OverrideButton, {
+  OverrideButtonProps,
+} from './components/OverrideButton';
 
 export type InlineToolbarProps = ToolbarPubProps;
 
@@ -19,6 +22,7 @@ export type InlineToolbarChildrenProps = ToolbarChildrenProps;
 
 export type InlineToolbarPlugin = EditorPlugin & {
   InlineToolbar: React.FC<InlineToolbarProps>;
+  OverrideButton: React.FC<OverrideButtonProps>;
 };
 
 export interface StoreItemMap extends Partial<PluginMethods> {
@@ -59,5 +63,7 @@ export default (): InlineToolbarPlugin => {
     suffix: () => <div className="inline-toolbar-plugin-suffix"></div>,
 
     InlineToolbar,
+
+    OverrideButton,
   };
 };

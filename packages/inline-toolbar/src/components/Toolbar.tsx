@@ -63,7 +63,7 @@ export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   ) => void;
   tipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   // 提供给 override buttons 的方法
-  handleOverride?: (overrideContent: ReactElement | ReactElement[]) => void;
+  onOverride?: (overrideContent: ReactElement | ReactElement[]) => void;
 }
 
 export interface ToolbarPubProps {
@@ -201,9 +201,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     // inline toolbar 默认的 button tip props
     tipProps: childrenTipProps,
     // override
-    handleOverride: (overrideContent) => {
+    onOverride: (overrideContent) => {
       setOverrideContent(overrideContent);
     },
+  };
+
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.preventDefault();
   };
 
   const onSelectionChanged = () => {
@@ -283,7 +287,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     return null;
   };
   useEffect(() => {
-    console.log('check getContainer()   执行');
     setVisible(false);
   }, [getContainer()]);
 
@@ -312,6 +315,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                     ...styleRef.current,
                   }}
                   ref={motionRef}
+                  onMouseDown={preventBubblingUp}
                 >
                   <div className={`${prefixCls}-content`}>
                     <div
@@ -321,7 +325,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                     </div>
                     <div className={`${prefixCls}-inner`} role="tooltip">
                       {React.Children.map<ReactElement, ReactElement>(
-                        children || defaultButtons,
+                        overrideContent
+                          ? overrideContent
+                          : children || defaultButtons,
                         (child) =>
                           React.cloneElement(child, {
                             ...childrenProps,

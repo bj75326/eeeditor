@@ -80,7 +80,11 @@ const {
   ...staticToolbarPlugin
 }: StaticToolbarPlugin = createStaticToolbarPlugin();
 
-const { InlineToolbar, ...inlineToolbarPlugin } = createInlineToolbarPlugin();
+const {
+  InlineToolbar,
+  OverrideButton,
+  ...inlineToolbarPlugin
+} = createInlineToolbarPlugin();
 
 const {
   DecoratedUndoButton,
@@ -450,7 +454,21 @@ const Page: React.FC<PageProps> = (props) => {
               <DecoratedRedoButton />
             </StaticToolbar>
           </div>
-          <InlineToolbar></InlineToolbar>
+          <InlineToolbar>
+            <BoldButton />
+            <ItalicButton />
+            <UnderlineButton />
+            <CodeButton />
+            <LinkButton />
+            <OverrideButton icon={defaultHeadIcon}>
+              <HeadlineOneButton />
+              <HeadlineTwoButton />
+              <HeadlineThreeButton />
+              <HeadlineFourButton />
+              <HeadlineFiveButton />
+              <HeadlineSixButton />
+            </OverrideButton>
+          </InlineToolbar>
         </div>
         {sidebar}
       </Spin>
