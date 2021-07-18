@@ -4,6 +4,7 @@ import React, {
   ReactNode,
   useState,
   useContext,
+  MouseEvent,
 } from 'react';
 import { EditorPlugin, PluginMethods, EEEditorContext } from '@eeeditor/editor';
 import { ToolbarChildrenProps } from './Toolbar';
@@ -107,6 +108,10 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     setVisible(false);
   };
 
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.preventDefault();
+  };
+
   const childProps: SelectorBtnChildrenProps = {
     getEditorState,
     setEditorState,
@@ -145,6 +150,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
       className={`${prefixCls}-wrapper`}
       onMouseEnter={showOptions}
       onMouseLeave={hideOptions}
+      onMouseDown={preventBubblingUp}
     >
       <div className={btnClassName} style={style}>
         {selectorBtnActive.some((status: boolean) => status)

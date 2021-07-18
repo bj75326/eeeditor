@@ -4,6 +4,7 @@ import React, {
   ReactElement,
   useContext,
   useState,
+  MouseEvent,
 } from 'react';
 import {
   EditorState,
@@ -121,6 +122,13 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
     setBtnIcon,
     tipProps: childrenTipProps,
   };
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.preventDefault();
+  };
+
+  const onOverride = (event: MouseEvent): void => {
+    handleOverride(children);
+  };
 
   const btnClassName = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-active`]: overrideBtnActive.some(
@@ -131,7 +139,15 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
     ),
   });
 
-  return <div className={``}></div>;
+  return (
+    <div className={`${prefixCls}-wrapper`} onMouseDown={preventBubblingUp}>
+      <div className={btnClassName}>
+        {overrideBtnActive.some((status: boolean) => status)
+          ? overrideBtnIcon
+          : icon}
+      </div>
+    </div>
+  );
 };
 
 const DecoratedOverrideButton: React.FC<OverrideButtonProps> = (props) => (

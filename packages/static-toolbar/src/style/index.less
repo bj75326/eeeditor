@@ -1,5 +1,7 @@
 @import './theme.less';
 
+@selector-btn-prefix: ~'@{eeeditor-prefix-cls}-selector-btn';
+
 .@{eeeditor-prefix-cls}-static-toolbar {
   box-sizing: border-box;
   height: @static-toolbar-height;
@@ -7,27 +9,42 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  .@{eeeditor-prefix-cls}-btn {
+    width: @static-toolbar-btn-size;
+    height: @static-toolbar-btn-size;
+    color: @static-toolbar-btn-color;
+    font-size: @static-toolbar-btn-icon-size;
+    &:hover {
+      background-color: @static-toolbar-btn-hover-bg;
+    }
+    &.@{eeeditor-prefix-cls}-btn-active {
+      color: @static-toolbar-btn-active-color;
+    }
+    &.@{eeeditor-prefix-cls}-btn-disabled {
+      color: @static-toolbar-btn-disabled-color;
+    }
+  }
 }
 
-.@{eeeditor-prefix-cls}-selector-btn-wrapper {
+.@{selector-btn-prefix}-wrapper {
   position: relative;
   display: inline-block;
   vertical-align: top;
 }
 
-.@{eeeditor-prefix-cls}-selector-btn {
+.@{selector-btn-prefix} {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: @selector-btn-size;
-  height: @selector-btn-size;
-  color: @selector-btn-color;
-  font-size: @selector-btn-icon-size;
+  width: @static-toolbar-btn-size;
+  height: @static-toolbar-btn-size;
+  color: @static-toolbar-btn-color;
+  font-size: @static-toolbar-btn-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   &:hover {
-    background-color: @selector-btn-hover-bg;
+    background-color: @static-toolbar-btn-hover-bg;
   }
   &:before {
     position: absolute;
@@ -37,39 +54,39 @@
     width: 0;
     height: 0;
     border: 3px solid transparent;
-    border-top-color: @selector-btn-color;
+    border-top-color: @static-toolbar-btn-color;
     transform: rotate(-45deg);
     content: '';
   }
-  &.@{eeeditor-prefix-cls}-selector-btn-active {
-    color: @selector-btn-active-color;
+  &.@{selector-btn-prefix}-active {
+    color: @static-toolbar-btn-active-color;
   }
-  &.@{eeeditor-prefix-cls}-selector-btn-disabled {
-    color: @selector-btn-disabled-color;
+  &.@{selector-btn-prefix}-disabled {
+    color: @static-toolbar-btn-disabled-color;
     cursor: not-allowed;
     &:hover {
       background: none;
     }
     &:before {
-      border-top-color: @selector-btn-disabled-color;
+      border-top-color: @static-toolbar-btn-disabled-color;
     }
   }
-  &.@{eeeditor-prefix-cls}-selector-btn-show {
+  &.@{selector-btn-prefix}-show {
     &:before {
       display: none;
     }
   }
 }
 
-.@{eeeditor-prefix-cls}-selector-btn-options {
+.@{selector-btn-prefix}-options {
   position: absolute;
-  top: @selector-btn-size;
+  top: @static-toolbar-btn-size;
   left: 0;
   width: 100%;
   background: @static-toolbar-bg-color;
 }
 
-.@{eeeditor-prefix-cls}-selector-btn-options-hidden {
+.@{selector-btn-prefix}-options-hidden {
   display: none;
 }
 

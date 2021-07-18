@@ -52,6 +52,12 @@
     &:hover {
       background-color: @inline-toolbar-btn-hover-bg;
     }
+    &.@{eeeditor-prefix-cls}-btn-active {
+      color: @inline-toolbar-btn-active-color;
+    }
+    &.@{eeeditor-prefix-cls}-btn-disabled {
+      color: @inline-toolbar-btn-disabled-color;
+    }
   }
 }
 
@@ -79,4 +85,32 @@
   font-size: @inline-toolbar-btn-icon-size;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @inline-toolbar-btn-hover-bg;
+  }
+  &:before {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: @inline-toolbar-btn-color;
+    transform: rotate(-45deg);
+    content: '';
+  }
+  &.@{override-btn-prefix}-active {
+    color: @inline-toolbar-btn-active-color;
+  }
+  &.@{override-btn-prefix}-disabled {
+    color: @inline-toolbar-btn-disabled-color;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+    &:before {
+      border-top-color: @inline-toolbar-btn-disabled-color;
+    }
+  }
 }
