@@ -8,16 +8,11 @@ import React, {
   MouseEvent,
 } from 'react';
 import {
-  EditorState,
-  SelectionState,
   EditorPlugin,
-  EditorProps,
   EEEditorContextProps,
   PluginMethods,
   EEEditorContext,
   getEditorRootDomNode,
-  setSelection,
-  getVisibleSelectionRect,
 } from '@eeeditor/editor';
 import { createPortal } from 'react-dom';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
@@ -27,7 +22,6 @@ import {
   ItalicButton,
   UnderlineButton,
   CodeButton,
-  EEEditorStyleButtonType,
 } from '@eeeditor/buttons';
 import { InlineToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -79,12 +73,13 @@ interface ToolbarProps extends ToolbarPubProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const [visible, setVisible]: [boolean, any] = useState(true);
+  const [visible, setVisible] = useState<boolean>(true);
 
-  const [overrideContent, setOverrideContent]: [
-    ReactElement | ReactElement[],
-    any,
-  ] = useState(null);
+  const [overrideContent, setOverrideContent] = useState<
+    ReactElement | ReactElement[]
+  >(null);
+
+  const [position, setPosition] = useState<InlineToolbarPosition>();
 
   const {
     prefixCls: customizePrefixCls,
@@ -99,7 +94,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const getEditorState = store.getItem('getEditorState');
   const getEditorRef = store.getItem('getEditorRef');
 
-  const styleRef = useRef<CSSProperties>({ top: 0, left: 0, ...style });
+  // 样式补充
+  const styleRef = useRef<CSSProperties>({ ...style });
 
   const toolbarRef = useRef<HTMLElement>(null);
 
@@ -210,6 +206,20 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     event.preventDefault();
   };
 
+  useEffect(() => {
+    // 以下情况需要重新计算 inline toolbar 位置
+    // 1. override content 发生变化之后
+    // 2. contentState 发生变化之后
+    if (visible) {
+      setPosition(
+        getInlineToolbarPosition(
+          getEditorRootDomNode(getEditorRef()),
+          toolbarRef.current,
+        ),
+      );
+    }
+  }, [overrideContent, getEditorState().getCurrentContent()]);
+
   const onSelectionChanged = () => {
     const selection = store.getItem('selection');
     const currSelection = getEditorState().getSelection();
@@ -256,19 +266,23 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const handleToolbarEnterPrepare = (toolbarElement: HTMLElement): void => {
     const editorRoot = getEditorRootDomNode(getEditorRef());
 
-    let position: InlineToolbarPosition = getInlineToolbarPosition(
-      editorRoot,
-      toolbarElement,
-    );
-
     styleRef.current = {
       ...styleRef.current,
-      top: `${(position && position.top) || 0}px`,
-      left: `${(position && position.left) || 0}px`,
       transformOrigin: `50% ${
         toolbarElement.getBoundingClientRect().height + 4
       }px`,
     };
+    setPosition(getInlineToolbarPosition(editorRoot, toolbarElement));
+  };
+
+  // inline toolbar 关闭之后重置 overide content，CSSMotion 放在 onLeaveEnd 内。
+  // useEffect(() => {
+  //   if (!visible) {
+  //     setOverrideContent(null);
+  //   }
+  // }, [visible]);
+  const handleToolbarLeaveEnd = () => {
+    setOverrideContent(null);
   };
 
   const defaultButtons = [
@@ -305,6 +319,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
               removeOnLeave={false}
               onEnterPrepare={handleToolbarEnterPrepare}
+              onLeaveEnd={handleToolbarLeaveEnd}
               ref={toolbarRef}
             >
               {({ style, className }, motionRef) => (
@@ -313,6 +328,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                   style={{
                     ...style,
                     ...styleRef.current,
+                    top: `${(position && position.top) || 0}px`,
+                    left: `${(position && position.left) || 0}px`,
                   }}
                   ref={motionRef}
                   onMouseDown={preventBubblingUp}
