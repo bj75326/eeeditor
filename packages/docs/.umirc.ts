@@ -12,6 +12,7 @@ export default defineConfig({
     '@button-text-disabled-color': 'var(--color-tint-4)',
     '@item-hover-bg': 'var(--color-tint-2)',
     '@static-toolbar-separator-color': 'var(--color-tint-6)',
+    '@inline-toolbar-separator-color': 'var(--color-tint-6)',
     '@label-color': 'var(--color-tint-7)',
     '@component-background': 'var(--color-tint-extra-0)',
     '@popover-button-hover-bg': 'var(--color-tint-extra-1)',

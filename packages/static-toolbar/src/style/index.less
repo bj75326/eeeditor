@@ -2,7 +2,9 @@
 
 @selector-btn-prefix: ~'@{eeeditor-prefix-cls}-selector-btn';
 
-.@{eeeditor-prefix-cls}-static-toolbar {
+@prefix: ~'@{eeeditor-prefix-cls}-static-toolbar';
+
+.@{prefix} {
   box-sizing: border-box;
   height: @static-toolbar-height;
   background-color: @static-toolbar-bg-color;
@@ -90,7 +92,7 @@
   display: none;
 }
 
-.@{eeeditor-prefix-cls}-separator {
+.@{prefix}-separator {
   position: relative;
   display: inline-block;
   width: 1px;

@@ -115,3 +115,24 @@
     }
   }
 }
+
+.@{prefix}-separator {
+  position: relative;
+  display: inline-block;
+  width: 1px;
+  height: @inline-toolbar-btn-size;
+  margin: 0 10px;
+  vertical-align: top;
+  &:after {
+    position: absolute;
+    top: 10px;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: @inline-toolbar-separator-size;
+    border-left: 1px solid @inline-toolbar-separator-color;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+    content: '';
+  }
+}

@@ -12,7 +12,7 @@ const Separator: React.FC<SeparatorProps> = (props) => {
   const { prefixCls: customizePrefixCls, className, style } = props;
 
   const { getPrefixCls } = useContext(EEEditorContext);
-  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
+  const prefixCls = getPrefixCls('static-toolbar', customizePrefixCls);
 
   const separatorCls = classNames(`${prefixCls}-separator`, className);
 

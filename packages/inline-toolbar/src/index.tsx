@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  EditorPlugin,
-  EditorState,
-  EditorProps,
-  SelectionState,
-  ExtraPluginEditorProps,
-  PluginMethods,
-} from '@eeeditor/editor';
+import { EditorPlugin, SelectionState, PluginMethods } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
   ToolbarPubProps,
@@ -15,6 +8,7 @@ import Toolbar, {
 import OverrideButton, {
   OverrideButtonProps,
 } from './components/OverrideButton';
+import Separator, { SeparatorProps } from './components/Separator';
 
 export type InlineToolbarProps = ToolbarPubProps;
 
@@ -23,6 +17,7 @@ export type InlineToolbarChildrenProps = ToolbarChildrenProps;
 export type InlineToolbarPlugin = EditorPlugin & {
   InlineToolbar: React.FC<InlineToolbarProps>;
   OverrideButton: React.FC<OverrideButtonProps>;
+  Separator: React.FC<SeparatorProps>;
 };
 
 export interface StoreItemMap extends Partial<PluginMethods> {
@@ -65,5 +60,7 @@ export default (): InlineToolbarPlugin => {
     InlineToolbar,
 
     OverrideButton,
+
+    Separator,
   };
 };

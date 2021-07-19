@@ -83,6 +83,7 @@ const {
 const {
   InlineToolbar,
   OverrideButton,
+  Separator: ISeparator,
   ...inlineToolbarPlugin
 } = createInlineToolbarPlugin();
 
@@ -460,6 +461,7 @@ const Page: React.FC<PageProps> = (props) => {
             <UnderlineButton />
             <CodeButton />
             <LinkButton />
+            <ISeparator />
             <OverrideButton icon={defaultHeadIcon}>
               <HeadlineOneButton />
               <HeadlineTwoButton />
