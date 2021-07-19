@@ -11,11 +11,11 @@ import { ToolbarChildrenProps } from './Toolbar';
 import classNames from 'classnames';
 import ReturnButton from './ReturnButton';
 
-export interface OverrideBtnChildrenProps {
-  setBtnActive: (active: boolean, optionKey: number) => void;
-  setBtnDisabled: (disabled: boolean, optionKey: number) => void;
-  setBtnIcon: (icon: OverrideButtonProps['icon']) => void;
-}
+// export interface OverrideBtnChildrenProps {
+//   setBtnActive: (active: boolean, optionKey: number) => void;
+//   setBtnDisabled: (disabled: boolean, optionKey: number) => void;
+//   setBtnIcon: (icon: OverrideButtonProps['icon']) => void;
+// }
 
 export interface OverrideButtonProps {
   prefixCls?: string;
@@ -40,48 +40,48 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('override-btn', customizePrefixCls);
 
-  const [overrideBtnActive, setOverrideBtnActive]: [boolean[], any] = useState(
-    [],
-  );
-  const [overrideBtnDisabled, setOverrideBtnDisabled]: [
-    boolean[],
-    any,
-  ] = useState([]);
-  const [overrideBtnIcon, setOverrideBtnIcon]: [ReactNode, any] = useState(
-    icon,
-  );
+  // const [overrideBtnActive, setOverrideBtnActive]: [boolean[], any] = useState(
+  //   [],
+  // );
+  // const [overrideBtnDisabled, setOverrideBtnDisabled]: [
+  //   boolean[],
+  //   any,
+  // ] = useState([]);
+  // const [overrideBtnIcon, setOverrideBtnIcon]: [ReactNode, any] = useState(
+  //   icon,
+  // );
 
-  const setBtnActive = (active: boolean, optionKey: number): void => {
-    if (active === overrideBtnActive[optionKey]) return;
-    setOverrideBtnActive((overrideBtnActive: boolean[]) => {
-      const newOverrideBtnActive: boolean[] = [...overrideBtnActive];
-      newOverrideBtnActive[optionKey] = active;
-      return newOverrideBtnActive;
-    });
-  };
+  // const setBtnActive = (active: boolean, optionKey: number): void => {
+  //   if (active === overrideBtnActive[optionKey]) return;
+  //   setOverrideBtnActive((overrideBtnActive: boolean[]) => {
+  //     const newOverrideBtnActive: boolean[] = [...overrideBtnActive];
+  //     newOverrideBtnActive[optionKey] = active;
+  //     return newOverrideBtnActive;
+  //   });
+  // };
 
-  const setBtnDisabled = (disabled: boolean, optionKey: number): void => {
-    if (disabled === overrideBtnDisabled[optionKey]) return;
-    setOverrideBtnDisabled((overrideBtnDisabled: boolean[]) => {
-      const newOverrideBtnDisabled: boolean[] = [...overrideBtnDisabled];
-      newOverrideBtnDisabled[optionKey] = disabled;
-      return newOverrideBtnDisabled;
-    });
-  };
+  // const setBtnDisabled = (disabled: boolean, optionKey: number): void => {
+  //   if (disabled === overrideBtnDisabled[optionKey]) return;
+  //   setOverrideBtnDisabled((overrideBtnDisabled: boolean[]) => {
+  //     const newOverrideBtnDisabled: boolean[] = [...overrideBtnDisabled];
+  //     newOverrideBtnDisabled[optionKey] = disabled;
+  //     return newOverrideBtnDisabled;
+  //   });
+  // };
 
-  const setBtnIcon = (icon: ReactNode): void => {
-    setOverrideBtnIcon(icon);
-  };
+  // const setBtnIcon = (icon: ReactNode): void => {
+  //   setOverrideBtnIcon(icon);
+  // };
 
   const preventBubblingUp = (event: MouseEvent): void => {
     event.preventDefault();
   };
 
-  const childProps: OverrideBtnChildrenProps = {
-    setBtnActive,
-    setBtnDisabled,
-    setBtnIcon,
-  };
+  // const childProps: OverrideBtnChildrenProps = {
+  //   setBtnActive,
+  //   setBtnDisabled,
+  //   setBtnIcon,
+  // };
 
   const handleOverride = (event: MouseEvent): void => {
     event.preventDefault();
@@ -89,28 +89,28 @@ const OverriderButton: React.FC<OverrideButtonProps & ToolbarChildrenProps> = (
       children,
       (child, index) =>
         React.cloneElement(child, {
-          ...childProps,
-          optionKey: index,
+          key: index,
         }),
-    ).concat(<ReturnButton />);
+    ).concat(<ReturnButton key={React.Children.count(children)} />);
+
     onOverride(overrideContent);
   };
 
-  const btnClassName = classNames(`${prefixCls}`, className, {
-    [`${prefixCls}-active`]: overrideBtnActive.some(
-      (status: boolean) => status,
-    ),
-    [`${prefixCls}-disabled`]: !overrideBtnDisabled.some(
-      (status: boolean) => !status,
-    ),
-  });
+  // const btnClassName = classNames(`${prefixCls}`, className, {
+  //   [`${prefixCls}-active`]: overrideBtnActive.some(
+  //     (status: boolean) => status,
+  //   ),
+  //   [`${prefixCls}-disabled`]: !overrideBtnDisabled.some(
+  //     (status: boolean) => !status,
+  //   ),
+  // });
+
+  const btnClassName = classNames(`${prefixCls}`, className);
 
   return (
     <div className={`${prefixCls}-wrapper`} onMouseDown={preventBubblingUp}>
       <div className={btnClassName} style={style} onClick={handleOverride}>
-        {overrideBtnActive.some((status: boolean) => status)
-          ? overrideBtnIcon
-          : icon}
+        {icon}
       </div>
     </div>
   );
