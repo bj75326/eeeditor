@@ -33,6 +33,7 @@ import {
   CodeButton,
   UnderlineButton,
   ItalicButton,
+  StrikethroughButton,
   OrderedListButton,
   UnorderedListButton,
   BlockquoteButton,
@@ -424,6 +425,7 @@ const Page: React.FC<PageProps> = (props) => {
               <BoldButton />
               <ItalicButton />
               <UnderlineButton />
+              <StrikethroughButton />
               <CodeButton />
               <LinkButton />
               <Separator />
@@ -457,6 +459,7 @@ const Page: React.FC<PageProps> = (props) => {
             <BoldButton />
             <ItalicButton />
             <UnderlineButton />
+            <StrikethroughButton />
             <CodeButton />
             <LinkButton />
             <ISeparator />

@@ -51,6 +51,9 @@ import AlignLeftButton, {
 import AlignRightButton, {
   defaultAlignRightIcon,
 } from './components/AlignRightButton';
+import StrikethroughButton, {
+  defaultStrikethroughIcon,
+} from './components/StrikethroughButton';
 
 export * from './locale';
 
@@ -65,6 +68,7 @@ export type EEEditorButtonType =
   | 'code'
   | 'underline'
   | 'align'
+  | 'strikethrough'
   | string;
 
 export interface EEEditorButtonProps<K, S> {
@@ -130,6 +134,7 @@ export {
   AlignJustifyButton,
   AlignLeftButton,
   AlignRightButton,
+  StrikethroughButton,
   defaultHeadIcon,
   defaultHeadlineOneIcon,
   defaultHeadlineTwoIcon,
@@ -148,4 +153,5 @@ export {
   defaultAlignJustifyIcon,
   defaultAlignLeftIcon,
   defaultAlignRightIcon,
+  defaultStrikethroughIcon,
 };

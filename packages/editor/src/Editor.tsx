@@ -97,6 +97,9 @@ const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
     fontFamily:
       'SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace',
   },
+  STRIKETHROUGH: {
+    textDecoration: 'line-through',
+  },
 };
 
 const defaultOnTab: PluginEditorProps['onTab'] = (

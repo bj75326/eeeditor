@@ -36,4 +36,8 @@ export default {
   'eeeditor.button.align.right.tip.shortcut': isOSX ? '⌘ + r' : 'ctrl + r',
   'eeeditor.button.align.justify.tip.name': 'Justify',
   'eeeditor.button.align.justify.tip.shortcut': isOSX ? '⌘ + j' : 'ctrl + j',
+  'eeeditor.button.strikethrough.tip.name': 'Strike through',
+  'eeeditor.button.strikethrough.tip.shortcut': isOSX
+    ? '⌘ + shift + s'
+    : 'ctrl + shift + s',
 };
