@@ -21,10 +21,8 @@ import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
 import createAnchorPlugin from '@eeeditor/anchor';
 import {
-  enUS,
-  zhCN,
   defaultHeadIcon,
-  EEEditorButtonProps,
+  defaultAlignLeftIcon,
   HeadlineOneButton,
   HeadlineTwoButton,
   HeadlineThreeButton,
@@ -470,6 +468,15 @@ const Page: React.FC<PageProps> = (props) => {
               <HeadlineFiveButton />
               <HeadlineSixButton />
             </OverrideButton>
+            <OverrideButton icon={defaultAlignLeftIcon}>
+              <AlignLeftButton />
+              <AlignCenterButton />
+              <AlignRightButton />
+              <AlignJustifyButton />
+            </OverrideButton>
+            <UnorderedListButton />
+            <OrderedListButton />
+            <BlockquoteButton />
           </InlineToolbar>
         </div>
         {sidebar}
