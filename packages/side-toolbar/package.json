@@ -1,30 +1,29 @@
 {
   "name": "@eeeditor/side-toolbar",
   "version": "1.0.0",
-  "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
-  "keywords": [],
+  "description": "Side toolbar plugin for EEEditor",
   "author": "bj75326 <superice_gy@163.com>",
-  "license": "ISC",
-  "main": "lib/side-toolbar.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
-  "publishConfig": {
-    "registry": "http://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bj75326/eeeditor.git"
-  },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "father build",
+    "build:watch": "father build --watch",
+    "clean": "rm -rf node_modules es lib yarn-error.log",
+    "test": "father test",
+    "coverage": "father test --coverage"
   },
-  "bugs": {
-    "url": "https://github.com/bj75326/eeeditor/issues"
+  "main": "es/index.js",
+  "publishConfig": {
+    "access": "public"
   },
-  "homepage": "https://github.com/bj75326/eeeditor#readme"
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.13.8",
+    "@eeeditor/buttons": "1.0.0",
+    "@eeeditor/editor": "1.0.0",
+    "@draft-js-plugins/utils": "^4.1.0",
+    "classnames": "^2.2.6"
+  }
 }

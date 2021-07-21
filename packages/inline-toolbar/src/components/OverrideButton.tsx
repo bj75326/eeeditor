@@ -3,7 +3,6 @@ import React, {
   ReactNode,
   ReactElement,
   useContext,
-  useState,
   MouseEvent,
 } from 'react';
 import { EEEditorContext } from '@eeeditor/editor';
