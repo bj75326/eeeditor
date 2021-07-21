@@ -358,7 +358,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
             </CSSMotion>
           </ConfigProvider>
         </EEEditorContext.Provider>,
-        document.querySelector('.inline-toolbar-plugin-suffix'),
+        getContainer(),
       )
     : null;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditorPlugin, PluginMethods } from '@eeeditor/editor';
+import { EditorPlugin, PluginMethods, SelectionState } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
   ToolbarPubProps,
@@ -15,6 +15,7 @@ export type SideToolbarPlugin = EditorPlugin & {
 };
 
 export interface StoreItemMap extends Partial<PluginMethods> {
+  selection?: SelectionState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
   beforeInputHandlers?: EditorPlugin['handleBeforeInput'][];
@@ -33,5 +34,22 @@ export default (): SideToolbarPlugin => {
     <Toolbar {...props} store={store} />
   );
 
-  return {};
+  return {
+    initialize: (pluginMethods) => {
+      Object.keys(pluginMethods).forEach((pluginMethod) => {
+        store.updateItem(
+          pluginMethod as keyof StoreItemMap,
+          pluginMethods[pluginMethod],
+        );
+      });
+    },
+
+    onChange: (editorState) => {
+      store.updateItem('selection', editorState.getSelection());
+    },
+
+    suffix: () => <div className="side-toolbar-plugin-suffix"></div>,
+
+    SideToolbar,
+  };
 };

@@ -1,8 +1,21 @@
-import React, { CSSProperties, ReactElement } from 'react';
-import { PluginMethods, EditorPlugin } from '@eeeditor/editor';
-import { EEEditorStyleButtonType } from '@eeeditor/buttons';
+import React, { CSSProperties, ReactElement, useState, useEffect } from 'react';
+import {
+  PluginMethods,
+  EditorPlugin,
+  EEEditorContextProps,
+  getEditorRootDomNode,
+  EEEditorContext,
+} from '@eeeditor/editor';
+import {} from '@eeeditor/buttons';
 import { SideToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
+import { ConfigProvider } from 'antd';
+import { DirectionType, ConfigContext } from 'antd/lib/config-provider';
+import { Locale } from 'antd/lib/locale-provider';
+import zhCN from 'antd/lib/locale/zh_CN';
+import enUS from 'antd/lib/locale/en_US';
+import { createPortal } from 'react-dom';
+import classNames from 'classnames';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -53,7 +66,138 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const getEditorState = store.getItem('getEditorState');
   const getEditorRef = store.getItem('getEditorRef');
 
-  const;
+  const {
+    prefixCls: editorPrefixCls,
+    locale: editorLocale,
+    textDirectionality,
+  } = getProps();
+
+  const eeeditorContextProps: EEEditorContextProps = {
+    getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => {
+      if (customizePrefixCls) return customizePrefixCls;
+      return suffixCls ? `${editorPrefixCls}-${suffixCls}` : editorPrefixCls;
+    },
+    textDirectionality: textDirectionality || 'LTR',
+    locale: editorLocale,
+  };
+
+  const prefixCls = eeeditorContextProps.getPrefixCls(
+    'side-toolbar',
+    customizePrefixCls,
+  );
+
+  // antd 组件的 Context 设置
+  let antdDirection: DirectionType;
+  let antdLocale: Locale;
+
+  if (textDirectionality === 'RTL') {
+    antdDirection = 'rtl';
+  } else {
+    antdDirection = 'ltr';
+  }
+
+  switch (editorLocale) {
+    case 'zh_CN':
+      antdLocale = zhCN;
+      break;
+    case 'en_US':
+      antdLocale = enUS;
+      break;
+    default:
+      antdLocale = zhCN;
+  }
+
+  const [visible, setVisible] = useState<boolean>(true);
+
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  const childrenProps: ToolbarChildrenProps = {
+    getEditorState: store.getItem('getEditorState'),
+    setEditorState: store.getItem('setEditorState'),
+    getProps: store.getItem('getProps'),
+    getEditorRef: store.getItem('getEditorRef'),
+    // 提供方法给 buttons 动态增减 handleKeyCommand
+    addKeyCommandHandler: (keyCommandHandler) => {
+      const keyCommandHandlers = store.getItem('keyCommandHandlers');
+      store.updateItem('keyCommandHandlers', [
+        ...keyCommandHandlers.filter(
+          (handler) => handler !== keyCommandHandler,
+        ),
+        keyCommandHandler,
+      ]);
+    },
+    removeKeyCommandHandler: (keyCommandHandler) => {
+      const keyCommandHandlers = store.getItem('keyCommandHandlers');
+      store.updateItem(
+        'keyCommandHandlers',
+        keyCommandHandlers.filter((handler) => handler !== keyCommandHandler),
+      );
+    },
+    // 提供方法给 buttons 动态增减 keyBindingFn
+    addKeyBindingFn: (keyBindingFn) => {
+      const keyBindingFns = store.getItem('keyBindingFns');
+      store.updateItem('keyBindingFns', [
+        ...keyBindingFns.filter((fn) => fn !== keyBindingFn),
+        keyBindingFn,
+      ]);
+    },
+    removeKeyBindingFn: (keyBindingFn) => {
+      const keyBindingFns = store.getItem('keyBindingFns');
+      store.updateItem(
+        'keyBindingFns',
+        keyBindingFns.filter((fn) => fn !== keyBindingFn),
+      );
+    },
+    // 提供方法给 buttons 动态增减 handleBeforeInput
+    addBeforeInputHandler: (beforeInputHandler) => {
+      const beforeInputHandlers = store.getItem('beforeInputHandlers');
+      store.updateItem('beforeInputHandlers', [
+        ...beforeInputHandlers.filter(
+          (handler) => handler !== beforeInputHandler,
+        ),
+        beforeInputHandler,
+      ]);
+    },
+    removeBeforeInputHandler: (beforeInputHandler) => {
+      const beforeInputHandlers = store.getItem('beforeInputHandlers');
+      store.updateItem(
+        'beforeInputHandlers',
+        beforeInputHandlers.filter((handler) => handler !== beforeInputHandler),
+      );
+    },
+    // inline toolbar 默认的 button tip props
+    tipProps: childrenTipProps,
+  };
+
+  useEffect(() => {
+    store;
+  }, []);
+
+  const getContainer = () => {
+    if (getEditorRef()) {
+      return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+        'side-toolbar-plugin-suffix',
+      );
+    }
+    return null;
+  };
+  useEffect(() => {
+    setVisible(false);
+  }, [getContainer()]);
+
+  const toolbarClassName = classNames();
+
+  return getContainer()
+    ? createPortal(
+        <EEEditorContext.Provider value={eeeditorContextProps}>
+          <ConfigProvider
+            direction={antdDirection}
+            locale={antdLocale}
+          ></ConfigProvider>
+        </EEEditorContext.Provider>,
+        getContainer(),
+      )
+    : null;
 };
 
 export default Toolbar;
