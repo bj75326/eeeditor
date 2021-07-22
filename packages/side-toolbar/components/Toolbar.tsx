@@ -1,4 +1,11 @@
-import React, { CSSProperties, ReactElement, useState, useEffect } from 'react';
+import React, {
+  CSSProperties,
+  ReactElement,
+  useState,
+  useEffect,
+  MouseEvent,
+  useContext,
+} from 'react';
 import {
   PluginMethods,
   EditorPlugin,
@@ -16,6 +23,8 @@ import zhCN from 'antd/lib/locale/zh_CN';
 import enUS from 'antd/lib/locale/en_US';
 import { createPortal } from 'react-dom';
 import classNames from 'classnames';
+import { sideToolbarIcon } from '../assets/extraIcon';
+import CSSMotion from 'rc-motion';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -169,8 +178,21 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     tipProps: childrenTipProps,
   };
 
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.preventDefault();
+  };
+
+  const onSelectionChanged = () => {
+    const selection = store.getItem('selection');
+    if (selection) {
+    }
+  };
+
   useEffect(() => {
-    store;
+    store.subscribeToItem('selection', onSelectionChanged);
+    return () => {
+      store.unsubscribeFromItem('selection', onSelectionChanged);
+    };
   }, []);
 
   const getContainer = () => {
@@ -185,15 +207,36 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     setVisible(false);
   }, [getContainer()]);
 
-  const toolbarClassName = classNames();
+  const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
+    [`${prefixCls}-rtl`]: textDirectionality === 'RTL',
+    [`${prefixCls}-hidden`]: !visible,
+  });
+
+  const toolbarIconCls = classNames(`${prefixCls}-icon`, {
+    [`${prefixCls}-expanded`]: expanded,
+  });
+
+  const getMotionName = () => {
+    const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
+    const antdPrefix = getAntdPrefixCls ? getAntdPrefixCls() : 'ant';
+    const direction = textDirectionality === 'RTL' ? 'left' : 'right';
+    return `${antdPrefix}-slide-${direction}`;
+  };
 
   return getContainer()
     ? createPortal(
         <EEEditorContext.Provider value={eeeditorContextProps}>
-          <ConfigProvider
-            direction={antdDirection}
-            locale={antdLocale}
-          ></ConfigProvider>
+          <ConfigProvider direction={antdDirection} locale={antdLocale}>
+            <div className={toolbarWrapperCls} onMouseDown={preventBubblingUp}>
+              <div className={toolbarIconCls}>{sideToolbarIcon}</div>
+              <CSSMotion
+                visible={visible}
+                motionName={getMotionName()}
+                motionDeadline={1000}
+                // leavedClassName={ }
+              ></CSSMotion>
+            </div>
+          </ConfigProvider>
         </EEEditorContext.Provider>,
         getContainer(),
       )

@@ -178,7 +178,7 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   return (
     <CSSMotion
       visible={popoverVisible}
-      motionName={`${getAntdPrefixCls()}-zoom-big`}
+      motionName={`${getAntdPrefixCls ? getAntdPrefixCls() : 'ant'}-zoom-big`}
       motionDeadline={1000}
       leavedClassName={`${getEEEPrefixCls()}-hidden`}
       removeOnLeave={false}

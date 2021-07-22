@@ -306,7 +306,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
-  const toolbarClassName = classNames(`${prefixCls}`, className);
+  const toolbarClassName = classNames(prefixCls, className);
 
   return getContainer()
     ? createPortal(
@@ -314,7 +314,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           <ConfigProvider direction={antdDirection} locale={antdLocale}>
             <CSSMotion
               visible={visible}
-              motionName={`${getAntdPrefixCls()}-zoom-big`}
+              motionName={`${
+                getAntdPrefixCls ? getAntdPrefixCls() : 'ant'
+              }-zoom-big`}
               motionDeadline={1000}
               leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
               removeOnLeave={false}
