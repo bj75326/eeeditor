@@ -46,6 +46,7 @@ export default (): SideToolbarPlugin => {
 
     onChange: (editorState) => {
       store.updateItem('selection', editorState.getSelection());
+      return editorState;
     },
 
     suffix: () => <div className="side-toolbar-plugin-suffix"></div>,

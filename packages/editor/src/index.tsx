@@ -244,7 +244,7 @@ export type EditorPlugin = {
   onLeftArrow?: OnLeftArrow;
   onBlur?: OnBlur;
   onFocus?: OnFocus;
-  onChange?: (arg0: EditorState, arg1: PluginMethods) => void;
+  onChange?: (arg0: EditorState, arg1: PluginMethods) => EditorState;
   initialize?: (arg0: PluginMethods) => void;
   decorators?: Array<CompositeDecorator | DraftDecorator>;
   willUnmount?: (arg0: PluginMethods) => void;

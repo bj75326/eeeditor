@@ -1,10 +1,10 @@
 import React, {
-  CSSProperties,
   ReactElement,
   useState,
   useEffect,
   MouseEvent,
   useContext,
+  useRef,
 } from 'react';
 import {
   PluginMethods,
@@ -13,7 +13,6 @@ import {
   getEditorRootDomNode,
   EEEditorContext,
 } from '@eeeditor/editor';
-import {} from '@eeeditor/buttons';
 import { SideToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { ConfigProvider } from 'antd';
@@ -52,7 +51,6 @@ export interface ToolbarChildrenProps extends Partial<PluginMethods> {
 export interface ToolbarPubProps {
   prefixCls?: string;
   className?: string;
-  style?: CSSProperties;
   childrenTipProps?: Partial<Omit<TooltipPropsWithTitle, 'title'>>;
   children?: ReactElement | ReactElement[];
 }
@@ -120,6 +118,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
+  const toolbarRef = useRef<HTMLElement>();
+
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
     setEditorState: store.getItem('setEditorState'),
@@ -184,7 +184,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const onSelectionChanged = () => {
     const selection = store.getItem('selection');
-    if (selection) {
+    if (null) {
     }
   };
 
@@ -195,10 +195,14 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     };
   }, []);
 
+  const toggleToolbarExpanded = (event: MouseEvent) => {
+    
+  };
+
   const getContainer = () => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
-        'side-toolbar-plugin-suffix',
+        '.side-toolbar-plugin-suffix',
       );
     }
     return null;
@@ -228,13 +232,39 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         <EEEditorContext.Provider value={eeeditorContextProps}>
           <ConfigProvider direction={antdDirection} locale={antdLocale}>
             <div className={toolbarWrapperCls} onMouseDown={preventBubblingUp}>
-              <div className={toolbarIconCls}>{sideToolbarIcon}</div>
+              <div
+              className={toolbarIconCls}
+              onClick={ toggleToolbarExpanded}
+              >
+                {sideToolbarIcon}
+              </div>
               <CSSMotion
-                visible={visible}
+                visible={expanded}
                 motionName={getMotionName()}
                 motionDeadline={1000}
-                // leavedClassName={ }
-              ></CSSMotion>
+                leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
+                removeOnLeave={false}
+                ref={ toolbarRef}
+              >
+                {({ style, className }, motionRef) => (
+                  <div
+                    className={classNames(`${prefixCls}-btns`, className)}
+                    style={{
+                      ...style,  
+                    }}
+                    ref={motionRef}
+                  >
+                    {React.Children.map<ReactElement, ReactElement>(
+                      children,
+                      (child) =>
+                        React.cloneElement(child, {
+                          ...childrenProps,
+                          ...child.props,
+                        }),
+                    )}
+                  </div>
+                )}
+              </CSSMotion>
             </div>
           </ConfigProvider>
         </EEEditorContext.Provider>,

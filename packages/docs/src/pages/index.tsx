@@ -13,10 +13,9 @@ import EEEditor, {
   EditorState,
   EditorPlugin,
 } from '@eeeditor/editor';
-import createStaticToolbarPlugin, {
-  StaticToolbarPlugin,
-} from '@eeeditor/static-toolbar';
+import createStaticToolbarPlugin from '@eeeditor/static-toolbar';
 import createInlineToolbarPlugin from '@eeeditor/inline-toolbar';
+import createSideToolbarPlugin from '@eeeditor/side-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
 import createAnchorPlugin from '@eeeditor/anchor';
@@ -77,7 +76,12 @@ const {
   SelectorButton,
   Separator,
   ...staticToolbarPlugin
-}: StaticToolbarPlugin = createStaticToolbarPlugin();
+} = createStaticToolbarPlugin();
+
+const {
+  SideToolbar,
+  ...sideToolbarPlugin
+} = createSideToolbarPlugin();
 
 const {
   InlineToolbar,
@@ -99,6 +103,7 @@ const { LinkButton, ...anchorPlugin } = createAnchorPlugin({});
 const plugins: EditorPlugin[] = [
   staticToolbarPlugin,
   inlineToolbarPlugin,
+  sideToolbarPlugin,
   undoPlugin,
   dividerPlugin,
   anchorPlugin,
@@ -481,6 +486,9 @@ const Page: React.FC<PageProps> = (props) => {
             <OrderedListButton />
             <BlockquoteButton />
           </InlineToolbar>
+          <SideToolbar>
+            <DividerButton/>
+          </SideToolbar>
         </div>
         {sidebar}
       </Spin>
