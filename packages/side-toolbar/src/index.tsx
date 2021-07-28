@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditorPlugin, PluginMethods, SelectionState } from '@eeeditor/editor';
+import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
   ToolbarPubProps,
@@ -15,7 +15,7 @@ export type SideToolbarPlugin = EditorPlugin & {
 };
 
 export interface StoreItemMap extends Partial<PluginMethods> {
-  selection?: SelectionState;
+  editorState?: EditorState;
   keyCommandHandlers?: EditorPlugin['handleKeyCommand'][];
   keyBindingFns?: EditorPlugin['keyBindingFn'][];
   beforeInputHandlers?: EditorPlugin['handleBeforeInput'][];
@@ -45,7 +45,7 @@ export default (): SideToolbarPlugin => {
     },
 
     onChange: (editorState) => {
-      store.updateItem('selection', editorState.getSelection());
+      store.updateItem('editorState', editorState);
       return editorState;
     },
 

@@ -70,6 +70,7 @@ import '@eeeditor/static-toolbar/es/style';
 import '@eeeditor/divider/es/style';
 import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
+import '@eeeditor/side-toolbar/es/style';
 
 const {
   StaticToolbar,

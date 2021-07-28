@@ -12,6 +12,7 @@ import {
   EEEditorContextProps,
   getEditorRootDomNode,
   EEEditorContext,
+  EditorState,
 } from '@eeeditor/editor';
 import { SideToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
@@ -63,7 +64,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const {
     prefixCls: customizePrefixCls,
     className,
-    style,
     childrenTipProps = { placement: 'top' },
     children,
     store,
@@ -182,16 +182,18 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     event.preventDefault();
   };
 
-  const onSelectionChanged = () => {
-    const selection = store.getItem('selection');
-    if (null) {
+  const onEditorStateChanged = (editorState:EditorState) => {
+    const selection = editorState.getSelection();
+    const content = editorState.getCurrentContent();
+    const block = content.getBlockForKey(selection.getStartKey());
+    if (selection && selection.isCollapsed() && selection.getHasFocus()) {
     }
   };
 
   useEffect(() => {
-    store.subscribeToItem('selection', onSelectionChanged);
+    store.subscribeToItem('editorState', onEditorStateChanged);
     return () => {
-      store.unsubscribeFromItem('selection', onSelectionChanged);
+      store.unsubscribeFromItem('editorState', onEditorStateChanged);
     };
   }, []);
 
