@@ -182,13 +182,18 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     event.preventDefault();
   };
 
-  const onEditorStateChanged = (editorState:EditorState):void => {
+  const onEditorStateChanged = (editorState: EditorState): void => {
     const selection = editorState.getSelection();
     const content = editorState.getCurrentContent();
     const block = content.getBlockForKey(selection.getStartKey());
-    if (selection && selection.isCollapsed() && selection.getHasFocus() && (block.getType() === 'unstyled' || block.getType() === 'paragraph') && block.getLength() === 0) {
+    if (
+      selection &&
+      selection.isCollapsed() &&
+      selection.getHasFocus() &&
+      (block.getType() === 'unstyled' || block.getType() === 'paragraph') &&
+      block.getLength() === 0
+    ) {
       setVisible(true);
-      
     }
   };
 
@@ -199,9 +204,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     };
   }, []);
 
-  const toggleToolbarExpanded = (event: MouseEvent) => {
-    
-  };
+  const toggleToolbarExpanded = (event: MouseEvent) => {};
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -236,10 +239,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         <EEEditorContext.Provider value={eeeditorContextProps}>
           <ConfigProvider direction={antdDirection} locale={antdLocale}>
             <div className={toolbarWrapperCls} onMouseDown={preventBubblingUp}>
-              <div
-              className={toolbarIconCls}
-              onClick={ toggleToolbarExpanded}
-              >
+              <div className={toolbarIconCls} onClick={toggleToolbarExpanded}>
                 {sideToolbarIcon}
               </div>
               <CSSMotion
@@ -248,13 +248,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                 motionDeadline={1000}
                 leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
                 removeOnLeave={false}
-                ref={ toolbarRef}
+                ref={toolbarRef}
               >
                 {({ style, className }, motionRef) => (
                   <div
                     className={classNames(`${prefixCls}-btns`, className)}
                     style={{
-                      ...style,  
+                      ...style,
                     }}
                     ref={motionRef}
                   >
