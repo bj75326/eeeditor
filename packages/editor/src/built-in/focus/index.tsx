@@ -107,6 +107,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
 
   return {
     handleReturn: (event, editorState, { setEditorState }) => {
+      console.log('focus plugin handle return run run run');
       // 如果当前有且仅有 focusable block 被选中：
       // 按下 Return 则会在 focusable block 前插入一个新的 text block
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {

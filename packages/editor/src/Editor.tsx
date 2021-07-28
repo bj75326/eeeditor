@@ -16,6 +16,7 @@ import {
   RichUtils,
   SupportedLanguage,
   EditorProps,
+  Modifier,
 } from '.';
 import classNames from 'classnames';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
@@ -102,15 +103,7 @@ const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
   },
 };
 
-const defaultOnTab: PluginEditorProps['onTab'] = (
-  e,
-  { getEditorState, setEditorState },
-) => {
-  const editorState = getEditorState();
-  setEditorState(RichUtils.onTab(e, editorState, 4));
-  return false;
-};
-
+// draft-js-plugins-editor 没有使用 typescript，在这里类型包装下
 const PluginEditor: React.FC<PluginEditorProps> = forwardRef((props, ref) => (
   <Editor {...props} ref={ref} />
 ));
@@ -125,7 +118,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange,
     blockStyleFn = defaultBlockStyleFn,
     customStyleMap = defaultCustomStyleMap,
-    onTab = defaultOnTab,
+    // onTab = defaultOnTab,
     plugins = [],
     defaultKeyBindings = false,
     ...restProps
@@ -222,7 +215,6 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
             onChange={handleChange}
             blockStyleFn={blockStyleFn}
             customStyleMap={customStyleMap}
-            onTab={onTab}
             plugins={eeeditorPlugins}
             // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
             defaultKeyBindings={defaultKeyBindings}

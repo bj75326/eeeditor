@@ -182,11 +182,12 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     event.preventDefault();
   };
 
-  const onEditorStateChanged = (editorState:EditorState) => {
+  const onEditorStateChanged = (editorState:EditorState):void => {
     const selection = editorState.getSelection();
     const content = editorState.getCurrentContent();
     const block = content.getBlockForKey(selection.getStartKey());
-    if (selection && selection.isCollapsed() && selection.getHasFocus()) {
+    if (selection && selection.isCollapsed() && selection.getHasFocus() && (block.getType() === 'unstyled' || block.getType() === 'paragraph') && block.getLength() === 0) {
+      setVisible(true);
     }
   };
 

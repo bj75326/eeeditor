@@ -1,6 +1,6 @@
 import { KeyboardEvent } from 'react';
 import { EditorPlugin, DraftEditorCommand } from '../..';
-import { KeyBindingUtil, RichUtils } from 'draft-js';
+import { KeyBindingUtil, RichUtils, Modifier, EditorState } from 'draft-js';
 import UserAgent from 'fbjs/lib/UserAgent';
 import Keys from 'fbjs/lib/Keys';
 
@@ -75,6 +75,7 @@ export default (): EditorPlugin => ({
       // undo&redo command 会在 @eeeditor/undo UndoButton RedoButton 中设置
       // case 90: // Z
       //   return getZCommand(e) || null;
+      // built-in default plugin 添加了 handleReturn，这里可以保留也可以删去 
       case Keys.RETURN:
         return 'split-block';
       case Keys.DELETE:
@@ -93,5 +94,29 @@ export default (): EditorPlugin => ({
       default:
         return null;
     }
+  },
+
+  onTab: (
+    e,
+    { getEditorState, setEditorState },
+  ) => {
+    const editorState = getEditorState();
+    setEditorState(RichUtils.onTab(e, editorState, 4));
+    return false;
+  },
+
+  handleReturn: (e, editorState, { setEditorState }) => {
+    console.log('default handle return run run run');
+    let contentState = Modifier.splitBlock(editorState.getCurrentContent(), editorState.getSelection());
+    const selectionAfter = contentState.getSelectionAfter();
+
+    const block = contentState.getBlockForKey(selectionAfter.getStartKey());
+    if (block.getType().startsWith('header-') && block.getLength() === 0) {
+      contentState = Modifier.setBlockType(contentState, selectionAfter, 'unstyled');
+    }
+
+    setEditorState(EditorState.push(editorState, contentState, 'split-block'));
+
+    return 'handled';
   },
 });
