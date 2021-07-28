@@ -188,7 +188,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     const block = content.getBlockForKey(selection.getStartKey());
     if (selection && selection.isCollapsed() && selection.getHasFocus() && (block.getType() === 'unstyled' || block.getType() === 'paragraph') && block.getLength() === 0) {
       setVisible(true);
-      
     }
   };
 
