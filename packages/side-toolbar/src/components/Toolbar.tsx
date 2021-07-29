@@ -225,6 +225,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       setVisible(false);
     }
   };
+  // todo use Effect  visible 变化时 计算 position
 
   useEffect(() => {
     store.subscribeToItem('editorState', onEditorStateChanged);

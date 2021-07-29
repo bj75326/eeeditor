@@ -11,11 +11,11 @@ export const getSideToolbarPosition = (
 ): SideToolbarPosition => {
   return rtl
     ? {
-        top: referenceEl.offsetTop,
+        top: referenceEl.offsetTop + referenceEl.offsetHeight / 2,
         right: -32,
       }
     : {
-        top: referenceEl.offsetTop,
+        top: referenceEl.offsetTop + referenceEl.offsetHeight / 2,
         left: -32,
       };
 };

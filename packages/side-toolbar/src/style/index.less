@@ -6,6 +6,10 @@
   position: absolute;
   z-index: @side-toolbar-zindex;
   box-sizing: border-box;
+  -ms-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -26,7 +30,7 @@
   width: @side-toolbar-btn-size;
   height: @side-toolbar-btn-size;
   color: @side-toolbar-btn-color;
-  font-size: @side-toolbar-btn-icon-size;
+  font-size: @side-toolbar-icon-size;
   cursor: pointer;
   transition: all 0.2s;
   &:hover {
