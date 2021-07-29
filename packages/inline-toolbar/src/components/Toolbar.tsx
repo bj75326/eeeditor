@@ -13,6 +13,7 @@ import {
   PluginMethods,
   EEEditorContext,
   getEditorRootDomNode,
+  SelectionState,
 } from '@eeeditor/editor';
 import { createPortal } from 'react-dom';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
@@ -220,8 +221,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     }
   }, [overrideContent, getEditorState().getCurrentContent()]);
 
-  const onSelectionChanged = () => {
-    const selection = store.getItem('selection');
+  const onSelectionChanged = (selection: SelectionState) => {
     const currSelection = getEditorState().getSelection();
     if (
       selection &&

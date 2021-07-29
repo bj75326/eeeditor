@@ -5,6 +5,7 @@ import React, {
   MouseEvent,
   useContext,
   useRef,
+  CSSProperties,
 } from 'react';
 import {
   PluginMethods,
@@ -25,6 +26,9 @@ import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 import { sideToolbarIcon } from '../assets/extraIcon';
 import CSSMotion from 'rc-motion';
+import getSideToolbarPosition, {
+  SideToolbarPosition,
+} from '../utils/getSideToolbarPosition';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -118,7 +122,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
+  const [position, setPosition] = useState<SideToolbarPosition>({});
+
   const toolbarRef = useRef<HTMLElement>();
+
+  // const styleRef = useRef<CSSProperties>();
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
@@ -193,7 +201,28 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       (block.getType() === 'unstyled' || block.getType() === 'paragraph') &&
       block.getLength() === 0
     ) {
-      setVisible(true);
+      // side toolbar 的显示隐藏没有动画，直接在 subscribe function 中加入计算位置的回调
+      // onChange 内执行时获取的是最新的 editorState，还没有被渲染，所以使用 setTimeout 添加回调
+      setTimeout(() => {
+        const referenceEl = getEditorRootDomNode(getEditorRef()).querySelector(
+          `[data-offset-key="${block.getKey()}-0-0"][data-block="true"]`,
+        );
+        const position = getSideToolbarPosition(
+          referenceEl as HTMLElement,
+          textDirectionality === 'RTL',
+        );
+        // styleRef.current = textDirectionality === 'RTL' ? {
+        //   top: `${position.top}px`,
+        //   right: `${position.right}px`,
+        // } : {
+        //   top: `${position.top}px`,
+        //   left: `${position.left}px`,
+        // };
+        setPosition(position);
+        setVisible(true);
+      }, 0);
+    } else {
+      setVisible(false);
     }
   };
 
@@ -227,18 +256,33 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     [`${prefixCls}-expanded`]: expanded,
   });
 
+  const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
   const getMotionName = () => {
-    const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
     const antdPrefix = getAntdPrefixCls ? getAntdPrefixCls() : 'ant';
     const direction = textDirectionality === 'RTL' ? 'left' : 'right';
     return `${antdPrefix}-slide-${direction}`;
   };
 
+  const toolbarIconStyle: CSSProperties =
+    textDirectionality === 'RTL'
+      ? {
+          top: `${position.top}px`,
+          right: `${position.right}px`,
+        }
+      : {
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+        };
+
   return getContainer()
     ? createPortal(
         <EEEditorContext.Provider value={eeeditorContextProps}>
           <ConfigProvider direction={antdDirection} locale={antdLocale}>
-            <div className={toolbarWrapperCls} onMouseDown={preventBubblingUp}>
+            <div
+              className={toolbarWrapperCls}
+              style={toolbarIconStyle}
+              onMouseDown={preventBubblingUp}
+            >
               <div className={toolbarIconCls} onClick={toggleToolbarExpanded}>
                 {sideToolbarIcon}
               </div>

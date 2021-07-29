@@ -3,27 +3,26 @@
 @prefix: ~'@{eeeditor-prefix-cls}-side-toolbar';
 
 .@{prefix}-wrapper {
+  position: absolute;
+  z-index: @side-toolbar-zindex;
   box-sizing: border-box;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  position: absolute;
-  z-index: @side-toolbar-zindex;
 }
 
 .@{prefix}-rtl {
-
 }
 
 .@{prefix}-hidden {
-  // display: none;
+  display: none;
 }
 
 .@{prefix}-icon {
   position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;    
+  justify-content: center;
   width: @side-toolbar-btn-size;
   height: @side-toolbar-btn-size;
   color: @side-toolbar-btn-color;
@@ -36,5 +35,4 @@
 }
 
 .@{prefix}-expanded {
-  
 }
