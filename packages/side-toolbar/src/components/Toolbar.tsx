@@ -6,6 +6,7 @@ import React, {
   useContext,
   useRef,
   CSSProperties,
+  useLayoutEffect,
 } from 'react';
 import {
   PluginMethods,
@@ -124,7 +125,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   const [position, setPosition] = useState<SideToolbarPosition>({});
 
-  const toolbarRef = useRef<HTMLElement>();
+  const toolbarRef = useRef<HTMLDivElement>();
+  const btnsRef = useRef<HTMLElement>();
 
   // const styleRef = useRef<CSSProperties>();
 
@@ -225,7 +227,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       setVisible(false);
     }
   };
-  // todo use Effect  visible 变化时 计算 position
 
   useEffect(() => {
     store.subscribeToItem('editorState', onEditorStateChanged);
@@ -233,6 +234,14 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       store.unsubscribeFromItem('editorState', onEditorStateChanged);
     };
   }, []);
+
+  // todo use Effect  visible 变化时 计算 position
+  useLayoutEffect(() => {
+    console.log('side toolbar useLayoutEffect run');
+    if (visible && toolbarRef.current) {
+      console.log('getToolbarSize: ', toolbarRef.current.offsetWidth);
+    }
+  }, [visible]);
 
   const toggleToolbarExpanded = (event: MouseEvent) => {};
 
@@ -284,7 +293,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               style={toolbarIconStyle}
               onMouseDown={preventBubblingUp}
             >
-              <div className={toolbarIconCls} onClick={toggleToolbarExpanded}>
+              <div
+                className={toolbarIconCls}
+                onClick={toggleToolbarExpanded}
+                ref={toolbarRef}
+              >
                 {sideToolbarIcon}
               </div>
               <CSSMotion
@@ -293,7 +306,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                 motionDeadline={1000}
                 leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
                 removeOnLeave={false}
-                ref={toolbarRef}
+                ref={btnsRef}
               >
                 {({ style, className }, motionRef) => (
                   <div
