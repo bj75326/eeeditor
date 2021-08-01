@@ -207,10 +207,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     event.preventDefault();
   };
 
+  // 以下情况需要重新计算 inline toolbar 位置
+  // 1. override content 发生变化之后
+  // 2. contentState 发生变化之后
   useEffect(() => {
-    // 以下情况需要重新计算 inline toolbar 位置
-    // 1. override content 发生变化之后
-    // 2. contentState 发生变化之后
     if (visible) {
       setPosition(
         getInlineToolbarPosition(
@@ -301,8 +301,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     return null;
   };
   useEffect(() => {
+    // @eeeditor/editor suffix 渲染到真实 dom 之后
     setVisible(false);
-  }, [getContainer()]);
+  }, []);
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 

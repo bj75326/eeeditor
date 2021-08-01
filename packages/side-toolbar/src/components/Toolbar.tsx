@@ -221,9 +221,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         //   left: `${position.left}px`,
         // };
         setPosition(position);
+        setExpanded(false);
         setVisible(true);
       }, 0);
     } else {
+      setExpanded(false);
       setVisible(false);
     }
   };
@@ -235,15 +237,26 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     };
   }, []);
 
-  // todo use Effect  visible 变化时 计算 position
-  useLayoutEffect(() => {
-    console.log('side toolbar useLayoutEffect run');
-    if (visible && toolbarRef.current) {
-      console.log('getToolbarSize: ', toolbarRef.current.offsetWidth);
-    }
-  }, [visible]);
+  // textDirectionality 变化需要重新计算 side toolbar 位置
+  useEffect(() => {
+    const editorState = getEditorState();
+    const block = editorState
+      .getCurrentContent()
+      .getBlockForKey(editorState.getSelection().getStartKey());
+    const referenceEl = getEditorRootDomNode(getEditorRef()).querySelector(
+      `[data-offset-key="${block.getKey()}-0-0"][data-block="true"]`,
+    );
+    const position = getSideToolbarPosition(
+      referenceEl as HTMLElement,
+      textDirectionality === 'RTL',
+    );
+    setPosition(position);
+  }, [textDirectionality]);
 
-  const toggleToolbarExpanded = (event: MouseEvent) => {};
+  const toggleToolbarExpanded = (event: MouseEvent) => {
+    event.preventDefault();
+    setExpanded((expanded) => !expanded);
+  };
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -254,8 +267,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     return null;
   };
   useEffect(() => {
+    // @eeeditor/editor suffix 渲染到真实 dom 之后
     setVisible(false);
-  }, [getContainer()]);
+  }, []);
 
   const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',

@@ -36,7 +36,14 @@
   &:hover {
     background-color: @side-toolbar-btn-hover-bg;
   }
+
+  & > svg {
+    transition: transform 0.2s;
+  }
 }
 
 .@{prefix}-expanded {
+  & > svg {
+    transform: rotate(45deg);
+  }
 }
