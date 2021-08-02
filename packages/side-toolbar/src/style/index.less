@@ -15,11 +15,12 @@
   user-select: none;
 }
 
-.@{prefix}-rtl {
-}
-
 .@{prefix}-hidden {
   display: none;
+}
+
+.@{prefix}-visibility-hidden {
+  visibility: hidden;
 }
 
 .@{prefix}-icon {
@@ -45,5 +46,31 @@
 .@{prefix}-expanded {
   & > svg {
     transform: rotate(45deg);
+  }
+}
+
+.@{prefix}-btns {
+  position: absolute;
+  display: inline-block;
+  margin-left: 32px;
+  .@{eeeditor-prefix-cls}-btn {
+    width: @side-toolbar-btn-size;
+    height: @side-toolbar-btn-size;
+    color: @side-toolbar-btn-color;
+    font-size: @side-toolbar-btn-icon-size;
+    &:hover {
+      background-color: @side-toolbar-btn-hover-bg;
+    }
+    &.@{eeeditor-prefix-cls}-btn-active {
+      color: @side-toolbar-btn-active-color;
+    }
+    &.@{eeeditor-prefix-cls}-btn-disabled {
+      color: @side-toolbar-btn-disabled-color;
+    }
+  }
+}
+
+.@{prefix}-rtl {
+  .@{prefix}-btns {
   }
 }

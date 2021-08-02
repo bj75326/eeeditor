@@ -119,7 +119,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       antdLocale = zhCN;
   }
 
+  // 用来控制 css display 的值
   const [visible, setVisible] = useState<boolean>(true);
+  // 为了获得 side toolbar icon 的 offsetWidth, visibility 用来控制 css visibility 的值
+  const [visibility, setVisibility] = useState<boolean>(false);
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
@@ -221,11 +224,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         //   left: `${position.left}px`,
         // };
         setPosition(position);
-        setExpanded(false);
-        setVisible(true);
+        setVisibility(true);
       }, 0);
+      setExpanded(false);
+      setVisible(true);
     } else {
       setExpanded(false);
+      setVisibility(false);
       setVisible(false);
     }
   };
@@ -274,6 +279,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',
     [`${prefixCls}-hidden`]: !visible,
+    [`${prefixCls}-visibility-hidden`]: !visibility,
   });
 
   const toolbarIconCls = classNames(`${prefixCls}-icon`, {
