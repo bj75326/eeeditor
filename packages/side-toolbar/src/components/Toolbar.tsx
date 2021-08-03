@@ -30,6 +30,7 @@ import CSSMotion from 'rc-motion';
 import getSideToolbarPosition, {
   SideToolbarPosition,
 } from '../utils/getSideToolbarPosition';
+import getReferenceEl from '../utils/getReferenceEl';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -119,10 +120,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       antdLocale = zhCN;
   }
 
-  // 用来控制 css display 的值
   const [visible, setVisible] = useState<boolean>(true);
-  // 为了获得 side toolbar icon 的 offsetWidth, visibility 用来控制 css visibility 的值
-  const [visibility, setVisibility] = useState<boolean>(false);
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
@@ -209,28 +207,23 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       // side toolbar 的显示隐藏没有动画，直接在 subscribe function 中加入计算位置的回调
       // onChange 内执行时获取的是最新的 editorState，还没有被渲染，所以使用 setTimeout 添加回调
       setTimeout(() => {
-        const referenceEl = getEditorRootDomNode(getEditorRef()).querySelector(
-          `[data-offset-key="${block.getKey()}-0-0"][data-block="true"]`,
+        const referenceEl = getReferenceEl(
+          editorState,
+          getEditorRootDomNode(getEditorRef()),
         );
         const position = getSideToolbarPosition(
-          referenceEl as HTMLElement,
-          textDirectionality === 'RTL',
+          referenceEl,
+          toolbarRef.current,
+          // textDirectionality === 'RTL',
+          getProps()['textDirectionality'] === 'RTL',
         );
-        // styleRef.current = textDirectionality === 'RTL' ? {
-        //   top: `${position.top}px`,
-        //   right: `${position.right}px`,
-        // } : {
-        //   top: `${position.top}px`,
-        //   left: `${position.left}px`,
-        // };
+
         setPosition(position);
-        setVisibility(true);
+        setVisible(true);
       }, 0);
       setExpanded(false);
-      setVisible(true);
     } else {
       setExpanded(false);
-      setVisibility(false);
       setVisible(false);
     }
   };
@@ -244,18 +237,18 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   // textDirectionality 变化需要重新计算 side toolbar 位置
   useEffect(() => {
-    const editorState = getEditorState();
-    const block = editorState
-      .getCurrentContent()
-      .getBlockForKey(editorState.getSelection().getStartKey());
-    const referenceEl = getEditorRootDomNode(getEditorRef()).querySelector(
-      `[data-offset-key="${block.getKey()}-0-0"][data-block="true"]`,
+    const referenceEl = getReferenceEl(
+      getEditorState(),
+      getEditorRootDomNode(getEditorRef()),
     );
-    const position = getSideToolbarPosition(
-      referenceEl as HTMLElement,
-      textDirectionality === 'RTL',
-    );
-    setPosition(position);
+    if (toolbarRef.current && referenceEl) {
+      const position = getSideToolbarPosition(
+        referenceEl,
+        toolbarRef.current,
+        textDirectionality === 'RTL',
+      );
+      setPosition(position);
+    }
   }, [textDirectionality]);
 
   const toggleToolbarExpanded = (event: MouseEvent) => {
@@ -279,7 +272,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',
     [`${prefixCls}-hidden`]: !visible,
-    [`${prefixCls}-visibility-hidden`]: !visibility,
   });
 
   const toolbarIconCls = classNames(`${prefixCls}-icon`, {
@@ -293,7 +285,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     return `${antdPrefix}-slide-${direction}`;
   };
 
-  const toolbarIconStyle: CSSProperties =
+  const toolbarStyle: CSSProperties =
     textDirectionality === 'RTL'
       ? {
           top: `${position.top}px`,
@@ -304,13 +296,37 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           left: `${position.left}px`,
         };
 
+  // todo
+  const editorRoot = getEditorRootDomNode(getEditorRef());
+  const rootElRect = editorRoot.getBoundingClientRect();
+  const referenceElRect = getReferenceEl(
+    getEditorState(),
+    editorRoot,
+  ).getBoundingClientRect();
+
+  const toolbarIconStyle: CSSProperties = {
+    marginLeft: 0,
+    marginRight: 0,
+  };
+  if (toolbarRef.current && visible) {
+    if (textDirectionality === 'RTL') {
+      toolbarIconStyle['marginLeft'] = `${
+        rootElRect.right - referenceElRect.right
+      }px`;
+    } else {
+      toolbarIconStyle['marginRight'] = `${
+        referenceElRect.left - rootElRect.left
+      }px`;
+    }
+  }
+
   return getContainer()
     ? createPortal(
         <EEEditorContext.Provider value={eeeditorContextProps}>
           <ConfigProvider direction={antdDirection} locale={antdLocale}>
             <div
               className={toolbarWrapperCls}
-              style={toolbarIconStyle}
+              style={toolbarStyle}
               onMouseDown={preventBubblingUp}
             >
               <div
