@@ -5,6 +5,7 @@
 .@{prefix}-wrapper {
   position: absolute;
   z-index: @side-toolbar-zindex;
+  display: flex;
   box-sizing: border-box;
   -ms-transform: translateY(-50%);
   -moz-transform: translateY(-50%);
@@ -29,7 +30,7 @@
   color: @side-toolbar-btn-color;
   font-size: @side-toolbar-icon-size;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
   &:hover {
     background-color: @side-toolbar-btn-hover-bg;
   }
@@ -40,14 +41,12 @@
 }
 
 .@{prefix}-expanded {
-  & > svg {
+  .@{prefix}-icon > svg {
     transform: rotate(45deg);
   }
 }
 
 .@{prefix}-btns {
-  position: absolute;
-  display: inline-block;
   .@{eeeditor-prefix-cls}-btn {
     width: @side-toolbar-btn-size;
     height: @side-toolbar-btn-size;

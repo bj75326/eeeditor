@@ -72,17 +72,10 @@ import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
 
-const {
-  StaticToolbar,
-  SelectorButton,
-  Separator,
-  ...staticToolbarPlugin
-} = createStaticToolbarPlugin();
+const { StaticToolbar, SelectorButton, Separator, ...staticToolbarPlugin } =
+  createStaticToolbarPlugin();
 
-const {
-  SideToolbar,
-  ...sideToolbarPlugin
-} = createSideToolbarPlugin();
+const { SideToolbar, ...sideToolbarPlugin } = createSideToolbarPlugin();
 
 const {
   InlineToolbar,
@@ -91,11 +84,8 @@ const {
   ...inlineToolbarPlugin
 } = createInlineToolbarPlugin();
 
-const {
-  DecoratedUndoButton,
-  DecoratedRedoButton,
-  ...undoPlugin
-} = createUndoPlugin({});
+const { DecoratedUndoButton, DecoratedRedoButton, ...undoPlugin } =
+  createUndoPlugin({});
 
 const { DividerButton, ...dividerPlugin } = createDividerPlugin({});
 
@@ -133,9 +123,8 @@ const Page: React.FC<PageProps> = (props) => {
   } = props;
   const { formatMessage } = useIntl();
 
-  const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] = useState(
-    false,
-  );
+  const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] =
+    useState(false);
 
   const handleCollapseBtnClick = () => {
     setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
@@ -488,7 +477,10 @@ const Page: React.FC<PageProps> = (props) => {
             <BlockquoteButton />
           </InlineToolbar>
           <SideToolbar>
-            <DividerButton/>
+            <UnorderedListButton />
+            <OrderedListButton />
+            <BlockquoteButton />
+            <DividerButton />
           </SideToolbar>
         </div>
         {sidebar}

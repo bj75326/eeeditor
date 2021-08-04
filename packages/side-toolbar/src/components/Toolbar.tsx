@@ -272,16 +272,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',
     [`${prefixCls}-hidden`]: !visible,
-  });
-
-  const toolbarIconCls = classNames(`${prefixCls}-icon`, {
     [`${prefixCls}-expanded`]: expanded,
   });
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
   const getMotionName = () => {
     const antdPrefix = getAntdPrefixCls ? getAntdPrefixCls() : 'ant';
-    const direction = textDirectionality === 'RTL' ? 'left' : 'right';
+    const direction = textDirectionality === 'RTL' ? 'right' : 'left';
     return `${antdPrefix}-slide-${direction}`;
   };
 
@@ -297,16 +294,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         };
 
   // todo toolbarIconStyle 是使用 useRef 好，还是使用 useState 好？
-  const [count, setCount] = useState<number>(0);
-  useEffect(() => {
-    console.log('prev count: ', count);
-    setCount((count) => count + 1);
-    console.log('next count ', count);
-  }, [visible]);
-  useEffect(() => {
-    console.log('useEffect ', count);
-  }, [count]);
-
   const toolbarIconStyle = useRef<CSSProperties>({
     marginLeft: 0,
     marginRight: 0,
@@ -318,7 +305,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       getEditorState(),
       editorRoot,
     ).getBoundingClientRect();
-    console.log('count in textDir change ', count);
+
     if (textDirectionality === 'RTL') {
       toolbarIconStyle.current = {
         marginLeft: `${rootElRect.right - referenceElRect.right}px`,
@@ -342,14 +329,26 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               onMouseDown={preventBubblingUp}
             >
               <div
-                className={toolbarIconCls}
+                className={`${prefixCls}-icon`}
                 style={toolbarIconStyle.current}
                 onClick={toggleToolbarExpanded}
                 ref={toolbarRef}
               >
                 {sideToolbarIcon}
               </div>
-              <CSSMotion
+              {expanded && (
+                <div className={`${prefixCls}-btns`}>
+                  {React.Children.map<ReactElement, ReactElement>(
+                    children,
+                    (child) =>
+                      React.cloneElement(child, {
+                        ...childrenProps,
+                        ...child.props,
+                      }),
+                  )}
+                </div>
+              )}
+              {/* <CSSMotion
                 visible={expanded}
                 motionName={getMotionName()}
                 motionDeadline={1000}
@@ -375,7 +374,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                     )}
                   </div>
                 )}
-              </CSSMotion>
+              </CSSMotion> */}
             </div>
           </ConfigProvider>
         </EEEditorContext.Provider>,
