@@ -296,29 +296,41 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           left: `${position.left}px`,
         };
 
-  // todo
-  const editorRoot = getEditorRootDomNode(getEditorRef());
-  const rootElRect = editorRoot.getBoundingClientRect();
-  const referenceElRect = getReferenceEl(
-    getEditorState(),
-    editorRoot,
-  ).getBoundingClientRect();
+  // todo toolbarIconStyle 是使用 useRef 好，还是使用 useState 好？
+  const [count, setCount] = useState<number>(0);
+  useEffect(() => {
+    console.log('prev count: ', count);
+    setCount((count) => count + 1);
+    console.log('next count ', count);
+  }, [visible]);
+  useEffect(() => {
+    console.log('useEffect ', count);
+  }, [count]);
 
-  const toolbarIconStyle: CSSProperties = {
+  const toolbarIconStyle = useRef<CSSProperties>({
     marginLeft: 0,
     marginRight: 0,
-  };
-  if (toolbarRef.current && visible) {
+  });
+  useLayoutEffect(() => {
+    const editorRoot = getEditorRootDomNode(getEditorRef());
+    const rootElRect = editorRoot.getBoundingClientRect();
+    const referenceElRect = getReferenceEl(
+      getEditorState(),
+      editorRoot,
+    ).getBoundingClientRect();
+    console.log('count in textDir change ', count);
     if (textDirectionality === 'RTL') {
-      toolbarIconStyle['marginLeft'] = `${
-        rootElRect.right - referenceElRect.right
-      }px`;
+      toolbarIconStyle.current = {
+        marginLeft: `${rootElRect.right - referenceElRect.right}px`,
+        marginRight: 0,
+      };
     } else {
-      toolbarIconStyle['marginRight'] = `${
-        referenceElRect.left - rootElRect.left
-      }px`;
+      toolbarIconStyle.current = {
+        marginLeft: 0,
+        marginRight: `${referenceElRect.left - rootElRect.left}px`,
+      };
     }
-  }
+  }, [textDirectionality]);
 
   return getContainer()
     ? createPortal(
@@ -331,6 +343,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
             >
               <div
                 className={toolbarIconCls}
+                style={toolbarIconStyle.current}
                 onClick={toggleToolbarExpanded}
                 ref={toolbarRef}
               >
