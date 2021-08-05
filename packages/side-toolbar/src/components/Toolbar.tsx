@@ -3,7 +3,6 @@ import React, {
   useState,
   useEffect,
   MouseEvent,
-  useContext,
   useRef,
   CSSProperties,
   useLayoutEffect,
@@ -19,7 +18,7 @@ import {
 import { SideToolbarPluginStore } from '..';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { ConfigProvider } from 'antd';
-import { DirectionType, ConfigContext } from 'antd/lib/config-provider';
+import { DirectionType } from 'antd/lib/config-provider';
 import { Locale } from 'antd/lib/locale-provider';
 import zhCN from 'antd/lib/locale/zh_CN';
 import enUS from 'antd/lib/locale/en_US';
@@ -31,6 +30,7 @@ import getSideToolbarPosition, {
   SideToolbarPosition,
 } from '../utils/getSideToolbarPosition';
 import getReferenceEl from '../utils/getReferenceEl';
+import shouldSideToolbarVisible from '../utils/shouldSideToolbarVisible';
 
 export interface ToolbarChildrenProps extends Partial<PluginMethods> {
   // 提供方法给 buttons 动态增减 handleKeyCommand
@@ -127,9 +127,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [position, setPosition] = useState<SideToolbarPosition>({});
 
   const toolbarRef = useRef<HTMLDivElement>();
-  const btnsRef = useRef<HTMLElement>();
-
-  // const styleRef = useRef<CSSProperties>();
 
   const childrenProps: ToolbarChildrenProps = {
     getEditorState: store.getItem('getEditorState'),
@@ -194,16 +191,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   };
 
   const onEditorStateChanged = (editorState: EditorState): void => {
-    const selection = editorState.getSelection();
-    const content = editorState.getCurrentContent();
-    const block = content.getBlockForKey(selection.getStartKey());
-    if (
-      selection &&
-      selection.isCollapsed() &&
-      selection.getHasFocus() &&
-      (block.getType() === 'unstyled' || block.getType() === 'paragraph') &&
-      block.getLength() === 0
-    ) {
+    if (shouldSideToolbarVisible(editorState)) {
       // side toolbar 的显示隐藏没有动画，直接在 subscribe function 中加入计算位置的回调
       // onChange 内执行时获取的是最新的 editorState，还没有被渲染，所以使用 setTimeout 添加回调
       setTimeout(() => {
@@ -276,13 +264,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     [`${prefixCls}-unexpanded`]: !expanded,
   });
 
-  const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
-  const getMotionName = () => {
-    const antdPrefix = getAntdPrefixCls ? getAntdPrefixCls() : 'ant';
-    const direction = textDirectionality === 'RTL' ? 'right' : 'left';
-    return `${antdPrefix}-slide-${direction}`;
-  };
-
   const toolbarStyle: CSSProperties =
     textDirectionality === 'RTL'
       ? {
@@ -337,7 +318,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               >
                 {sideToolbarIcon}
               </div>
-
               <div className={`${prefixCls}-btns`}>
                 {React.Children.map<ReactElement, ReactElement>(
                   children,
@@ -348,34 +328,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                     }),
                 )}
               </div>
-
-              {/* <CSSMotion
-                visible={expanded}
-                motionName={getMotionName()}
-                motionDeadline={1000}
-                leavedClassName={`${eeeditorContextProps.getPrefixCls()}-hidden`}
-                removeOnLeave={false}
-                ref={btnsRef}
-              >
-                {({ style, className }, motionRef) => (
-                  <div
-                    className={classNames(`${prefixCls}-btns`, className)}
-                    style={{
-                      ...style,
-                    }}
-                    ref={motionRef}
-                  >
-                    {React.Children.map<ReactElement, ReactElement>(
-                      children,
-                      (child) =>
-                        React.cloneElement(child, {
-                          ...childrenProps,
-                          ...child.props,
-                        }),
-                    )}
-                  </div>
-                )}
-              </CSSMotion> */}
             </div>
           </ConfigProvider>
         </EEEditorContext.Provider>,

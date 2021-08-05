@@ -5,6 +5,7 @@ import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
 } from './components/Toolbar';
+import shouldSideToolbarVisible from './utils/shouldSideToolbarVisible';
 
 export type SideToolbarProps = ToolbarPubProps;
 
@@ -34,6 +35,9 @@ export default (): SideToolbarPlugin => {
     <Toolbar {...props} store={store} />
   );
 
+  // onFocus 事件导致的 editorState 变化不应该影响 toolbar 的 visible 变化
+  let preventToolbarVisible: boolean = false;
+
   return {
     initialize: (pluginMethods) => {
       Object.keys(pluginMethods).forEach((pluginMethod) => {
@@ -44,8 +48,18 @@ export default (): SideToolbarPlugin => {
       });
     },
 
+    onFocus: (e, { getEditorState }) => {
+      // preventToolbarVisible = true;
+      return false;
+    },
+
     onChange: (editorState) => {
-      store.updateItem('editorState', editorState);
+      if (!preventToolbarVisible) {
+        store.updateItem('editorState', editorState);
+      } else {
+        preventToolbarVisible = false;
+      }
+
       return editorState;
     },
 
