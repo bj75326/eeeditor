@@ -40,13 +40,9 @@
   }
 }
 
-.@{prefix}-expanded {
-  .@{prefix}-icon > svg {
-    transform: rotate(45deg);
-  }
-}
-
 .@{prefix}-btns {
+  height: @side-toolbar-btn-size;
+  overflow: hidden;
   .@{eeeditor-prefix-cls}-btn {
     width: @side-toolbar-btn-size;
     height: @side-toolbar-btn-size;
@@ -64,7 +60,92 @@
   }
 }
 
+.@{prefix}-expanded {
+  .@{prefix}-icon > svg {
+    transform: rotate(45deg);
+  }
+  .@{prefix}-btns {
+    animation-name: show-buttons;
+    animation-duration: 180ms;
+    animation-direction: normal;
+    animation-fill-mode: both;
+  }
+}
+
+.@{prefix}-unexpanded {
+  .@{prefix}-btns {
+    animation-name: hide-buttons;
+    animation-duration: 180ms;
+    animation-direction: normal;
+    animation-fill-mode: both;
+  }
+}
+
 .@{prefix}-rtl {
   .@{prefix}-btns {
+  }
+}
+
+// @-moz-keyframes show-buttons {
+//     0% {
+//         opacity: 0;
+//         transform: translate3d(-10px,0,0)
+//     }
+
+//     100% {
+//         opacity: 1;
+//         transform: translate3d(0,0,0)
+//     }
+// }
+
+// @-webkit-keyframes show-buttons {
+//     0% {
+//         opacity: 0;
+//         transform: translate3d(-10px,0,0)
+//     }
+
+//     100% {
+//         opacity: 1;
+//         transform: translate3d(0,0,0)
+//     }
+// }
+
+// @-o-keyframes show-buttons {
+//     0% {
+//         opacity: 0;
+//         transform: translate3d(-10px,0,0)
+//     }
+
+//     100% {
+//         opacity: 1;
+//         transform: translate3d(0,0,0)
+//     }
+// }
+
+@keyframes show-buttons {
+  0% {
+    width: 0;
+    transform: translate3d(-10px, 0, 0);
+    opacity: 0;
+  }
+
+  100% {
+    width: auto;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes hide-buttons {
+  0% {
+    width: auto;
+    transform: translate3d(0px, 0, 0);
+    opacity: 1;
+  }
+
+  100% {
+    width: 0;
+    transform: translate3d(-10px, 0, 0);
+    opacity: 0;
   }
 }

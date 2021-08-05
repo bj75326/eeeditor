@@ -273,6 +273,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',
     [`${prefixCls}-hidden`]: !visible,
     [`${prefixCls}-expanded`]: expanded,
+    [`${prefixCls}-unexpanded`]: !expanded,
   });
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
@@ -336,18 +337,18 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
               >
                 {sideToolbarIcon}
               </div>
-              {expanded && (
-                <div className={`${prefixCls}-btns`}>
-                  {React.Children.map<ReactElement, ReactElement>(
-                    children,
-                    (child) =>
-                      React.cloneElement(child, {
-                        ...childrenProps,
-                        ...child.props,
-                      }),
-                  )}
-                </div>
-              )}
+
+              <div className={`${prefixCls}-btns`}>
+                {React.Children.map<ReactElement, ReactElement>(
+                  children,
+                  (child) =>
+                    React.cloneElement(child, {
+                      ...childrenProps,
+                      ...child.props,
+                    }),
+                )}
+              </div>
+
               {/* <CSSMotion
                 visible={expanded}
                 motionName={getMotionName()}
