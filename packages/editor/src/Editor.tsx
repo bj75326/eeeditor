@@ -4,6 +4,7 @@ import React, {
   useRef,
   forwardRef,
   createContext,
+  SyntheticEvent,
 } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import {
@@ -17,6 +18,8 @@ import {
   SupportedLanguage,
   EditorProps,
   Modifier,
+  PluginMethods,
+  EditorPlugin,
 } from '.';
 import classNames from 'classnames';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
@@ -103,10 +106,14 @@ const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
   },
 };
 
+// ref 获取的 PluginEditor 实例对象的类型
+type PluginEditorType = React.ComponentClass<PluginEditorProps> & {
+  getPluginMethods: () => PluginMethods;
+};
 // draft-js-plugins-editor 没有使用 typescript，在这里类型包装下
-const PluginEditor: React.FC<PluginEditorProps> = forwardRef((props, ref) => (
-  <Editor {...props} ref={ref} />
-));
+const PluginEditor = forwardRef<PluginEditorType, PluginEditorProps>(
+  (props, ref) => <Editor {...props} ref={ref} />,
+);
 
 const EEEditor: React.FC<EEEditorProps> = (props) => {
   const {
@@ -118,7 +125,6 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     onChange,
     blockStyleFn = defaultBlockStyleFn,
     customStyleMap = defaultCustomStyleMap,
-    // onTab = defaultOnTab,
     plugins = [],
     defaultKeyBindings = false,
     ...restProps
@@ -163,16 +169,22 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     locale: locale,
   };
 
+  // 获取 PluginEditor 实例
+  const editorRef = useRef<PluginEditorType>();
+
   useEffect(() => {
     console.log('EEEditor componentDidUpdate!!');
   });
 
+  // todo 包装 onchange
   const handleChange = (editorState: EditorState) => {
     onChange(editorState);
   };
 
+  // plugins attr 处理
   let suffixes = [];
 
+  // 获取 suffixes
   const eeeditorPlugins = [focusPlugin, ...plugins, defaultPlugin].map(
     (plugin) => {
       const { suffix, ...others } = plugin;
@@ -183,32 +195,66 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
     },
   );
 
+  // 获取 wrapper event hooks
+  const wrapperEventHookKeys = [];
+  const wrapperEventHooks = {};
+
+  const createWrapperEventHooks =
+    (methodName: string, plugins: EditorPlugin[]) => (e: SyntheticEvent) =>
+      plugins.some(
+        (plugin) =>
+          typeof plugin[methodName] === 'function' &&
+          (plugin[methodName] as Function).apply(plugin, [
+            e,
+            editorRef.current.getPluginMethods(),
+          ]),
+      );
+
+  eeeditorPlugins.forEach((plugin) => {
+    Object.keys(plugin).forEach((attrName) => {
+      if (wrapperEventHookKeys.indexOf(attrName) !== -1) return;
+
+      if (attrName.startsWith('onWrapper')) {
+        wrapperEventHookKeys.push(attrName);
+      }
+    });
+  });
+
+  wrapperEventHookKeys.forEach((attrName) => {
+    const methodName = attrName.replace('Wrapper', '');
+    wrapperEventHooks[methodName] = createWrapperEventHooks(
+      attrName,
+      eeeditorPlugins,
+    );
+  });
+
   return (
     <EEEditorContext.Provider value={eeeditorContextProps}>
       <ConfigProvider direction={antdDirection} locale={antdLocale}>
         <div
           className={eeeditorCls}
           style={style}
-          onBlur={() => {
-            console.log('editor wrapper blur');
-            // editorRef.current.blur();
-          }}
-          onFocus={() => {
-            console.log('editor wrapper focus');
-          }}
-          onClick={() => {
-            console.log('editor wrapper click');
-            // editorRef.current.focus();
-          }}
-          onMouseDown={() => {
-            console.log('editor wrapper mousedown');
-          }}
-          onMouseUp={() => {
-            console.log('editor wrapper mouseup');
-          }}
-          onSelect={() => {
-            console.log('editor wrapper select');
-          }}
+          {...wrapperEventHooks}
+          // onBlur={() => {
+          //   console.log('editor wrapper blur');
+          //   // editorRef.current.blur();
+          // }}
+          // onFocus={() => {
+          //   console.log('editor wrapper focus');
+          // }}
+          // onClick={() => {
+          //   console.log('editor wrapper click');
+          //   // editorRef.current.focus();
+          // }}
+          // onMouseDown={() => {
+          //   console.log('editor wrapper mousedown');
+          // }}
+          // onMouseUp={() => {
+          //   console.log('editor wrapper mouseup');
+          // }}
+          // onSelect={() => {
+          //   console.log('editor wrapper select');
+          // }}
         >
           <PluginEditor
             editorState={editorState}
@@ -218,7 +264,7 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
             plugins={eeeditorPlugins}
             // getDefaultKeyBinding 现在放到了 built-in defaultPlugin 中， defaultKeyBindings 默认为 false。
             defaultKeyBindings={defaultKeyBindings}
-            // ref={editorRef}
+            ref={editorRef}
             prefixCls={prefixCls}
             locale={locale}
             {...restProps}

@@ -48,18 +48,21 @@ export default (): SideToolbarPlugin => {
       });
     },
 
-    onFocus: (e, { getEditorState }) => {
-      // preventToolbarVisible = true;
+    onFocus: (e) => {
+      preventToolbarVisible = true;
+      return false;
+    },
+
+    onWrapperSelect: (e, { getEditorState, setEditorState }) => {
+      if (preventToolbarVisible) {
+      }
       return false;
     },
 
     onChange: (editorState) => {
       if (!preventToolbarVisible) {
         store.updateItem('editorState', editorState);
-      } else {
-        preventToolbarVisible = false;
       }
-
       return editorState;
     },
 

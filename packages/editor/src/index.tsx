@@ -248,7 +248,33 @@ export type EditorPlugin = {
   initialize?: (arg0: PluginMethods) => void;
   decorators?: Array<CompositeDecorator | DraftDecorator>;
   willUnmount?: (arg0: PluginMethods) => void;
+  // EEEditor 添加后缀 dom
   suffix?: ComponentType;
+  // EEEditor wrapper dom 上绑定事件
+  onWrapperSelect?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
+  onWrapperFocus?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
+  onWrapperBlur?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
+  onWrapperMouseDown?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
+  onWrapperMouseUp?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
+  onWrapperMouseClick?: (
+    e: React.SyntheticEvent,
+    arg1: PluginMethods,
+  ) => boolean | null | undefined;
 };
 export type PluginCreator = (config?: Record<string, any>) => Plugin;
 
