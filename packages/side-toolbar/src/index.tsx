@@ -1,11 +1,18 @@
 import React from 'react';
-import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
+import {
+  EditorPlugin,
+  PluginMethods,
+  EditorState,
+  getEditorRootDomNode,
+  isOnlyFocusChanged,
+} from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
   ToolbarPubProps,
   ToolbarChildrenProps,
 } from './components/Toolbar';
 import shouldSideToolbarVisible from './utils/shouldSideToolbarVisible';
+import { getDraftEditorSelection } from 'draft-js/lib/getDraftEditorSelection';
 
 export type SideToolbarProps = ToolbarPubProps;
 
@@ -36,7 +43,7 @@ export default (): SideToolbarPlugin => {
   );
 
   // onFocus 事件导致的 editorState 变化不应该影响 toolbar 的 visible 变化
-  let preventToolbarVisible: boolean = false;
+  // let preventToolbarVisible: boolean = false;
 
   return {
     initialize: (pluginMethods) => {
@@ -48,21 +55,27 @@ export default (): SideToolbarPlugin => {
       });
     },
 
-    onFocus: (e) => {
-      preventToolbarVisible = true;
+    // onFocus: (e) => {
+    //   preventToolbarVisible = true;
+    //   return false;
+    // },
+
+    onWrapperSelect: (e, { getEditorState, setEditorState, getEditorRef }) => {
+      // if (preventToolbarVisible) {
+
+      //   preventToolbarVisible = false;
+      // }
       return false;
     },
 
-    onWrapperSelect: (e, { getEditorState, setEditorState }) => {
-      if (preventToolbarVisible) {
-      }
-      return false;
-    },
+    onChange: (editorState, { getEditorState }) => {
+      console.log(
+        'isOnlyFocusChanged ',
+        isOnlyFocusChanged(editorState, getEditorState()),
+      );
 
-    onChange: (editorState) => {
-      if (!preventToolbarVisible) {
-        store.updateItem('editorState', editorState);
-      }
+      store.updateItem('editorState', editorState);
+
       return editorState;
     },
 

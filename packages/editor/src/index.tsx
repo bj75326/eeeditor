@@ -299,6 +299,7 @@ export * from './utils/getPopoverPosition';
 export * from './utils/getEditorRootDomNode';
 export * from './utils/getSelectedText';
 export * from './utils/getDecoratedLeavesOffset';
+export * from './utils/isOnlyFocusChanged';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
