@@ -4,7 +4,7 @@ import {
   PluginMethods,
   EditorState,
   getEditorRootDomNode,
-  isOnlyFocusChanged,
+  isFocus,
 } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
@@ -43,7 +43,7 @@ export default (): SideToolbarPlugin => {
   );
 
   // onFocus 事件导致的 editorState 变化不应该影响 toolbar 的 visible 变化
-  // let preventToolbarVisible: boolean = false;
+  let preventToolbarVisible: boolean = false;
 
   return {
     initialize: (pluginMethods) => {
@@ -55,10 +55,13 @@ export default (): SideToolbarPlugin => {
       });
     },
 
-    // onFocus: (e) => {
-    //   preventToolbarVisible = true;
-    //   return false;
-    // },
+    onFocus: (e) => {
+      preventToolbarVisible = true;
+
+      console.log('onFocus Selection: ', window.getSelection().anchorNode);
+      console.log('onFocus Selection: ', window.getSelection().anchorOffset);
+      return false;
+    },
 
     onWrapperSelect: (e, { getEditorState, setEditorState, getEditorRef }) => {
       // if (preventToolbarVisible) {
@@ -68,13 +71,17 @@ export default (): SideToolbarPlugin => {
       return false;
     },
 
-    onChange: (editorState, { getEditorState }) => {
-      console.log(
-        'isOnlyFocusChanged ',
-        isOnlyFocusChanged(editorState, getEditorState()),
-      );
+    onWrapperMouseDown: () => {
+      console.log('wrapper onWrapperMouseDown');
+      return false;
+    },
 
-      store.updateItem('editorState', editorState);
+    onChange: (editorState, { getEditorState }) => {
+      if (!preventToolbarVisible) {
+        store.updateItem('editorState', editorState);
+      } else {
+        preventToolbarVisible = false;
+      }
 
       return editorState;
     },

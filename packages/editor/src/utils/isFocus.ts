@@ -1,7 +1,7 @@
 import { EditorState } from '..';
 import { Map, is } from 'immutable';
 
-export const isOnlyFocusChanged = (
+export const isFocus = (
   nextEditorState: EditorState,
   currEditorState: EditorState,
 ): boolean => {
@@ -46,4 +46,4 @@ export const isOnlyFocusChanged = (
   return false;
 };
 
-export default isOnlyFocusChanged;
+export default isFocus;
