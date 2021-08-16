@@ -13,6 +13,7 @@ import Toolbar, {
 } from './components/Toolbar';
 import shouldSideToolbarVisible from './utils/shouldSideToolbarVisible';
 import { getDraftEditorSelection } from 'draft-js/lib/getDraftEditorSelection';
+import containsNode from 'fbjs/lib/containsNode';
 
 export type SideToolbarProps = ToolbarPubProps;
 
@@ -43,6 +44,7 @@ export default (): SideToolbarPlugin => {
   );
 
   // onFocus 事件导致的 editorState 变化不应该影响 toolbar 的 visible 变化
+  let withMouseDown: boolean = false;
   let preventToolbarVisible: boolean = false;
 
   return {
@@ -55,32 +57,63 @@ export default (): SideToolbarPlugin => {
       });
     },
 
-    onFocus: (e) => {
-      preventToolbarVisible = true;
+    onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
+      console.log('wrapper onWrapperMouseDown');
 
-      console.log('onFocus Selection: ', window.getSelection().anchorNode);
-      console.log('onFocus Selection: ', window.getSelection().anchorOffset);
+      const hasFocus = getEditorState().getSelection().getHasFocus();
+
+      // 判断是否是通过鼠标事件触发 editor focus 事件
+      if (containsNode(getEditorRef().editor, e.target as Node) && !hasFocus) {
+        withMouseDown = true;
+      }
+
+      return false;
+    },
+
+    onFocus: (e) => {
+      console.log('editor onFocus');
+
+      if (withMouseDown) {
+        // 鼠标操作触发 focus 事件，side toolbar visibe 控制放到 select 事件中
+        withMouseDown = false;
+        preventToolbarVisible = true;
+      } else {
+        // 非鼠标操作触发 focus 事件，需要在 focus 事件内判断 visible
+        // 例如：
+        // 1. 浏览器 tag 切换回来时触发 focus
+        // 2. tab 键
+        // 3. editor.focus() 方法
+        preventToolbarVisible = false;
+      }
+
       return false;
     },
 
     onWrapperSelect: (e, { getEditorState, setEditorState, getEditorRef }) => {
-      // if (preventToolbarVisible) {
+      console.log('wrapper onWrapperSelect');
 
-      //   preventToolbarVisible = false;
-      // }
+      // 鼠标操作触发 focus 事件，如果光标位置与上次 blur 之前位置相同，
+      // selectionState 在 onFocus 之后没有变化，则 onSelect 不会调用 onChange
+      // 所以在 onWrapperSelect 内，判断 selectionState 没有变化时，仍然需要更新 toolbar visible
+
+      if (preventToolbarVisible) {
+        preventToolbarVisible = false;
+
+        // todo.
+      }
+
       return false;
     },
 
-    onWrapperMouseDown: () => {
-      console.log('wrapper onWrapperMouseDown');
+    onBlur: () => {
+      // todo.
+
       return false;
     },
 
     onChange: (editorState, { getEditorState }) => {
       if (!preventToolbarVisible) {
         store.updateItem('editorState', editorState);
-      } else {
-        preventToolbarVisible = false;
       }
 
       return editorState;
