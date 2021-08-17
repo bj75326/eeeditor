@@ -12,7 +12,6 @@ import Toolbar, {
   ToolbarChildrenProps,
 } from './components/Toolbar';
 import shouldSideToolbarVisible from './utils/shouldSideToolbarVisible';
-import { getDraftEditorSelection } from 'draft-js/lib/getDraftEditorSelection';
 import containsNode from 'fbjs/lib/containsNode';
 
 export type SideToolbarProps = ToolbarPubProps;
@@ -57,6 +56,13 @@ export default (): SideToolbarPlugin => {
       });
     },
 
+    // 1. 鼠标操作触发 focus
+    // onWrapperMouseDown ---> onFocus (不触发 toolbar 更新) --
+    // -> onSelect (selectionState 有变化则触发 toolbar 更新) --
+    // -> onWrapperSelect （selectionState 没有变化仍需要触发 toolbar 更新）---> end
+    // 2. 非鼠标操作触发 focus
+    // onFocus (触发 toolbar 更新) ---> end
+
     onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
       console.log('wrapper onWrapperMouseDown');
 
@@ -89,17 +95,16 @@ export default (): SideToolbarPlugin => {
       return false;
     },
 
-    onWrapperSelect: (e, { getEditorState, setEditorState, getEditorRef }) => {
+    onWrapperSelect: (e, { getEditorState }) => {
       console.log('wrapper onWrapperSelect');
 
       // 鼠标操作触发 focus 事件，如果光标位置与上次 blur 之前位置相同，
-      // selectionState 在 onFocus 之后没有变化，则 onSelect 不会调用 onChange
-      // 所以在 onWrapperSelect 内，判断 selectionState 没有变化时，仍然需要更新 toolbar visible
+      // selectionState 没有变化，则 onSelect 不会触发 update，
+      // 即便此时的 selectionState 满足 side toolbar 显示要求，
+      // 所以需要在 onWrapperSelect 内，判断 selectionState 没有变化时，仍然需要触发更新
 
       if (preventToolbarVisible) {
         preventToolbarVisible = false;
-
-        // todo.
       }
 
       return false;
