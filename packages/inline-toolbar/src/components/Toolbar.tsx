@@ -226,8 +226,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     if (
       selection &&
       !selection.isCollapsed() &&
-      selection.getHasFocus() &&
-      currSelection.getHasFocus()
+      selection.getHasFocus()
+      // && currSelection.getHasFocus()
     ) {
       setVisible(true);
     } else {

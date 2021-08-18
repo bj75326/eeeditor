@@ -40,6 +40,10 @@ export default (): InlineToolbarPlugin => {
     <Toolbar {...props} store={store} />
   );
 
+  // onFocus 事件导致的 editorState 变化不应该影响 toolbar 的 visible 变化
+  let withMouseDown: boolean = false;
+  let preventToolbarVisible: boolean = false;
+
   return {
     initialize: (pluginMethods) => {
       Object.keys(pluginMethods).forEach((pluginMethod) => {

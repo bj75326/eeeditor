@@ -25,7 +25,6 @@ import enUS from 'antd/lib/locale/en_US';
 import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 import { sideToolbarIcon } from '../assets/extraIcon';
-import CSSMotion from 'rc-motion';
 import getSideToolbarPosition, {
   SideToolbarPosition,
 } from '../utils/getSideToolbarPosition';
@@ -208,11 +207,13 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
         setPosition(position);
         setVisible(true);
+        setExpanded(false);
       }, 0);
-      setExpanded(false);
     } else {
-      setExpanded(false);
-      setVisible(false);
+      setTimeout(() => {
+        setExpanded(false);
+        setVisible(false);
+      }, 0);
     }
   };
 

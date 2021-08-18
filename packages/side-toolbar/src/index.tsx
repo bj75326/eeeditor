@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  EditorPlugin,
-  PluginMethods,
-  EditorState,
-  getEditorRootDomNode,
-  isFocus,
-} from '@eeeditor/editor';
+import { EditorPlugin, PluginMethods, EditorState } from '@eeeditor/editor';
 import { createStore, Store } from '@draft-js-plugins/utils';
 import Toolbar, {
   ToolbarPubProps,
@@ -13,6 +7,7 @@ import Toolbar, {
 } from './components/Toolbar';
 import shouldSideToolbarVisible from './utils/shouldSideToolbarVisible';
 import containsNode from 'fbjs/lib/containsNode';
+import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection';
 
 export type SideToolbarProps = ToolbarPubProps;
 
@@ -64,8 +59,6 @@ export default (): SideToolbarPlugin => {
     // onFocus (触发 toolbar 更新) ---> end
 
     onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
-      console.log('wrapper onWrapperMouseDown');
-
       const hasFocus = getEditorState().getSelection().getHasFocus();
 
       // 判断是否是通过鼠标事件触发 editor focus 事件
@@ -77,8 +70,6 @@ export default (): SideToolbarPlugin => {
     },
 
     onFocus: (e) => {
-      console.log('editor onFocus');
-
       if (withMouseDown) {
         // 鼠标操作触发 focus 事件，side toolbar visibe 控制放到 select 事件中
         withMouseDown = false;
@@ -95,9 +86,7 @@ export default (): SideToolbarPlugin => {
       return false;
     },
 
-    onWrapperSelect: (e, { getEditorState }) => {
-      console.log('wrapper onWrapperSelect');
-
+    onWrapperSelect: (e, { getEditorState, getEditorRef }) => {
       // 鼠标操作触发 focus 事件，如果光标位置与上次 blur 之前位置相同，
       // selectionState 没有变化，则 onSelect 不会触发 update，
       // 即便此时的 selectionState 满足 side toolbar 显示要求，
@@ -105,20 +94,41 @@ export default (): SideToolbarPlugin => {
 
       if (preventToolbarVisible) {
         preventToolbarVisible = false;
+        if (getEditorRef().editor) {
+          const documentSelection = getDraftEditorSelection(
+            getEditorState(),
+            getEditorRef().editor,
+          );
+          const updatedSelectionState = documentSelection.selectionState;
+          if (updatedSelectionState === getEditorState().getSelection()) {
+            let editorState = getEditorState();
+            if (documentSelection.needsRecovery) {
+              editorState = EditorState.forceSelection(
+                editorState,
+                updatedSelectionState,
+              );
+            } else {
+              editorState = EditorState.acceptSelection(
+                editorState,
+                updatedSelectionState,
+              );
+            }
+
+            if (shouldSideToolbarVisible(editorState)) {
+              store.updateItem('editorState', editorState);
+            }
+          }
+        }
       }
 
       return false;
     },
 
-    onBlur: () => {
-      // todo.
-
-      return false;
-    },
-
-    onChange: (editorState, { getEditorState }) => {
+    onChange: (editorState) => {
       if (!preventToolbarVisible) {
         store.updateItem('editorState', editorState);
+      } else {
+        preventToolbarVisible = false;
       }
 
       return editorState;
