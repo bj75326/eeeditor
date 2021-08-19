@@ -32,6 +32,7 @@ import {
   getInlineToolbarPosition,
   InlineToolbarPosition,
 } from '../utils/getInlineToolbarPosition';
+import shouldInlineToolbarVisible from '../utils/shouldInlineToolbarVisible';
 import { ConfigProvider } from 'antd';
 import { DirectionType, ConfigContext } from 'antd/lib/config-provider';
 import { Locale } from 'antd/lib/locale-provider';
@@ -222,13 +223,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   }, [overrideContent, getEditorState().getCurrentContent()]);
 
   const onSelectionChanged = (selection: SelectionState) => {
-    const currSelection = getEditorState().getSelection();
-    if (
-      selection &&
-      !selection.isCollapsed() &&
-      selection.getHasFocus()
-      // && currSelection.getHasFocus()
-    ) {
+    if (shouldInlineToolbarVisible(selection)) {
       setVisible(true);
     } else {
       setVisible(false);
