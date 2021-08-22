@@ -72,7 +72,6 @@ export default (): SideToolbarPlugin => {
     onFocus: (e) => {
       if (withMouseDown) {
         // 鼠标操作触发 focus 事件，side toolbar visibe 控制放到 select 事件中
-        withMouseDown = false;
         preventToolbarVisible = true;
       } else {
         // 非鼠标操作触发 focus 事件，需要在 focus 事件内判断 visible
@@ -92,8 +91,14 @@ export default (): SideToolbarPlugin => {
       // 即便此时的 selectionState 满足 side toolbar 显示要求，
       // 所以需要在 onWrapperSelect 内，判断 selectionState 没有变化时，仍然需要触发更新
 
-      if (preventToolbarVisible) {
-        preventToolbarVisible = false;
+      if (withMouseDown) {
+        // 当切换浏览器 tab 或者切换当前应用触发 focus 事件后，select 区域不变的情况下仍然会触发一次 select 事件，
+        // 这回导致 onWrapperSelect 多执行一次引发一些意想不到的结果，比如：
+        // 切换回来之后，点击 side toolbar，toggleToolbarExpanded 执行之后，onWrapperSelect 也会执行一次并且
+        // 触发 side toolbar 重新渲染，导致 toolbar expanded 之后又立刻 unexpanded
+        // 所以 onWrapperSelect 应该确保只有在鼠标操作触发 focus 的情况下会被执行
+        withMouseDown = false;
+
         if (getEditorRef().editor) {
           const documentSelection = getDraftEditorSelection(
             getEditorState(),
