@@ -386,7 +386,7 @@ const Page: React.FC<PageProps> = (props) => {
       >
         <div className="editor">
           <div
-            className="transformWrapper"
+            className="transformWrapper editorWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <h1 className="title">
@@ -412,6 +412,10 @@ const Page: React.FC<PageProps> = (props) => {
               locale="zh_CN"
             />
           </div>
+          <div
+            className="transformWrapper rawWrapper"
+            style={{ transform: 'translate3d(0px, 0px, 0px)' }}
+          ></div>
           <div
             className="transformWrapper staticToolbarWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
