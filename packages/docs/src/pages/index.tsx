@@ -62,7 +62,9 @@ import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import { Spin } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
-
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import coy from 'react-syntax-highlighter/dist/esm/styles/prism/coy';
 
 import './index.less';
 
@@ -72,6 +74,8 @@ import '@eeeditor/divider/es/style';
 import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
 
 const { StaticToolbar, SelectorButton, Separator, ...staticToolbarPlugin } =
   createStaticToolbarPlugin();
@@ -417,11 +421,9 @@ const Page: React.FC<PageProps> = (props) => {
             className="transformWrapper rawWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
-            <pre>
-              <code className="language-json">
-                {}
-              </code>
-            </pre>
+            <SyntaxHighlighter language="js" style={coy} >
+              {JSON.stringify(convertToRaw(editorState.getCurrentContent()))}
+            </SyntaxHighlighter>
           </div>
           <div
             className="transformWrapper staticToolbarWrapper"
