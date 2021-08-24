@@ -190,10 +190,23 @@
   .public-DraftEditorPlaceholder-root {
     padding: 0 20px;
   }
+
+  &.debug {
+    display: flex; 
+    max-width: 1200px;     
+  }
 }
 
 .transformWrapper {
   transition: transform ease-out 250ms;
+}
+
+.editorWrapper {
+  width: 700px;
+}
+
+.rawWrapper {
+  width: 500px;
 }
 
 .title {
@@ -347,3 +360,5 @@
   z-index: 120;
   text-align: center;
 }
+
+

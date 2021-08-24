@@ -23,6 +23,7 @@
     "@umijs/plugin-request": "^2.5.2",
     "classnames": "^2.2.6",
     "immutable": "^4.0.0-rc.12",
+    "react-syntax-highlighter": "^15.4.4",
     "umi": "^3.3.3"
   },
   "devDependencies": {

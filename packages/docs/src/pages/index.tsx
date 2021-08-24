@@ -63,6 +63,7 @@ import classNames from 'classnames';
 import { Spin } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 
+
 import './index.less';
 
 import '@eeeditor/editor/es/style';
@@ -384,7 +385,7 @@ const Page: React.FC<PageProps> = (props) => {
         wrapperClassName="spin"
         spinning={fetching}
       >
-        <div className="editor">
+        <div className="editor debug">
           <div
             className="transformWrapper editorWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
@@ -415,7 +416,13 @@ const Page: React.FC<PageProps> = (props) => {
           <div
             className="transformWrapper rawWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
-          ></div>
+          >
+            <pre>
+              <code className="language-json">
+                {}
+              </code>
+            </pre>
+          </div>
           <div
             className="transformWrapper staticToolbarWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
