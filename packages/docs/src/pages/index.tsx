@@ -63,8 +63,10 @@ import classNames from 'classnames';
 import { Spin } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import js from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
 import coy from 'react-syntax-highlighter/dist/esm/styles/prism/coy';
+import prettier from 'prettier/standalone';
+import parserBabel from 'prettier/parser-babel';
 
 import './index.less';
 
@@ -75,7 +77,7 @@ import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
 
-SyntaxHighlighter.registerLanguage('javascript', js);
+SyntaxHighlighter.registerLanguage('json', json);
 
 const { StaticToolbar, SelectorButton, Separator, ...staticToolbarPlugin } =
   createStaticToolbarPlugin();
@@ -128,8 +130,7 @@ const Page: React.FC<PageProps> = (props) => {
   } = props;
   const { formatMessage } = useIntl();
 
-  const [sidebarCollapsed, setSidebarCollapsed]: [boolean, any] =
-    useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
 
   const handleCollapseBtnClick = () => {
     setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
@@ -389,7 +390,7 @@ const Page: React.FC<PageProps> = (props) => {
         wrapperClassName="spin"
         spinning={fetching}
       >
-        <div className="editor debug">
+        <div className="editor">
           <div
             className="transformWrapper editorWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
@@ -417,14 +418,23 @@ const Page: React.FC<PageProps> = (props) => {
               locale="zh_CN"
             />
           </div>
-          <div
+          {/* <div
             className="transformWrapper rawWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
-            <SyntaxHighlighter language="js" style={coy} >
-              {JSON.stringify(convertToRaw(editorState.getCurrentContent()))}
+            <SyntaxHighlighter language="json" style={coy} wrapLongLines>
+              {
+                prettier.format(
+                  JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+                  {
+                    // semi: false,
+                    parser: "json",
+                    plugins: [parserBabel],
+                  }
+                )
+              }
             </SyntaxHighlighter>
-          </div>
+          </div> */}
           <div
             className="transformWrapper staticToolbarWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
