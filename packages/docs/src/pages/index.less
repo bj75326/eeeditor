@@ -109,6 +109,11 @@
   background-color: var(--color-tint-1);
   transition: background-color 0.2s ease 0s;
   z-index: 130;
+
+  &.rawSidebar {
+    width: 700px;
+    z-index: 131;
+  }
 }
 
 .sidebar-enter {
@@ -144,6 +149,11 @@
       transition: color 0.2s ease 0s;
     }
   }
+}
+
+.raw {
+  padding: 0 20px;
+  font-size: 12px;
 }
 
 .toolBtn {
@@ -190,24 +200,10 @@
   .public-DraftEditorPlaceholder-root {
     padding: 0 20px;
   }
-
-  &.debug {
-    display: flex;
-    max-width: 1400px;
-  }
 }
 
 .transformWrapper {
   transition: transform ease-out 250ms;
-}
-
-.editorWrapper {
-  width: 700px;
-}
-
-.rawWrapper {
-  width: 700px;
-  font-size: 12px;
 }
 
 .title {

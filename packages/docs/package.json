@@ -31,6 +31,7 @@
     "@types/classnames": "^2.2.11",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-transition-group": "^4.4.2",
     "@umijs/test": "^3.3.3",
     "vfile-message": "^2.0.4",
     "yorkie": "^2.0.0"

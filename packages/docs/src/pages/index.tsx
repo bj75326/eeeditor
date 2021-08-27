@@ -57,6 +57,7 @@ import {
   CloseOne,
   AlignTextLeftOne,
   AlignTextRightOne,
+  Terminal,
 } from '@icon-park/react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
@@ -65,6 +66,7 @@ import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
 import coy from 'react-syntax-highlighter/dist/esm/styles/prism/coy';
+
 import prettier from 'prettier/standalone';
 import parserBabel from 'prettier/parser-babel';
 
@@ -131,9 +133,20 @@ const Page: React.FC<PageProps> = (props) => {
   const { formatMessage } = useIntl();
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [rawSidebarCollapsed, setRawSidebarCollapsed] = useState<boolean>(true);
 
   const handleCollapseBtnClick = () => {
-    setSidebarCollapsed((sidebarCollapsed: boolean) => !sidebarCollapsed);
+    if (sidebarCollapsed && rawSidebarCollapsed) {
+      setSidebarCollapsed(false);
+    } else {
+      if (!sidebarCollapsed) setSidebarCollapsed(true);
+      if (!rawSidebarCollapsed) setRawSidebarCollapsed(true);
+    }
+  };
+
+  const handleRawBtnClick = () => {
+    setRawSidebarCollapsed(false);
+    setSidebarCollapsed(true);
   };
 
   const initDarkMode = localStorage.getItem('theme') === 'dark' ? true : false;
@@ -302,18 +315,18 @@ const Page: React.FC<PageProps> = (props) => {
                   {formatMessage({ id: 'page.sidebar.tool.preview' })}
                 </span>
               </a>
-              <a className="toolBtn" onClick={handleThemeChange}>
+              {/* <a className="toolBtn" onClick={handleThemeChange}>
                 {darkMode ? (
                   <Sun theme="outline" strokeWidth={3} />
                 ) : (
                   <Moon theme="outline" strokeWidth={3} />
                 )}
                 <span>{formatMessage({ id: 'page.sidebar.tool.theme' })}</span>
-              </a>
-              <a className="toolBtn" onClick={handleLocaleChange}>
+              </a> */}
+              {/* <a className="toolBtn" onClick={handleLocaleChange}>
                 <International theme="outline" strokeWidth={3} />
                 <span>{formatMessage({ id: 'page.sidebar.tool.locale' })}</span>
-              </a>
+              </a> */}
               <a className="toolBtn" onClick={handleDirectionChange}>
                 {rtl ? (
                   <AlignTextLeftOne theme="outline" strokeWidth={3} />
@@ -323,6 +336,10 @@ const Page: React.FC<PageProps> = (props) => {
                 <span>
                   {formatMessage({ id: 'page.sidebar.tool.direction' })}
                 </span>
+              </a>
+              <a className="toolBtn" onClick={handleRawBtnClick}>
+                <Terminal theme="outline" strokeWidth={3} />
+                <span>{formatMessage({ id: 'page.sidebar.tool.raw' })}</span>
               </a>
             </div>
           </section>
@@ -339,6 +356,37 @@ const Page: React.FC<PageProps> = (props) => {
           <section className="help">
             <h3>{formatMessage({ id: 'page.sidebar.help.section.header' })}</h3>
           </section>
+        </div>
+      </aside>
+    </CSSTransition>
+  );
+
+  const rawSidebar = (
+    <CSSTransition
+      in={!rawSidebarCollapsed}
+      timeout={120}
+      classNames="sidebar"
+      unmountOnExit
+    >
+      <aside className="sidebar rawSidebar">
+        <div className="raw">
+          <SyntaxHighlighter
+            language="json"
+            style={coy}
+            wrapLongLines
+            customStyle={{
+              margin: 0,
+            }}
+            useInlineStyles={false}
+          >
+            {prettier.format(
+              JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+              {
+                parser: 'json',
+                plugins: [parserBabel],
+              },
+            )}
+          </SyntaxHighlighter>
         </div>
       </aside>
     </CSSTransition>
@@ -392,7 +440,7 @@ const Page: React.FC<PageProps> = (props) => {
       >
         <div className="editor">
           <div
-            className="transformWrapper editorWrapper"
+            className="transformWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
           >
             <h1 className="title">
@@ -507,6 +555,7 @@ const Page: React.FC<PageProps> = (props) => {
           </SideToolbar>
         </div>
         {sidebar}
+        {rawSidebar}
       </Spin>
     </div>
   );
