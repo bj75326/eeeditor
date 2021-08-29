@@ -371,12 +371,13 @@ const Page: React.FC<PageProps> = (props) => {
       <aside className="sidebar rawSidebar">
         <div className="raw">
           <SyntaxHighlighter
+            className="language-json"
             language="json"
-            style={coy}
             wrapLongLines
-            customStyle={{
-              margin: 0,
-            }}
+            // customStyle={{
+            //   margin: 0,
+            // }}
+            // style={coy}
             useInlineStyles={false}
           >
             {prettier.format(
@@ -466,23 +467,6 @@ const Page: React.FC<PageProps> = (props) => {
               locale="zh_CN"
             />
           </div>
-          {/* <div
-            className="transformWrapper rawWrapper"
-            style={{ transform: 'translate3d(0px, 0px, 0px)' }}
-          >
-            <SyntaxHighlighter language="json" style={coy} wrapLongLines>
-              {
-                prettier.format(
-                  JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-                  {
-                    // semi: false,
-                    parser: "json",
-                    plugins: [parserBabel],
-                  }
-                )
-              }
-            </SyntaxHighlighter>
-          </div> */}
           <div
             className="transformWrapper staticToolbarWrapper"
             style={{ transform: 'translate3d(0px, 0px, 0px)' }}
