@@ -362,9 +362,7 @@
 
 code[class*='language-'],
 pre[class*='language-'] {
-  color: black;
-  background: none;
-  // text-shadow: 0 1px white;
+  color: #000;  // #000  rgba(255, 255, 255, 0.85)
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 1em;
   text-align: left;
@@ -388,35 +386,35 @@ pre[class*='language-']::-moz-selection,
 pre[class*='language-'] ::-moz-selection,
 code[class*='language-']::-moz-selection,
 code[class*='language-'] ::-moz-selection {
-  // text-shadow: none;
-  // background: #b3d4fc;
+  text-shadow: none;
+  background: #b3d4fc;
 }
 
 pre[class*='language-']::selection,
 pre[class*='language-'] ::selection,
 code[class*='language-']::selection,
 code[class*='language-'] ::selection {
-  // text-shadow: none;
-  // background: #b3d4fc;
+  text-shadow: none;
+  background: #b3d4fc;
 }
 
 @media print {
   code[class*='language-'],
   pre[class*='language-'] {
-    // text-shadow: none;
+    text-shadow: none;
   }
 }
 
 /* Code blocks */
 pre[class*='language-'] {
-  padding: 1em;
-  margin: 0.5em 0;
+  padding: 12px 20px;
+  margin: 16px 0;
   overflow: auto;
 }
 
 :not(pre) > code[class*='language-'],
 pre[class*='language-'] {
-  // background: #f5f2f0;
+  background: var(--color-tint-1);
 }
 
 /* Inline code */
@@ -430,11 +428,11 @@ pre[class*='language-'] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: var(--prism-color-0); // --prism-color-0: #8292a2;
+  color: #708090; // #708090  slategray;
 }
 
 .token.punctuation {
-  color: var(--prism-color-1); // --prism-theme-1: #f8f8f2;
+  color: #999; 
 }
 
 .token.namespace {
@@ -448,7 +446,7 @@ pre[class*='language-'] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: var(--prism-color-2); // --prism-theme-2: #ae81ff;
+  color: #f81d22; // #f81d22 #eb3c54;
 }
 
 .token.selector,
@@ -457,7 +455,7 @@ pre[class*='language-'] {
 .token.char,
 .token.builtin,
 .token.inserted {
-  color: var(--prism-color-3); // --prism-theme-3: #a6e22e;
+  color: #0b8235; // #0b8235 --prism-theme-3: #a6e22e;
 }
 
 .token.operator,
@@ -465,26 +463,24 @@ pre[class*='language-'] {
 .token.url,
 .language-css .token.string,
 .style .token.string {
-  color: var(--prism-color-4); // --prism-theme-4: #f8f8f2;
-  /* This background color was intended by the author of this theme. */
-  background: hsla(0, 0%, 100%, 0.5);
+  color: #0b8235; // #0b8235 --prism-theme-4: #f8f8f2;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-  color: var(--prism-color-5); // --prism-theme-5: #66d9ef;
+  color: #008dff; // #008dff --prism-theme-5: #66d9ef;
 }
 
 .token.function,
 .token.class-name {
-  color: var(--prism-color-6); // --prism-theme-6: #e6db74;
+  color: #f81d22; // #f81d22 --prism-theme-6: #e6db74;
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-  color: var(--prism-color-7); // --prism-theme-7: #fd971f;
+  color: #e90; // #e90 --prism-theme-7: #fd971f;
 }
 
 .token.important,
@@ -497,4 +493,54 @@ pre[class*='language-'] {
 
 .token.entity {
   cursor: help;
+}
+
+[data-theme='dark'] .token.comment,
+[data-theme='dark'] .token.quote {
+    color: #b6b18b
+}
+
+[data-theme='dark'] .token.property,
+[data-theme='dark'] .token.variable,
+[data-theme='dark'] .token.template-variable,
+[data-theme='dark'] .token.tag,
+[data-theme='dark'] .token.number,
+[data-theme='dark'] .token.name,
+[data-theme='dark'] .token.selector-id,
+[data-theme='dark'] .token.selector-class,
+[data-theme='dark'] .token.regexp,
+[data-theme='dark'] .token.deletion {
+    color: #eb3c54
+}
+
+[data-theme='dark'] .token.built_in,
+[data-theme='dark'] .token.builtin-name,
+[data-theme='dark'] .token.literal,
+[data-theme='dark'] .token.type,
+[data-theme='dark'] .token.params,
+[data-theme='dark'] .token.meta,
+[data-theme='dark'] .token.link {
+    color: #e7ce56
+}
+
+[data-theme='dark'] .token.attribute {
+    color: #ee7c2b
+}
+
+[data-theme='dark'] .token.string,
+[data-theme='dark'] .token.symbol,
+[data-theme='dark'] .token.bullet,
+[data-theme='dark'] .token.addition {
+    color: #177ddc
+}
+
+[data-theme='dark'] .token.title,
+[data-theme='dark'] .token.section {
+    color: #78bb65
+}
+
+[data-theme='dark'] .token.function,
+[data-theme='dark'] .token.keyword,
+[data-theme='dark'] .token.selector-tag {
+    color: #b45ea4
 }

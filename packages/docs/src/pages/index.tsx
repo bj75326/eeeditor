@@ -65,10 +65,8 @@ import { Spin } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
-import coy from 'react-syntax-highlighter/dist/esm/styles/prism/coy';
-
-import prettier from 'prettier/standalone';
-import parserBabel from 'prettier/parser-babel';
+import prettier from 'prettier/esm/standalone.mjs';
+import parserBabel from 'prettier/esm/parser-babel.mjs';
 
 import './index.less';
 
@@ -360,7 +358,7 @@ const Page: React.FC<PageProps> = (props) => {
       </aside>
     </CSSTransition>
   );
-
+  
   const rawSidebar = (
     <CSSTransition
       in={!rawSidebarCollapsed}
@@ -374,10 +372,6 @@ const Page: React.FC<PageProps> = (props) => {
             className="language-json"
             language="json"
             wrapLongLines
-            // customStyle={{
-            //   margin: 0,
-            // }}
-            // style={coy}
             useInlineStyles={false}
           >
             {prettier.format(

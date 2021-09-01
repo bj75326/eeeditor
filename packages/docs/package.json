@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "umi dev",
-    "build": "umi build",
+    "start": "ANALYZE=1 umi dev",
+    "build": "ANALYZE=1 umi build",
     "clean": "rm -rf node_modules src/.umi src/.umi-production dist yarn-error.log"
   },
   "dependencies": {
