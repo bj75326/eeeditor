@@ -63,7 +63,7 @@ import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import { Spin } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-light';
 import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
 import prettier from 'prettier/esm/standalone.mjs';
 import parserBabel from 'prettier/esm/parser-babel.mjs';
