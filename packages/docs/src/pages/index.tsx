@@ -148,7 +148,7 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   const initDarkMode = localStorage.getItem('theme') === 'dark' ? true : false;
-  const [darkMode, setDarkMode]: [boolean, any] = useState(initDarkMode);
+  const [darkMode, setDarkMode] = useState<boolean>(initDarkMode);
 
   const handleThemeChange = () => {
     setDarkMode((darkMode: boolean) => !darkMode);
@@ -158,7 +158,7 @@ const Page: React.FC<PageProps> = (props) => {
     localStorage.setItem('theme', nextTheme);
   };
 
-  const [editorState, setEditorState]: [EditorState, any] = useState(
+  const [editorState, setEditorState] = useState<EditorState>(
     content
       ? EditorState.createWithContent(convertFromRaw(content))
       : EditorState.createEmpty(),
@@ -198,7 +198,7 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
-  const [title, setTitle]: [string, any] = useState(initTitle);
+  const [title, setTitle] = useState<string>(initTitle);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTitle(e.target.value);
@@ -226,7 +226,7 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   const initDirection = localStorage.getItem('direction') === 'rtl';
-  const [rtl, setRtl]: [boolean, any] = useState(initDirection);
+  const [rtl, setRtl] = useState<boolean>(initDirection);
 
   const handleDirectionChange = () => {
     setRtl((rtl: boolean) => !rtl);
@@ -342,15 +342,21 @@ const Page: React.FC<PageProps> = (props) => {
             </div>
           </section>
           <section className="theme">
-            <h3>{formatMessage({ id: 'page.sidebar.theme.section.header' })}</h3>
+            <h3>
+              {formatMessage({ id: 'page.sidebar.theme.section.header' })}
+            </h3>
             <div>
-              <a className="themeBtn lightTheme">
+              <a className="themeBtn lightTheme" data-checked={!darkMode}>
                 <i></i>
-                <label>{formatMessage({id: 'page.sidebar.theme.label.light'})}</label>
+                <label>
+                  {formatMessage({ id: 'page.sidebar.theme.label.light' })}
+                </label>
               </a>
-              <a className="themeBtn darkTheme">
+              <a className="themeBtn darkTheme" data-checked={darkMode}>
                 <i></i>
-                <label>{formatMessage({ id: 'page.sidebar.theme.label.dark' })}</label>
+                <label>
+                  {formatMessage({ id: 'page.sidebar.theme.label.dark' })}
+                </label>
               </a>
             </div>
           </section>
@@ -364,7 +370,7 @@ const Page: React.FC<PageProps> = (props) => {
       </aside>
     </CSSTransition>
   );
-  
+
   const rawSidebar = (
     <CSSTransition
       in={!rawSidebarCollapsed}
