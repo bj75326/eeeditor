@@ -1,8 +1,11 @@
 export default {
   'page.sidebar.tool.section.header': 'Tools',
+  'page.sidebar.theme.section.header': 'Themes',
   'page.sidebar.mode.section.header': 'Toolbar mode',
   'page.sidebar.typesetting.section.header': 'Paragraph typesetting',
   'page.sidebar.help.section.header': 'Others',
+  'page.sidebar.theme.label.light': 'Light',
+  'page.sidebar.theme.label.dark': 'Dark',
   'page.sidebar.tool.wordcount': 'Count',
   'page.sidebar.tool.preview': 'Preview',
   'page.sidebar.tool.theme': 'Theme',

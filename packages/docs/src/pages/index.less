@@ -154,6 +154,7 @@
 .raw {
   padding: 0 20px;
   font-size: 12px;
+  direction: ltr;
 }
 
 .toolBtn {
@@ -186,6 +187,22 @@
     color: var(--color-tint-8);
     transition: color 0.2s ease 0s;
   }
+}
+
+.themeBtn {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px;
+  vertical-align: top;
+  text-align: center;
+}
+
+.lightTheme > i {
+  background-image: url(~@/assets/theme_light.png);
+}
+
+.darkTheme {
+  background-image: url(~@/assets/theme_dark.png);
 }
 
 .editor {

@@ -341,15 +341,21 @@ const Page: React.FC<PageProps> = (props) => {
               </a>
             </div>
           </section>
+          <section className="theme">
+            <h3>{formatMessage({ id: 'page.sidebar.theme.section.header' })}</h3>
+            <div>
+              <a className="themeBtn lightTheme">
+                <i></i>
+                <label>{formatMessage({id: 'page.sidebar.theme.label.light'})}</label>
+              </a>
+              <a className="themeBtn darkTheme">
+                <i></i>
+                <label>{formatMessage({ id: 'page.sidebar.theme.label.dark' })}</label>
+              </a>
+            </div>
+          </section>
           <section className="mode">
             <h3>{formatMessage({ id: 'page.sidebar.mode.section.header' })}</h3>
-          </section>
-          <section className="typesetting">
-            <h3>
-              {formatMessage({
-                id: 'page.sidebar.typesetting.section.header',
-              })}
-            </h3>
           </section>
           <section className="help">
             <h3>{formatMessage({ id: 'page.sidebar.help.section.header' })}</h3>
