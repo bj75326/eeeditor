@@ -155,6 +155,25 @@
       cursor: pointer;
     }
   }
+
+  .checkBtn[data-checked='true'] > i {
+    border-radius: 2px;
+    box-shadow: 0 0 0 3px @theme-color;
+    &:after {
+      position: absolute;
+      right: -8px;
+      bottom: -8px;
+      width: 24px;
+      height: 24px;
+      background: url(~@/assets/checked.svg);
+      background-color: @theme-color;
+      background-repeat: no-repeat;
+      background-position: center center;
+      border-radius: 50%;
+      animation: 120ms ease-out popup;
+      content: '';
+    }
+  }
 }
 
 .raw {
@@ -195,7 +214,7 @@
   }
 }
 
-.themeBtn {
+.checkBtn {
   display: inline-block;
   margin-right: 10px;
   padding: 2px;
@@ -216,28 +235,13 @@
     background-repeat: no-repeat;
     background-position: top left;
     background-size: 115px 53px;
-    box-shadow: 0.7px 0.7px 2.5px 0 rgb(0 0 0 / 10%);
+    box-shadow: 2px 2px 2.5px 0 rgba(0, 0, 0, 0.3);
   }
 
   & > label {
     color: var(--color-tint-8);
     font-size: 12px;
     transition: color 0.2s ease 0s;
-  }
-
-  &[data-checked='true'] > i {
-    border-radius: 2px;
-    box-shadow: 0 0 0 3px @theme-color;
-    &:after {
-      position: absolute;
-      right: -8px;
-      bottom: -8px;
-      width: 24px;
-      height: 24px;
-      background: url();
-      animation: 120ms ease-out popup;
-      content: '';
-    }
   }
 }
 
@@ -604,4 +608,52 @@ pre[class*='language-'] {
 [data-theme='dark'] .token.keyword,
 [data-theme='dark'] .token.selector-tag {
   color: #b45ea4;
+}
+
+@-moz-keyframes popup {
+  from {
+    transform: translate3d(0, 8px, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes popup {
+  from {
+    transform: translate3d(0, 8px, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@-o-keyframes popup {
+  from {
+    transform: translate3d(0, 8px, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes popup {
+  from {
+    transform: translate3d(0, 8px, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }

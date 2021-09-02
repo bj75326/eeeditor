@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import {
   connect,
   ConnectProps,
@@ -150,10 +150,15 @@ const Page: React.FC<PageProps> = (props) => {
   const initDarkMode = localStorage.getItem('theme') === 'dark' ? true : false;
   const [darkMode, setDarkMode] = useState<boolean>(initDarkMode);
 
-  const handleThemeChange = () => {
-    setDarkMode((darkMode: boolean) => !darkMode);
+  const handleThemeChange = (e: MouseEvent) => {
+    let nextTheme = 'light';
+    if (e.currentTarget.classList.contains('darkTheme')) {
+      nextTheme = 'dark';
+    } else {
+      nextTheme = 'light';
+    }
+    setDarkMode(nextTheme === 'dark');
 
-    const nextTheme = !darkMode ? 'dark' : 'light';
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem('theme', nextTheme);
   };
@@ -346,13 +351,21 @@ const Page: React.FC<PageProps> = (props) => {
               {formatMessage({ id: 'page.sidebar.theme.section.header' })}
             </h3>
             <div>
-              <a className="themeBtn lightTheme" data-checked={!darkMode}>
+              <a
+                className="checkBtn lightTheme"
+                data-checked={!darkMode}
+                onClick={handleThemeChange}
+              >
                 <i></i>
                 <label>
                   {formatMessage({ id: 'page.sidebar.theme.label.light' })}
                 </label>
               </a>
-              <a className="themeBtn darkTheme" data-checked={darkMode}>
+              <a
+                className="checkBtn darkTheme"
+                data-checked={darkMode}
+                onClick={handleThemeChange}
+              >
                 <i></i>
                 <label>
                   {formatMessage({ id: 'page.sidebar.theme.label.dark' })}
