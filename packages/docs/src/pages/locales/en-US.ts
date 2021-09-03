@@ -6,6 +6,8 @@ export default {
   'page.sidebar.help.section.header': 'Others',
   'page.sidebar.theme.label.light': 'Light',
   'page.sidebar.theme.label.dark': 'Dark',
+  'page.sidebar.mode.label.static': 'Static toolbar',
+  'page.sidebar.mode.label.inline': 'Inline toolbar',
   'page.sidebar.tool.wordcount': 'Count',
   'page.sidebar.tool.preview': 'Preview',
   'page.sidebar.tool.theme': 'Theme',

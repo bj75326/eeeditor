@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 130;
   width: 100%;
   height: 48px;
   background-color: var(--color-inverse);
@@ -155,25 +155,6 @@
       cursor: pointer;
     }
   }
-
-  .checkBtn[data-checked='true'] > i {
-    border-radius: 2px;
-    box-shadow: 0 0 0 3px @theme-color;
-    &:after {
-      position: absolute;
-      right: -8px;
-      bottom: -8px;
-      width: 24px;
-      height: 24px;
-      background: url(~@/assets/checked.svg);
-      background-color: @theme-color;
-      background-repeat: no-repeat;
-      background-position: center center;
-      border-radius: 50%;
-      animation: 120ms ease-out popup;
-      content: '';
-    }
-  }
 }
 
 .raw {
@@ -243,14 +224,79 @@
     font-size: 12px;
     transition: color 0.2s ease 0s;
   }
+
+  &[data-checked='true'] > i {
+    border-radius: 2px;
+    box-shadow: 0 0 0 3px @theme-color;
+    &:after {
+      position: absolute;
+      right: -8px;
+      bottom: -8px;
+      width: 24px;
+      height: 24px;
+      background: url(~@/assets/checked.svg);
+      background-color: @theme-color;
+      background-repeat: no-repeat;
+      background-position: center center;
+      border-radius: 50%;
+      animation: 120ms ease-out popup;
+      content: '';
+    }
+  }
 }
 
-.lightTheme > i {
-  background-image: url(~@/assets/theme_light.png);
+section.theme {
+  .lightTheme > i {
+    background-image: url(~@/assets/theme_light.png);
+  }
+
+  .darkTheme > i {
+    background-image: url(~@/assets/theme_dark.png);
+  }
 }
 
-.darkTheme > i {
-  background-image: url(~@/assets/theme_dark.png);
+section.mode {
+  .staticMode {
+    & > i {
+      background-image: url(~@/assets/static_light_unactive.png);
+    }
+
+    &[data-checked='true'] > i {
+      background-image: url(~@/assets/static_light_active.png);
+    }
+  }
+
+  .inlineMode {
+    & > i {
+      background-image: url(~@/assets/inline_light_unactive.png);
+    }
+
+    &[data-checked='true'] > i {
+      background-image: url(~@/assets/inline_light_active.png);
+    }
+  }
+}
+
+[data-theme='dark'] section.mode {
+  .staticMode {
+    & > i {
+      background-image: url(~@/assets/static_dark_unactive.png);
+    }
+
+    &[data-checked='true'] > i {
+      background-image: url(~@/assets/static_dark_active.png);
+    }
+  }
+
+  .inlineMode {
+    & > i {
+      background-image: url(~@/assets/inline_dark_unactive.png);
+    }
+
+    &[data-checked='true'] > i {
+      background-image: url(~@/assets/inline_dark_active.png);
+    }
+  }
 }
 
 .editor {
@@ -308,50 +354,6 @@
 .i-icon-loading {
   -webkit-animation: loadingCircle 1s linear infinite !important;
   animation: loadingCircle 1s linear infinite !important;
-}
-
-@-webkit-keyframes loadingCircle {
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
-}
-
-@keyframes loadingCircle {
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
-}
-
-@-webkit-keyframes statusChange {
-  from {
-    -webkit-transform: scale(0.75);
-    -ms-transform: scale(0.75);
-    transform: scale(0.75);
-    opacity: 0;
-  }
-  to {
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes statusChange {
-  from {
-    -webkit-transform: scale(0.75);
-    -ms-transform: scale(0.75);
-    transform: scale(0.75);
-    opacity: 0;
-  }
-  to {
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 .rtl {
@@ -654,6 +656,50 @@ pre[class*='language-'] {
 
   to {
     transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes loadingCircle {
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes loadingCircle {
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
+@-webkit-keyframes statusChange {
+  from {
+    -webkit-transform: scale(0.75);
+    -ms-transform: scale(0.75);
+    transform: scale(0.75);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes statusChange {
+  from {
+    -webkit-transform: scale(0.75);
+    -ms-transform: scale(0.75);
+    transform: scale(0.75);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 }

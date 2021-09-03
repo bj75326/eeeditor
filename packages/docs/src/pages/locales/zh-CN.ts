@@ -6,6 +6,8 @@ export default {
   'page.sidebar.help.section.header': '其它',
   'page.sidebar.theme.label.light': '明亮',
   'page.sidebar.theme.label.dark': '暗黑',
+  'page.sidebar.mode.label.static': '固定工具栏',
+  'page.sidebar.mode.label.inline': '行内工具栏',
   'page.sidebar.tool.wordcount': '字数统计',
   'page.sidebar.tool.preview': '预览',
   'page.sidebar.tool.theme': '主题切换',

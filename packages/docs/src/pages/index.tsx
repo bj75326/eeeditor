@@ -130,9 +130,9 @@ const Page: React.FC<PageProps> = (props) => {
   } = props;
   const { formatMessage } = useIntl();
 
+  // sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [rawSidebarCollapsed, setRawSidebarCollapsed] = useState<boolean>(true);
-
   const handleCollapseBtnClick = () => {
     if (sidebarCollapsed && rawSidebarCollapsed) {
       setSidebarCollapsed(false);
@@ -141,15 +141,14 @@ const Page: React.FC<PageProps> = (props) => {
       if (!rawSidebarCollapsed) setRawSidebarCollapsed(true);
     }
   };
-
   const handleRawBtnClick = () => {
     setRawSidebarCollapsed(false);
     setSidebarCollapsed(true);
   };
 
+  // theme
   const initDarkMode = localStorage.getItem('theme') === 'dark' ? true : false;
   const [darkMode, setDarkMode] = useState<boolean>(initDarkMode);
-
   const handleThemeChange = (e: MouseEvent) => {
     let nextTheme = 'light';
     if (e.currentTarget.classList.contains('darkTheme')) {
@@ -163,12 +162,12 @@ const Page: React.FC<PageProps> = (props) => {
     localStorage.setItem('theme', nextTheme);
   };
 
+  // editorState
   const [editorState, setEditorState] = useState<EditorState>(
     content
       ? EditorState.createWithContent(convertFromRaw(content))
       : EditorState.createEmpty(),
   );
-
   const handleChange = (nextEditorState: EditorState) => {
     console.log('Page handleChange run');
     setEditorState(nextEditorState);
@@ -203,8 +202,8 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
+  // titie
   const [title, setTitle] = useState<string>(initTitle);
-
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTitle(e.target.value);
 
@@ -221,6 +220,23 @@ const Page: React.FC<PageProps> = (props) => {
     }
   };
 
+  // mode
+  const initInlineMode =
+    localStorage.getItem('mode') === 'inline' ? true : false;
+  const [inlineMode, setInlineMode] = useState<boolean>(initInlineMode);
+  const handleModeChange = (e: MouseEvent) => {
+    let nextMode = 'static';
+    if (e.currentTarget.classList.contains('inlineMode')) {
+      nextMode = 'inline';
+    } else {
+      nextMode = 'static';
+    }
+    setInlineMode(nextMode === 'inline');
+
+    localStorage.setItem('mode', nextMode);
+  };
+
+  // locale
   const handleLocaleChange = () => {
     const currLocale = getLocale();
     if (currLocale === 'zh-CN') {
@@ -375,6 +391,28 @@ const Page: React.FC<PageProps> = (props) => {
           </section>
           <section className="mode">
             <h3>{formatMessage({ id: 'page.sidebar.mode.section.header' })}</h3>
+            <div>
+              <a
+                className="checkBtn staticMode"
+                data-checked={!inlineMode}
+                onClick={handleModeChange}
+              >
+                <i></i>
+                <label>
+                  {formatMessage({ id: 'page.sidebar.mode.label.static' })}
+                </label>
+              </a>
+              <a
+                className="checkBtn inlineMode"
+                data-checked={inlineMode}
+                onClick={handleModeChange}
+              >
+                <i></i>
+                <label>
+                  {formatMessage({ id: 'page.sidebar.mode.label.inline' })}
+                </label>
+              </a>
+            </div>
           </section>
           <section className="help">
             <h3>{formatMessage({ id: 'page.sidebar.help.section.header' })}</h3>
@@ -488,7 +526,9 @@ const Page: React.FC<PageProps> = (props) => {
           </div>
           <div
             className="transformWrapper staticToolbarWrapper"
-            style={{ transform: 'translate3d(0px, 0px, 0px)' }}
+            style={{
+              transform: `translate3d(0px, ${inlineMode ? -40 : 0}px, 0px)`,
+            }}
           >
             <StaticToolbar>
               <BoldButton />
@@ -524,38 +564,42 @@ const Page: React.FC<PageProps> = (props) => {
               <DecoratedRedoButton />
             </StaticToolbar>
           </div>
-          <InlineToolbar>
-            <BoldButton />
-            <ItalicButton />
-            <UnderlineButton />
-            <StrikethroughButton />
-            <CodeButton />
-            <LinkButton />
-            <ISeparator />
-            <OverrideButton icon={defaultHeadIcon}>
-              <HeadlineOneButton />
-              <HeadlineTwoButton />
-              <HeadlineThreeButton />
-              <HeadlineFourButton />
-              <HeadlineFiveButton />
-              <HeadlineSixButton />
-            </OverrideButton>
-            <OverrideButton icon={defaultAlignLeftIcon}>
-              <AlignLeftButton />
-              <AlignCenterButton />
-              <AlignRightButton />
-              <AlignJustifyButton />
-            </OverrideButton>
-            <UnorderedListButton />
-            <OrderedListButton />
-            <BlockquoteButton />
-          </InlineToolbar>
-          <SideToolbar>
-            <UnorderedListButton />
-            <OrderedListButton />
-            <BlockquoteButton />
-            <DividerButton />
-          </SideToolbar>
+          {inlineMode && (
+            <>
+              <InlineToolbar>
+                <BoldButton />
+                <ItalicButton />
+                <UnderlineButton />
+                <StrikethroughButton />
+                <CodeButton />
+                <LinkButton />
+                <ISeparator />
+                <OverrideButton icon={defaultHeadIcon}>
+                  <HeadlineOneButton />
+                  <HeadlineTwoButton />
+                  <HeadlineThreeButton />
+                  <HeadlineFourButton />
+                  <HeadlineFiveButton />
+                  <HeadlineSixButton />
+                </OverrideButton>
+                <OverrideButton icon={defaultAlignLeftIcon}>
+                  <AlignLeftButton />
+                  <AlignCenterButton />
+                  <AlignRightButton />
+                  <AlignJustifyButton />
+                </OverrideButton>
+                <UnorderedListButton />
+                <OrderedListButton />
+                <BlockquoteButton />
+              </InlineToolbar>
+              <SideToolbar>
+                <UnorderedListButton />
+                <OrderedListButton />
+                <BlockquoteButton />
+                <DividerButton />
+              </SideToolbar>
+            </>
+          )}
         </div>
         {sidebar}
         {rawSidebar}
