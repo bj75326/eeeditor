@@ -90,6 +90,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
     const { target } = event;
     const popoverNode = popoverRef.current || null;
     if (!contains(popoverNode, target)) {
+      console.log('onDocumentClick close!!!');
       setPopoverVisible(false);
     }
   };
@@ -162,7 +163,8 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   };
 
   const handlePopoverLeavePrepare = (): void => {
-    getEditorRef().focus();
+    // selectionAfter hasFocus 设为 true，不需要手动 focus
+    // getEditorRef().focus();
   };
 
   // 切换输入法模式下， enter keyup 不应该进行提交
