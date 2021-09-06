@@ -3,6 +3,7 @@ export default {
   'page.sidebar.theme.section.header': '主题切换',
   'page.sidebar.mode.section.header': '工具栏模式',
   'page.sidebar.typesetting.section.header': '段落排版',
+  'page.sidebar.locale.section.header': '语言',
   'page.sidebar.help.section.header': '其它',
   'page.sidebar.theme.label.light': '明亮',
   'page.sidebar.theme.label.dark': '暗黑',

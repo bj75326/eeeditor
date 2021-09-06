@@ -119,7 +119,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       antdLocale = zhCN;
   }
 
-  const [visible, setVisible] = useState<boolean>(true);
+  const [visible, setVisible] = useState<boolean>(false);
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
@@ -253,10 +253,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     }
     return null;
   };
-  useEffect(() => {
-    // @eeeditor/editor suffix 渲染到真实 dom 之后
-    setVisible(false);
-  }, []);
 
   const toolbarWrapperCls = classNames(`${prefixCls}-wrapper`, className, {
     [`${prefixCls}-rtl`]: textDirectionality === 'RTL',

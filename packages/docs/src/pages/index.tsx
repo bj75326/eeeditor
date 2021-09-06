@@ -61,7 +61,7 @@ import {
 } from '@icon-park/react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
-import { Spin } from 'antd';
+import { Spin, Select } from 'antd';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-light';
 import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
@@ -78,6 +78,8 @@ import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
 
 SyntaxHighlighter.registerLanguage('json', json);
+
+const { Option } = Select;
 
 const { StaticToolbar, SelectorButton, Separator, ...staticToolbarPlugin } =
   createStaticToolbarPlugin();
@@ -237,13 +239,15 @@ const Page: React.FC<PageProps> = (props) => {
   };
 
   // locale
-  const handleLocaleChange = () => {
-    const currLocale = getLocale();
-    if (currLocale === 'zh-CN') {
-      setLocale('en-US', false);
-    } else {
-      setLocale('zh-CN', false);
-    }
+  const handleLocaleChange = (value) => {
+    // const currLocale = getLocale();
+    // if (currLocale === 'zh-CN') {
+    //   setLocale('en-US', false);
+    // } else {
+    //   setLocale('zh-CN', false);
+    // }
+    // umi locale
+    setLocale(value, false);
   };
 
   const initDirection = localStorage.getItem('direction') === 'rtl';
@@ -414,6 +418,15 @@ const Page: React.FC<PageProps> = (props) => {
               </a>
             </div>
           </section>
+          <section className="locale">
+            <h3>
+              {formatMessage({ id: 'page.sidebar.locale.section.header' })}
+            </h3>
+            <Select className="localeSelector" onChange={handleLocaleChange}>
+              <Option value="zh-CN">简体中文</Option>
+              <Option value="en-US">English</Option>
+            </Select>
+          </section>
           <section className="help">
             <h3>{formatMessage({ id: 'page.sidebar.help.section.header' })}</h3>
           </section>
@@ -521,7 +534,7 @@ const Page: React.FC<PageProps> = (props) => {
                 id: 'page.draft.editor.placeholder',
               })}
               plugins={plugins}
-              locale="zh_CN"
+              locale={getLocale().replace('-', '_')}
             />
           </div>
           <div

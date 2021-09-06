@@ -75,7 +75,7 @@ interface ToolbarProps extends ToolbarPubProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const [visible, setVisible] = useState<boolean>(true);
+  const [visible, setVisible] = useState<boolean>(false);
 
   const [overrideContent, setOverrideContent] = useState<
     ReactElement | ReactElement[]
@@ -295,10 +295,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     }
     return null;
   };
-  useEffect(() => {
-    // @eeeditor/editor suffix 渲染到真实 dom 之后
-    setVisible(false);
-  }, []);
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 

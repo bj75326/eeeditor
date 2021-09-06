@@ -3,6 +3,7 @@ export default {
   'page.sidebar.theme.section.header': 'Themes',
   'page.sidebar.mode.section.header': 'Toolbar mode',
   'page.sidebar.typesetting.section.header': 'Paragraph typesetting',
+  'page.sidebar.locale.section.header': 'Language',
   'page.sidebar.help.section.header': 'Others',
   'page.sidebar.theme.label.light': 'Light',
   'page.sidebar.theme.label.dark': 'Dark',
