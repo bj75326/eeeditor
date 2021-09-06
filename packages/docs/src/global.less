@@ -84,3 +84,13 @@ body {
 .ant-spin-container::after {
   background: var(--color-tint-1);
 }
+
+[data-theme='dark'] {
+  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background-color: #111b26;
+  }
+}

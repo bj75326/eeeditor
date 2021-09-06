@@ -422,7 +422,12 @@ const Page: React.FC<PageProps> = (props) => {
             <h3>
               {formatMessage({ id: 'page.sidebar.locale.section.header' })}
             </h3>
-            <Select className="localeSelector" onChange={handleLocaleChange}>
+            <Select
+              className="localeSelector"
+              onChange={handleLocaleChange}
+              defaultValue={getLocale()}
+              getPopupContainer={() => document.querySelector('.sidebarMenu')}
+            >
               <Option value="zh-CN">简体中文</Option>
               <Option value="en-US">English</Option>
             </Select>
