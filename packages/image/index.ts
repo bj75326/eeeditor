@@ -9,6 +9,12 @@ import lang, { Languages } from './locale';
 
 export * from './locale';
 
+export interface ImageEntityData {
+  src: string;
+  upload?: boolean;
+  status?: 'uploading' | 'error' | 'success';
+}
+
 interface ImagePluginConfig {
   prefixCls?: string;
   entityType?: string;
@@ -45,9 +51,9 @@ const createImagePlugin = ({
     blockRendererFn(block, { getEditorState }) {
       const entity = getImageEntity(block, getEditorState());
       if (entity) {
-        if (entity.getData()['loading']) {
+        if (entity.getData()['upload']) {
           return {
-            component: ImageLoading,
+            component: ImageUploader,
             editable: false,
           };
         }
@@ -62,8 +68,8 @@ const createImagePlugin = ({
     blockStyleFn(block, { getEditorState }) {
       const entity = getImageEntity(block, getEditorState());
       if (entity) {
-        if (entity.getData()['loading']) {
-          return 'image-loading';
+        if (entity.getData()['upload']) {
+          return 'image-uploader';
         }
         return 'image';
       }

@@ -4,9 +4,11 @@ import {
   ContentBlock,
   SelectionState,
   EEEditorContext,
+  ContentState,
 } from '@eeeditor/editor';
+import { Languages, zhCN, Locale } from '..';
 
-export interface ImageLoadingProps {
+export interface ImageUploaderProps {
   block: ContentBlock;
   blockProps: {
     isFocused: boolean;
@@ -18,22 +20,24 @@ export interface ImageLoadingProps {
   offsetKey: unknown;
   selection: SelectionState;
   tree: unknown;
-  contentState: unknown;
+  contentState: ContentState;
   blockStyleFn: unknown;
   preventScroll: unknown;
 }
 
-export interface ImageLoadingExtraProps {
+export interface ImageUploaderExtraProps {
   prefixCls?: string;
   className?: string;
+  languages?: Languages;
 }
 
-const ImageLoading: React.FC<ImageLoadingProps & ImageLoadingExtraProps> = (
+const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
   props,
 ) => {
   const {
     prefixCls: customizePrefixCls,
     className,
+    languages,
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...otherProps
   } = props;
@@ -53,17 +57,45 @@ const ImageLoading: React.FC<ImageLoadingProps & ImageLoadingExtraProps> = (
     ...elementProps
   } = otherProps;
 
-  const { getPrefixCls } = useContext(EEEditorContext);
-  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
+  const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
+  const prefixCls = getPrefixCls('image-uploader', customizePrefixCls);
+  const locale: Locale =
+    currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
   const { isFocused } = blockProps;
 
-  const loadingRef = useRef<HTMLImageElement>();
+  const imgRef = useRef<HTMLImageElement>();
 
   useEffect(() => {}, []);
 
-  const loadingCls = classNames(`${prefixCls}`);
-  return <div className={loadingCls}></div>;
+  const { src, status } = contentState
+    .getEntity(block.getEntityAt(0))
+    .getData();
+
+  const imgCls = classNames(`${prefixCls}-img`, className);
+  const layoutCls = classNames(`${prefixCls}-layout`, {
+    isFocused: isFocused,
+  });
+
+  const statusCls = classNames(`${prefixCls}-status`, {});
+
+  return (
+    <div className={`${prefixCls}`}>
+      <div className={layoutCls}>
+        <img
+          {...elementProps}
+          src={src}
+          className={imgCls}
+          ref={imgRef}
+          alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        />
+        <div className={`${prefixCls}-status`}>
+          <div className={`${prefixCls}-status-text`}>{}</div>
+        </div>
+        <div className={`$`}></div>
+      </div>
+    </div>
+  );
 };
 
-export default ImageLoading;
+export default ImageUploader;

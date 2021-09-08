@@ -20,7 +20,7 @@ import lang, { Languages } from './locale';
 
 export * from './locale';
 
-interface DividerPluginConfig {
+export interface DividerPluginConfig {
   prefixCls?: string;
   dividerClassName?: string;
   entityType?: string;

@@ -1,29 +1,3 @@
-// import { EditorState, AtomicBlockUtils } from 'draft-js';
-
-// export default (
-//   editorState: EditorState,
-//   url: string,
-//   extraData: Record<string, unknown>
-// ): EditorState => {
-//   const urlType = 'IMAGE';
-//   const contentState = editorState.getCurrentContent();
-//   const contentStateWithEntity = contentState.createEntity(
-//     urlType,
-//     'IMMUTABLE',
-//     { ...extraData, src: url }
-//   );
-//   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-//   const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-//     editorState,
-//     entityKey,
-//     ' '
-//   );
-//   return EditorState.forceSelection(
-//     newEditorState,
-//     newEditorState.getCurrentContent().getSelectionAfter()
-//   );
-// };
-
 import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
 
 const addImage =
@@ -31,7 +5,7 @@ const addImage =
   (
     editorState: EditorState,
     url: string,
-    extraData: Record<string, unknown> = { loading: true },
+    extraData: Record<string, unknown> = { upload: true, status },
   ): { editorState: EditorState; entityKey: string } => {
     const data = {
       ...extraData,
