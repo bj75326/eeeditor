@@ -24,21 +24,18 @@
 //   );
 // };
 
-import { EditorState } from '@eeeditor/editor';
+import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
 
 const addImage =
   (entityType: string) =>
   (
     editorState: EditorState,
     url: string,
-    fileId: string,
-    extraData: Record<string, unknown>,
-  ): EditorState => {
+    extraData: Record<string, unknown> = { loading: true },
+  ): { editorState: EditorState; entityKey: string } => {
     const data = {
       ...extraData,
       src: url,
-      fileId,
-      loading: true,
     };
 
     const contentState = editorState.getCurrentContent();
@@ -47,6 +44,17 @@ const addImage =
       'IMMUTABLE',
       data,
     );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = insertAtomicBlockWithoutSplit(
+      editorState,
+      entityKey,
+      ' ',
+    );
 
-    return null;
+    return {
+      editorState: newEditorState,
+      entityKey,
+    };
   };
+
+export default addImage;
