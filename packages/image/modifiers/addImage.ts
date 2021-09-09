@@ -3,10 +3,7 @@ import { ImageEntityData } from '..';
 
 const addImage =
   (entityType: string) =>
-  (
-    editorState: EditorState,
-    data: ImageEntityData,
-  ): { editorState: EditorState; entityKey: string } => {
+  (editorState: EditorState, data: ImageEntityData): EditorState => {
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       entityType,
@@ -20,10 +17,7 @@ const addImage =
       ' ',
     );
 
-    return {
-      editorState: newEditorState,
-      entityKey,
-    };
+    return newEditorState;
   };
 
 export default addImage;

@@ -468,6 +468,7 @@ const Page: React.FC<PageProps> = (props) => {
     </CSSTransition>
   );
 
+  // console.log('entityMap test ', editorState.getCurrentContent().toJSON());
   return (
     <div className="main">
       <Helmet>
