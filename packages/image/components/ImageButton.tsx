@@ -18,7 +18,7 @@ import {
 } from '@eeeditor/editor';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Languages, zhCN, Locale } from '..';
-import { Tooltip } from 'antd';
+import { Tooltip, Upload } from 'antd';
 
 export const defaultImageIcon = (
   <svg
@@ -200,6 +200,8 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
     return false;
   };
 
+  const uploadProps = {};
+
   const btnClassName = classNames(`${prefixCls}-btn`, className, {
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),
   });
@@ -234,15 +236,21 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
           {children}
         </div>
       ) : (
-        <Tooltip
-          title={tipTitle}
-          overlayClassName={`${prefixCls}-tip-wrapper`}
-          {...tipProps}
-        >
-          <div className={btnClassName} style={style} onClick={handleAddImage}>
-            {children}
-          </div>
-        </Tooltip>
+        <Upload {...uploadProps}>
+          <Tooltip
+            title={tipTitle}
+            overlayClassName={`${prefixCls}-tip-wrapper`}
+            {...tipProps}
+          >
+            <div
+              className={btnClassName}
+              style={style}
+              onClick={handleAddImage}
+            >
+              {children}
+            </div>
+          </Tooltip>
+        </Upload>
       )}
     </div>
   );

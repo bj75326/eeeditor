@@ -1,4 +1,3 @@
-import React, { ComponentType } from 'react';
 import {
   EditorPlugin,
   ContentBlock,
@@ -6,6 +5,7 @@ import {
   EntityInstance,
 } from '@eeeditor/editor';
 import lang, { Languages } from './locale';
+import { UploadProps } from 'antd';
 
 export * from './locale';
 
@@ -21,7 +21,14 @@ interface ImagePluginConfig {
   decorator?: unknown;
   focusable?: boolean;
   languages?: Languages;
+  uploadProps?: UploadProps;
 }
+
+// 开发测试使用
+const defaultUploadProps: UploadProps = {
+  name: 'file',
+  action: '',
+};
 
 const createImagePlugin = ({
   prefixCls,
@@ -29,6 +36,7 @@ const createImagePlugin = ({
   decorator,
   focusable = true,
   languages = lang,
+  uploadProps = defaultUploadProps,
 }: ImagePluginConfig): EditorPlugin & {} => {
   const getImageEntity = (
     block: ContentBlock,

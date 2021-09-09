@@ -1,17 +1,12 @@
 import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
+import { ImageEntityData } from '..';
 
 const addImage =
   (entityType: string) =>
   (
     editorState: EditorState,
-    url: string,
-    extraData: Record<string, unknown> = { upload: true, status },
+    data: ImageEntityData,
   ): { editorState: EditorState; entityKey: string } => {
-    const data = {
-      ...extraData,
-      src: url,
-    };
-
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       entityType,

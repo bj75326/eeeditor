@@ -6,7 +6,7 @@ import {
   EEEditorContext,
   ContentState,
 } from '@eeeditor/editor';
-import { Languages, zhCN, Locale } from '..';
+import { Languages, zhCN, Locale, ImageEntityData } from '..';
 
 export interface ImageUploaderProps {
   block: ContentBlock;
@@ -70,7 +70,7 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
 
   const { src, status } = contentState
     .getEntity(block.getEntityAt(0))
-    .getData();
+    .getData() as ImageEntityData;
 
   const imgCls = classNames(`${prefixCls}-img`, className);
   const layoutCls = classNames(`${prefixCls}-layout`, {
@@ -89,10 +89,13 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
           ref={imgRef}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         />
-        <div className={`${prefixCls}-status`}>
-          <div className={`${prefixCls}-status-text`}>{}</div>
+        <div className={statusCls}>
+          <div className={`${prefixCls}-status-text`}>
+            {locale[`eeeditor.image.uploader.status.${status}`]}
+          </div>
+          {status === 'error' && <div className={`${prefixCls}-retry`}></div>}
         </div>
-        <div className={`$`}></div>
+        <div className={`progressCls`}></div>
       </div>
     </div>
   );

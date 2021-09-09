@@ -1,9 +1,10 @@
 import { EditorState } from '@eeeditor/editor';
+import { ImageEntityData } from '..';
 
 const updateImage = (
   editorState: EditorState,
   entityKey: string,
-  data: Record<string, unknown>,
+  data: ImageEntityData,
 ): EditorState => {
   const contentState = editorState.getCurrentContent();
   const newContentState = contentState.mergeEntityData(entityKey, data);
