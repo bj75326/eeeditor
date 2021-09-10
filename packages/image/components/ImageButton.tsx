@@ -18,7 +18,7 @@ import {
 } from '@eeeditor/editor';
 import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 import { Languages, zhCN, Locale } from '..';
-import { Tooltip, Upload } from 'antd';
+import { Tooltip, Upload, UploadProps } from 'antd';
 
 export const defaultImageIcon = (
   <svg
@@ -88,6 +88,8 @@ export interface ImageButtonProps {
 }
 
 export interface ImageButtonExtraProps {
+  // upload props
+  uploadProps: UploadProps;
   languages?: Languages;
   // toolbar plugin 提供的 props
   getEditorState?: () => EditorState;
@@ -124,6 +126,7 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
     children = defaultImageIcon,
     keyCommand,
     languages,
+    uploadProps,
     getEditorState,
     setEditorState,
     getProps,
@@ -199,8 +202,6 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
     }
     return false;
   };
-
-  const uploadProps = {};
 
   const btnClassName = classNames(`${prefixCls}-btn`, className, {
     [`${prefixCls}-btn-disabled`]: checkButtonShouldDisabled(),

@@ -1,8 +1,8 @@
 import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
-import { ImageEntityData } from '..';
+import { ImageEntityData, ImagePluginStore } from '..';
 
 const addImage =
-  (entityType: string) =>
+  (entityType: string, store: ImagePluginStore) =>
   (editorState: EditorState, data: ImageEntityData): EditorState => {
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
@@ -11,6 +11,15 @@ const addImage =
       data,
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+    const { uid } = data;
+
+    const newEntityKeyMap = {
+      ...store.getItem('entityKeyMap'),
+      [uid]: entityKey,
+    };
+    store.updateItem('entityKeyMap', newEntityKeyMap);
+
     const newEditorState = insertAtomicBlockWithoutSplit(
       editorState,
       entityKey,

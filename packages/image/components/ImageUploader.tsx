@@ -7,6 +7,7 @@ import {
   ContentState,
 } from '@eeeditor/editor';
 import { Languages, zhCN, Locale, ImageEntityData } from '..';
+import { Upload, UploadProps } from 'antd';
 
 export interface ImageUploaderProps {
   block: ContentBlock;
@@ -29,6 +30,7 @@ export interface ImageUploaderExtraProps {
   prefixCls?: string;
   className?: string;
   languages?: Languages;
+  uploadProps?: UploadProps;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (

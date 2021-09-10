@@ -1,15 +1,24 @@
 import { EditorState } from '@eeeditor/editor';
-import { ImageEntityData } from '..';
+import { ImageEntityData, ImagePluginStore } from '..';
 
-const updateImage = (
-  editorState: EditorState,
-  data: ImageEntityData,
-): EditorState => {
-  const contentState = editorState.getCurrentContent();
-  // getImageEntityKey 获取 entityKey
+const updateImage =
+  (store: ImagePluginStore) =>
+  (editorState: EditorState, data: ImageEntityData): EditorState => {
+    const contentState = editorState.getCurrentContent();
 
-  // todo entity 的改动是否 immutable
-  return;
-};
+    const { uid } = data;
+
+    const entityKey = store.getItem('entityKeyMap')[uid];
+
+    if (!entityKey)
+      throw new Error(
+        `updateImage get entityKey failed which correspond to uid ${uid}`,
+      );
+
+    contentState.mergeEntityData(entityKey, data);
+
+    // todo
+    return;
+  };
 
 export default updateImage;
