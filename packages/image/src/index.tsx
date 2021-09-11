@@ -48,7 +48,7 @@ const createImagePlugin = ({
   focusable = true,
   languages = lang,
   uploadProps,
-}: ImagePluginConfig): EditorPlugin & {
+}: ImagePluginConfig = {}): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
   const store = createStore<StoreItemMap>({
@@ -96,6 +96,7 @@ const createImagePlugin = ({
     <DefaultImageUploader
       {...props}
       prefixCls={prefixCls}
+      languages={languages}
       uploadProps={defaultUploadProps}
     />
   );
@@ -134,7 +135,10 @@ const createImagePlugin = ({
     blockRendererFn(block, { getEditorState }) {
       const entity = getImageEntity(block, getEditorState());
       if (entity) {
-        if (entity.getData()['upload']) {
+        if (
+          entity.getData()['status'] === 'uploading' ||
+          entity.getData()['status'] === 'error'
+        ) {
           return {
             component: ImageUploader,
             editable: false,

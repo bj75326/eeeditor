@@ -27,10 +27,10 @@ export interface ImageUploaderProps {
 }
 
 export interface ImageUploaderExtraProps {
+  languages: Languages;
+  uploadProps: UploadProps;
   prefixCls?: string;
   className?: string;
-  languages?: Languages;
-  uploadProps?: UploadProps;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (

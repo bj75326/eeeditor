@@ -19,6 +19,7 @@ import createSideToolbarPlugin from '@eeeditor/side-toolbar';
 import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
 import createAnchorPlugin from '@eeeditor/anchor';
+import createImagePlugin from '@eeeditor/image';
 import {
   defaultHeadIcon,
   defaultAlignLeftIcon,
@@ -100,6 +101,8 @@ const { DividerButton, ...dividerPlugin } = createDividerPlugin({});
 
 const { LinkButton, ...anchorPlugin } = createAnchorPlugin({});
 
+const { ImageButton, ...imagePlugin } = createImagePlugin({});
+
 const plugins: EditorPlugin[] = [
   staticToolbarPlugin,
   inlineToolbarPlugin,
@@ -107,6 +110,7 @@ const plugins: EditorPlugin[] = [
   undoPlugin,
   dividerPlugin,
   anchorPlugin,
+  imagePlugin,
 ];
 
 export interface PageProps extends ConnectProps {
@@ -578,6 +582,7 @@ const Page: React.FC<PageProps> = (props) => {
               <OrderedListButton />
               <BlockquoteButton />
               <DividerButton />
+              <ImageButton />
               <Separator />
               <DecoratedUndoButton />
               <DecoratedRedoButton />
@@ -616,6 +621,7 @@ const Page: React.FC<PageProps> = (props) => {
                 <OrderedListButton />
                 <BlockquoteButton />
                 <DividerButton />
+                <ImageButton />
               </SideToolbar>
             </>
           )}
