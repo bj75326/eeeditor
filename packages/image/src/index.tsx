@@ -40,7 +40,18 @@ export type ImagePluginStore = Store<StoreItemMap>;
 
 // antd upload props function 传入 pluginMethods
 type BeforeUploadValueType = void | boolean | string | Blob | File;
-export type ImagePluginUploadProps<T = any> = UploadProps<T> & {
+export type ImageUploadProps<T = any> = Omit<
+  UploadProps<T>,
+  | 'action'
+  | 'data'
+  | 'beforeUpload'
+  | 'onChange'
+  | 'onDrop'
+  | 'onPreview'
+  | 'onDownload'
+  | 'onRemove'
+  | 'customRequest'
+> & {
   action?:
     | string
     | ((file: RcFile, pluginMethods: PluginMethods) => string)
@@ -70,9 +81,39 @@ export type ImagePluginUploadProps<T = any> = UploadProps<T> & {
   ) => void;
 };
 
+// export interface ImagePluginUploadProps<T = any> extends UploadProps<T> {
+//     action?:
+//   | string
+//   | ((file: RcFile, pluginMethods: PluginMethods) => string)
+//   | ((file: RcFile, pluginMethods: PluginMethods) => PromiseLike<string>);
+//   data?:
+//     | object
+//     | ((file: UploadFile<T>, pluginMethods: PluginMethods) => object);
+//   beforeUpload?: (
+//     file: RcFile,
+//     FileList: RcFile[],
+//     pluginMethods: PluginMethods,
+//   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
+//   onChange?: (info: UploadChangeParam, pluginMethods: PluginMethods) => void;
+//   onDrop?: (
+//     event: React.DragEvent<HTMLDivElement>,
+//     pluginMethods: PluginMethods,
+//   ) => void;
+//   onPreview?: (file: UploadFile<T>, pluginMethods: PluginMethods) => void;
+//   onDownload?: (file: UploadFile<T>, pluginMethods: PluginMethods) => void;
+//   onRemove?: (
+//     file: UploadFile<T>,
+//     pluginMethods: PluginMethods,
+//   ) => void | boolean | Promise<void | boolean>;
+//   customRequest?: (
+//     options: RcCustomRequestOptions,
+//     pluginMethods: PluginMethods,
+//   ) => void;
+// }
+
 interface ImagePluginConfig {
   // todo
-  uploadProps: ImagePluginUploadProps;
+  imageUploadProps?: ImageUploadProps;
   prefixCls?: string;
   entityType?: string;
   decorator?: unknown;
@@ -90,51 +131,118 @@ interface ImagePluginConfig {
 //   content: "iVBORw0KGgoAAAANSUhEUgAAAcwAAADUBAMAAADjBw73AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAVUExURf///+vr6xaQ/+3t7eTy/zie/1Kp/6ECjV0AAADnSURBVHja7dq9CYAwFEbRFC4Q3EBwAHEBCycQdAP3X8EyhYKVmJ9zNrh8jXkYAgDAg7ViqbI792odS8rchmqNMmXKlClTpkyZMmXKlClTpkyZMmXKlClTpkyZMmXKlClTpkyZMmXKlClTpkyZ32S28aNpI78NAwAAAAAAwM0UC9HLfBetmRdrWtOa1rSmNf9fcy6GD3MAANxpvTfdaa3pemBNa1rTmtZ0p3WnBQAAd1rvTXda1wNrWtOa1rSmNd1pAQDAnTbPt4XMvN6bjawZrWlNa1rTmtasZU0XVgAAAAAAAAAAIFcXi9yX4VfJc8IAAAAASUVORK5CYII=",
 // };
 
-// const defaultUploadProps: UploadProps = {
-//   // name: 'file',
-//   action: (file) => `https://gitee.com/api/v5/repos/bj75326/image-bed/contents/images/${file.name}`,
-//   data: uploadSetup,
-//   showUploadList: false,
-//   beforeUpload: (file) => {
-//     const getEditorState = store.getItem('getEditorState');
-//     const setEditorState = store.getItem('setEditorState');
-//     const reader = new FileReader();
-//     reader.onload = (e: ProgressEvent<FileReader>) => {
-//       // test
-//       // uploadSetup.content = e.target.result as string;
+const defaultUploadProps: ImageUploadProps = {
+  // name: 'file',
+  action: (file) =>
+    `https://gitee.com/api/v5/repos/bj75326/image-bed/contents/images/${file.name}`,
+  data: (file) => ({
+    access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c',
+    owner: 'bj75326',
+    repo: 'image-bed',
+    path: `images/${file.name}`,
+    message: 'upload image',
+    content: file.originFileObj,
+  }),
+  showUploadList: false,
+  beforeUpload: (file) => {
+    const getEditorState = store.getItem('getEditorState');
+    const setEditorState = store.getItem('setEditorState');
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      // test
+      // uploadSetup.content = e.target.result as string;
 
-//       setEditorState(
-//         addImage(getEditorState(), {
-//           src: e.target.result as string,
-//           uid: file.uid,
-//           status: 'uploading',
-//         }),
-//       );
-//     };
-//     reader.readAsDataURL(file);
-//   },
-//   onChange: (info) => {
-//     const getEditorState = store.getItem('getEditorState');
-//     const setEditorState = store.getItem('setEditorState');
-//     if (info.file.status === 'done') {
-//       setEditorState(
-//         updateImage(getEditorState(), {
-//           src: info.file.response.linkurl as string,
-//           uid: info.file.uid,
-//           status: 'success',
-//         }),
-//       );
-//     }
-//   },
-// };
+      setEditorState(
+        addImage(getEditorState(), {
+          src: e.target.result as string,
+          uid: file.uid,
+          status: 'uploading',
+        }),
+      );
+    };
+    reader.readAsDataURL(file);
+  },
+  onChange: (info) => {
+    const getEditorState = store.getItem('getEditorState');
+    const setEditorState = store.getItem('setEditorState');
+    if (info.file.status === 'done') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          src: info.file.response.linkurl as string,
+          uid: info.file.uid,
+          status: 'success',
+        }),
+      );
+    }
+  },
+};
 
+// todo
 const getUploadProps = (
-  uploadProps: ImagePluginUploadProps,
+  imageUploadProps: ImageUploadProps,
   store: ImagePluginStore,
 ): UploadProps => {
   const pluginMethods = store.getItem('pluginMethods');
+  const {
+    action,
+    data,
+    beforeUpload,
+    onChange,
+    onDrop,
+    onPreview,
+    onDownload,
+    onRemove,
+    customRequest,
+  } = imageUploadProps;
+  const uploadProps = { ...imageUploadProps };
+  if (action) {
+    uploadProps.action =
+      typeof action === 'string'
+        ? action
+        : (file: RcFile) => action(file, pluginMethods) as string;
+  }
+  if (data) {
+    uploadProps.data =
+      typeof data === 'object'
+        ? data
+        : (file: UploadFile) => data(file, pluginMethods);
+  }
 
-  return {};
+  if (beforeUpload) {
+    uploadProps.beforeUpload = (file: RcFile, FileList: RcFile[]) =>
+      beforeUpload(file, FileList, pluginMethods);
+  }
+
+  if (onChange) {
+    uploadProps.onChange = (info: UploadChangeParam) =>
+      onChange(info, pluginMethods);
+  }
+
+  if (onDrop) {
+    uploadProps.onDrop = (event: React.DragEvent<HTMLDivElement>) =>
+      onDrop(event, pluginMethods);
+  }
+
+  if (onPreview) {
+    uploadProps.onPreview = (file: UploadFile) =>
+      onPreview(file, pluginMethods);
+  }
+
+  if (onDownload) {
+    uploadProps.onDownload = (file: UploadFile) =>
+      onDownload(file, pluginMethods);
+  }
+
+  if (onRemove) {
+    uploadProps.onRemove = (file: UploadFile) => onRemove(file, pluginMethods);
+  }
+
+  if (customRequest) {
+    uploadProps.customRequest = (options: RcCustomRequestOptions) =>
+      customRequest(options, pluginMethods);
+  }
+
+  return uploadProps as UploadProps;
 };
 
 const createImagePlugin = ({
@@ -143,7 +251,7 @@ const createImagePlugin = ({
   decorator,
   focusable = true,
   languages = lang,
-  uploadProps,
+  imageUploadProps,
 }: ImagePluginConfig): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
@@ -153,6 +261,8 @@ const createImagePlugin = ({
 
   const addImage = getAddImage(entityType, store);
   const updateImage = getUpdateImage(store);
+
+  const uploadProps = getUploadProps(imageUploadProps, store);
 
   let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
     <DefaultImageUploader
