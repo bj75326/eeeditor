@@ -21,13 +21,14 @@ import DefaultImageUploader, {
   ImageUploaderProps,
 } from './components/ImageUploader';
 import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
+import DefaultImage, { ImageProps } from './components/Image';
 
 export * from './locale';
 
 export interface ImageEntityData {
-  src: string;
   uid: string;
-  status: 'uploading' | 'error' | 'success';
+  src?: string;
+  status?: 'uploading' | 'error' | 'success';
 }
 
 export interface ImagePluginMethods extends PluginMethods {
@@ -59,28 +60,42 @@ export type ImageUploadProps<T = any> = Omit<
 > & {
   action?:
     | string
-    | ((file: RcFile, store: ImagePluginStore) => string)
-    | ((file: RcFile, store: ImagePluginStore) => PromiseLike<string>);
-  data?: object | ((file: UploadFile<T>, store: ImagePluginStore) => object);
+    | ((file: RcFile, imagePluginMethods: ImagePluginMethods) => string)
+    | ((
+        file: RcFile,
+        imagePluginMethods: ImagePluginMethods,
+      ) => PromiseLike<string>);
+  data?:
+    | object
+    | ((file: UploadFile<T>, imagePluginMethods: ImagePluginMethods) => object);
   beforeUpload?: (
     file: RcFile,
     FileList: RcFile[],
-    store: ImagePluginStore,
+    imagePluginMethods: ImagePluginMethods,
   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
-  onChange?: (info: UploadChangeParam, store: ImagePluginStore) => void;
+  onChange?: (
+    info: UploadChangeParam,
+    imagePluginMethods: ImagePluginMethods,
+  ) => void;
   onDrop?: (
     event: React.DragEvent<HTMLDivElement>,
-    store: ImagePluginStore,
+    imagePluginMethods: ImagePluginMethods,
   ) => void;
-  onPreview?: (file: UploadFile<T>, store: ImagePluginStore) => void;
-  onDownload?: (file: UploadFile<T>, store: ImagePluginStore) => void;
+  onPreview?: (
+    file: UploadFile<T>,
+    imagePluginMethods: ImagePluginMethods,
+  ) => void;
+  onDownload?: (
+    file: UploadFile<T>,
+    imagePluginMethods: ImagePluginMethods,
+  ) => void;
   onRemove?: (
     file: UploadFile<T>,
-    store: ImagePluginStore,
+    imagePluginMethods: ImagePluginMethods,
   ) => void | boolean | Promise<void | boolean>;
   customRequest?: (
     options: RcCustomRequestOptions,
-    store: ImagePluginStore,
+    imagePluginMethods: ImagePluginMethods,
   ) => void;
 };
 
@@ -97,15 +112,17 @@ interface ImagePluginConfig {
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
-// const getFileName = (name: string):string => {
-
-// };
+const getFileName = (file: RcFile): string => {
+  const { name, uid } = file;
+  return `${uid}.${name.split('.').pop()}`;
+};
 const defaultUploadProps: ImageUploadProps = {
   action: (file) =>
-    `https://gitee.com/api/v5/repos/bj75326/image-bed/contents/images/${file.name}`,
+    `https://gitee.com/api/v5/repos/bj75326/image-bed/contents/images/${getFileName(
+      file,
+    )}`,
   data: (file) => {
-    console.log('data file ', file);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         console.log(e.target.result);
@@ -113,7 +130,9 @@ const defaultUploadProps: ImageUploadProps = {
           access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c',
           owner: 'bj75326',
           repo: 'image-bed',
-          path: `images/${file.name}`,
+          path: `images/${getFileName(
+            file.originFileObj ? file.originFileObj : (file as RcFile),
+          )}`,
           message: 'upload image',
           content: (e.target.result as string).replace(
             'data:image/png;base64,',
@@ -121,16 +140,15 @@ const defaultUploadProps: ImageUploadProps = {
           ),
         });
       };
-
+      // 异常处理省略
       reader.readAsDataURL(
         file.originFileObj ? file.originFileObj : (file as RcFile),
       );
     });
   },
   showUploadList: false,
-  beforeUpload: (file, _, store) => {
-    const { getEditorState, setEditorState, addImage } =
-      store.getItem('imagePluginMethods');
+  beforeUpload: (file, _, imagePluginMethods) => {
+    const { getEditorState, setEditorState, addImage } = imagePluginMethods;
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       setEditorState(
@@ -143,24 +161,36 @@ const defaultUploadProps: ImageUploadProps = {
     };
     reader.readAsDataURL(file);
   },
-  onChange: (info, store) => {
-    console.log(info);
-    // if (info.file.status === 'done') {
-    //   setEditorState(
-    //     updateImage(getEditorState(), {
-    //       src: info.file.response.linkurl as string,
-    //       uid: info.file.uid,
-    //       status: 'success',
-    //     }),
-    //   );
-    // }
+  onChange: (info, imagePluginMethods) => {
+    const { updateImage, setEditorState, getEditorState } = imagePluginMethods;
+    if (info.file.status === 'done' || info.file.status === 'success') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          uid: info.file.uid,
+          src:
+            info.file.response.content &&
+            info.file.response.content.download_url,
+          status: 'success',
+        }),
+      );
+    } else if (info.file.status === 'error') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          uid: info.file.uid,
+          status: 'error',
+        }),
+      );
+    }
   },
 };
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
 
 // todo
 const getUploadProps = (
   imageUploadProps: ImageUploadProps,
-  store: ImagePluginStore,
+  imagePluginMethods: ImagePluginMethods,
 ): UploadProps => {
   const {
     action,
@@ -178,42 +208,48 @@ const getUploadProps = (
     uploadProps.action =
       typeof action === 'string'
         ? action
-        : (file: RcFile) => action(file, store) as string;
+        : (file: RcFile) => action(file, imagePluginMethods) as string;
   }
   if (data) {
     uploadProps.data =
-      typeof data === 'object' ? data : (file: UploadFile) => data(file, store);
+      typeof data === 'object'
+        ? data
+        : (file: UploadFile) => data(file, imagePluginMethods);
   }
 
   if (beforeUpload) {
     uploadProps.beforeUpload = (file: RcFile, FileList: RcFile[]) =>
-      beforeUpload(file, FileList, store);
+      beforeUpload(file, FileList, imagePluginMethods);
   }
 
   if (onChange) {
-    uploadProps.onChange = (info: UploadChangeParam) => onChange(info, store);
+    uploadProps.onChange = (info: UploadChangeParam) =>
+      onChange(info, imagePluginMethods);
   }
 
   if (onDrop) {
     uploadProps.onDrop = (event: React.DragEvent<HTMLDivElement>) =>
-      onDrop(event, store);
+      onDrop(event, imagePluginMethods);
   }
 
   if (onPreview) {
-    uploadProps.onPreview = (file: UploadFile) => onPreview(file, store);
+    uploadProps.onPreview = (file: UploadFile) =>
+      onPreview(file, imagePluginMethods);
   }
 
   if (onDownload) {
-    uploadProps.onDownload = (file: UploadFile) => onDownload(file, store);
+    uploadProps.onDownload = (file: UploadFile) =>
+      onDownload(file, imagePluginMethods);
   }
 
   if (onRemove) {
-    uploadProps.onRemove = (file: UploadFile) => onRemove(file, store);
+    uploadProps.onRemove = (file: UploadFile) =>
+      onRemove(file, imagePluginMethods);
   }
 
   if (customRequest) {
     uploadProps.customRequest = (options: RcCustomRequestOptions) =>
-      customRequest(options, store);
+      customRequest(options, imagePluginMethods);
   }
 
   return uploadProps as UploadProps;
@@ -236,7 +272,7 @@ const createImagePlugin = ({
   const addImage = getAddImage(entityType, store);
   const updateImage = getUpdateImage(store);
 
-  const uploadProps = getUploadProps(imageUploadProps, store);
+  let uploadProps: UploadProps = {};
 
   let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
     <DefaultImageUploader
@@ -253,6 +289,10 @@ const createImagePlugin = ({
       languages={languages}
       uploadProps={uploadProps}
     />
+  );
+
+  const Image: React.FC<ImageProps> = (props) => (
+    <DefaultImage {...props} prefixCls={prefixCls} languages={languages} />
   );
 
   const getImageEntity = (
@@ -274,7 +314,7 @@ const createImagePlugin = ({
 
   return {
     initialize(pluginMethods: PluginMethods) {
-      store.updateItem('imagePluginMethods', {
+      uploadProps = getUploadProps(imageUploadProps, {
         ...pluginMethods,
         addImage,
         updateImage,
@@ -295,7 +335,7 @@ const createImagePlugin = ({
         }
         return {
           // todo
-          component: null,
+          component: Image,
           editable: false,
         };
       }
