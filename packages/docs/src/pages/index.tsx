@@ -77,6 +77,7 @@ import '@eeeditor/divider/es/style';
 import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
+import '@eeeditor/image/es/style';
 
 SyntaxHighlighter.registerLanguage('json', json);
 

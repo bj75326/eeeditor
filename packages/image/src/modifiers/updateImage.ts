@@ -17,8 +17,9 @@ const updateImage =
 
     contentState.mergeEntityData(entityKey, data);
 
-    // 通过 forceSelection 强制重新渲染
+    // todo 暂时通过 forceSelection 强制重新渲染
     return EditorState.forceSelection(editorState, editorState.getSelection());
+    // return editorState;
   };
 
 export default updateImage;

@@ -44,6 +44,7 @@ export interface DividerProps {
   customStyleMap: unknown;
   customStyleFn: unknown;
   decorator: unknown;
+  direction: unknown;
   forceSelection: unknown;
   offsetKey: unknown;
   selection: SelectionState;
@@ -71,6 +72,7 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     customStyleMap, // eslint-disable-line @typescript-eslint/no-unused-vars
     customStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
     decorator, // eslint-disable-line @typescript-eslint/no-unused-vars
+    direction, // eslint-disable-line @typescript-eslint/no-unused-vars
     forceSelection, // eslint-disable-line @typescript-eslint/no-unused-vars
     offsetKey, // eslint-disable-line @typescript-eslint/no-unused-vars
     selection, // eslint-disable-line @typescript-eslint/no-unused-vars

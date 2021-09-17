@@ -335,7 +335,7 @@ const createImagePlugin = ({
         }
         return {
           // todo
-          component: Image,
+          component: ImageUploader,
           editable: false,
         };
       }

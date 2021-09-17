@@ -1,0 +1,38 @@
+@import './theme.less';
+
+@prefix-uploader: ~'@{eeeditor-prefix-cls}-image-uploader';
+@prefix: ~'@{eeeditor-prefix-cls}-image';
+
+.@{prefix-uploader}-layout {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.@{prefix-uploader}-img {
+  display: block;
+  max-width: 100%;
+  opacity: 0.3;
+}
+
+.@{prefix-uploader}-status {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.@{prefix-uploader}-status-text {
+  font-size: @image-status-text-size;
+  color: @image-status-text-color;
+}
+
+.@{prefix-uploader}-retry {
+  font-size: @image-retry-text-size;
+}

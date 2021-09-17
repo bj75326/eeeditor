@@ -7,7 +7,7 @@ import {
   ContentState,
 } from '@eeeditor/editor';
 import { Languages, zhCN, Locale, ImageEntityData } from '..';
-import { Upload, UploadProps } from 'antd';
+import { Upload, UploadProps, Button } from 'antd';
 
 export interface ImageUploaderProps {
   block: ContentBlock;
@@ -17,6 +17,7 @@ export interface ImageUploaderProps {
   customStyleMap: unknown;
   customStyleFn: unknown;
   decorator: unknown;
+  direction: unknown;
   forceSelection: unknown;
   offsetKey: unknown;
   selection: SelectionState;
@@ -41,6 +42,7 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     className,
     languages,
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
+    uploadProps,
     ...otherProps
   } = props;
 
@@ -49,6 +51,7 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     customStyleMap, // eslint-disable-line @typescript-eslint/no-unused-vars
     customStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
     decorator, // eslint-disable-line @typescript-eslint/no-unused-vars
+    direction, // eslint-disable-line @typescript-eslint/no-unused-vars
     forceSelection, // eslint-disable-line @typescript-eslint/no-unused-vars
     offsetKey, // eslint-disable-line @typescript-eslint/no-unused-vars
     selection, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -74,31 +77,43 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 
-  const imgCls = classNames(`${prefixCls}-img`, className);
+  console.log('elementProps ', elementProps);
   const layoutCls = classNames(`${prefixCls}-layout`, {
     isFocused: isFocused,
   });
 
-  const statusCls = classNames(`${prefixCls}-status`, {});
+  const imgCls = classNames(`${prefixCls}-img`, className);
+
+  const statusCls = classNames(`${prefixCls}-status`, {
+    [`@{prefixCls}-error`]: status === 'error',
+  });
+
+  const progressCls = classNames(`${prefixCls}-progress`, {
+    [`@{prefixCls}-error`]: status === 'error',
+  });
 
   return (
-    <div className={`${prefixCls}`}>
-      <div className={layoutCls}>
-        <img
-          {...elementProps}
-          src={src}
-          className={imgCls}
-          ref={imgRef}
-          alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        />
-        <div className={statusCls}>
-          <div className={`${prefixCls}-status-text`}>
-            {locale[`eeeditor.image.uploader.status.${status}`]}
-          </div>
-          {status === 'error' && <div className={`${prefixCls}-retry`}></div>}
+    <div className={layoutCls}>
+      <img
+        {...elementProps}
+        src={src}
+        className={imgCls}
+        ref={imgRef}
+        alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+      />
+      <div className={statusCls}>
+        <div className={`${prefixCls}-status-text`}>
+          {locale[`eeeditor.image.uploader.status.${status}`]}
         </div>
-        <div className={`progressCls`}></div>
+        {status !== 'error' && (
+          <div className={`${prefixCls}-retry`}>
+            <Upload {...uploadProps}>
+              <Button></Button>
+            </Upload>
+          </div>
+        )}
       </div>
+      <div className={progressCls}></div>
     </div>
   );
 };
