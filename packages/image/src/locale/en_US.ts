@@ -5,4 +5,5 @@ export default {
   'eeeditor.image.uploader.status.error': 'Upload failed',
   'eeeditor.image.uploader.status.success': 'Upload successful',
   'eeeditor.image.uploader.retry': 'Retry',
+  'eeeditor.image.read.error.msg': 'Preview  failed',
 };

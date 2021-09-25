@@ -5,4 +5,5 @@ export default {
   'eeeditor.image.uploader.status.error': '图片上传失败',
   'eeeditor.image.uploader.status.success': '图片上传成功',
   'eeeditor.image.uploader.retry': '重试',
+  'eeeditor.image.read.error.msg': '预览失败',
 };

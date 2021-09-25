@@ -6,7 +6,7 @@ import {
   EntityInstance,
   PluginMethods,
 } from '@eeeditor/editor';
-import lang, { Languages } from './locale';
+import lang, { Languages, zhCN, Locale } from './locale';
 import {
   UploadProps,
   RcFile,
@@ -22,6 +22,7 @@ import DefaultImageUploader, {
 } from './components/ImageUploader';
 import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
 import DefaultImage, { ImageProps } from './components/Image';
+import { message } from 'antd';
 
 export * from './locale';
 
@@ -29,6 +30,8 @@ export interface ImageEntityData {
   uid: string;
   src?: string;
   status?: 'uploading' | 'error' | 'success';
+  // 上传图片时保存图片 blob 对象，供上传失败后重试使用
+  file?: RcFile;
 }
 
 export interface ImagePluginMethods extends PluginMethods {
@@ -44,19 +47,63 @@ export interface StoreItemMap {
 
 export type ImagePluginStore = Store<StoreItemMap>;
 
-// antd upload props function 传入 ImagePluginMethods
+// export type ImageUploadProps<T = any> = Omit<
+//   UploadProps<T>,
+//   | 'action'
+//   | 'data'
+//   | 'beforeUpload'
+//   | 'onChange'
+//   | 'onDrop'
+//   | 'onPreview'
+//   | 'onDownload'
+//   | 'onRemove'
+//   | 'customRequest'
+// > & {
+//   action?:
+//     | string
+//     | ((file: RcFile, imagePluginMethods: ImagePluginMethods) => string)
+//     | ((
+//         file: RcFile,
+//         imagePluginMethods: ImagePluginMethods,
+//       ) => PromiseLike<string>);
+//   data?:
+//     | object
+//     | ((file: UploadFile<T>, imagePluginMethods: ImagePluginMethods) => object);
+//   beforeUpload?: (
+//     file: RcFile,
+//     FileList: RcFile[],
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
+//   onChange?: (
+//     info: UploadChangeParam,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void;
+//   onDrop?: (
+//     event: React.DragEvent<HTMLDivElement>,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void;
+//   onPreview?: (
+//     file: UploadFile<T>,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void;
+//   onDownload?: (
+//     file: UploadFile<T>,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void;
+//   onRemove?: (
+//     file: UploadFile<T>,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void | boolean | Promise<void | boolean>;
+//   customRequest?: (
+//     options: RcCustomRequestOptions,
+//     imagePluginMethods: ImagePluginMethods,
+//   ) => void;
+// };
+
 type BeforeUploadValueType = void | boolean | string | Blob | File;
-export type ImageUploadProps<T = any> = Omit<
+export type ImageUploadProps<T = any> = Pick<
   UploadProps<T>,
-  | 'action'
-  | 'data'
-  | 'beforeUpload'
-  | 'onChange'
-  | 'onDrop'
-  | 'onPreview'
-  | 'onDownload'
-  | 'onRemove'
-  | 'customRequest'
+  'name' | 'method' | 'headers' | 'customRequest' | 'withCredentials'
 > & {
   action?:
     | string
@@ -68,40 +115,20 @@ export type ImageUploadProps<T = any> = Omit<
   data?:
     | object
     | ((file: UploadFile<T>, imagePluginMethods: ImagePluginMethods) => object);
-  beforeUpload?: (
-    file: RcFile,
-    FileList: RcFile[],
-    imagePluginMethods: ImagePluginMethods,
-  ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
-  onChange?: (
-    info: UploadChangeParam,
-    imagePluginMethods: ImagePluginMethods,
-  ) => void;
-  onDrop?: (
-    event: React.DragEvent<HTMLDivElement>,
-    imagePluginMethods: ImagePluginMethods,
-  ) => void;
-  onPreview?: (
-    file: UploadFile<T>,
-    imagePluginMethods: ImagePluginMethods,
-  ) => void;
-  onDownload?: (
-    file: UploadFile<T>,
-    imagePluginMethods: ImagePluginMethods,
-  ) => void;
-  onRemove?: (
-    file: UploadFile<T>,
-    imagePluginMethods: ImagePluginMethods,
-  ) => void | boolean | Promise<void | boolean>;
   customRequest?: (
     options: RcCustomRequestOptions,
     imagePluginMethods: ImagePluginMethods,
   ) => void;
+  beforeUpload?: (
+    file: RcFile,
+    FileList: RcFile[],
+    imagePluginMethdos: ImagePluginMethods,
+  ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
 };
 
 interface ImagePluginConfig {
   // todo
-  imageUploadProps?: ImageUploadProps;
+  imageUploadProps: ImageUploadProps;
   prefixCls?: string;
   entityType?: string;
   decorator?: unknown;
@@ -146,64 +173,114 @@ const defaultUploadProps: ImageUploadProps = {
       );
     });
   },
-  showUploadList: false,
-  beforeUpload: (file, _, imagePluginMethods) => {
-    const { getEditorState, setEditorState, addImage } = imagePluginMethods;
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      setEditorState(
-        addImage(getEditorState(), {
-          src: e.target.result as string,
-          uid: file.uid,
-          status: 'uploading',
-        }),
-      );
-    };
-    reader.readAsDataURL(file);
-  },
-  onChange: (info, imagePluginMethods) => {
-    const { updateImage, setEditorState, getEditorState } = imagePluginMethods;
-    if (info.file.status === 'done' || info.file.status === 'success') {
-      setEditorState(
-        updateImage(getEditorState(), {
-          uid: info.file.uid,
-          src:
-            info.file.response.content &&
-            info.file.response.content.download_url,
-          status: 'success',
-        }),
-      );
-    } else if (info.file.status === 'error') {
-      setEditorState(
-        updateImage(getEditorState(), {
-          uid: info.file.uid,
-          status: 'error',
-        }),
-      );
-    }
-  },
+  // showUploadList: false,
+  // beforeUpload: (file, _, imagePluginMethods) => {
+  //   console.log('beforeupload input value ', document.querySelector('input').files);
+  //   const { getEditorState, setEditorState, addImage } = imagePluginMethods;
+  //   const reader = new FileReader();
+  //   reader.onload = (e: ProgressEvent<FileReader>) => {
+  //     setEditorState(
+  //       addImage(getEditorState(), {
+  //         src: e.target.result as string,
+  //         uid: file.uid,
+  //         status: 'uploading',
+  //       }),
+  //     );
+  //   };
+  //   reader.readAsDataURL(file);
+  // },
+  // onChange: (info, imagePluginMethods) => {
+  //   console.log('input value ', document.querySelector('input').files);
+  //   const { updateImage, setEditorState, getEditorState } = imagePluginMethods;
+  //   if (info.file.status === 'done' || info.file.status === 'success') {
+  //     setEditorState(
+  //       updateImage(getEditorState(), {
+  //         uid: info.file.uid,
+  //         src:
+  //           info.file.response.content &&
+  //           info.file.response.content.download_url,
+  //         status: 'success',
+  //       }),
+  //     );
+  //   } else if (info.file.status === 'error') {
+  //     setEditorState(
+  //       updateImage(getEditorState(), {
+  //         uid: info.file.uid,
+  //         status: 'error',
+  //       }),
+  //     );
+  //   }
+  // },
 };
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
 
-// todo
+// imageUploadProps 转化为 antd UploadProps
 const getUploadProps = (
   imageUploadProps: ImageUploadProps,
   imagePluginMethods: ImagePluginMethods,
+  retry: boolean,
+  languages: Languages,
 ): UploadProps => {
-  const {
-    action,
-    data,
-    beforeUpload,
-    onChange,
-    onDrop,
-    onPreview,
-    onDownload,
-    onRemove,
-    customRequest,
-  } = imageUploadProps;
-  const uploadProps = { ...imageUploadProps };
+  const { getEditorState, setEditorState, getProps, addImage, updateImage } =
+    imagePluginMethods;
+  const { prefixCls, locale: currLocale } = getProps();
+  let locale: Locale = zhCN;
+  if (currLocale && languages) {
+    locale = languages[currLocale] || zhCN;
+  }
+
+  const { action, data, customRequest, beforeUpload, ...otherProps } =
+    imageUploadProps;
+
+  const uploadProps: UploadProps = {
+    ...otherProps,
+  };
+  // accept 限制上传文件类型
+  uploadProps.accept = 'image/*';
+  // antd upload 组件默认显示 upload list
+  uploadProps.showUploadList = false;
+
+  if (retry) {
+    // 重试时不打开文件对话框
+    uploadProps.openFileDialogOnClick = false;
+    uploadProps.beforeUpload = (file: RcFile, _) => {
+      // 返回 false 停止上传
+      return false;
+    };
+  } else {
+    uploadProps.beforeUpload = (file: RcFile, _) => {
+      if (beforeUpload) {
+      }
+      // 添加 imageUploader block
+      // const reader = new FileReader();
+      // reader.onload = (e: ProgressEvent<FileReader>) => {
+      //   setEditorState(
+      //     addImage(getEditorState(), {
+      //       src: e.target.result as string,
+      //       uid: file.uid,
+      //       status: 'uploading',
+      //       file,
+      //     }),
+      //   );
+      // };
+      // reader.onerror = () => {
+      //   message.open({
+      //     content:
+      //       locale['eeeditor.image.read.error.msg'] ||
+      //       'eeeditor.image.read.error.msg',
+      //     type: 'info',
+      //     duration: 3,
+      //     className: `${prefixCls}-message`,
+      //   });
+      // };
+      // reader.readAsDataURL(file);
+    };
+  }
+
+  uploadProps.onChange = (info: UploadChangeParam) => {};
+
   if (action) {
     uploadProps.action =
       typeof action === 'string'
@@ -216,37 +293,6 @@ const getUploadProps = (
         ? data
         : (file: UploadFile) => data(file, imagePluginMethods);
   }
-
-  if (beforeUpload) {
-    uploadProps.beforeUpload = (file: RcFile, FileList: RcFile[]) =>
-      beforeUpload(file, FileList, imagePluginMethods);
-  }
-
-  if (onChange) {
-    uploadProps.onChange = (info: UploadChangeParam) =>
-      onChange(info, imagePluginMethods);
-  }
-
-  if (onDrop) {
-    uploadProps.onDrop = (event: React.DragEvent<HTMLDivElement>) =>
-      onDrop(event, imagePluginMethods);
-  }
-
-  if (onPreview) {
-    uploadProps.onPreview = (file: UploadFile) =>
-      onPreview(file, imagePluginMethods);
-  }
-
-  if (onDownload) {
-    uploadProps.onDownload = (file: UploadFile) =>
-      onDownload(file, imagePluginMethods);
-  }
-
-  if (onRemove) {
-    uploadProps.onRemove = (file: UploadFile) =>
-      onRemove(file, imagePluginMethods);
-  }
-
   if (customRequest) {
     uploadProps.customRequest = (options: RcCustomRequestOptions) =>
       customRequest(options, imagePluginMethods);
@@ -314,11 +360,11 @@ const createImagePlugin = ({
 
   return {
     initialize(pluginMethods: PluginMethods) {
-      uploadProps = getUploadProps(imageUploadProps, {
-        ...pluginMethods,
-        addImage,
-        updateImage,
-      });
+      // uploadProps = getUploadProps(imageUploadProps, {
+      //   ...pluginMethods,
+      //   addImage,
+      //   updateImage,
+      // });
     },
 
     blockRendererFn(block, { getEditorState }) {

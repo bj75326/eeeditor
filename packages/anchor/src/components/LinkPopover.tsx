@@ -59,7 +59,7 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
-    locale = languages[currLocale];
+    locale = languages[currLocale] || zhCN;
   }
 
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);

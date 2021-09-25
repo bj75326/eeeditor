@@ -107,8 +107,8 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
         </div>
         {status !== 'error' && (
           <div className={`${prefixCls}-retry`}>
-            <Upload {...uploadProps}>
-              <Button></Button>
+            <Upload {...uploadProps} openFileDialogOnClick={false}>
+              <Button>test</Button>
             </Upload>
           </div>
         )}
