@@ -47,59 +47,6 @@ export interface StoreItemMap {
 
 export type ImagePluginStore = Store<StoreItemMap>;
 
-// export type ImageUploadProps<T = any> = Omit<
-//   UploadProps<T>,
-//   | 'action'
-//   | 'data'
-//   | 'beforeUpload'
-//   | 'onChange'
-//   | 'onDrop'
-//   | 'onPreview'
-//   | 'onDownload'
-//   | 'onRemove'
-//   | 'customRequest'
-// > & {
-//   action?:
-//     | string
-//     | ((file: RcFile, imagePluginMethods: ImagePluginMethods) => string)
-//     | ((
-//         file: RcFile,
-//         imagePluginMethods: ImagePluginMethods,
-//       ) => PromiseLike<string>);
-//   data?:
-//     | object
-//     | ((file: UploadFile<T>, imagePluginMethods: ImagePluginMethods) => object);
-//   beforeUpload?: (
-//     file: RcFile,
-//     FileList: RcFile[],
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
-//   onChange?: (
-//     info: UploadChangeParam,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void;
-//   onDrop?: (
-//     event: React.DragEvent<HTMLDivElement>,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void;
-//   onPreview?: (
-//     file: UploadFile<T>,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void;
-//   onDownload?: (
-//     file: UploadFile<T>,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void;
-//   onRemove?: (
-//     file: UploadFile<T>,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void | boolean | Promise<void | boolean>;
-//   customRequest?: (
-//     options: RcCustomRequestOptions,
-//     imagePluginMethods: ImagePluginMethods,
-//   ) => void;
-// };
-
 type BeforeUploadValueType = void | boolean | string | Blob | File;
 export type ImageUploadProps<T = any> = Pick<
   UploadProps<T>,
@@ -124,6 +71,11 @@ export type ImageUploadProps<T = any> = Pick<
     FileList: RcFile[],
     imagePluginMethdos: ImagePluginMethods,
   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
+  onChange?: (
+    info: UploadChangeParam,
+    imagePluginMethods: ImagePluginMethods,
+  ) => void;
+  imagePath?: string[];
 };
 
 interface ImagePluginConfig {
@@ -173,6 +125,7 @@ const defaultUploadProps: ImageUploadProps = {
       );
     });
   },
+  imagePath: ['content', 'download_url'],
   // showUploadList: false,
   // beforeUpload: (file, _, imagePluginMethods) => {
   //   console.log('beforeupload input value ', document.querySelector('input').files);
@@ -231,8 +184,15 @@ const getUploadProps = (
     locale = languages[currLocale] || zhCN;
   }
 
-  const { action, data, customRequest, beforeUpload, ...otherProps } =
-    imageUploadProps;
+  const {
+    action,
+    data,
+    customRequest,
+    beforeUpload,
+    onChange,
+    imagePath,
+    ...otherProps
+  } = imageUploadProps;
 
   const uploadProps: UploadProps = {
     ...otherProps,
@@ -250,36 +210,73 @@ const getUploadProps = (
       return false;
     };
   } else {
-    uploadProps.beforeUpload = (file: RcFile, _) => {
+    uploadProps.beforeUpload = async (file: RcFile, _) => {
+      let transformedFile: BeforeUploadValueType = file;
       if (beforeUpload) {
+        try {
+          transformedFile = await beforeUpload(file, _, imagePluginMethods);
+        } catch (e) {
+          // Rejection will also trade as false
+          transformedFile = false;
+        }
       }
+      if (transformedFile === false) return false;
+
       // 添加 imageUploader block
-      // const reader = new FileReader();
-      // reader.onload = (e: ProgressEvent<FileReader>) => {
-      //   setEditorState(
-      //     addImage(getEditorState(), {
-      //       src: e.target.result as string,
-      //       uid: file.uid,
-      //       status: 'uploading',
-      //       file,
-      //     }),
-      //   );
-      // };
-      // reader.onerror = () => {
-      //   message.open({
-      //     content:
-      //       locale['eeeditor.image.read.error.msg'] ||
-      //       'eeeditor.image.read.error.msg',
-      //     type: 'info',
-      //     duration: 3,
-      //     className: `${prefixCls}-message`,
-      //   });
-      // };
-      // reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        setEditorState(
+          addImage(getEditorState(), {
+            src: e.target.result as string,
+            uid: file.uid,
+            status: 'uploading',
+          }),
+        );
+      };
+      reader.onerror = () => {
+        message.open({
+          content:
+            locale['eeeditor.image.read.error.msg'] ||
+            'eeeditor.image.read.error.msg',
+          type: 'info',
+          duration: 3,
+          className: `${prefixCls}-message`,
+        });
+      };
+      reader.readAsDataURL(file);
     };
   }
 
-  uploadProps.onChange = (info: UploadChangeParam) => {};
+  uploadProps.onChange = (info: UploadChangeParam) => {
+    if (onChange) {
+      onChange(info, imagePluginMethods);
+    }
+
+    if (info.file.status === 'done' || info.file.status === 'success') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          uid: info.file.uid,
+          src: imagePath.reduce(
+            (path, currentObj) => currentObj[path],
+            info.file.response,
+          ),
+          // info.file.response.content &&
+          // info.file.response.content.download_url,
+          status: 'success',
+          file: undefined,
+        }),
+      );
+    } else if (info.file.status === 'error') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          uid: info.file.uid,
+          status: 'error',
+          // todo
+          // file: info.fileList,
+        }),
+      );
+    }
+  };
 
   if (action) {
     uploadProps.action =
