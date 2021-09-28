@@ -79,7 +79,10 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 
-  console.log('elementProps ', elementProps);
+  const retryUpload = async () => {
+    const {} = uploadProps;
+  };
+
   const layoutCls = classNames(`${prefixCls}-layout`, {
     isFocused: isFocused,
   });
@@ -109,9 +112,7 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
         </div>
         {status !== 'error' && (
           <div className={`${prefixCls}-retry`}>
-            <Upload {...uploadProps} openFileDialogOnClick={false}>
-              <Button>test</Button>
-            </Upload>
+            <Button onClick={retryUpload}>test</Button>
           </div>
         )}
       </div>

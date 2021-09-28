@@ -285,8 +285,6 @@ const getUploadProps = (
             (path, currentObj) => currentObj[path],
             info.file.response,
           ),
-          // info.file.response.content &&
-          // info.file.response.content.download_url,
           status: 'success',
           file: undefined,
         }),
