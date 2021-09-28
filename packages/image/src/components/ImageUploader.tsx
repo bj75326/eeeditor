@@ -8,6 +8,7 @@ import {
 } from '@eeeditor/editor';
 import { Languages, zhCN, Locale, ImageEntityData } from '..';
 import { Upload, UploadProps, Button } from 'antd';
+import request from 'rc-upload/lib/request';
 
 export interface ImageUploaderProps {
   block: ContentBlock;
@@ -71,9 +72,10 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
 
   const imgRef = useRef<HTMLImageElement>();
 
+  // todo useEffect 内添加 store 增减 entityKeyMap 的逻辑
   useEffect(() => {}, []);
 
-  const { src, status } = contentState
+  const { src, status, file } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 

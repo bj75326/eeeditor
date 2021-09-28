@@ -222,28 +222,53 @@ const getUploadProps = (
       }
       if (transformedFile === false) return false;
 
-      // 添加 imageUploader block
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        setEditorState(
-          addImage(getEditorState(), {
-            src: e.target.result as string,
-            uid: file.uid,
-            status: 'uploading',
-          }),
-        );
-      };
-      reader.onerror = () => {
-        message.open({
-          content:
-            locale['eeeditor.image.read.error.msg'] ||
-            'eeeditor.image.read.error.msg',
-          type: 'info',
-          duration: 3,
-          className: `${prefixCls}-message`,
-        });
-      };
-      reader.readAsDataURL(file);
+      // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
+      const parsedData =
+        // string type is from legacy `transformFile`.
+        // Not sure if this will work since no related test case works with it
+        (typeof transformedFile === 'object' ||
+          typeof transformedFile === 'string') &&
+        transformedFile
+          ? transformedFile
+          : file;
+
+      let parsedFile: File;
+      if (parsedData instanceof File) {
+        parsedFile = parsedData;
+      } else {
+        parsedFile = new File([parsedData], file.name, { type: file.type });
+      }
+
+      const mergedParsedFile: RcFile = parsedFile as RcFile;
+      mergedParsedFile.uid = file.uid;
+
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          setEditorState(
+            addImage(getEditorState(), {
+              src: e.target.result as string,
+              uid: file.uid,
+              status: 'uploading',
+              // retry 时发送内容与添加时一致
+              file: mergedParsedFile,
+            }),
+          );
+          resolve(mergedParsedFile);
+        };
+        reader.onerror = () => {
+          message.open({
+            content:
+              locale['eeeditor.image.read.error.msg'] ||
+              'eeeditor.image.read.error.msg',
+            type: 'info',
+            duration: 3,
+            className: `${prefixCls}-message`,
+          });
+          resolve(false);
+        };
+        reader.readAsDataURL(file);
+      });
     };
   }
 
@@ -271,8 +296,6 @@ const getUploadProps = (
         updateImage(getEditorState(), {
           uid: info.file.uid,
           status: 'error',
-          // todo
-          // file: info.fileList,
         }),
       );
     }
@@ -316,13 +339,14 @@ const createImagePlugin = ({
   const updateImage = getUpdateImage(store);
 
   let uploadProps: UploadProps = {};
+  let retryUploadProps: UploadProps = {};
 
   let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
     <DefaultImageUploader
       {...props}
       prefixCls={prefixCls}
       languages={languages}
-      uploadProps={uploadProps}
+      uploadProps={retryUploadProps}
     />
   );
 
@@ -357,11 +381,26 @@ const createImagePlugin = ({
 
   return {
     initialize(pluginMethods: PluginMethods) {
-      // uploadProps = getUploadProps(imageUploadProps, {
-      //   ...pluginMethods,
-      //   addImage,
-      //   updateImage,
-      // });
+      uploadProps = getUploadProps(
+        imageUploadProps,
+        {
+          ...pluginMethods,
+          addImage,
+          updateImage,
+        },
+        false,
+        languages,
+      );
+      retryUploadProps = getUploadProps(
+        imageUploadProps,
+        {
+          ...pluginMethods,
+          addImage,
+          updateImage,
+        },
+        true,
+        languages,
+      );
     },
 
     blockRendererFn(block, { getEditorState }) {
