@@ -47,10 +47,10 @@ export interface StoreItemMap {
 
 export type ImagePluginStore = Store<StoreItemMap>;
 
-type BeforeUploadValueType = void | boolean | string | Blob | File;
+export type BeforeUploadValueType = void | boolean | string | Blob | File;
 export type ImageUploadProps<T = any> = Pick<
   UploadProps<T>,
-  'name' | 'method' | 'headers' | 'customRequest' | 'withCredentials'
+  'name' | 'method' | 'headers' | 'withCredentials'
 > & {
   action?:
     | string
@@ -203,11 +203,8 @@ const getUploadProps = (
   uploadProps.showUploadList = false;
 
   if (retry) {
-    // 重试时不打开文件对话框
-    uploadProps.openFileDialogOnClick = false;
     uploadProps.beforeUpload = (file: RcFile, _) => {
-      // 返回 false 停止上传
-      return false;
+      return beforeUpload(file, _, imagePluginMethods);
     };
   } else {
     uploadProps.beforeUpload = async (file: RcFile, _) => {
@@ -220,27 +217,27 @@ const getUploadProps = (
           transformedFile = false;
         }
       }
-      if (transformedFile === false) return false;
+      // if (transformedFile === false) return false;
 
       // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
-      const parsedData =
-        // string type is from legacy `transformFile`.
-        // Not sure if this will work since no related test case works with it
-        (typeof transformedFile === 'object' ||
-          typeof transformedFile === 'string') &&
-        transformedFile
-          ? transformedFile
-          : file;
+      // const parsedData =
+      //   // string type is from legacy `transformFile`.
+      //   // Not sure if this will work since no related test case works with it
+      //   (typeof transformedFile === 'object' ||
+      //     typeof transformedFile === 'string') &&
+      //   transformedFile
+      //     ? transformedFile
+      //     : file;
 
-      let parsedFile: File;
-      if (parsedData instanceof File) {
-        parsedFile = parsedData;
-      } else {
-        parsedFile = new File([parsedData], file.name, { type: file.type });
-      }
+      // let parsedFile: File;
+      // if (parsedData instanceof File) {
+      //   parsedFile = parsedData;
+      // } else {
+      //   parsedFile = new File([parsedData], file.name, { type: file.type });
+      // }
 
-      const mergedParsedFile: RcFile = parsedFile as RcFile;
-      mergedParsedFile.uid = file.uid;
+      // const mergedParsedFile: RcFile = parsedFile as RcFile;
+      // mergedParsedFile.uid = file.uid;
 
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -250,11 +247,10 @@ const getUploadProps = (
               src: e.target.result as string,
               uid: file.uid,
               status: 'uploading',
-              // retry 时发送内容与添加时一致
-              file: mergedParsedFile,
+              file,
             }),
           );
-          resolve(mergedParsedFile);
+          resolve(transformedFile);
         };
         reader.onerror = () => {
           message.open({

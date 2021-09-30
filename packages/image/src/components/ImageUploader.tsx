@@ -6,8 +6,14 @@ import {
   EEEditorContext,
   ContentState,
 } from '@eeeditor/editor';
-import { Languages, zhCN, Locale, ImageEntityData } from '..';
-import { Upload, UploadProps, Button } from 'antd';
+import {
+  Languages,
+  zhCN,
+  Locale,
+  ImageEntityData,
+  BeforeUploadValueType,
+} from '..';
+import { UploadProps, Button } from 'antd';
 import request from 'rc-upload/lib/request';
 
 export interface ImageUploaderProps {
@@ -80,7 +86,40 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     .getData() as ImageEntityData;
 
   const retryUpload = async () => {
-    const {} = uploadProps;
+    const {
+      name,
+      method,
+      headers,
+      withCredentials,
+      action,
+      data,
+      customRequest,
+      beforeUpload,
+      onChange,
+    } = uploadProps;
+
+    // action
+    let mergedAction: string;
+    if (typeof action === 'function') {
+      mergedAction = await action(file);
+    } else {
+      mergedAction = action;
+    }
+
+    // data
+    let mergedData: object;
+    if (typeof data === 'function') {
+      mergedData = await data(file);
+    } else {
+      mergedData = data;
+    }
+
+    // todo file
+    // let transformedFile: BeforeUploadFileType | void = file;
+
+    const requestOption = {
+      action,
+    };
   };
 
   const layoutCls = classNames(`${prefixCls}-layout`, {
