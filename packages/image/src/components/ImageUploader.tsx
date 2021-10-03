@@ -114,11 +114,14 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
       mergedData = data;
     }
 
-    // todo file
     // let transformedFile: BeforeUploadFileType | void = file;
+    let transformedFile: BeforeUploadValueType = file;
 
     const requestOption = {
-      action,
+      action: mergedAction,
+      fileName: name,
+      data: mergedData,
+      // file:
     };
   };
 

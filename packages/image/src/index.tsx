@@ -203,8 +203,17 @@ const getUploadProps = (
   uploadProps.showUploadList = false;
 
   if (retry) {
-    uploadProps.beforeUpload = (file: RcFile, _) => {
-      return beforeUpload(file, _, imagePluginMethods);
+    uploadProps.beforeUpload = async (file: RcFile, _) => {
+      let transformedFile: BeforeUploadValueType = file;
+      if (beforeUpload) {
+        try {
+          transformedFile = await beforeUpload(file, _, imagePluginMethods);
+        } catch (e) {
+          // Rejection will also trade as false
+          transformedFile = false;
+        }
+      }
+      return transformedFile;
     };
   } else {
     uploadProps.beforeUpload = async (file: RcFile, _) => {
@@ -217,7 +226,7 @@ const getUploadProps = (
           transformedFile = false;
         }
       }
-      // if (transformedFile === false) return false;
+      if (transformedFile === false) return false;
 
       // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
       // const parsedData =
