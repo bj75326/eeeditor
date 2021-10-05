@@ -15,6 +15,11 @@ import {
 } from '..';
 import { UploadProps, Button } from 'antd';
 import request from 'rc-upload/lib/request';
+import {
+  RcFile,
+  UploadProgressEvent,
+  UploadRequestError,
+} from 'rc-upload/lib/interface';
 
 export interface ImageUploaderProps {
   block: ContentBlock;
@@ -115,13 +120,44 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     }
 
     // let transformedFile: BeforeUploadFileType | void = file;
-    let transformedFile: BeforeUploadValueType = file;
+    let transformedFile: BeforeUploadValueType = await beforeUpload(
+      file,
+      undefined,
+    );
+
+    if (transformedFile === false) return;
+
+    // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
+    const parsedData =
+      // string type is from legacy `transformFile`.
+      // Not sure if this will work since no related test case works with it
+      (typeof transformedFile === 'object' ||
+        typeof transformedFile === 'string') &&
+      transformedFile
+        ? transformedFile
+        : file;
+
+    let parsedFile: File;
+    if (parsedData instanceof File) {
+      parsedFile = parsedData;
+    } else {
+      parsedFile = new File([parsedData], file.name, { type: file.type });
+    }
+
+    const mergedParsedFile: RcFile = parsedFile as RcFile;
+    mergedParsedFile.uid = file.uid;
 
     const requestOption = {
       action: mergedAction,
       fileName: name,
       data: mergedData,
-      // file:
+      file: mergedParsedFile,
+      headers,
+      withCredentials,
+      method: method || 'post',
+      onProgress: (e: UploadProgressEvent) => {},
+      onSuccess: (ret: any, xhr: XMLHttpRequest) => {},
+      onError: (err: UploadRequestError, ret: any) => {},
     };
   };
 
