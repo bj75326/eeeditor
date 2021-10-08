@@ -14,9 +14,10 @@ import {
   BeforeUploadValueType,
 } from '..';
 import { UploadProps, Button } from 'antd';
+import { file2Obj } from 'antd/lib/upload/utils';
+import { RcFile, UploadFile } from 'antd/lib/upload/interface';
 import request from 'rc-upload/lib/request';
 import {
-  RcFile,
   UploadProgressEvent,
   UploadRequestError,
 } from 'rc-upload/lib/interface';
@@ -155,10 +156,55 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
       headers,
       withCredentials,
       method: method || 'post',
-      onProgress: (e: UploadProgressEvent) => {},
-      onSuccess: (ret: any, xhr: XMLHttpRequest) => {},
-      onError: (err: UploadRequestError, ret: any) => {},
+      onProgress: (e: UploadProgressEvent) => {
+        const targetItem = file2Obj(mergedParsedFile);
+        targetItem.status = 'uploading';
+        targetItem.percent = e.percent;
+
+        onChange({
+          file: targetItem as UploadFile,
+          fileList: undefined,
+          event: e,
+        });
+      },
+      onSuccess: (ret: any, xhr: XMLHttpRequest) => {
+        try {
+          if (typeof ret === 'string') {
+            ret = JSON.parse(ret);
+          }
+        } catch (e) {
+          /* do nothing */
+        }
+
+        const targetItem = file2Obj(file);
+        targetItem.status = 'done';
+        targetItem.percent = 100;
+        targetItem.response = ret;
+        targetItem.xhr = xhr;
+
+        onChange({
+          file: targetItem as UploadFile,
+          fileList: undefined,
+        });
+      },
+      onError: (err: UploadRequestError, ret: any) => {
+        const targetItem = file2Obj(mergedParsedFile);
+        targetItem.error = err;
+        targetItem.response = ret;
+        targetItem.status = 'error';
+
+        onChange({
+          file: targetItem as UploadFile,
+          fileList: undefined,
+        });
+      },
     };
+
+    if (customRequest) {
+      customRequest(requestOption);
+    } else {
+      request(requestOption);
+    }
   };
 
   const layoutCls = classNames(`${prefixCls}-layout`, {
