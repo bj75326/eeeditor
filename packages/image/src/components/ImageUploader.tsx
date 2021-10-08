@@ -104,6 +104,15 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
       onChange,
     } = uploadProps;
 
+    // let transformedFile: BeforeUploadFileType | void = file;
+    console.log('retry file ', file);
+    let transformedFile: BeforeUploadValueType = await beforeUpload(
+      file,
+      undefined,
+    );
+
+    if (transformedFile === false) return;
+
     // action
     let mergedAction: string;
     if (typeof action === 'function') {
@@ -116,19 +125,17 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
     let mergedData: object;
     if (typeof data === 'function') {
       mergedData = await data(file);
+
+      // todo 开发使用配置 必须删除！！！
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
     } else {
       mergedData = data;
+
+      // todo 开发使用配置 必须删除！！！
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
     }
 
-    // let transformedFile: BeforeUploadFileType | void = file;
-    let transformedFile: BeforeUploadValueType = await beforeUpload(
-      file,
-      undefined,
-    );
-
-    if (transformedFile === false) return;
-
-    // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
+    // file 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
     const parsedData =
       // string type is from legacy `transformFile`.
       // Not sure if this will work since no related test case works with it
@@ -214,11 +221,11 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
   const imgCls = classNames(`${prefixCls}-img`, className);
 
   const statusCls = classNames(`${prefixCls}-status`, {
-    [`@{prefixCls}-error`]: status === 'error',
+    [`${prefixCls}-error`]: status === 'error',
   });
 
   const progressCls = classNames(`${prefixCls}-progress`, {
-    [`@{prefixCls}-error`]: status === 'error',
+    [`${prefixCls}-error`]: status === 'error',
   });
 
   return (
@@ -234,7 +241,7 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
         <div className={`${prefixCls}-status-text`}>
           {locale[`eeeditor.image.uploader.status.${status}`]}
         </div>
-        {status !== 'error' && (
+        {status === 'error' && (
           <div className={`${prefixCls}-retry`}>
             <Button onClick={retryUpload}>test</Button>
           </div>

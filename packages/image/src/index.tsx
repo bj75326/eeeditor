@@ -104,9 +104,8 @@ const defaultUploadProps: ImageUploadProps = {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        console.log(e.target.result);
         resolve({
-          access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c',
+          access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c_',
           owner: 'bj75326',
           repo: 'image-bed',
           path: `images/${getFileName(
@@ -126,44 +125,6 @@ const defaultUploadProps: ImageUploadProps = {
     });
   },
   imagePath: ['content', 'download_url'],
-  // showUploadList: false,
-  // beforeUpload: (file, _, imagePluginMethods) => {
-  //   console.log('beforeupload input value ', document.querySelector('input').files);
-  //   const { getEditorState, setEditorState, addImage } = imagePluginMethods;
-  //   const reader = new FileReader();
-  //   reader.onload = (e: ProgressEvent<FileReader>) => {
-  //     setEditorState(
-  //       addImage(getEditorState(), {
-  //         src: e.target.result as string,
-  //         uid: file.uid,
-  //         status: 'uploading',
-  //       }),
-  //     );
-  //   };
-  //   reader.readAsDataURL(file);
-  // },
-  // onChange: (info, imagePluginMethods) => {
-  //   console.log('input value ', document.querySelector('input').files);
-  //   const { updateImage, setEditorState, getEditorState } = imagePluginMethods;
-  //   if (info.file.status === 'done' || info.file.status === 'success') {
-  //     setEditorState(
-  //       updateImage(getEditorState(), {
-  //         uid: info.file.uid,
-  //         src:
-  //           info.file.response.content &&
-  //           info.file.response.content.download_url,
-  //         status: 'success',
-  //       }),
-  //     );
-  //   } else if (info.file.status === 'error') {
-  //     setEditorState(
-  //       updateImage(getEditorState(), {
-  //         uid: info.file.uid,
-  //         status: 'error',
-  //       }),
-  //     );
-  //   }
-  // },
 };
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
@@ -228,29 +189,10 @@ const getUploadProps = (
       }
       if (transformedFile === false) return false;
 
-      // 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
-      // const parsedData =
-      //   // string type is from legacy `transformFile`.
-      //   // Not sure if this will work since no related test case works with it
-      //   (typeof transformedFile === 'object' ||
-      //     typeof transformedFile === 'string') &&
-      //   transformedFile
-      //     ? transformedFile
-      //     : file;
-
-      // let parsedFile: File;
-      // if (parsedData instanceof File) {
-      //   parsedFile = parsedData;
-      // } else {
-      //   parsedFile = new File([parsedData], file.name, { type: file.type });
-      // }
-
-      // const mergedParsedFile: RcFile = parsedFile as RcFile;
-      // mergedParsedFile.uid = file.uid;
-
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
+          console.log('before upload file: ', file);
           setEditorState(
             addImage(getEditorState(), {
               src: e.target.result as string,
@@ -287,11 +229,18 @@ const getUploadProps = (
         updateImage(getEditorState(), {
           uid: info.file.uid,
           src: imagePath.reduce(
-            (path, currentObj) => currentObj[path],
+            (currentObj, path) => currentObj[path],
             info.file.response,
           ),
           status: 'success',
           file: undefined,
+        }),
+      );
+    } else if (info.file.status === 'uploading') {
+      setEditorState(
+        updateImage(getEditorState(), {
+          uid: info.file.uid,
+          status: 'uploading',
         }),
       );
     } else if (info.file.status === 'error') {
@@ -420,7 +369,7 @@ const createImagePlugin = ({
         }
         return {
           // todo
-          component: ImageUploader,
+          component: Image,
           editable: false,
         };
       }
