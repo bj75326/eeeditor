@@ -3,10 +3,12 @@ import { ImageEntityData, ImagePluginStore } from '..';
 
 const updateImage =
   (store: ImagePluginStore) =>
-  (editorState: EditorState, data: ImageEntityData): EditorState => {
+  (
+    editorState: EditorState,
+    data: ImageEntityData,
+    uid: string,
+  ): EditorState => {
     const contentState = editorState.getCurrentContent();
-
-    const { uid } = data;
 
     const entityKey = store.getItem('entityKeyMap')[uid];
 
@@ -18,8 +20,8 @@ const updateImage =
     contentState.mergeEntityData(entityKey, data);
 
     // todo 暂时通过 forceSelection 强制重新渲染
-    return EditorState.forceSelection(editorState, editorState.getSelection());
-    // return editorState;
+    // return EditorState.forceSelection(editorState, editorState.getSelection());
+    return editorState;
   };
 
 export default updateImage;

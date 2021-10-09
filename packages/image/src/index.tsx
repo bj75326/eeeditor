@@ -29,16 +29,24 @@ import { message } from 'antd';
 export * from './locale';
 
 export interface ImageEntityData {
-  uid: string;
+  // uid: string;
   src?: string;
-  status?: 'uploading' | 'error' | 'success';
+  // status?: 'uploading' | 'error' | 'success';
   // 上传图片时保存图片 blob 对象，供上传失败后重试使用
-  file?: RcFile;
+  // file?: RcFile;
 }
 
 export interface ImagePluginMethods extends PluginMethods {
-  addImage: (editorState: EditorState, data: ImageEntityData) => EditorState;
-  updateImage: (editorState: EditorState, data: ImageEntityData) => EditorState;
+  addImage: (
+    editorState: EditorState,
+    data: ImageEntityData,
+    uid: string,
+  ) => EditorState;
+  updateImage: (
+    editorState: EditorState,
+    data: ImageEntityData,
+    uid: string,
+  ) => EditorState;
 }
 
 export interface StoreItemMap {
@@ -193,14 +201,14 @@ const getUploadProps = (
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          console.log('before upload file: ', file);
           setEditorState(
-            addImage(getEditorState(), {
-              src: e.target.result as string,
-              uid: file.uid,
-              status: 'uploading',
-              file,
-            }),
+            addImage(
+              getEditorState(),
+              {
+                src: e.target.result as string,
+              },
+              file.uid,
+            ),
           );
           resolve(transformedFile);
         };
@@ -227,30 +235,31 @@ const getUploadProps = (
 
     if (info.file.status === 'done' || info.file.status === 'success') {
       setEditorState(
-        updateImage(getEditorState(), {
-          uid: info.file.uid,
-          src: imagePath.reduce(
-            (currentObj, path) => currentObj[path],
-            info.file.response,
-          ),
-          status: 'success',
-          file: undefined,
-        }),
+        updateImage(
+          getEditorState(),
+          {
+            src: imagePath.reduce(
+              (currentObj, path) => currentObj[path],
+              info.file.response,
+            ),
+          },
+          info.file.uid,
+        ),
       );
     } else if (info.file.status === 'uploading') {
-      setEditorState(
-        updateImage(getEditorState(), {
-          uid: info.file.uid,
-          status: 'uploading',
-        }),
-      );
+      // setEditorState(
+      //   updateImage(getEditorState(), {
+      //     uid: info.file.uid,
+      //     status: 'uploading',
+      //   }),
+      // );
     } else if (info.file.status === 'error') {
-      setEditorState(
-        updateImage(getEditorState(), {
-          uid: info.file.uid,
-          status: 'error',
-        }),
-      );
+      // setEditorState(
+      //   updateImage(getEditorState(), {
+      //     uid: info.file.uid,
+      //     status: 'error',
+      //   }),
+      // );
     }
   };
 
@@ -318,8 +327,7 @@ const createImagePlugin = ({
     <DefaultImage {...props} prefixCls={prefixCls} languages={languages} />
   );
 
-  // todo image focusable
-
+  // todo
   const getImageEntity = (
     block: ContentBlock,
     editorState: EditorState,

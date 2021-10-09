@@ -3,7 +3,11 @@ import { ImageEntityData, ImagePluginStore } from '..';
 
 const addImage =
   (entityType: string, store: ImagePluginStore) =>
-  (editorState: EditorState, data: ImageEntityData): EditorState => {
+  (
+    editorState: EditorState,
+    data: ImageEntityData,
+    uid: string,
+  ): EditorState => {
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       entityType,
@@ -12,7 +16,7 @@ const addImage =
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-    const { uid } = data;
+    // const { uid } = data;
 
     const newEntityKeyMap = {
       ...store.getItem('entityKeyMap'),
