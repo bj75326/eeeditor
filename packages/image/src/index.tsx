@@ -5,6 +5,8 @@ import {
   EditorState,
   EntityInstance,
   PluginMethods,
+  focusDecorator,
+  BlockFocusDecoratorProps,
 } from '@eeeditor/editor';
 import lang, { Languages, zhCN, Locale } from './locale';
 import {
@@ -79,7 +81,6 @@ export type ImageUploadProps<T = any> = Pick<
 };
 
 interface ImagePluginConfig {
-  // todo
   imageUploadProps: ImageUploadProps;
   prefixCls?: string;
   entityType?: string;
@@ -301,6 +302,9 @@ const createImagePlugin = ({
       uploadProps={retryUploadProps}
     />
   );
+  let FocusableUploader = focusDecorator(
+    ImageUploader as unknown as React.FC<BlockFocusDecoratorProps>,
+  );
 
   const ImageButton: React.FC<ImageButtonProps> = (props) => (
     <DefaultImageButton
@@ -310,9 +314,11 @@ const createImagePlugin = ({
     />
   );
 
-  const Image: React.FC<ImageProps> = (props) => (
+  let Image: React.FC<ImageProps> = (props) => (
     <DefaultImage {...props} prefixCls={prefixCls} languages={languages} />
   );
+
+  // todo image focusable
 
   const getImageEntity = (
     block: ContentBlock,
@@ -363,12 +369,11 @@ const createImagePlugin = ({
           entity.getData()['status'] === 'error'
         ) {
           return {
-            component: ImageUploader,
+            component: FocusableUploader, // ImageUploader
             editable: false,
           };
         }
         return {
-          // todo
           component: Image,
           editable: false,
         };

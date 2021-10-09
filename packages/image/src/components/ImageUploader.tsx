@@ -127,12 +127,12 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
       mergedData = await data(file);
 
       // todo 开发使用配置 必须删除！！！
-      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c_';
     } else {
       mergedData = data;
 
       // todo 开发使用配置 必须删除！！！
-      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c_';
     }
 
     // file 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
