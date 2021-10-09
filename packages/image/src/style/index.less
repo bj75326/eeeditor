@@ -33,6 +33,12 @@
   color: @image-status-text-color;
 }
 
+.@{prefix-uploader}-error {
+  .@{prefix-uploader}-status-text {
+    color: @image-upload-error-color;
+  }
+}
+
 .@{prefix-uploader}-retry {
   font-size: @image-retry-text-size;
 }
@@ -44,4 +50,59 @@
   width: 100%;
   height: 4px;
   background-color: @image-upload-progress-color;
+  &.@{prefix-uploader}-error {
+    background-color: @image-upload-error-color;
+  }
+}
+
+.@{prefix-uploader}-loading-bar {
+  display: block;
+  position: relative;
+  height: 100%;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  -webkit-animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
+  animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
+}
+
+@-webkit-keyframes LoadingBarForward {
+  0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  40% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  60% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  to {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+}
+
+@keyframes LoadingBarForward {
+  0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+
+  40% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  60% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  to {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
 }

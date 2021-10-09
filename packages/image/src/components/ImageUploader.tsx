@@ -247,7 +247,11 @@ const ImageUploader: React.FC<ImageUploaderProps & ImageUploaderExtraProps> = (
           </div>
         )}
       </div>
-      <div className={progressCls}></div>
+      <div className={progressCls}>
+        {status === 'uploading' && (
+          <div className={`${prefixCls}-loading-bar`}></div>
+        )}
+      </div>
     </div>
   );
 };
