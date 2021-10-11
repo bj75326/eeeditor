@@ -328,21 +328,34 @@ const createImagePlugin = ({
   );
 
   // todo
-  const getImageEntity = (
+  // const getImageEntity = (
+  //   block: ContentBlock,
+  //   editorState: EditorState,
+  // ): EntityInstance => {
+  //   if (block.getType() === 'atomic') {
+  //     const contentState = editorState.getCurrentContent();
+  //     const entityKey = block.getEntityAt(0);
+  //     if (!entityKey) return null;
+  //     const entity = contentState.getEntity(entityKey);
+  //     if (entity && entity.getType() === entityType) {
+  //       return entity;
+  //     }
+  //     return null;
+  //   }
+  //   return null;
+  // };
+
+  const isImageBlock = (
     block: ContentBlock,
     editorState: EditorState,
-  ): EntityInstance => {
+  ): boolean => {
     if (block.getType() === 'atomic') {
       const contentState = editorState.getCurrentContent();
-      const entityKey = block.getEntityAt(0);
-      if (!entityKey) return null;
-      const entity = contentState.getEntity(entityKey);
-      if (entity && entity.getType() === entityType) {
-        return entity;
-      }
-      return null;
+      const entity = block.getEntityAt(0);
+      if (!entity) return false;
+      return contentState.getEntity(entity).getType() === entityType;
     }
-    return null;
+    return false;
   };
 
   return {
@@ -370,17 +383,24 @@ const createImagePlugin = ({
     },
 
     blockRendererFn(block, { getEditorState }) {
-      const entity = getImageEntity(block, getEditorState());
-      if (entity) {
-        if (
-          entity.getData()['status'] === 'uploading' ||
-          entity.getData()['status'] === 'error'
-        ) {
-          return {
-            component: FocusableUploader, // ImageUploader
-            editable: false,
-          };
-        }
+      // const entity = getImageEntity(block, getEditorState());
+      // if (entity) {
+      //   if (
+      //     entity.getData()['status'] === 'uploading' ||
+      //     entity.getData()['status'] === 'error'
+      //   ) {
+      //     return {
+      //       component: FocusableUploader, // ImageUploader
+      //       editable: false,
+      //     };
+      //   }
+      //   return {
+      //     component: Image,
+      //     editable: false,
+      //   };
+      // }
+      // return null;
+      if (isImageBlock(block, getEditorState())) {
         return {
           component: Image,
           editable: false,
@@ -390,11 +410,15 @@ const createImagePlugin = ({
     },
 
     blockStyleFn(block, { getEditorState }) {
-      const entity = getImageEntity(block, getEditorState());
-      if (entity) {
-        if (entity.getData()['upload']) {
-          return 'image-uploader';
-        }
+      // const entity = getImageEntity(block, getEditorState());
+      // if (entity) {
+      //   if (entity.getData()['upload']) {
+      //     return 'image-uploader';
+      //   }
+      //   return 'image';
+      // }
+      // return '';
+      if (isImageBlock(block, getEditorState())) {
         return 'image';
       }
       return '';
