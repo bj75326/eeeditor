@@ -19,9 +19,6 @@ import { UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/int
 import getAddImage from './modifiers/addImage';
 import getUpdateImage from './modifiers/updateImage';
 import { Store, createStore } from '@draft-js-plugins/utils';
-import DefaultImageUploader, {
-  ImageUploaderProps,
-} from './components/ImageUploader';
 import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
 import DefaultImage, { ImageProps } from './components/Image';
 import { message } from 'antd';
@@ -55,6 +52,8 @@ export interface StoreItemMap {
   entityKeyMap?: Record<string, string>;
   // fileMap 用来存储 entity 与其对应的 Rcfile
   fileMap?: Record<string, RcFile>;
+  // statusMap 用来存储 uid 与其对应的 image upload status
+  statusMap?: Record<string, 'uploading' | 'success' | 'error'>;
 }
 
 export type ImagePluginStore = Store<StoreItemMap>;
@@ -144,10 +143,12 @@ const defaultUploadProps: ImageUploadProps = {
 // imageUploadProps 转化为 antd UploadProps
 const getUploadProps = (
   imageUploadProps: ImageUploadProps,
-  imagePluginMethods: ImagePluginMethods,
+  // imagePluginMethods: ImagePluginMethods,
+  store: ImagePluginStore,
   retry: boolean,
   languages: Languages,
 ): UploadProps => {
+  const imagePluginMethods = store.getItem('imagePluginMethods');
   const { getEditorState, setEditorState, getProps, addImage, updateImage } =
     imagePluginMethods;
   const { prefixCls, locale: currLocale } = getProps();
@@ -234,34 +235,33 @@ const getUploadProps = (
     if (onChange) {
       onChange(info, imagePluginMethods);
     }
-
+    const statusMap = store.getItem('statusMap');
     if (info.file.status === 'done' || info.file.status === 'success') {
-      setEditorState(
-        updateImage(
-          getEditorState(),
-          {
-            src: imagePath.reduce(
-              (currentObj, path) => currentObj[path],
-              info.file.response,
-            ),
-          },
-          info.file.uid,
-        ),
+      // updateImage 只更新了 entity data, 所以返回的 editorState 并不会触发重新渲染
+      updateImage(
+        getEditorState(),
+        {
+          src: imagePath.reduce(
+            (currentObj, path) => currentObj[path],
+            info.file.response,
+          ),
+        },
+        info.file.uid,
       );
+      store.updateItem('statusMap', {
+        ...statusMap,
+        [info.file.uid]: 'success',
+      });
     } else if (info.file.status === 'uploading') {
-      // setEditorState(
-      //   updateImage(getEditorState(), {
-      //     uid: info.file.uid,
-      //     status: 'uploading',
-      //   }),
-      // );
+      store.updateItem('statusMap', {
+        ...statusMap,
+        [info.file.uid]: 'uploading',
+      });
     } else if (info.file.status === 'error') {
-      // setEditorState(
-      //   updateImage(getEditorState(), {
-      //     uid: info.file.uid,
-      //     status: 'error',
-      //   }),
-      // );
+      store.updateItem('statusMap', {
+        ...statusMap,
+        [info.file.uid]: 'error',
+      });
     }
   };
 
@@ -298,6 +298,7 @@ const createImagePlugin = ({
   const store = createStore<StoreItemMap>({
     entityKeyMap: {},
     fileMap: {},
+    statusMap: {},
   });
 
   const addImage = getAddImage(entityType, store);
@@ -327,7 +328,13 @@ const createImagePlugin = ({
   );
 
   let Image: React.FC<ImageProps> = (props) => (
-    <DefaultImage {...props} prefixCls={prefixCls} languages={languages} />
+    <DefaultImage
+      {...props}
+      prefixCls={prefixCls}
+      languages={languages}
+      uploadProps={retryUploadProps}
+      store={store}
+    />
   );
 
   // todo
@@ -363,23 +370,16 @@ const createImagePlugin = ({
 
   return {
     initialize(pluginMethods: PluginMethods) {
-      uploadProps = getUploadProps(
-        imageUploadProps,
-        {
-          ...pluginMethods,
-          addImage,
-          updateImage,
-        },
-        false,
-        languages,
-      );
+      store.updateItem('imagePluginMethods', {
+        ...pluginMethods,
+        addImage,
+        updateImage,
+      });
+
+      uploadProps = getUploadProps(imageUploadProps, store, false, languages);
       retryUploadProps = getUploadProps(
         imageUploadProps,
-        {
-          ...pluginMethods,
-          addImage,
-          updateImage,
-        },
+        store,
         true,
         languages,
       );

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ContentBlock,
   SelectionState,
@@ -90,6 +90,27 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     src.startsWith('data:image/') ? 'uploading' : 'success',
   );
 
+  // 当前网页，新上传的 image 才会有 file 对象
+  const file = store.getItem('fileMap')[block.getEntityAt(0)];
+
+  const onStatusMapChanged = (
+    statusMap: Record<string, 'uploading' | 'error' | 'success'>,
+  ) => {
+    if (file) {
+      const newStatus = statusMap[file.uid];
+      if (newStatus !== status) {
+        setStatus(newStatus);
+      }
+    }
+  };
+
+  useEffect(() => {
+    store.subscribeToItem('statusMap', onStatusMapChanged);
+    return () => {
+      store.unsubscribeFromItem('statusMap', onStatusMapChanged);
+    };
+  }, []);
+
   const retryUpload = async () => {
     const {
       name,
@@ -104,7 +125,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     } = uploadProps;
 
     // let transformedFile: BeforeUploadFileType | void = file;
-    const file = store.getItem('fileMap')[block.getEntityAt(0)];
     let transformedFile: BeforeUploadValueType = await beforeUpload(
       file,
       undefined,
@@ -126,12 +146,12 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       mergedData = await data(file);
 
       // todo 开发使用配置 必须删除！！！
-      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c_';
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
     } else {
       mergedData = data;
 
       // todo 开发使用配置 必须删除！！！
-      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c_';
+      mergedData['access_token'] = '43ffba06ed1a8f2aa2976fc7c1e7009c';
     }
 
     // file 参考 https://github.com/react-component/upload/blob/master/src/AjaxUploader.tsx
@@ -172,6 +192,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           fileList: undefined,
           event: e,
         });
+
+        // setStatus('uploading');
       },
       onSuccess: (ret: any, xhr: XMLHttpRequest) => {
         try {
@@ -192,6 +214,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           file: targetItem as UploadFile,
           fileList: undefined,
         });
+
+        // setStatus('success');
       },
       onError: (err: UploadRequestError, ret: any) => {
         const targetItem = file2Obj(mergedParsedFile);
@@ -203,6 +227,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           file: targetItem as UploadFile,
           fileList: undefined,
         });
+
+        // setStatus('error');
       },
     };
 
