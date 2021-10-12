@@ -40,7 +40,7 @@ export interface ImagePluginMethods extends PluginMethods {
   addImage: (
     editorState: EditorState,
     data: ImageEntityData,
-    uid: string,
+    file: RcFile,
   ) => EditorState;
   updateImage: (
     editorState: EditorState,
@@ -53,6 +53,8 @@ export interface StoreItemMap {
   imagePluginMethods?: ImagePluginMethods;
   // entityKeyMap 用来存储 uid 与其对应的 entityKey
   entityKeyMap?: Record<string, string>;
+  // fileMap 用来存储 entity 与其对应的 Rcfile
+  fileMap?: Record<string, RcFile>;
 }
 
 export type ImagePluginStore = Store<StoreItemMap>;
@@ -207,7 +209,7 @@ const getUploadProps = (
               {
                 src: e.target.result as string,
               },
-              file.uid,
+              file,
             ),
           );
           resolve(transformedFile);
@@ -295,6 +297,7 @@ const createImagePlugin = ({
 } => {
   const store = createStore<StoreItemMap>({
     entityKeyMap: {},
+    fileMap: {},
   });
 
   const addImage = getAddImage(entityType, store);
@@ -303,17 +306,17 @@ const createImagePlugin = ({
   let uploadProps: UploadProps = {};
   let retryUploadProps: UploadProps = {};
 
-  let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
-    <DefaultImageUploader
-      {...props}
-      prefixCls={prefixCls}
-      languages={languages}
-      uploadProps={retryUploadProps}
-    />
-  );
-  let FocusableUploader = focusDecorator(
-    ImageUploader as unknown as React.FC<BlockFocusDecoratorProps>,
-  );
+  // let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
+  //   <DefaultImageUploader
+  //     {...props}
+  //     prefixCls={prefixCls}
+  //     languages={languages}
+  //     uploadProps={retryUploadProps}
+  //   />
+  // );
+  // let FocusableUploader = focusDecorator(
+  //   ImageUploader as unknown as React.FC<BlockFocusDecoratorProps>,
+  // );
 
   const ImageButton: React.FC<ImageButtonProps> = (props) => (
     <DefaultImageButton

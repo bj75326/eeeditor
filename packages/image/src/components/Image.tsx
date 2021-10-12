@@ -6,7 +6,14 @@ import {
   EEEditorContext,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
-import { Languages, zhCN, Locale, ImageEntityData } from '..';
+import {
+  Languages,
+  zhCN,
+  Locale,
+  ImageEntityData,
+  ImagePluginStore,
+  BeforeUploadValueType,
+} from '..';
 import { UploadProps, Button } from 'antd';
 import { file2Obj } from 'antd/lib/upload/utils';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
@@ -36,6 +43,7 @@ export interface ImageProps {
 export interface ImageExtraProps {
   languages: Languages;
   uploadProps: UploadProps;
+  store: ImagePluginStore;
   prefixCls?: string;
   className?: string;
 }
@@ -47,6 +55,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     languages,
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     uploadProps,
+    store,
     ...otherProps
   } = props;
 
@@ -67,6 +76,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
+  const uPrefixCls = `${prefixCls}-uploader`;
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
@@ -75,6 +85,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
+
+  const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
+    src.startsWith('data:image/') ? 'uploading' : 'success',
+  );
 
   const retryUpload = async () => {
     const {
@@ -90,7 +104,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     } = uploadProps;
 
     // let transformedFile: BeforeUploadFileType | void = file;
-    console.log('retry file ', file);
+    const file = store.getItem('fileMap')[block.getEntityAt(0)];
     let transformedFile: BeforeUploadValueType = await beforeUpload(
       file,
       undefined,
@@ -199,10 +213,51 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  return (
+  const uLayoutCls = classNames(`${uPrefixCls}-layout`, {
+    isFocused: isFocused,
+  });
+
+  const uImgCls = classNames(`${uPrefixCls}-img`);
+
+  const uStatusCls = classNames(`${uPrefixCls}-status`, {
+    [`${uPrefixCls}-error`]: status === 'error',
+  });
+
+  const uProgressCls = classNames(`${uPrefixCls}-progress`, {
+    [`${uPrefixCls}-error`]: status === 'error',
+  });
+
+  const uploaderLayout = (
+    <div className={uLayoutCls}>
+      <img
+        src={src}
+        className={uImgCls}
+        alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+      />
+      <div className={uStatusCls}>
+        <div className={`${uPrefixCls}-status-text`}>
+          {locale[`eeeditor.image.uploader.status.${status}`]}
+        </div>
+        {status === 'error' && (
+          <div className={`${uPrefixCls}-retry`}>
+            <Button onClick={retryUpload}>test</Button>
+          </div>
+        )}
+      </div>
+      <div className={uProgressCls}>
+        {status === 'uploading' && (
+          <div className={`${uPrefixCls}-loading-bar`}></div>
+        )}
+      </div>
+    </div>
+  );
+
+  return status === 'success' ? (
     <div>
       <img src={src} />
     </div>
+  ) : (
+    uploaderLayout
   );
 };
 
