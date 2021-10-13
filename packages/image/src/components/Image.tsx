@@ -4,6 +4,7 @@ import {
   SelectionState,
   ContentState,
   EEEditorContext,
+  setAtomicBlockSelection,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {

@@ -98,10 +98,6 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
 
     const blockKey = block.getKey();
 
-    console.log(
-      'divider hasEdgeWithin ',
-      selection.hasEdgeWithin(blockKey, 0, 0),
-    );
     if (!selection.hasEdgeWithin(blockKey, 0, 0)) {
       return;
     }
@@ -125,9 +121,6 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
     // atomic editable === false 的 block 不需要比较 offset
     const hasAnchor = anchorKey === blockKey;
     const hasFocus = focusKey === blockKey;
-
-    console.log('hasAnchor after ', hasAnchor);
-    console.log('hasFocus after ', hasFocus);
 
     if (hasAnchor || hasFocus) {
       documentSelection.removeAllRanges();
