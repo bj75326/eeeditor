@@ -143,7 +143,6 @@ const defaultUploadProps: ImageUploadProps = {
 // imageUploadProps 转化为 antd UploadProps
 const getUploadProps = (
   imageUploadProps: ImageUploadProps,
-  // imagePluginMethods: ImagePluginMethods,
   store: ImagePluginStore,
   retry: boolean,
   languages: Languages,
@@ -307,18 +306,6 @@ const createImagePlugin = ({
   let uploadProps: UploadProps = {};
   let retryUploadProps: UploadProps = {};
 
-  // let ImageUploader: React.FC<ImageUploaderProps> = (props) => (
-  //   <DefaultImageUploader
-  //     {...props}
-  //     prefixCls={prefixCls}
-  //     languages={languages}
-  //     uploadProps={retryUploadProps}
-  //   />
-  // );
-  // let FocusableUploader = focusDecorator(
-  //   ImageUploader as unknown as React.FC<BlockFocusDecoratorProps>,
-  // );
-
   const ImageButton: React.FC<ImageButtonProps> = (props) => (
     <DefaultImageButton
       {...props}
@@ -337,23 +324,19 @@ const createImagePlugin = ({
     />
   );
 
-  // todo
-  // const getImageEntity = (
-  //   block: ContentBlock,
-  //   editorState: EditorState,
-  // ): EntityInstance => {
-  //   if (block.getType() === 'atomic') {
-  //     const contentState = editorState.getCurrentContent();
-  //     const entityKey = block.getEntityAt(0);
-  //     if (!entityKey) return null;
-  //     const entity = contentState.getEntity(entityKey);
-  //     if (entity && entity.getType() === entityType) {
-  //       return entity;
-  //     }
-  //     return null;
-  //   }
-  //   return null;
-  // };
+  // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
+  let FocusableImage = null;
+  if (focusable) {
+    FocusableImage = focusDecorator(
+      Image as unknown as React.FC<BlockFocusDecoratorProps>,
+    );
+    if (typeof decorator === 'function') {
+      FocusableImage = decorator(FocusableImage);
+    }
+  }
+  if (typeof decorator === 'function') {
+    Image = decorator(Image);
+  }
 
   const isImageBlock = (
     block: ContentBlock,
@@ -386,26 +369,9 @@ const createImagePlugin = ({
     },
 
     blockRendererFn(block, { getEditorState }) {
-      // const entity = getImageEntity(block, getEditorState());
-      // if (entity) {
-      //   if (
-      //     entity.getData()['status'] === 'uploading' ||
-      //     entity.getData()['status'] === 'error'
-      //   ) {
-      //     return {
-      //       component: FocusableUploader, // ImageUploader
-      //       editable: false,
-      //     };
-      //   }
-      //   return {
-      //     component: Image,
-      //     editable: false,
-      //   };
-      // }
-      // return null;
       if (isImageBlock(block, getEditorState())) {
         return {
-          component: Image,
+          component: focusable ? FocusableImage : Image,
           editable: false,
         };
       }
@@ -413,14 +379,6 @@ const createImagePlugin = ({
     },
 
     blockStyleFn(block, { getEditorState }) {
-      // const entity = getImageEntity(block, getEditorState());
-      // if (entity) {
-      //   if (entity.getData()['upload']) {
-      //     return 'image-uploader';
-      //   }
-      //   return 'image';
-      // }
-      // return '';
       if (isImageBlock(block, getEditorState())) {
         return 'image';
       }

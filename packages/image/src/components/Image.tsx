@@ -111,6 +111,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, []);
 
+  // 处理 selection 变化导致的 image focus 状态变化
+  useEffect(() => {});
+
   const retryUpload = async () => {
     const {
       name,

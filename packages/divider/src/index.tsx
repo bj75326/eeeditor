@@ -57,7 +57,6 @@ const createDividerPlugin = ({
   // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
   let FocusableDivider = null;
   if (focusable) {
-    // todo
     FocusableDivider = focusDecorator(
       Divider as unknown as React.FC<BlockFocusDecoratorProps>,
     );
