@@ -32,7 +32,7 @@ const addPointToSelection = (
   selection.addRange(range);
 };
 
-export const setAtomicBlockSelection = (
+export const reviseAtomicBlockSelection = (
   selection: SelectionState,
   block: ContentBlock,
   targetNode: Element,
@@ -80,4 +80,4 @@ export const setAtomicBlockSelection = (
   }
 };
 
-export default setAtomicBlockSelection;
+export default reviseAtomicBlockSelection;

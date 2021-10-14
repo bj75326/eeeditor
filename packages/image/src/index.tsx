@@ -373,6 +373,9 @@ const createImagePlugin = ({
         return {
           component: focusable ? FocusableImage : Image,
           editable: false,
+          props: {
+            focusable,
+          },
         };
       }
       return null;

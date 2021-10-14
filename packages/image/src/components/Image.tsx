@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   ContentBlock,
   SelectionState,
   ContentState,
   EEEditorContext,
-  setAtomicBlockSelection,
+  reviseAtomicBlockSelection,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {
@@ -28,10 +28,12 @@ export interface ImageProps {
   block: ContentBlock;
   blockProps: {
     isFocused: boolean;
+    focusable: boolean;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
   decorator: unknown;
+  direction: unknown;
   forceSelection: unknown;
   offsetKey: unknown;
   selection: SelectionState;
@@ -65,6 +67,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     customStyleMap, // eslint-disable-line @typescript-eslint/no-unused-vars
     customStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
     decorator, // eslint-disable-line @typescript-eslint/no-unused-vars
+    direction, // eslint-disable-line @typescript-eslint/no-unused-vars
     forceSelection, // eslint-disable-line @typescript-eslint/no-unused-vars
     offsetKey, // eslint-disable-line @typescript-eslint/no-unused-vars
     selection, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -81,8 +84,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
-  const { isFocused } = blockProps;
-
+  const { isFocused, focusable } = blockProps;
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
@@ -90,6 +92,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
     src.startsWith('data:image/') ? 'uploading' : 'success',
   );
+
+  const imgRef = useRef<HTMLImageElement>();
+  const previewRef = useRef<HTMLImageElement>();
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -113,7 +118,15 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   }, []);
 
   // 处理 selection 变化导致的 image focus 状态变化
-  useEffect(() => {});
+  useEffect(() => {
+    if (focusable) {
+      reviseAtomicBlockSelection(
+        selection,
+        block,
+        status === 'success' ? imgRef.current : previewRef.current,
+      );
+    }
+  });
 
   const retryUpload = async () => {
     const {
@@ -196,8 +209,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           fileList: undefined,
           event: e,
         });
-
-        // setStatus('uploading');
       },
       onSuccess: (ret: any, xhr: XMLHttpRequest) => {
         try {
@@ -218,8 +229,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           file: targetItem as UploadFile,
           fileList: undefined,
         });
-
-        // setStatus('success');
       },
       onError: (err: UploadRequestError, ret: any) => {
         const targetItem = file2Obj(mergedParsedFile);
@@ -231,8 +240,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           file: targetItem as UploadFile,
           fileList: undefined,
         });
-
-        // setStatus('error');
       },
     };
 
@@ -243,11 +250,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const uLayoutCls = classNames(`${uPrefixCls}-layout`, {
+  const uImgCls = classNames(`${uPrefixCls}-img`, {
     isFocused: isFocused,
   });
-
-  const uImgCls = classNames(`${uPrefixCls}-img`);
 
   const uStatusCls = classNames(`${uPrefixCls}-status`, {
     [`${uPrefixCls}-error`]: status === 'error',
@@ -258,10 +263,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   });
 
   const uploaderLayout = (
-    <div className={uLayoutCls}>
+    <div className={`${uPrefixCls}-layout`}>
       <img
         src={src}
         className={uImgCls}
+        ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
       />
       <div className={uStatusCls}>
@@ -282,13 +288,15 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     </div>
   );
 
-  return status === 'success' ? (
-    <div>
-      <img src={src} />
+  const imgCls = classNames(`${prefixCls}-img`, { isFocused: isFocused });
+
+  const imageLayout = (
+    <div className={`${prefixCls}-layout`}>
+      <img src={src} className={imgCls} {...elementProps} />
     </div>
-  ) : (
-    uploaderLayout
   );
+
+  return status === 'success' ? imageLayout : uploaderLayout;
 };
 
 export default Image;

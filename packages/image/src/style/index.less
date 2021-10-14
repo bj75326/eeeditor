@@ -8,16 +8,16 @@
   display: inline-block;
   max-width: 100%;
   vertical-align: top;
-
-  &.isFocused {
-    box-shadow: 0 0 0 1px @focusable-focused-color;
-  }
 }
 
 .@{prefix-uploader}-img {
   display: block;
   max-width: 100%;
   opacity: 0.3;
+
+  &.isFocused {
+    box-shadow: 0 0 0 1px @focusable-focused-color;
+  }
 }
 
 .@{prefix-uploader}-status {
@@ -66,6 +66,23 @@
   background-color: hsla(0, 0%, 100%, 0.3);
   -webkit-animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
   animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
+}
+
+.@{prefix}-layout {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.@{prefix}-img-wrapper {
+}
+
+.@{prefix}-img {
+  // display: block;
+  // width: 50px;
+  // height: 50px;
+  // background: red;
 }
 
 @-webkit-keyframes LoadingBarForward {
