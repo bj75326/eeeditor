@@ -445,7 +445,10 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // In case there is a use-case where focus makes sense for none atomic blocks we can add it
       // in the future.
       console.log('focus plugin blockRendererFn run!!!!');
-      if (contentBlock.getType() !== 'atomic') {
+      if (
+        contentBlock.getType() !== 'atomic' ||
+        !blockKeyStore.includes(contentBlock.getKey())
+      ) {
         return undefined;
       }
 

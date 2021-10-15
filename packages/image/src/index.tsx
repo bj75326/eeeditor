@@ -288,7 +288,7 @@ const createImagePlugin = ({
   prefixCls,
   entityType = 'image',
   decorator,
-  focusable = true,
+  focusable = false,
   languages = lang,
   imageUploadProps = defaultUploadProps,
 }: ImagePluginConfig): EditorPlugin & {

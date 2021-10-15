@@ -75,14 +75,10 @@
   vertical-align: top;
 }
 
-.@{prefix}-img-wrapper {
-}
-
 .@{prefix}-img {
-  // display: block;
-  // width: 50px;
-  // height: 50px;
-  // background: red;
+  &.isFocused {
+    box-shadow: 0 0 0 1px @focusable-focused-color;
+  }
 }
 
 @-webkit-keyframes LoadingBarForward {

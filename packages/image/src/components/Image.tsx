@@ -5,6 +5,7 @@ import {
   ContentState,
   EEEditorContext,
   reviseAtomicBlockSelection,
+  setSelectionToAtomicBlock,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {
@@ -27,8 +28,8 @@ import {
 export interface ImageProps {
   block: ContentBlock;
   blockProps: {
-    isFocused: boolean;
-    focusable: boolean;
+    isFocused?: boolean;
+    focusable?: boolean;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -85,6 +86,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
   const { isFocused, focusable } = blockProps;
+
+  console.log('isFocused blockProp ---> ', isFocused);
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
@@ -127,6 +130,15 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       );
     }
   });
+
+  const handleImageClick = () => {
+    console.log('!!!!!!!!!!!!!!!!!!');
+    if (focusable) {
+      setSelectionToAtomicBlock(
+        status === 'success' ? imgRef.current : previewRef.current,
+      );
+    }
+  };
 
   const retryUpload = async () => {
     const {
@@ -269,6 +281,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         className={uImgCls}
         ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        {...elementProps}
       />
       <div className={uStatusCls}>
         <div className={`${uPrefixCls}-status-text`}>
@@ -292,7 +305,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const imageLayout = (
     <div className={`${prefixCls}-layout`}>
-      <img src={src} className={imgCls} {...elementProps} />
+      <img
+        src={src}
+        className={imgCls}
+        ref={imgRef}
+        alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        onClick={handleImageClick}
+        {...elementProps}
+      />
     </div>
   );
 
