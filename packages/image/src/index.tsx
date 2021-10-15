@@ -200,33 +200,45 @@ const getUploadProps = (
       }
       if (transformedFile === false) return false;
 
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-          setEditorState(
-            addImage(
-              getEditorState(),
-              {
-                src: e.target.result as string,
-              },
-              file,
-            ),
-          );
-          resolve(transformedFile);
-        };
-        reader.onerror = () => {
-          message.open({
-            content:
-              locale['eeeditor.image.read.error.msg'] ||
-              'eeeditor.image.read.error.msg',
-            type: 'info',
-            duration: 3,
-            className: `${prefixCls}-message`,
-          });
-          resolve(false);
-        };
-        reader.readAsDataURL(file);
-      });
+      setEditorState(
+        addImage(
+          getEditorState(),
+          {
+            src: URL.createObjectURL(file),
+          },
+          file,
+        ),
+      );
+
+      return transformedFile;
+
+      // return new Promise((resolve) => {
+      //   const reader = new FileReader();
+      //   reader.onload = (e: ProgressEvent<FileReader>) => {
+      //     setEditorState(
+      //       addImage(
+      //         getEditorState(),
+      //         {
+      //           src: e.target.result as string,
+      //         },
+      //         file,
+      //       ),
+      //     );
+      //     resolve(transformedFile);
+      //   };
+      //   reader.onerror = () => {
+      //     message.open({
+      //       content:
+      //         locale['eeeditor.image.read.error.msg'] ||
+      //         'eeeditor.image.read.error.msg',
+      //       type: 'info',
+      //       duration: 3,
+      //       className: `${prefixCls}-message`,
+      //     });
+      //     resolve(false);
+      //   };
+      //   reader.readAsDataURL(file);
+      // });
     };
   }
 
@@ -288,7 +300,7 @@ const createImagePlugin = ({
   prefixCls,
   entityType = 'image',
   decorator,
-  focusable = false,
+  focusable = true,
   languages = lang,
   imageUploadProps = defaultUploadProps,
 }: ImagePluginConfig): EditorPlugin & {
@@ -383,7 +395,7 @@ const createImagePlugin = ({
 
     blockStyleFn(block, { getEditorState }) {
       if (isImageBlock(block, getEditorState())) {
-        return 'image';
+        return 'picture';
       }
       return '';
     },

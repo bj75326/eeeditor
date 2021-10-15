@@ -1,26 +1,27 @@
 @import './theme.less';
 
-@prefix-uploader: ~'@{eeeditor-prefix-cls}-image-uploader';
 @prefix: ~'@{eeeditor-prefix-cls}-image';
 
-.@{prefix-uploader}-layout {
+.@{prefix}-layout {
   position: relative;
   display: inline-block;
   max-width: 100%;
   vertical-align: top;
 }
 
-.@{prefix-uploader}-img {
+.@{prefix}-image {
   display: block;
   max-width: 100%;
-  opacity: 0.3;
 
   &.isFocused {
     box-shadow: 0 0 0 1px @focusable-focused-color;
   }
+  &.isUploading {
+    opacity: 0.3;
+  }
 }
 
-.@{prefix-uploader}-status {
+.@{prefix}-status {
   position: absolute;
   left: 0;
   top: 0;
@@ -32,53 +33,37 @@
   height: 100%;
 }
 
-.@{prefix-uploader}-status-text {
+.@{prefix}-status-text {
   font-size: @image-status-text-size;
   color: @image-status-text-color;
-}
-
-.@{prefix-uploader}-error {
-  .@{prefix-uploader}-status-text {
+  &.isError {
     color: @image-upload-error-color;
   }
 }
 
-.@{prefix-uploader}-retry {
+.@{prefix}-retry {
   font-size: @image-retry-text-size;
 }
 
-.@{prefix-uploader}-progress {
+.@{prefix}-progress {
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
   height: 4px;
   background-color: @image-upload-progress-color;
-  &.@{prefix-uploader}-error {
+  &.isError {
     background-color: @image-upload-error-color;
   }
 }
 
-.@{prefix-uploader}-loading-bar {
+.@{prefix}-loading-bar {
   display: block;
   position: relative;
   height: 100%;
   background-color: hsla(0, 0%, 100%, 0.3);
   -webkit-animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
   animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
-}
-
-.@{prefix}-layout {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-  vertical-align: top;
-}
-
-.@{prefix}-img {
-  &.isFocused {
-    box-shadow: 0 0 0 1px @focusable-focused-color;
-  }
 }
 
 @-webkit-keyframes LoadingBarForward {

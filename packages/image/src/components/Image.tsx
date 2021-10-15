@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  MouseEvent,
+} from 'react';
 import {
   ContentBlock,
   SelectionState,
@@ -81,19 +87,17 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
-  const uPrefixCls = `${prefixCls}-uploader`;
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
   const { isFocused, focusable } = blockProps;
 
-  console.log('isFocused blockProp ---> ', isFocused);
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
-    src.startsWith('data:image/') ? 'uploading' : 'success',
+    src.startsWith('blob:') ? 'uploading' : 'success',
   );
 
   const imgRef = useRef<HTMLImageElement>();
@@ -131,12 +135,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   });
 
-  const handleImageClick = () => {
-    console.log('!!!!!!!!!!!!!!!!!!');
+  const handleImageClick = (e: MouseEvent) => {
     if (focusable) {
-      setSelectionToAtomicBlock(
-        status === 'success' ? imgRef.current : previewRef.current,
-      );
+      setSelectionToAtomicBlock(e.target as Node);
     }
   };
 
@@ -262,52 +263,52 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const uImgCls = classNames(`${uPrefixCls}-img`, {
+  const imageCls = classNames(`${prefixCls}-image`, {
     isFocused: isFocused,
+    isUploading: status !== 'success',
   });
 
-  const uStatusCls = classNames(`${uPrefixCls}-status`, {
-    [`${uPrefixCls}-error`]: status === 'error',
+  const statusTextCls = classNames(`${prefixCls}-status-text`, {
+    isError: status === 'error',
   });
 
-  const uProgressCls = classNames(`${uPrefixCls}-progress`, {
-    [`${uPrefixCls}-error`]: status === 'error',
+  const progressCls = classNames(`${prefixCls}-progress`, {
+    isError: status === 'error',
   });
 
   const uploaderLayout = (
-    <div className={`${uPrefixCls}-layout`}>
+    <div className={`${prefixCls}-layout`}>
       <img
         src={src}
-        className={uImgCls}
+        className={imageCls}
         ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        onClick={handleImageClick}
         {...elementProps}
       />
-      <div className={uStatusCls}>
-        <div className={`${uPrefixCls}-status-text`}>
+      <div className={`${prefixCls}-status`}>
+        <div className={statusTextCls}>
           {locale[`eeeditor.image.uploader.status.${status}`]}
         </div>
         {status === 'error' && (
-          <div className={`${uPrefixCls}-retry`}>
+          <div className={`${prefixCls}-retry`}>
             <Button onClick={retryUpload}>test</Button>
           </div>
         )}
       </div>
-      <div className={uProgressCls}>
+      <div className={progressCls}>
         {status === 'uploading' && (
-          <div className={`${uPrefixCls}-loading-bar`}></div>
+          <div className={`${prefixCls}-loading-bar`}></div>
         )}
       </div>
     </div>
   );
 
-  const imgCls = classNames(`${prefixCls}-img`, { isFocused: isFocused });
-
   const imageLayout = (
     <div className={`${prefixCls}-layout`}>
       <img
         src={src}
-        className={imgCls}
+        className={imageCls}
         ref={imgRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         onClick={handleImageClick}
