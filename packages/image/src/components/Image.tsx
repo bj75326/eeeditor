@@ -103,6 +103,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const imgRef = useRef<HTMLImageElement>();
   const previewRef = useRef<HTMLImageElement>();
 
+  const { getEditorState, setEditorState } =
+    store.getItem('imagePluginMethods');
+
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
 
@@ -110,10 +113,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     statusMap: Record<string, 'uploading' | 'error' | 'success'>,
   ) => {
     if (file) {
-      const newStatus = statusMap[file.uid];
-      if (newStatus !== status) {
-        setStatus(newStatus);
-      }
+      setStatus(statusMap[file.uid]);
     }
   };
 
@@ -135,9 +135,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   });
 
-  const handleImageClick = (e: MouseEvent) => {
+  const handleImageClick = () => {
     if (focusable) {
-      setSelectionToAtomicBlock(e.target as Node);
+      setSelectionToAtomicBlock(getEditorState, setEditorState, block);
     }
   };
 
@@ -213,6 +213,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       withCredentials,
       method: method || 'post',
       onProgress: (e: UploadProgressEvent) => {
+        console.log('retry onProgress', status);
         const targetItem = file2Obj(mergedParsedFile);
         targetItem.status = 'uploading';
         targetItem.percent = e.percent;
@@ -277,13 +278,12 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   });
 
   const uploaderLayout = (
-    <div className={`${prefixCls}-layout`}>
+    <>
       <img
         src={src}
         className={imageCls}
         ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        onClick={handleImageClick}
         {...elementProps}
       />
       <div className={`${prefixCls}-status`}>
@@ -301,23 +301,26 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           <div className={`${prefixCls}-loading-bar`}></div>
         )}
       </div>
-    </div>
+    </>
   );
 
   const imageLayout = (
-    <div className={`${prefixCls}-layout`}>
+    <>
       <img
         src={src}
         className={imageCls}
         ref={imgRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        onClick={handleImageClick}
         {...elementProps}
       />
-    </div>
+    </>
   );
 
-  return status === 'success' ? imageLayout : uploaderLayout;
+  return (
+    <div className={`${prefixCls}-layout`} onClick={handleImageClick}>
+      {status === 'success' ? imageLayout : uploaderLayout}
+    </div>
+  );
 };
 
 export default Image;

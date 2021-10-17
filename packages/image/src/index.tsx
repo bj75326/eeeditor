@@ -264,6 +264,7 @@ const getUploadProps = (
         [info.file.uid]: 'success',
       });
     } else if (info.file.status === 'uploading') {
+      console.log('onchange uploading run');
       store.updateItem('statusMap', {
         ...statusMap,
         [info.file.uid]: 'uploading',

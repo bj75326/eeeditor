@@ -1,4 +1,8 @@
-import { EditorState, insertAtomicBlockWithoutSplit } from '@eeeditor/editor';
+import {
+  EditorState,
+  insertAtomicBlockWithoutSplit,
+  AtomicBlockUtils,
+} from '@eeeditor/editor';
 import { ImageEntityData, ImagePluginStore } from '..';
 import { RcFile } from 'antd/lib/upload/interface';
 
@@ -31,7 +35,7 @@ const addImage =
     };
     store.updateItem('fileMap', newFileMap);
 
-    const newEditorState = insertAtomicBlockWithoutSplit(
+    const newEditorState = AtomicBlockUtils.insertAtomicBlock(
       editorState,
       entityKey,
       ' ',
