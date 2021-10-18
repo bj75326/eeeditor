@@ -15,7 +15,7 @@ import createBlockKeyStore, {
 import blockInSelection from '../../utils/blockInSelection';
 import getBlockMapKeys from '../../utils/getBlockMapKeys';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
-// import removeBlock from '../../modifiers/removeBlock';
+import removeBlock from '../../modifiers/removeBlock';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -83,14 +83,14 @@ const textLineInBetweenExisted = (
   return false;
 };
 
-// const deleteCommands = [
-//   'backspace',
-//   'backspace-word',
-//   'backspace-to-start-of-line',
-//   'delete',
-//   'delete-word',
-//   'delete-to-end-of-block',
-// ];
+const deleteCommands = [
+  'backspace',
+  'backspace-word',
+  'backspace-to-start-of-line',
+  'delete',
+  'delete-word',
+  'delete-to-end-of-block',
+];
 
 export { BlockFocusDecoratorProps };
 
@@ -107,7 +107,6 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
 
   return {
     handleReturn: (event, editorState, { setEditorState }) => {
-      console.log('focus plugin handle return run run run');
       // 如果当前有且仅有 focusable block 被选中：
       // 按下 Return 则会在 focusable block 前插入一个新的 text block
       if (focusableBlockIsSelected(editorState, blockKeyStore)) {
@@ -115,7 +114,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         return 'handled';
       }
       // 如果当前 selectionState start block 为 focusable block ：
-      // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
+      // eeeditor focusable block 的 reviseAtomicBlockSelection 方法会在 focusable block 为 anchor
       // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
       // 返回 'not-handled' 执行默认处理
 
@@ -127,34 +126,37 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return 'not-handled';
     },
 
-    // handleKeyCommand: (command, editorState, { setEditorState }) => {
-    //   // 如果当前有且仅有 focusable block 被选中：
-    //   // delete command
-    //   if (
-    //     deleteCommands.includes(command) &&
-    //     focusableBlockIsSelected(editorState, blockKeyStore)
-    //   ) {
-    //     const key = editorState.getSelection().getStartKey();
-    //     const newEditorState = removeBlock(editorState, key);
-    //     if (newEditorState !== editorState) {
-    //       setEditorState(newEditorState);
-    //       return 'handled';
-    //     }
-    //   }
+    // 本来想使用 draft-js 提供的默认方法操作 focusable atomic block 的 删除操作，但是默认方法本身是为删除文本设计，
+    // 删除 atomic block 之后，会在 selectionAfter 之后的位置对出一个空白位，所以 focus plugin 提供了相应的
+    // handleKeyCommand。
+    handleKeyCommand: (command, editorState, { setEditorState }) => {
+      // 如果当前有且仅有 focusable block 被选中：
+      // delete command
+      if (
+        deleteCommands.includes(command) &&
+        focusableBlockIsSelected(editorState, blockKeyStore)
+      ) {
+        const key = editorState.getSelection().getStartKey();
+        const newEditorState = removeBlock(editorState, key);
+        if (newEditorState !== editorState) {
+          setEditorState(newEditorState);
+          return 'handled';
+        }
+      }
 
-    //   // 如果当前 selectionState start block 为 focusable block ：
-    //   // eeeditor foucsable block 的 setSelection 方法会在 focusable block 为 anchor
-    //   // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
-    //   // 返回 'not-handled' 执行默认处理
+      // 如果当前 selectionState start block 为 focusable block ：
+      // eeeditor focusable block 的 reviseAtomicBlockSelection 方法会在 focusable block 为 anchor
+      // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
+      // 返回 'not-handled' 执行默认处理
 
-    //   // 如果当前 selectionState end block 为 focusable block ：
-    //   // 同上一种情况
+      // 如果当前 selectionState end block 为 focusable block ：
+      // 同上一种情况
 
-    //   // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
-    //   // 返回 'not-handled' 执行默认处理
+      // 如果当前 selectionState 包含 focusable block ，但 start/end 不是 focusable block
+      // 返回 'not-handled' 执行默认处理
 
-    //   return 'not-handled';
-    // },
+      return 'not-handled';
+    },
 
     onChange: (editorState) => {
       // in case the content changed there is no need to re-render blockRendererFn
@@ -444,11 +446,14 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // since all the selection checks are not necessary.
       // In case there is a use-case where focus makes sense for none atomic blocks we can add it
       // in the future.
-      console.log('focus plugin blockRendererFn run!!!!');
+
       if (
         contentBlock.getType() !== 'atomic' ||
         !blockKeyStore.includes(contentBlock.getKey())
       ) {
+        console.log('jump', contentBlock.getKey());
+        console.log('jump', contentBlock.getType());
+
         return undefined;
       }
 

@@ -5,7 +5,7 @@ import React, {
   Ref,
   useEffect,
 } from 'react';
-import { ContentBlock, BlockKeyStore } from '../..';
+import { ContentBlock, BlockKeyStore, blockInSelection } from '../..';
 import classNames from 'classnames';
 
 interface DecoratorProps {
@@ -15,8 +15,7 @@ interface DecoratorProps {
 export interface BlockFocusDecoratorProps {
   className: string;
   blockProps: {
-    isFocused: boolean;
-    setFocusToBlock(): void;
+    isFocused?: boolean;
   };
   block: ContentBlock;
   //onClick(event: MouseEvent): void;
@@ -40,6 +39,11 @@ export default ({ blockKeyStore }: DecoratorProps) =>
     const BlockFocusDecorator = React.forwardRef(
       (props: BlockFocusDecoratorProps, ref): ReactElement => {
         useEffect(() => {
+          // 类似 undo 操作的时候，被恢复的 atomic block 被渲染出来时为 selected 状态，但是
+          // 当前该 atomic block 的 key 还没有被添加到 blockKeyStore 内，会导致 blockRenderFn 内
+          // isFocused 值的计算出现偏差，所以在 useEffect 内进行检测并在需要时触发一次重新渲染
+          // todo
+
           blockKeyStore.add(props.block.getKey());
           return () => {
             blockKeyStore.remove(props.block.getKey());

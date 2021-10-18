@@ -190,6 +190,7 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
 
       if (mode === 'new') {
         const newEditorState = createLinkAtSelection(
+          // todo
           EditorState.forceSelection(
             editorState,
             editorState.getSelection().merge({

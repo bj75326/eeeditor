@@ -22,17 +22,19 @@ export default function (
     // change the blocktype and remove the characterList entry with the sticker
     content = Modifier.removeRange(content, targetRange, 'backward');
     content = Modifier.setBlockType(content, targetRange, 'unstyled');
+
     const newState = EditorState.push(editorState, content, 'remove-range');
 
     // force to new selection
     // todo: 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
-    const newSelection = new SelectionState({
-      anchorKey: blockKey,
-      anchorOffset: 0,
-      focusKey: blockKey,
-      focusOffset: 0,
-    });
-    return EditorState.forceSelection(newState, newSelection);
+    // const newSelection = new SelectionState({
+    //   anchorKey: blockKey,
+    //   anchorOffset: 0,
+    //   focusKey: blockKey,
+    //   focusOffset: 0,
+    // });
+    // return EditorState.forceSelection(newState, newSelection);
+    return newState;
   }
 
   const targetRange = new SelectionState({
