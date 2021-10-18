@@ -448,12 +448,12 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // in the future.
 
       if (
-        contentBlock.getType() !== 'atomic' ||
-        !blockKeyStore.includes(contentBlock.getKey())
+        contentBlock.getType() !== 'atomic'
+        // 类似 undo 操作的时候，被恢复的 atomic block 被渲染出来时为 selected 状态，但是
+        // 当前该 atomic block 的 key 还没有被添加到 blockKeyStore 内，会导致 blockRenderFn 内
+        // isFocused 值的计算出现偏差，所以不能使用 blockKeyStore 来判断是否要传递 isFocused
+        // || !blockKeyStore.includes(contentBlock.getKey())
       ) {
-        console.log('jump', contentBlock.getKey());
-        console.log('jump', contentBlock.getType());
-
         return undefined;
       }
 

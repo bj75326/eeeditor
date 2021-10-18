@@ -265,7 +265,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const imageCls = classNames(`${prefixCls}-image`, {
-    isFocused: isFocused,
+    isFocused: focusable && isFocused,
     isUploading: status !== 'success',
   });
 
