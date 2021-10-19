@@ -96,6 +96,9 @@ const createDividerPlugin = ({
         return {
           component: focusable ? FocusableDivider : Divider,
           editable: false,
+          props: {
+            focusable,
+          },
         };
       }
       return null;

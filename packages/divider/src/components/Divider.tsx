@@ -4,42 +4,15 @@ import {
   SelectionState,
   ContentBlock,
   EEEditorContext,
+  reviseAtomicBlockSelection,
 } from '@eeeditor/editor';
-
-import getActiveElement from 'fbjs/lib/getActiveElement';
-import containsNode from 'fbjs/lib/containsNode';
-
-const addFocusToSelection = (
-  selection: Selection,
-  node: Node,
-  offset: number,
-  selectionState: SelectionState,
-): void => {
-  const activeElement = getActiveElement();
-  if (selection.extend && containsNode(activeElement, node)) {
-    selection.extend(node, offset);
-  } else {
-    const range = selection.getRangeAt(0);
-    range.setEnd(node, offset);
-    selection.addRange(range.cloneRange());
-  }
-};
-
-const addPointToSelection = (
-  selection: Selection,
-  node: Node,
-  offset: number,
-  selectonState: SelectionState,
-): void => {
-  const range = document.createRange();
-  range.setStart(node, offset);
-  selection.addRange(range);
-};
 
 export interface DividerProps {
   block: ContentBlock;
   blockProps: {
-    isFocused: boolean;
+    isFocused?: boolean;
+    focusable?: boolean;
+    setFocusToBlock?: () => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -86,86 +59,34 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  const { isFocused } = blockProps;
+  const { isFocused, focusable, setFocusToBlock } = blockProps;
 
-  const hrNode = useRef<HTMLHRElement>();
+  const hrRef = useRef<HTMLHRElement>();
 
   useEffect(() => {
-    console.log('divider componentDidUpdate run!!!!');
-    if (selection == null || !selection.getHasFocus()) {
-      return;
+    if (focusable) {
+      reviseAtomicBlockSelection(selection, block, hrRef.current);
     }
-
-    const blockKey = block.getKey();
-
-    if (!selection.hasEdgeWithin(blockKey, 0, 0)) {
-      return;
-    }
-
-    const documentSelection = global.getSelection();
-    let anchorKey = selection.getAnchorKey();
-    let anchorOffset = selection.getAnchorOffset();
-    let focusKey = selection.getFocusKey();
-    let focusOffset = selection.getFocusOffset();
-    let isBackward = selection.getIsBackward();
-
-    if (!documentSelection.extend && isBackward) {
-      const tempKey = anchorKey;
-      const tempOffset = anchorOffset;
-      anchorKey = focusKey;
-      anchorOffset = focusOffset;
-      focusKey = tempKey;
-      focusOffset = tempOffset;
-      isBackward = false;
-    }
-    // atomic editable === false 的 block 不需要比较 offset
-    const hasAnchor = anchorKey === blockKey;
-    const hasFocus = focusKey === blockKey;
-
-    if (hasAnchor || hasFocus) {
-      documentSelection.removeAllRanges();
-      addPointToSelection(documentSelection, hrNode.current, 0, selection);
-      addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    }
-
-    // if (hasAnchor && hasFocus) {
-    //   documentSelection.removeAllRanges();
-    //   addPointToSelection(documentSelection, hrNode.current, 0, selection);
-    //   addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    //   return;
-    // }
-
-    // if (!isBackward) {
-    //   if (hasAnchor) {
-    //     documentSelection.removeAllRanges();
-    //     addPointToSelection(documentSelection, hrNode.current, 0, selection);
-    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    //   }
-    //   if (hasFocus) {
-    //     documentSelection.removeAllRanges();
-    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    //   }
-    // } else {
-    //   if (hasFocus) {
-    //     //documentSelection.removeAllRanges();
-    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    //   }
-    //   if (hasAnchor) {
-    //     // const storedFocusNode = documentSelection.focusNode;
-    //     // const storedFocusOffset = documentSelection.focusOffset;
-
-    //     documentSelection.removeAllRanges();
-    //     addPointToSelection(documentSelection, hrNode.current, 0, selection);
-    //     // addFocusToSelection(documentSelection, storedFocusNode, storedFocusOffset, selection);
-    //     addFocusToSelection(documentSelection, hrNode.current, 0, selection);
-    //   }
-    // }
   });
+
+  const handleHrClick = () => {
+    if (focusable) {
+      setFocusToBlock();
+    }
+  };
+
   const dividerClassName = classNames(`${prefixCls}-divider`, className, {
-    isFocused: isFocused,
+    isFocused: focusable && isFocused,
   });
 
-  return <hr className={dividerClassName} ref={hrNode} {...elementProps} />;
+  return (
+    <hr
+      className={dividerClassName}
+      ref={hrRef}
+      onClick={handleHrClick}
+      {...elementProps}
+    />
+  );
 };
 
 export default Divider;

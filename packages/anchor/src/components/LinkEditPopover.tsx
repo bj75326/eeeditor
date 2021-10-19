@@ -193,9 +193,10 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
           // todo
           EditorState.forceSelection(
             editorState,
-            editorState.getSelection().merge({
-              hasFocus: true,
-            }),
+            // editorState.getSelection().merge({
+            //   hasFocus: true,
+            // }),
+            editorState.getSelection(),
           ),
           link,
           text,

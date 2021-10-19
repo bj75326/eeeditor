@@ -3,7 +3,6 @@ import {
   EditorPlugin,
   ContentBlock,
   EditorState,
-  EntityInstance,
   PluginMethods,
   focusDecorator,
   BlockFocusDecoratorProps,
@@ -21,7 +20,6 @@ import getUpdateImage from './modifiers/updateImage';
 import { Store, createStore } from '@draft-js-plugins/utils';
 import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
 import DefaultImage, { ImageProps } from './components/Image';
-import { message } from 'antd';
 
 export * from './locale';
 

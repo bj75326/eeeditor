@@ -16,6 +16,7 @@ export interface BlockFocusDecoratorProps {
   className: string;
   blockProps: {
     isFocused?: boolean;
+    setFocusToBlock?: () => void;
   };
   block: ContentBlock;
   //onClick(event: MouseEvent): void;
@@ -45,29 +46,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
-        // custom block component 参照 DraftEditorLeaf setDraftEditorSelection 在
-        // useEffect(didUpdate & didMount) 时重新计算 selection，因此不再需要在 decorator
-        // 里添加 click 事件来手动 focus
-        // const onClick = (evt: MouseEvent): void => {
-        //   evt.preventDefault();
-        //   if (!props.blockProps.isFocused) {
-        //     props.blockProps.setFocusToBlock();
-        //   }
-        // };
-
-        // const { blockProps } = props;
-        // const { isFocused } = blockProps;
-        // const combinedClassName = classNames(className, {
-        //   isFocused: !!isFocused,
-        // });
-        return (
-          <WrappedComponent
-            {...props}
-            ref={ref}
-            // onClick={onClick}
-            // className={combinedClassName}
-          />
-        );
+        return <WrappedComponent {...props} ref={ref} />;
       },
     );
 

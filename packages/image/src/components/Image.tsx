@@ -1,17 +1,10 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  MouseEvent,
-} from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   ContentBlock,
   SelectionState,
   ContentState,
   EEEditorContext,
   reviseAtomicBlockSelection,
-  setSelectionToAtomicBlock,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {
@@ -36,6 +29,7 @@ export interface ImageProps {
   blockProps: {
     isFocused?: boolean;
     focusable?: boolean;
+    setFocusToBlock?: () => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -90,7 +84,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
-  const { isFocused, focusable } = blockProps;
+  const { isFocused, focusable, setFocusToBlock } = blockProps;
 
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
@@ -102,9 +96,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const imgRef = useRef<HTMLImageElement>();
   const previewRef = useRef<HTMLImageElement>();
-
-  const { getEditorState, setEditorState } =
-    store.getItem('imagePluginMethods');
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -137,7 +128,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const handleImageClick = () => {
     if (focusable) {
-      setSelectionToAtomicBlock(getEditorState, setEditorState, block);
+      setFocusToBlock();
     }
   };
 

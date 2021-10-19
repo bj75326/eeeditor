@@ -16,6 +16,7 @@ import blockInSelection from '../../utils/blockInSelection';
 import getBlockMapKeys from '../../utils/getBlockMapKeys';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import removeBlock from '../../modifiers/removeBlock';
+import setSelectionToAtomicBlock from '../../modifiers/setSelectionToAtomicBlock';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -464,9 +465,13 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         props: {
           isFocused,
           isCollapsedSelection: editorState.getSelection().isCollapsed(),
-          // setFocusToBlock: () => {
-          //   setSelectionToBlock(getEditorState, setEditorState, contentBlock);
-          // },
+          setFocusToBlock: () => {
+            setSelectionToAtomicBlock(
+              getEditorState,
+              setEditorState,
+              contentBlock,
+            );
+          },
         },
       };
     },
