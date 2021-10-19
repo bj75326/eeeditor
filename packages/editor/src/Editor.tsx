@@ -174,6 +174,10 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
 
   useEffect(() => {
     console.log('EEEditor componentDidUpdate!!');
+    console.log(
+      'didUpdate 后检查 selection ',
+      editorState.getSelection().getHasFocus(),
+    );
   });
 
   // todo 包装 onchange

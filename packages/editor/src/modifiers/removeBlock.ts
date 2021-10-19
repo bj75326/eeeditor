@@ -10,6 +10,7 @@ export default function (
 
   const beforeKey = content.getKeyBefore(blockKey);
   const beforeBlock = content.getBlockForKey(beforeKey);
+  console.log('removeBlock beforeBlock ', beforeKey);
 
   // 当 focusable 的 block 在 draft 开头处，删除之后保留 block ，类型 unstyled 且内容为空。
   if (beforeBlock === undefined) {
@@ -18,23 +19,14 @@ export default function (
       anchorOffset: 0,
       focusKey: blockKey,
       focusOffset: 1,
+      // 如果不设置 hasFocus 为 true， 可能会导致 selectionAfter 失效
+      hasFocus: true,
     });
     // change the blocktype and remove the characterList entry with the sticker
     content = Modifier.removeRange(content, targetRange, 'backward');
     content = Modifier.setBlockType(content, targetRange, 'unstyled');
 
-    const newState = EditorState.push(editorState, content, 'remove-range');
-
-    // force to new selection
-    // todo: 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
-    // const newSelection = new SelectionState({
-    //   anchorKey: blockKey,
-    //   anchorOffset: 0,
-    //   focusKey: blockKey,
-    //   focusOffset: 0,
-    // });
-    // return EditorState.forceSelection(newState, newSelection);
-    return newState;
+    return EditorState.push(editorState, content, 'remove-range');
   }
 
   const targetRange = new SelectionState({
@@ -42,18 +34,11 @@ export default function (
     anchorOffset: beforeBlock.getLength(),
     focusKey: blockKey,
     focusOffset: 1,
+    // 如果不设置 hasFocus 为 true， 可能会导致 selectionAfter 失效
+    hasFocus: true,
   });
 
   content = Modifier.removeRange(content, targetRange, 'backward');
-  // todo: 是否应该在 content 的 selectionAfter & selectionBefore 中设置相应内容，而不是forceSelection?
-  const newState = EditorState.push(editorState, content, 'remove-range');
 
-  // force to new selection
-  const newSelection = new SelectionState({
-    anchorKey: beforeKey,
-    anchorOffset: beforeBlock.getLength(),
-    focusKey: beforeKey,
-    focusOffset: beforeBlock.getLength(),
-  });
-  return EditorState.forceSelection(newState, newSelection);
+  return EditorState.push(editorState, content, 'remove-range');
 }
