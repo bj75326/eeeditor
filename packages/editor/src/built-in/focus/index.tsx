@@ -159,7 +159,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return 'not-handled';
     },
 
-    onChange: (editorState) => {
+    onChange: (editorState, { getEditorState }) => {
       // in case the content changed there is no need to re-render blockRendererFn
       // since if a block was added it will be rendered anyway and if it was text
       // then the change was not a pure selection change
@@ -174,6 +174,16 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       const selection = editorState.getSelection();
       if (lastSelection && selection.equals(lastSelection)) {
         lastSelection = editorState.getSelection();
+        return editorState;
+      }
+
+      // editor blur 时不需要使用 forceSelection 强制 re-render 以触发 blockRendererFn
+      // 参考 DraftEditorContents shouldComponentUpdate 方法，当 hasFocus 发生变化时，
+      // shouldComponentUpdate 直接返回 true。
+      if (
+        !selection.getHasFocus() &&
+        getEditorState().getSelection().getHasFocus()
+      ) {
         return editorState;
       }
 
@@ -447,7 +457,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // since all the selection checks are not necessary.
       // In case there is a use-case where focus makes sense for none atomic blocks we can add it
       // in the future.
-
+      console.log('focus plugin blockRendererFn run run run');
       if (
         contentBlock.getType() !== 'atomic'
         // 类似 undo 操作的时候，被恢复的 atomic block 被渲染出来时为 selected 状态，但是
@@ -459,7 +469,10 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       }
 
       const editorState = getEditorState();
-      const isFocused = blockInSelection(editorState, contentBlock.getKey());
+      const selection = editorState.getSelection();
+      const isFocused =
+        selection.getHasFocus() &&
+        blockInSelection(editorState, contentBlock.getKey());
 
       return {
         props: {
