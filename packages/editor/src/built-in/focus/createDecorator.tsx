@@ -1,25 +1,39 @@
 import React, {
   ComponentType,
-  MouseEvent,
   ReactElement,
   Ref,
   useEffect,
+  memo,
 } from 'react';
-import { ContentBlock, BlockKeyStore, blockInSelection } from '../..';
-import classNames from 'classnames';
+import {
+  ContentBlock,
+  BlockKeyStore,
+  SelectionState,
+  ContentState,
+} from '../..';
 
 interface DecoratorProps {
   blockKeyStore: BlockKeyStore;
 }
 
 export interface BlockFocusDecoratorProps {
-  className: string;
+  block: ContentBlock;
   blockProps: {
     isFocused?: boolean;
+    focusable?: boolean;
     setFocusToBlock?: () => void;
   };
-  block: ContentBlock;
-  //onClick(event: MouseEvent): void;
+  customStyleMap: unknown;
+  customStyleFn: unknown;
+  decorator: unknown;
+  direction: unknown;
+  forceSelection: unknown;
+  offsetKey: unknown;
+  selection: SelectionState;
+  tree: unknown;
+  contentState: ContentState;
+  blockStyleFn: unknown;
+  preventScroll: unknown;
   ref: Ref<unknown>;
 }
 
@@ -37,6 +51,22 @@ export default ({ blockKeyStore }: DecoratorProps) =>
   (
     WrappedComponent: WrappedComponentType,
   ): ComponentType<BlockFocusDecoratorProps> => {
+    const MemoComponent = memo(WrappedComponent, (prevProps, nextProps) => {
+      console.log('focus plugin shouldComponentUpdate');
+      const prevSelection = prevProps.selection;
+      const nextSelection = nextProps.selection;
+      if (
+        prevSelection.getAnchorKey() === nextSelection.getAnchorKey() &&
+        prevSelection.getAnchorOffset() === nextSelection.getAnchorOffset() &&
+        prevSelection.getFocusKey() === nextSelection.getFocusKey() &&
+        prevSelection.getFocusOffset() === nextSelection.getFocusOffset() &&
+        prevSelection.getIsBackward() === nextSelection.getIsBackward() &&
+        prevSelection.getHasFocus() === false &&
+        nextSelection.getHasFocus() === true
+      ) {
+        return true;
+      }
+    });
     const BlockFocusDecorator = React.forwardRef(
       (props: BlockFocusDecoratorProps, ref): ReactElement => {
         useEffect(() => {
@@ -46,7 +76,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
-        return <WrappedComponent {...props} ref={ref} />;
+        return <MemoComponent {...props} ref={ref} />;
       },
     );
 

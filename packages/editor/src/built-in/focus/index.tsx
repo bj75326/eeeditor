@@ -478,11 +478,12 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         props: {
           isFocused,
           isCollapsedSelection: editorState.getSelection().isCollapsed(),
-          setFocusToBlock: () => {
+          setFocusToBlock: (node: Node) => {
             setSelectionToAtomicBlock(
               getEditorState,
               setEditorState,
               contentBlock,
+              node,
             );
           },
         },

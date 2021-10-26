@@ -115,20 +115,24 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, []);
 
-  // 处理 selection 变化导致的 image focus 状态变化
-  useEffect(() => {
+  //
+  // useEffect(() => {
+  //   if (focusable) {
+  //     reviseAtomicBlockSelection(
+  //       selection,
+  //       block,
+  //       status === 'success' ? imgRef.current : previewRef.current,
+  //     );
+  //   }
+  // });
+
+  // click 事件发生在 select 事件之后，eeeditor focus plugin 手动更改 原生 selection 放在 mouseup 事件内
+  const handleImageClick = () => {
+    console.log('handleImageClick');
     if (focusable) {
-      reviseAtomicBlockSelection(
-        selection,
-        block,
+      setFocusToBlock(
         status === 'success' ? imgRef.current : previewRef.current,
       );
-    }
-  });
-
-  const handleImageClick = () => {
-    if (focusable) {
-      setFocusToBlock();
     }
   };
 
@@ -273,7 +277,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <img
         src={src}
         className={imageCls}
-        ref={previewRef}
+        // ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         {...elementProps}
       />
@@ -300,7 +304,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <img
         src={src}
         className={imageCls}
-        ref={imgRef}
+        // ref={imgRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         {...elementProps}
       />
@@ -308,7 +312,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   );
 
   return (
-    <div className={`${prefixCls}-layout`} onClick={handleImageClick}>
+    <div
+      className={`${prefixCls}-layout`}
+      onMouseUp={handleImageClick}
+      ref={imgRef}
+    >
       {status === 'success' ? imageLayout : uploaderLayout}
     </div>
   );
