@@ -1,10 +1,17 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useImperativeHandle,
+  Ref,
+} from 'react';
 import {
   ContentBlock,
   SelectionState,
   ContentState,
   EEEditorContext,
-  reviseAtomicBlockSelection,
+  // reviseAtomicBlockSelection,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {
@@ -29,7 +36,7 @@ export interface ImageProps {
   blockProps: {
     isFocused?: boolean;
     focusable?: boolean;
-    setFocusToBlock?: () => void;
+    setFocusToBlock?: (node: Node) => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -42,6 +49,7 @@ export interface ImageProps {
   contentState: ContentState;
   blockStyleFn: unknown;
   preventScroll: unknown;
+  ref?: Ref<unknown>;
 }
 
 export interface ImageExtraProps {
@@ -60,6 +68,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     uploadProps,
     store,
+    ref,
     ...otherProps
   } = props;
 
@@ -95,7 +104,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   );
 
   const imgRef = useRef<HTMLImageElement>();
-  const previewRef = useRef<HTMLImageElement>();
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -115,6 +123,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, []);
 
+  useImperativeHandle(ref || useRef(), () => ({
+    node: imgRef.current,
+  }));
+
   //
   // useEffect(() => {
   //   if (focusable) {
@@ -127,14 +139,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // });
 
   // click 事件发生在 select 事件之后，eeeditor focus plugin 手动更改 原生 selection 放在 mouseup 事件内
-  const handleImageClick = () => {
-    console.log('handleImageClick');
-    if (focusable) {
-      setFocusToBlock(
-        status === 'success' ? imgRef.current : previewRef.current,
-      );
-    }
-  };
+  // const handleImageClick = () => {
+  //   console.log('handleImageClick');
+  //   if (focusable) {
+  //     setFocusToBlock(
+  //       status === 'success' ? imgRef.current : previewRef.current,
+  //     );
+  //   }
+  // };
 
   const retryUpload = async () => {
     const {
@@ -277,9 +289,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <img
         src={src}
         className={imageCls}
-        // ref={previewRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        {...elementProps}
       />
       <div className={`${prefixCls}-status`}>
         <div className={statusTextCls}>
@@ -304,19 +314,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <img
         src={src}
         className={imageCls}
-        // ref={imgRef}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        {...elementProps}
       />
     </>
   );
 
   return (
-    <div
-      className={`${prefixCls}-layout`}
-      onMouseUp={handleImageClick}
-      ref={imgRef}
-    >
+    <div className={`${prefixCls}-layout`} ref={imgRef} {...elementProps}>
       {status === 'success' ? imageLayout : uploaderLayout}
     </div>
   );

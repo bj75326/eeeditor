@@ -8,12 +8,13 @@
 // forceSelection。
 
 import { EditorState, ContentBlock, SelectionState } from 'draft-js';
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 
 export const setSelectionToAtomicBlock = (
-  getEditorState: () => EditorState,
-  setEditorState: (editorState: EditorState) => void,
+  // getEditorState: () => EditorState,
+  // setEditorState: (editorState: EditorState) => void,
   newActiveBlock: ContentBlock,
-  node: Node,
+  // node: Node,
 ): void => {
   // const editorState = getEditorState();
 

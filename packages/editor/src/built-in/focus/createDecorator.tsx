@@ -3,7 +3,8 @@ import React, {
   ReactElement,
   Ref,
   useEffect,
-  memo,
+  MouseEvent,
+  useRef,
 } from 'react';
 import {
   ContentBlock,
@@ -21,7 +22,7 @@ export interface BlockFocusDecoratorProps {
   blockProps: {
     isFocused?: boolean;
     focusable?: boolean;
-    setFocusToBlock?: () => void;
+    setFocusToBlock?: (node: Node) => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -34,6 +35,8 @@ export interface BlockFocusDecoratorProps {
   contentState: ContentState;
   blockStyleFn: unknown;
   preventScroll: unknown;
+
+  onMouseUp: (event: MouseEvent) => void;
   ref: Ref<unknown>;
 }
 
@@ -51,22 +54,6 @@ export default ({ blockKeyStore }: DecoratorProps) =>
   (
     WrappedComponent: WrappedComponentType,
   ): ComponentType<BlockFocusDecoratorProps> => {
-    const MemoComponent = memo(WrappedComponent, (prevProps, nextProps) => {
-      console.log('focus plugin shouldComponentUpdate');
-      const prevSelection = prevProps.selection;
-      const nextSelection = nextProps.selection;
-      if (
-        prevSelection.getAnchorKey() === nextSelection.getAnchorKey() &&
-        prevSelection.getAnchorOffset() === nextSelection.getAnchorOffset() &&
-        prevSelection.getFocusKey() === nextSelection.getFocusKey() &&
-        prevSelection.getFocusOffset() === nextSelection.getFocusOffset() &&
-        prevSelection.getIsBackward() === nextSelection.getIsBackward() &&
-        prevSelection.getHasFocus() === false &&
-        nextSelection.getHasFocus() === true
-      ) {
-        return true;
-      }
-    });
     const BlockFocusDecorator = React.forwardRef(
       (props: BlockFocusDecoratorProps, ref): ReactElement => {
         useEffect(() => {
@@ -76,7 +63,15 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
-        return <MemoComponent {...props} ref={ref} />;
+        const onMouseUp = (event: MouseEvent) => {
+          event.preventDefault();
+          const { isFocused, setFocusToBlock } = props.blockProps;
+          if (!isFocused) {
+            setFocusToBlock();
+          }
+        };
+
+        return <WrappedComponent {...props} onMouseUp={onMouseUp} ref={ref} />;
       },
     );
 
