@@ -300,11 +300,11 @@ export * from './utils/getEditorRootDomNode';
 export * from './utils/getSelectedText';
 export * from './utils/getDecoratedLeavesOffset';
 export * from './utils/reviseAtomicBlockSelection';
+export * from './utils/setSelectionToAtomicBlock';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
 export * from './modifiers/insertNewLineBefore';
-export * from './modifiers/setSelectionToAtomicBlock';
 
 export {
   focusDecorator,

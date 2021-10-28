@@ -20,6 +20,7 @@ import getUpdateImage from './modifiers/updateImage';
 import { Store, createStore } from '@draft-js-plugins/utils';
 import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
 import DefaultImage, { ImageProps } from './components/Image';
+import classNames from 'classnames';
 
 export * from './locale';
 
@@ -90,6 +91,7 @@ export type ImageUploadProps<T = any> = Pick<
 interface ImagePluginConfig {
   imageUploadProps: ImageUploadProps;
   prefixCls?: string;
+  imageClassName?: string;
   entityType?: string;
   decorator?: unknown;
   focusable?: boolean;
@@ -297,6 +299,7 @@ const getUploadProps = (
 
 const createImagePlugin = ({
   prefixCls,
+  imageClassName,
   entityType = 'image',
   decorator,
   focusable = true,
@@ -325,15 +328,20 @@ const createImagePlugin = ({
     />
   );
 
-  let Image: React.FC<ImageProps> = (props) => (
-    <DefaultImage
-      {...props}
-      prefixCls={prefixCls}
-      languages={languages}
-      uploadProps={retryUploadProps}
-      store={store}
-    />
-  );
+  let Image: React.FC<ImageProps> = (props) => {
+    const { className: focusCls } = props;
+    const className = classNames(focusCls, imageClassName);
+    return (
+      <DefaultImage
+        {...props}
+        prefixCls={prefixCls}
+        languages={languages}
+        uploadProps={retryUploadProps}
+        store={store}
+        className={className}
+      />
+    );
+  };
 
   // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
   let FocusableImage = null;

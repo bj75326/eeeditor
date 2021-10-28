@@ -1,10 +1,9 @@
 import React, {
   ComponentType,
   ReactElement,
-  Ref,
   useEffect,
   MouseEvent,
-  useRef,
+  Ref,
 } from 'react';
 import {
   ContentBlock,
@@ -12,6 +11,7 @@ import {
   SelectionState,
   ContentState,
 } from '../..';
+import classNames from 'classnames';
 
 interface DecoratorProps {
   blockKeyStore: BlockKeyStore;
@@ -22,7 +22,7 @@ export interface BlockFocusDecoratorProps {
   blockProps: {
     isFocused?: boolean;
     focusable?: boolean;
-    setFocusToBlock?: (node: Node) => void;
+    setFocusToBlock?: () => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -38,6 +38,7 @@ export interface BlockFocusDecoratorProps {
 
   onMouseUp: (event: MouseEvent) => void;
   ref: Ref<unknown>;
+  className: string;
 }
 
 type WrappedComponentType = ComponentType<BlockFocusDecoratorProps> & {
@@ -56,6 +57,8 @@ export default ({ blockKeyStore }: DecoratorProps) =>
   ): ComponentType<BlockFocusDecoratorProps> => {
     const BlockFocusDecorator = React.forwardRef(
       (props: BlockFocusDecoratorProps, ref): ReactElement => {
+        const { isFocused, setFocusToBlock } = props.blockProps;
+
         useEffect(() => {
           blockKeyStore.add(props.block.getKey());
           return () => {
@@ -64,14 +67,22 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         }, []);
 
         const onMouseUp = (event: MouseEvent) => {
-          event.preventDefault();
-          const { isFocused, setFocusToBlock } = props.blockProps;
-          if (!isFocused) {
-            setFocusToBlock();
-          }
+          setFocusToBlock();
         };
 
-        return <WrappedComponent {...props} onMouseUp={onMouseUp} ref={ref} />;
+        const className = classNames({
+          isFocused: isFocused,
+          isUnfocused: !isFocused,
+        });
+
+        return (
+          <WrappedComponent
+            {...props}
+            onMouseUp={onMouseUp}
+            ref={ref}
+            className={className}
+          />
+        );
       },
     );
 

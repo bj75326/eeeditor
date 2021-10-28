@@ -16,7 +16,7 @@ import blockInSelection from '../../utils/blockInSelection';
 import getBlockMapKeys from '../../utils/getBlockMapKeys';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import removeBlock from '../../modifiers/removeBlock';
-import setSelectionToAtomicBlock from '../../modifiers/setSelectionToAtomicBlock';
+import setSelectionToAtomicBlock from '../../utils/setSelectionToAtomicBlock';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -146,7 +146,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       }
 
       // 如果当前 selectionState start block 为 focusable block ：
-      // eeeditor focusable block 的 reviseAtomicBlockSelection 方法会在 focusable block 为 anchor
+      // eeeditor focusable block 会在 focusable block 为 anchor
       // 或者 focus 节点的时候将 selection 限制在当前 block 内，因此这种情况暂时不考虑
       // 返回 'not-handled' 执行默认处理
 
@@ -451,6 +451,15 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return false;
     },
 
+    onBlur: (event, { getEditorState }) => {
+      // 如果当前焦点为 focusable block 时，当 blur 事件触发，eeeditor selectionState
+      // 在下次 focus 事件触发的时候重新渲染整个 editor，会导致 blur 时已经获取焦点的 focusable block
+      // 再次被渲染为 isFocused 的状态。所以在 eeeditor blur 时，手动将 editor selectionState
+      // 设置到文末，eeeditor 应该确保文末段位不为 atomic。
+
+      return false;
+    },
+
     // Wrap all block-types in block-focus decorator
     blockRendererFn: (contentBlock, { getEditorState, setEditorState }) => {
       // This makes it mandatory to have atomic blocks for focus but also improves performance
@@ -478,13 +487,8 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         props: {
           isFocused,
           isCollapsedSelection: editorState.getSelection().isCollapsed(),
-          setFocusToBlock: (node: Node) => {
-            setSelectionToAtomicBlock(
-              // getEditorState,
-              // setEditorState,
-              // contentBlock,
-              node,
-            );
+          setFocusToBlock: () => {
+            setSelectionToAtomicBlock(contentBlock);
           },
         },
       };

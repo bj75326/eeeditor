@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  useImperativeHandle,
-  Ref,
-} from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   ContentBlock,
   SelectionState,
@@ -36,7 +29,7 @@ export interface ImageProps {
   blockProps: {
     isFocused?: boolean;
     focusable?: boolean;
-    setFocusToBlock?: (node: Node) => void;
+    setFocusToBlock?: () => void;
   };
   customStyleMap: unknown;
   customStyleFn: unknown;
@@ -49,7 +42,7 @@ export interface ImageProps {
   contentState: ContentState;
   blockStyleFn: unknown;
   preventScroll: unknown;
-  ref?: Ref<unknown>;
+  className?: string;
 }
 
 export interface ImageExtraProps {
@@ -68,7 +61,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     block, // eslint-disable-line @typescript-eslint/no-unused-vars
     uploadProps,
     store,
-    ref,
     ...otherProps
   } = props;
 
@@ -93,7 +85,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
-  const { isFocused, focusable, setFocusToBlock } = blockProps;
+  // const { isFocused, focusable, setFocusToBlock } = blockProps;
 
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
@@ -122,10 +114,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       store.unsubscribeFromItem('statusMap', onStatusMapChanged);
     };
   }, []);
-
-  useImperativeHandle(ref || useRef(), () => ({
-    node: imgRef.current,
-  }));
 
   //
   // useEffect(() => {
@@ -271,8 +259,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const imageCls = classNames(`${prefixCls}-image`, {
-    isFocused: focusable && isFocused,
+  const imageCls = classNames(`${prefixCls}-image`, className, {
     isUploading: status !== 'success',
   });
 
