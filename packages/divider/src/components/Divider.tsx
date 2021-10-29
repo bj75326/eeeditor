@@ -25,6 +25,8 @@ export interface DividerProps {
   contentState: unknown;
   blockStyleFn: unknown;
   preventScroll: unknown;
+  // focus plugin
+  className?: string;
 }
 
 export interface DividerExtraProps extends React.HTMLAttributes<HTMLHRElement> {
@@ -59,31 +61,31 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  const { isFocused, focusable, setFocusToBlock } = blockProps;
+  // const { isFocused, focusable, setFocusToBlock } = blockProps;
 
   const hrRef = useRef<HTMLHRElement>();
 
-  useEffect(() => {
-    if (focusable) {
-      reviseAtomicBlockSelection(selection, block, hrRef.current);
-    }
-  });
+  // 改用 mouseup 事件内手动更新原生 selection，
+  // 所以 eeeditor 暂时不需要 revise focusable block selection
+  // useEffect(() => {
+  //   if (focusable) {
+  //     reviseAtomicBlockSelection(selection, block, hrRef.current);
+  //   }
+  // });
 
-  const handleHrClick = () => {
-    if (focusable) {
-      setFocusToBlock();
-    }
-  };
+  // const handleHrClick = () => {
+  //   if (focusable) {
+  //     setFocusToBlock();
+  //   }
+  // };
 
-  const dividerClassName = classNames(`${prefixCls}-divider`, className, {
-    isFocused: focusable && isFocused,
-  });
+  const dividerClassName = classNames(`${prefixCls}-divider`, className);
 
   return (
     <hr
       className={dividerClassName}
       ref={hrRef}
-      onClick={handleHrClick}
+      // onClick={handleHrClick}
       {...elementProps}
     />
   );

@@ -329,8 +329,8 @@ const createImagePlugin = ({
   );
 
   let Image: React.FC<ImageProps> = (props) => {
-    const { className: focusCls } = props;
-    const className = classNames(focusCls, imageClassName);
+    const { className: decoratorCls } = props;
+    const className = classNames(decoratorCls, imageClassName);
     return (
       <DefaultImage
         {...props}

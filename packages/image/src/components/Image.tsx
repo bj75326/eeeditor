@@ -42,6 +42,7 @@ export interface ImageProps {
   contentState: ContentState;
   blockStyleFn: unknown;
   preventScroll: unknown;
+  // focus plugin
   className?: string;
 }
 

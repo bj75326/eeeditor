@@ -46,13 +46,17 @@ const createDividerPlugin = ({
   DividerButton: ComponentType<DividerButtonProps>;
   addDivider: ReturnType<typeof addDivider>;
 } => {
-  let Divider: React.FC<DividerProps> = (props) => (
-    <DividerComponent
-      {...props}
-      prefixCls={prefixCls}
-      className={dividerClassName}
-    />
-  );
+  let Divider: React.FC<DividerProps> = (props) => {
+    const { className: decoratorCls } = props;
+    const className = classNames(decoratorCls, dividerClassName);
+    return (
+      <DividerComponent
+        {...props}
+        prefixCls={prefixCls}
+        className={className}
+      />
+    );
+  };
 
   // focusable === true 则需要用 built-in/focus 提供的 decorator 包装之后再渲染
   let FocusableDivider = null;

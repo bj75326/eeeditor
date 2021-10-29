@@ -180,12 +180,12 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // editor blur 时不需要使用 forceSelection 强制 re-render 以触发 blockRendererFn
       // 参考 DraftEditorContents shouldComponentUpdate 方法，当 hasFocus 发生变化时，
       // shouldComponentUpdate 直接返回 true。
-      if (
-        !selection.getHasFocus() &&
-        getEditorState().getSelection().getHasFocus()
-      ) {
-        return editorState;
-      }
+      // if (
+      //   !selection.getHasFocus() &&
+      //   getEditorState().getSelection().getHasFocus()
+      // ) {
+      //   return editorState;
+      // }
 
       // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
       // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
@@ -451,11 +451,15 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return false;
     },
 
-    onBlur: (event, { getEditorState }) => {
+    onBlur: (event, { getEditorState, setEditorState }) => {
       // 如果当前焦点为 focusable block 时，当 blur 事件触发，eeeditor selectionState
       // 在下次 focus 事件触发的时候重新渲染整个 editor，会导致 blur 时已经获取焦点的 focusable block
       // 再次被渲染为 isFocused 的状态。所以在 eeeditor blur 时，手动将 editor selectionState
       // 设置到文末，eeeditor 应该确保文末段位不为 atomic。
+
+      setTimeout(() => {
+        setEditorState(EditorState.moveSelectionToEnd(getEditorState()));
+      }, 0);
 
       return false;
     },
