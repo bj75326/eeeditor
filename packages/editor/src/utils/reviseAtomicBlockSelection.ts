@@ -35,7 +35,7 @@ const addPointToSelection = (
 export const reviseAtomicBlockSelection = (
   selection: SelectionState,
   block: ContentBlock,
-  targetNode: Element,
+  targetNode: Node,
 ) => {
   if (selection == null || !selection.getHasFocus()) {
     return;

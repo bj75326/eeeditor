@@ -4,14 +4,17 @@ import React, {
   useEffect,
   MouseEvent,
   Ref,
+  memo,
 } from 'react';
 import {
   ContentBlock,
   BlockKeyStore,
   SelectionState,
   ContentState,
+  reviseAtomicBlockSelection,
 } from '../..';
 import classNames from 'classnames';
+import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 
 interface DecoratorProps {
   blockKeyStore: BlockKeyStore;
@@ -37,7 +40,7 @@ export interface BlockFocusDecoratorProps {
   preventScroll: unknown;
 
   onMouseUp: (event: MouseEvent) => void;
-  ref: Ref<unknown>;
+  // ref: Ref<unknown>;
   className: string;
 }
 
@@ -55,8 +58,48 @@ export default ({ blockKeyStore }: DecoratorProps) =>
   (
     WrappedComponent: WrappedComponentType,
   ): ComponentType<BlockFocusDecoratorProps> => {
-    const BlockFocusDecorator = React.forwardRef(
-      (props: BlockFocusDecoratorProps, ref): ReactElement => {
+    // forwardRef
+    // const BlockFocusDecorator = React.forwardRef(
+    //   (props: BlockFocusDecoratorProps, ref): ReactElement => {
+    //     const { isFocused, setFocusToBlock } = props.blockProps;
+
+    //     useEffect(() => {
+    //       blockKeyStore.add(props.block.getKey());
+    //       return () => {
+    //         blockKeyStore.remove(props.block.getKey());
+    //       };
+    //     }, []);
+
+    //     // useEffect(() => {
+    //     //   reviseAtomicBlockSelection(
+
+    //     //   );
+    //     // });
+
+    //     const onMouseUp = (event: MouseEvent) => {
+    //       console.log('onMouseUp run');
+    //       setFocusToBlock();
+    //     };
+
+    //     const className = classNames({
+    //       isFocused: isFocused,
+    //       isUnfocused: !isFocused,
+    //     });
+
+    //     return (
+    //       <WrappedComponent
+    //         {...props}
+    //         onMouseUp={onMouseUp}
+    //         ref={ref}
+    //         className={className}
+    //       />
+    //     );
+    //   },
+    // );
+
+    // memo
+    const BlockFocusDecorator = memo(
+      (props: BlockFocusDecoratorProps): ReactElement => {
         const { isFocused, setFocusToBlock } = props.blockProps;
 
         useEffect(() => {
@@ -66,7 +109,19 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
+        useEffect(() => {
+          console.log('revise focusable block selection');
+
+          const offsetKey = DraftOffsetKey.encode(props.block.getKey(), 0, 0);
+          const node = document.querySelectorAll(
+            `[data-offset-key="${offsetKey}"]`,
+          )[0].firstChild;
+
+          reviseAtomicBlockSelection(props.selection, props.block, node);
+        });
+
         const onMouseUp = (event: MouseEvent) => {
+          console.log('onMouseUp run');
           setFocusToBlock();
         };
 
@@ -79,10 +134,31 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           <WrappedComponent
             {...props}
             onMouseUp={onMouseUp}
-            ref={ref}
             className={className}
           />
         );
+      },
+      (prevProps, nextProps) => {
+        // 比较 blockProps
+        if (prevProps.blockProps.isFocused !== nextProps.blockProps.isFocused) {
+          return false;
+        }
+        // 比较 entity data
+        const prevEntityData = prevProps.contentState
+          .getEntity(prevProps.block.getEntityAt(0))
+          .getData();
+        const nextEntityData = nextProps.contentState
+          .getEntity(nextProps.block.getEntityAt(0))
+          .getData();
+        if (
+          Object.keys(prevEntityData).some(
+            (value) => nextEntityData[value] !== prevEntityData[value],
+          )
+        ) {
+          return false;
+        }
+
+        return true;
       },
     );
 

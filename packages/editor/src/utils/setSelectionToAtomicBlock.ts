@@ -19,7 +19,6 @@ export const setSelectionToAtomicBlock = (
   // const editorState = getEditorState();
 
   const offsetKey = DraftOffsetKey.encode(newActiveBlock.getKey(), 0, 0);
-  console.log('offsetKey ', offsetKey);
   const node = document.querySelectorAll(`[data-offset-key="${offsetKey}"]`)[0]
     .firstChild;
 

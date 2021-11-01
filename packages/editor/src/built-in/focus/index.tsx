@@ -17,6 +17,7 @@ import getBlockMapKeys from '../../utils/getBlockMapKeys';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import removeBlock from '../../modifiers/removeBlock';
 import setSelectionToAtomicBlock from '../../utils/setSelectionToAtomicBlock';
+import containsNode from 'fbjs/lib/containsNode';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -106,6 +107,10 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
   let lastSelection: SelectionState | undefined;
   let lastContentState: ContentState | undefined;
 
+  // onFocus 事件导致的 editorState 变化不应该影响 focusable block 的 isFocused 值变化
+  let withMouseDown: boolean = false;
+  let preventIsFocusedChange: boolean = false;
+
   return {
     handleReturn: (event, editorState, { setEditorState }) => {
       // 如果当前有且仅有 focusable block 被选中：
@@ -180,12 +185,13 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // editor blur 时不需要使用 forceSelection 强制 re-render 以触发 blockRendererFn
       // 参考 DraftEditorContents shouldComponentUpdate 方法，当 hasFocus 发生变化时，
       // shouldComponentUpdate 直接返回 true。
-      // if (
-      //   !selection.getHasFocus() &&
-      //   getEditorState().getSelection().getHasFocus()
-      // ) {
-      //   return editorState;
-      // }
+      // 另外，forceSelection 会强制更改 hasFocus 为 true，使得 blur 发生时，focusable block 状态出现 bug
+      if (
+        !selection.getHasFocus() &&
+        getEditorState().getSelection().getHasFocus()
+      ) {
+        return editorState;
+      }
 
       // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
       // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
@@ -451,21 +457,39 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return false;
     },
 
-    onBlur: (event, { getEditorState, setEditorState }) => {
-      // 如果当前焦点为 focusable block 时，当 blur 事件触发，eeeditor selectionState
-      // 在下次 focus 事件触发的时候重新渲染整个 editor，会导致 blur 时已经获取焦点的 focusable block
-      // 再次被渲染为 isFocused 的状态。所以在 eeeditor blur 时，手动将 editor selectionState
-      // 设置到文末，eeeditor 应该确保文末段位不为 atomic。
+    // onBlur: (event, { getEditorState, setEditorState }) => {
+    //   // 如果当前焦点为 focusable block 时，当 blur 事件触发，eeeditor selectionState
+    //   // 在下次 focus 事件触发的时候重新渲染整个 editor，会导致 blur 时已经获取焦点的 focusable block
+    //   // 再次被渲染为 isFocused 的状态。所以在 eeeditor blur 时，手动将 editor selectionState
+    //   // 设置到文末，eeeditor 应该确保文末段位不为 atomic。
 
-      setTimeout(() => {
-        setEditorState(EditorState.moveSelectionToEnd(getEditorState()));
-      }, 0);
+    //   setTimeout(() => {
+    //     setEditorState(EditorState.moveSelectionToEnd(getEditorState()));
+    //   }, 0);
+
+    //   return false;
+    // },
+
+    // 1. 鼠标操作触发 focus
+    // onWrapperMouseDown ---> onFocus (不触发 isFocused 更新) --
+    // -> onSelect (selectionState 有变化则触发 toolbar 更新) --
+    // -> onWrapperSelect （selectionState 没有变化仍需要触发 toolbar 更新）---> end
+    // 2. 非鼠标操作触发 focus
+    // onFocus (触发 toolbar 更新) ---> end
+
+    onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
+      const hasFocus = getEditorState().getSelection().getHasFocus();
+
+      // 判断是否是通过鼠标事件触发 editor focus 事件
+      if (containsNode(getEditorRef().editor, e.target as Node) && !hasFocus) {
+        withMouseDown = true;
+      }
 
       return false;
     },
 
     // Wrap all block-types in block-focus decorator
-    blockRendererFn: (contentBlock, { getEditorState, setEditorState }) => {
+    blockRendererFn: (contentBlock, { getEditorState }) => {
       // This makes it mandatory to have atomic blocks for focus but also improves performance
       // since all the selection checks are not necessary.
       // In case there is a use-case where focus makes sense for none atomic blocks we can add it
@@ -490,7 +514,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return {
         props: {
           isFocused,
-          isCollapsedSelection: editorState.getSelection().isCollapsed(),
+          // isCollapsedSelection: editorState.getSelection().isCollapsed(),
           setFocusToBlock: () => {
             setSelectionToAtomicBlock(contentBlock);
           },
