@@ -18,6 +18,7 @@ import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 import removeBlock from '../../modifiers/removeBlock';
 import setSelectionToAtomicBlock from '../../utils/setSelectionToAtomicBlock';
 import containsNode from 'fbjs/lib/containsNode';
+import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection';
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (
@@ -471,11 +472,13 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
     // },
 
     // 1. 鼠标操作触发 focus
-    // onWrapperMouseDown ---> onFocus (不触发 isFocused 更新) --
-    // -> onSelect (selectionState 有变化则触发 toolbar 更新) --
-    // -> onWrapperSelect （selectionState 没有变化仍需要触发 toolbar 更新）---> end
+    // onWrapperMouseDown (withMouseDown = true) ---> onFocus (blockRendererFn isFocused 值不变) --
+    // -> onSelect (selectionState 有变化则 update editorState, 如果 selection 含有 focusable block，
+    // onChange 内会改 forceSelection) --
+    // -> onWrapperSelect （selectionState 没有变化仍需要判断是否需要 forceSelection 以执行 blockRendererFn ）--
+    // -> end
     // 2. 非鼠标操作触发 focus
-    // onFocus (触发 toolbar 更新) ---> end
+    // onFocus (触发 blockRendererFn 更新 isFocused) ---> end
 
     onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
       const hasFocus = getEditorState().getSelection().getHasFocus();
@@ -483,6 +486,39 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // 判断是否是通过鼠标事件触发 editor focus 事件
       if (containsNode(getEditorRef().editor, e.target as Node) && !hasFocus) {
         withMouseDown = true;
+      }
+
+      return false;
+    },
+
+    onWrapperSelect: (e, { getEditorRef, getEditorState, setEditorState }) => {
+      if (withMouseDown) {
+        withMouseDown = false;
+        if (getEditorRef().editor) {
+          const documentSelection = getDraftEditorSelection(
+            getEditorState(),
+            getEditorRef().editor,
+          );
+          const updatedSelectionState = documentSelection.selectionState;
+          if (updatedSelectionState === getEditorState().getSelection()) {
+            const blockMapKeys = getBlockMapKeys(
+              getEditorState().getCurrentContent(),
+              updatedSelectionState.getStartKey(),
+              updatedSelectionState.getEndKey(),
+            );
+            if (
+              blockMapKeys.some((key) => blockKeyStore.getAll().includes(key))
+            ) {
+              // todo
+              setEditorState(
+                EditorState.forceSelection(
+                  getEditorState(),
+                  getEditorState().getSelection(),
+                ),
+              );
+            }
+          }
+        }
       }
 
       return false;
@@ -508,6 +544,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       const editorState = getEditorState();
       const selection = editorState.getSelection();
       const isFocused =
+        !withMouseDown &&
         selection.getHasFocus() &&
         blockInSelection(editorState, contentBlock.getKey());
 

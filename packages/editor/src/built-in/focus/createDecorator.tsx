@@ -109,6 +109,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
+        // 目前发现 figure 元素似乎会使 selection 不被限定在 focusable block 上，所以加上 revise
         useEffect(() => {
           console.log('revise focusable block selection');
 
@@ -138,6 +139,9 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           />
         );
       },
+      // 如果没有这里的 memo 判断是否需要重新渲染，上面组件 useEffect 内执行的
+      // reviseAtomicBlockSelection 会在 onFocus 周期内改变 selection 值，
+      // 从而使得 selection 与用户交互发生偏差
       (prevProps, nextProps) => {
         // 比较 blockProps
         if (prevProps.blockProps.isFocused !== nextProps.blockProps.isFocused) {
