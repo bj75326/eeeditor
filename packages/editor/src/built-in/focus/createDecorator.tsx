@@ -157,6 +157,9 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         if (
           Object.keys(prevEntityData).some(
             (value) => nextEntityData[value] !== prevEntityData[value],
+          ) ||
+          Object.keys(nextEntityData).some(
+            (value) => prevEntityData[value] !== nextEntityData[value],
           )
         ) {
           return false;

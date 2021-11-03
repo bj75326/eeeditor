@@ -6,4 +6,5 @@ export default {
   'eeeditor.image.uploader.status.success': 'Upload successful',
   'eeeditor.image.uploader.retry': 'Retry',
   'eeeditor.image.read.error.msg': 'Preview  failed',
+  'eeeditor.image.figcaption.placeholder': 'Add a comment',
 };

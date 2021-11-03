@@ -149,8 +149,6 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
     event.preventDefault();
   };
 
-  const handleAddImage = (event: MouseEvent) => {};
-
   useEffect(() => {
     if (keyCommand) {
       const keyBindingFn: EditorPlugin['keyBindingFn'] = (event) => {
@@ -243,11 +241,7 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
             overlayClassName={`${prefixCls}-tip-wrapper`}
             {...tipProps}
           >
-            <div
-              className={btnClassName}
-              style={style}
-              onClick={handleAddImage}
-            >
+            <div className={btnClassName} style={style}>
               {children}
             </div>
           </Tooltip>

@@ -25,11 +25,8 @@ import classNames from 'classnames';
 export * from './locale';
 
 export interface ImageEntityData {
-  // uid: string;
   src?: string;
-  // status?: 'uploading' | 'error' | 'success';
-  // 上传图片时保存图片 blob 对象，供上传失败后重试使用
-  // file?: RcFile;
+  figcaption?: string;
 }
 
 export interface ImagePluginMethods extends PluginMethods {
@@ -211,34 +208,6 @@ const getUploadProps = (
       );
 
       return transformedFile;
-
-      // return new Promise((resolve) => {
-      //   const reader = new FileReader();
-      //   reader.onload = (e: ProgressEvent<FileReader>) => {
-      //     setEditorState(
-      //       addImage(
-      //         getEditorState(),
-      //         {
-      //           src: e.target.result as string,
-      //         },
-      //         file,
-      //       ),
-      //     );
-      //     resolve(transformedFile);
-      //   };
-      //   reader.onerror = () => {
-      //     message.open({
-      //       content:
-      //         locale['eeeditor.image.read.error.msg'] ||
-      //         'eeeditor.image.read.error.msg',
-      //       type: 'info',
-      //       duration: 3,
-      //       className: `${prefixCls}-message`,
-      //     });
-      //     resolve(false);
-      //   };
-      //   reader.readAsDataURL(file);
-      // });
     };
   }
 

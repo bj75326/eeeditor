@@ -6,4 +6,5 @@ export default {
   'eeeditor.image.uploader.status.success': '图片上传成功',
   'eeeditor.image.uploader.retry': '重试',
   'eeeditor.image.read.error.msg': '预览失败',
+  'eeeditor.image.figcaption.placeholder': '添加图片注释',
 };

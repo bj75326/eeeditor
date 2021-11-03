@@ -4,7 +4,6 @@ import {
   SelectionState,
   ContentState,
   EEEditorContext,
-  // reviseAtomicBlockSelection,
 } from '@eeeditor/editor';
 import classNames from 'classnames';
 import {
@@ -15,7 +14,7 @@ import {
   ImagePluginStore,
   BeforeUploadValueType,
 } from '..';
-import { UploadProps, Button } from 'antd';
+import { UploadProps, Button, Popover } from 'antd';
 import { file2Obj } from 'antd/lib/upload/utils';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
 import request from 'rc-upload/lib/request';
@@ -86,9 +85,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
-  // const { isFocused, focusable, setFocusToBlock } = blockProps;
+  const { isFocused, focusable, setFocusToBlock } = blockProps;
 
-  const { src } = contentState
+  const { src, figcaption } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 
@@ -136,6 +135,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   //     );
   //   }
   // };
+
+  const onFigcaptionMouseUp = () => {};
 
   const retryUpload = async () => {
     const {
@@ -260,6 +261,17 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
+  const figcaptionInput = (
+    <div>
+      <textarea
+        placeholder={
+          locale['eeeditor.image.figcaption.placeholder'] ||
+          'eeeditor.image.figcaption.placeholder'
+        }
+      />
+    </div>
+  );
+
   const imageCls = classNames(`${prefixCls}-image`, className, {
     isUploading: status !== 'success',
   });
@@ -304,6 +316,18 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         className={imageCls}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
       />
+      {(isFocused || figcaption) && (
+        <Popover content={figcaptionInput}>
+          <figcaption
+            className={`${prefixCls}-figcaption`}
+            onMouseUp={onFigcaptionMouseUp}
+          >
+            {figcaption ||
+              locale['eeeditor.image.figcaption.placeholder'] ||
+              'eeeditor.image.figcaption.placeholder'}
+          </figcaption>
+        </Popover>
+      )}
     </>
   );
 

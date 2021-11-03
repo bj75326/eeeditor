@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import classNames from 'classnames';
 import {
   SelectionState,
   ContentBlock,
   EEEditorContext,
-  reviseAtomicBlockSelection,
 } from '@eeeditor/editor';
 
 export interface DividerProps {
@@ -61,34 +60,11 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  // const { isFocused, focusable, setFocusToBlock } = blockProps;
-
   const hrRef = useRef<HTMLHRElement>();
-
-  // 改用 mouseup 事件内手动更新原生 selection，
-  // 所以 eeeditor 暂时不需要 revise focusable block selection
-  // useEffect(() => {
-  //   if (focusable) {
-  //     reviseAtomicBlockSelection(selection, block, hrRef.current);
-  //   }
-  // });
-
-  // const handleHrClick = () => {
-  //   if (focusable) {
-  //     setFocusToBlock();
-  //   }
-  // };
 
   const dividerClassName = classNames(`${prefixCls}-divider`, className);
 
-  return (
-    <hr
-      className={dividerClassName}
-      ref={hrRef}
-      // onClick={handleHrClick}
-      {...elementProps}
-    />
-  );
+  return <hr className={dividerClassName} ref={hrRef} {...elementProps} />;
 };
 
 export default Divider;
