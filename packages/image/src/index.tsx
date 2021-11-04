@@ -112,7 +112,7 @@ const defaultUploadProps: ImageUploadProps = {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         resolve({
-          access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c_',
+          access_token: '43ffba06ed1a8f2aa2976fc7c1e7009c',
           owner: 'bj75326',
           repo: 'image-bed',
           path: `images/${getFileName(
@@ -228,6 +228,9 @@ const getUploadProps = (
         },
         info.file.uid,
       );
+      // entity data 的改变可能需要与服务器端同步
+      // todo
+
       store.updateItem('statusMap', {
         ...statusMap,
         [info.file.uid]: 'success',

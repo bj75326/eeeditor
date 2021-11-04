@@ -272,8 +272,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     </div>
   );
 
-  const imageCls = classNames(`${prefixCls}-image`, className, {
-    isUploading: status !== 'success',
+  const imageCls = classNames(`${prefixCls}`, className, {
+    [`${prefixCls}-uploading`]: status !== 'success',
   });
 
   const statusTextCls = classNames(`${prefixCls}-status-text`, {
@@ -317,7 +317,17 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
       />
       {(isFocused || figcaption) && (
-        <Popover content={figcaptionInput}>
+        <Popover
+          content={figcaptionInput}
+          trigger="click"
+          overlayClassName={`${prefixCls}-figcaption-popover`}
+          align={{
+            points: ['tc', 'tc'],
+            offset: [0, 0],
+            targetOffset: [0, 0],
+          }}
+          transitionName=""
+        >
           <figcaption
             className={`${prefixCls}-figcaption`}
             onMouseUp={onFigcaptionMouseUp}

@@ -58,11 +58,11 @@ const Divider: React.FC<DividerProps & DividerExtraProps> = (props) => {
   } = otherProps;
 
   const { getPrefixCls } = useContext(EEEditorContext);
-  const prefixCls = getPrefixCls(undefined, customizePrefixCls);
+  const prefixCls = getPrefixCls('divider', customizePrefixCls);
 
   const hrRef = useRef<HTMLHRElement>();
 
-  const dividerClassName = classNames(`${prefixCls}-divider`, className);
+  const dividerClassName = classNames(`${prefixCls}`, className);
 
   return <hr className={dividerClassName} ref={hrRef} {...elementProps} />;
 };

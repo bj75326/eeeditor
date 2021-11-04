@@ -49,6 +49,8 @@ export interface EditorRef {
   focus(): void;
   /** Remove focus from the editor node. */
   blur(): void;
+  /** Force synchronize RawDraftContentState to backend */
+  forceSync?: boolean;
 }
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;

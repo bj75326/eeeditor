@@ -3,7 +3,7 @@ import React, {
   ReactElement,
   useEffect,
   MouseEvent,
-  Ref,
+  useContext,
   memo,
 } from 'react';
 import {
@@ -12,6 +12,7 @@ import {
   SelectionState,
   ContentState,
   reviseAtomicBlockSelection,
+  EEEditorContext,
 } from '../..';
 import classNames from 'classnames';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
@@ -100,6 +101,9 @@ export default ({ blockKeyStore }: DecoratorProps) =>
     // memo
     const BlockFocusDecorator = memo(
       (props: BlockFocusDecoratorProps): ReactElement => {
+        const { getPrefixCls } = useContext(EEEditorContext);
+        const prefixCls = getPrefixCls();
+
         const { isFocused, setFocusToBlock } = props.blockProps;
 
         useEffect(() => {
@@ -127,8 +131,8 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         };
 
         const className = classNames({
-          isFocused: isFocused,
-          isUnfocused: !isFocused,
+          [`${prefixCls}-isFocused`]: isFocused,
+          [`${prefixCls}-isUnfocused`]: !isFocused,
         });
 
         return (

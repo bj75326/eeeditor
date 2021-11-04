@@ -322,3 +322,12 @@
 .@{eeeditor-prefix-cls}-hidden {
   display: none;
 }
+
+// focusable atomic block
+.@{eeeditor-prefix-cls}-isFocused {
+  box-shadow: 0 0 0 1px @focusable-focused-color;
+}
+
+.@{eeeditor-prefix-cls}-isUnfocused:hover {
+  box-shadow: 0 0 0 1px @focusable-hover-color;
+}
