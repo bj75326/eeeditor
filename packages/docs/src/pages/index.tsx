@@ -78,6 +78,7 @@ import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
 import '@eeeditor/image/es/style';
+import { EEEditorProps } from '@eeeditor/editor/es/Editor';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -175,10 +176,14 @@ const Page: React.FC<PageProps> = (props) => {
       ? EditorState.createWithContent(convertFromRaw(content))
       : EditorState.createEmpty(),
   );
-  const handleChange = (nextEditorState: EditorState) => {
+  const handleChange: EEEditorProps['onChange'] = (
+    nextEditorState: EditorState,
+    { getEditorRef },
+  ) => {
     console.log('Page handleChange run');
     setEditorState(nextEditorState);
     console.log('forceSelection: ', nextEditorState.mustForceSelection());
+    console.log('forceSync: ', getEditorRef() && getEditorRef().forceSync);
     // sync with server side
     // editorState 包含 selectionState 和 contentState，selectionState 的改动不应该也不需要与服务器同步
     // contentState 的比较可以选择 '===' 或者 Immutable.is()
@@ -195,7 +200,11 @@ const Page: React.FC<PageProps> = (props) => {
       is(currContentState, nextContentState),
     );
     // console.log('raw: ', convertToRaw(nextContentState));
-    if (dispatch && !is(currContentState, nextContentState)) {
+    if (
+      dispatch &&
+      (!is(currContentState, nextContentState) ||
+        (getEditorRef() && getEditorRef().forceSync))
+    ) {
       // console.log('xxx', convertToRaw(nextContentState));
       dispatch({
         type: 'draft/syncContent',

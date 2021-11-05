@@ -26,7 +26,6 @@ export * from './locale';
 
 export interface ImageEntityData {
   src?: string;
-  figcaption?: string;
 }
 
 export interface ImagePluginMethods extends PluginMethods {
@@ -145,8 +144,14 @@ const getUploadProps = (
   languages: Languages,
 ): UploadProps => {
   const imagePluginMethods = store.getItem('imagePluginMethods');
-  const { getEditorState, setEditorState, getProps, addImage, updateImage } =
-    imagePluginMethods;
+  const {
+    getEditorState,
+    setEditorState,
+    getProps,
+    getEditorRef,
+    addImage,
+    updateImage,
+  } = imagePluginMethods;
   const { prefixCls, locale: currLocale } = getProps();
   let locale: Locale = zhCN;
   if (currLocale && languages) {
@@ -218,18 +223,22 @@ const getUploadProps = (
     const statusMap = store.getItem('statusMap');
     if (info.file.status === 'done' || info.file.status === 'success') {
       // updateImage 只更新了 entity data, 所以返回的 editorState 并不会触发重新渲染
-      updateImage(
-        getEditorState(),
-        {
-          src: imagePath.reduce(
-            (currentObj, path) => currentObj[path],
-            info.file.response,
-          ),
-        },
-        info.file.uid,
+      // 对于这种 contentState 没有变化，entity data 发生变化需要同步的情况，
+      // eeeditor 提供了 getEditorRef().forceSync 来帮助 app 判断是否需要强制同步
+      getEditorRef().forceSync = true;
+
+      setEditorState(
+        updateImage(
+          getEditorState(),
+          {
+            src: imagePath.reduce(
+              (currentObj, path) => currentObj[path],
+              info.file.response,
+            ),
+          },
+          info.file.uid,
+        ),
       );
-      // entity data 的改变可能需要与服务器端同步
-      // todo
 
       store.updateItem('statusMap', {
         ...statusMap,

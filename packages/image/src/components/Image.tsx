@@ -87,9 +87,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const { isFocused, focusable, setFocusToBlock } = blockProps;
 
-  const { src, figcaption } = contentState
+  const { src } = contentState
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
+
+  const blockData = block.getData();
+  const figcaption = blockData.get('figcaption');
+  const size = blockData.get('size');
 
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
     src.startsWith('blob:') ? 'uploading' : 'success',

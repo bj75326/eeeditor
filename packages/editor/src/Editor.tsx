@@ -181,8 +181,16 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   });
 
   // todo 包装 onchange
-  const handleChange = (editorState: EditorState) => {
-    onChange(editorState);
+  const handleChange = (
+    editorState: EditorState,
+    pluginMethods: PluginMethods,
+  ) => {
+    onChange(editorState, pluginMethods);
+
+    const { getEditorRef } = pluginMethods;
+    if (getEditorRef() && getEditorRef().forceSync) {
+      getEditorRef().forceSync = false;
+    }
   };
 
   // plugins attr 处理

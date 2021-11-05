@@ -2,6 +2,7 @@ import { ComponentType } from 'react';
 import EEEditor, {
   focusDecorator,
   BlockFocusDecoratorProps,
+  EEEditorProps,
   EEEditorContext,
   EEEditorContextProps,
 } from './Editor';
@@ -311,6 +312,7 @@ export * from './modifiers/insertNewLineBefore';
 export {
   focusDecorator,
   BlockFocusDecoratorProps,
+  EEEditorProps,
   EEEditorContext,
   EEEditorContextProps,
 };
