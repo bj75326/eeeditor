@@ -63,6 +63,62 @@
   animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
 }
 
+.@{prefix}-figcaption {
+  margin-top: 10px;
+  padding: 0 1em;
+  font-size: @image-figcaption-size;
+  text-align: center;
+  color: @image-figcaption-color;
+}
+
+.@{prefix}-figcaption-placeholder {
+  color: @image-figcaption-placeholder-color;
+}
+
+.@{prefix}-figcaption-popover {
+  &.@{ant-prefix}-popover {
+    width: 100%;
+    margin-top: 10px;
+    padding: 0 1em;
+    font-size: @image-figcaption-size;
+  }
+
+  .@{ant-prefix}-popover-arrow {
+    display: none;
+  }
+  .@{ant-prefix}-popover-inner {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .@{ant-prefix}-popover-inner-content {
+    padding: 0;
+  }
+}
+
+.@{prefix}-figcaption-textarea {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: @image-figcaption-size;
+  text-align: center;
+  color: @image-figcaption-color;
+  background: none;
+  resize: none;
+  &::placeholder,
+  &::-webkit-input-placeholder,
+  &::-ms-input-placeholder,
+  &:-ms-input-placeholder {
+    color: @image-figcaption-placeholder-color;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
 @-webkit-keyframes LoadingBarForward {
   0% {
     -webkit-transform: translateX(-100%);

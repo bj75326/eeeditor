@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  MouseEvent,
+} from 'react';
 import {
   ContentBlock,
   SelectionState,
@@ -80,12 +86,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
+  const { getReadOnly, setReadOnly } = store.getItem('imagePluginMethods');
+
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
   const locale: Locale =
     currLocale && languages[currLocale] ? languages[currLocale] : zhCN;
 
-  const { isFocused, focusable, setFocusToBlock } = blockProps;
+  const { isFocused } = blockProps;
 
   const { src } = contentState
     .getEntity(block.getEntityAt(0))
@@ -100,6 +108,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   );
 
   const imgRef = useRef<HTMLImageElement>();
+  const figcaptionTextareaRef = useRef<HTMLTextAreaElement>();
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -140,7 +149,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   //   }
   // };
 
-  const onFigcaptionMouseUp = () => {};
+  const onFigcaptionMouseUp = (e: MouseEvent) => {
+    e.nativeEvent.stopImmediatePropagation();
+  };
 
   const retryUpload = async () => {
     const {
@@ -265,15 +276,30 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const figcaptionInput = (
-    <div>
-      <textarea
-        placeholder={
-          locale['eeeditor.image.figcaption.placeholder'] ||
-          'eeeditor.image.figcaption.placeholder'
+  const getPopupContainer = (triggerNode: HTMLElement) =>
+    triggerNode.parentElement;
+
+  const onTextareaVisibleChange = (visible: boolean) => {
+    if (visible) {
+      setReadOnly(true);
+      // todo
+      setTimeout(() => {
+        if (figcaptionTextareaRef.current) {
+          figcaptionTextareaRef.current.select();
         }
-      />
-    </div>
+      }, 0);
+    }
+  };
+
+  const figcaptionInput = (
+    <textarea
+      className={`${prefixCls}-figcaption-textarea`}
+      placeholder={
+        locale['eeeditor.image.figcaption.placeholder'] ||
+        'eeeditor.image.figcaption.placeholder'
+      }
+      ref={figcaptionTextareaRef}
+    />
   );
 
   const imageCls = classNames(`${prefixCls}`, className, {
@@ -313,6 +339,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     </>
   );
 
+  const figcaptionCls = classNames(`${prefixCls}-figcaption`, {
+    [`${prefixCls}-figcaption-placeholder`]: !!!figcaption,
+  });
+
   const imageLayout = (
     <>
       <img
@@ -324,7 +354,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         <Popover
           content={figcaptionInput}
           trigger="click"
+          onVisibleChange={onTextareaVisibleChange}
           overlayClassName={`${prefixCls}-figcaption-popover`}
+          getPopupContainer={getPopupContainer}
           align={{
             points: ['tc', 'tc'],
             offset: [0, 0],
@@ -332,10 +364,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           }}
           transitionName=""
         >
-          <figcaption
-            className={`${prefixCls}-figcaption`}
-            onMouseUp={onFigcaptionMouseUp}
-          >
+          <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
             {figcaption ||
               locale['eeeditor.image.figcaption.placeholder'] ||
               'eeeditor.image.figcaption.placeholder'}
