@@ -3,7 +3,9 @@ import React, {
   useEffect,
   useState,
   useRef,
+  FocusEvent,
   MouseEvent,
+  useLayoutEffect,
 } from 'react';
 import {
   ContentBlock,
@@ -20,6 +22,7 @@ import {
   ImagePluginStore,
   BeforeUploadValueType,
 } from '..';
+import updateFigcaption from '../modifiers/updateFigcaption';
 import { UploadProps, Button, Popover } from 'antd';
 import { file2Obj } from 'antd/lib/upload/utils';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
@@ -86,7 +89,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
-  const { getReadOnly, setReadOnly } = store.getItem('imagePluginMethods');
+  const { getReadOnly, setReadOnly, getEditorState, setEditorState } =
+    store.getItem('imagePluginMethods');
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
@@ -106,6 +110,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
     src.startsWith('blob:') ? 'uploading' : 'success',
   );
+
+  const [figcaptionTextareaVisible, setFigcaptionTextareaVisible] =
+    useState<boolean>(false);
 
   const imgRef = useRef<HTMLImageElement>();
   const figcaptionTextareaRef = useRef<HTMLTextAreaElement>();
@@ -149,8 +156,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   //   }
   // };
 
-  const onFigcaptionMouseUp = (e: MouseEvent) => {
-    e.nativeEvent.stopImmediatePropagation();
+  // const onFigcaptionMouseUp = (e: MouseEvent) => {
+  //   e.stopPropagation();
+  // };
+
+  // focusable 为 true 时，防止 figcaption 和 figcaptionTextarea 的 mouseup 冒泡到
+  // 外层 wrapper 触发 mouseup 事件以 setFocusToBlock。
+  const stopPropagation = (e: MouseEvent) => {
+    e.stopPropagation();
   };
 
   const retryUpload = async () => {
@@ -280,24 +293,37 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     triggerNode.parentElement;
 
   const onTextareaVisibleChange = (visible: boolean) => {
-    if (visible) {
+    setFigcaptionTextareaVisible(visible);
+  };
+
+  useLayoutEffect(() => {
+    if (figcaptionTextareaVisible) {
       setReadOnly(true);
-      // todo
+      // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
       setTimeout(() => {
         if (figcaptionTextareaRef.current) {
           figcaptionTextareaRef.current.select();
         }
       }, 0);
     }
+  }, [figcaptionTextareaVisible]);
+
+  const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
+    console.log('onFigcaptionTextareaBlur');
+    setReadOnly(false);
+
+    // updateFigcaption(getEditorState(), e.target.value)
   };
 
-  const figcaptionInput = (
+  const figcaptionTextarea = (
     <textarea
       className={`${prefixCls}-figcaption-textarea`}
       placeholder={
         locale['eeeditor.image.figcaption.placeholder'] ||
         'eeeditor.image.figcaption.placeholder'
       }
+      onMouseUp={stopPropagation}
+      onBlur={onFigcaptionTextareaBlur}
       ref={figcaptionTextareaRef}
     />
   );
@@ -352,8 +378,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       />
       {(isFocused || figcaption) && (
         <Popover
-          content={figcaptionInput}
+          content={figcaptionTextarea}
           trigger="click"
+          visible={figcaptionTextareaVisible}
           onVisibleChange={onTextareaVisibleChange}
           overlayClassName={`${prefixCls}-figcaption-popover`}
           getPopupContainer={getPopupContainer}
@@ -364,7 +391,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           }}
           transitionName=""
         >
-          <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
+          <figcaption className={figcaptionCls} onMouseUp={stopPropagation}>
             {figcaption ||
               locale['eeeditor.image.figcaption.placeholder'] ||
               'eeeditor.image.figcaption.placeholder'}

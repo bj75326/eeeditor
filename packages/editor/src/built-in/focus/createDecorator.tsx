@@ -2,6 +2,7 @@ import React, {
   ComponentType,
   ReactElement,
   useEffect,
+  useLayoutEffect,
   MouseEvent,
   useContext,
   memo,
@@ -113,7 +114,11 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           };
         }, []);
 
-        // 目前发现 figure 元素似乎会使 selection 不被限定在 focusable block 上，所以加上 revise
+        // 模仿 Leaf component, 加上 reviseSelection 使 forceSelection 可以对 focusable block 使用
+        // 目前发现 figure 元素似乎会使 selection 不被限定在 focusable block 上，所以也需要加上 revise
+        // Q： 为什么使用 useEffect 而不是 useLayoutEffect?
+        // 因为 useLayoutEffect 与 leaf component didUpdate 同批次执行，不能保证 selection 被限制在
+        // focusable block 内
         useEffect(() => {
           console.log('revise focusable block selection');
 
@@ -168,6 +173,8 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         ) {
           return false;
         }
+
+        //todo 比较 block data
 
         return true;
       },
