@@ -63,6 +63,7 @@ export interface ImageExtraProps {
 }
 
 const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
+  console.log('image re-render');
   const {
     prefixCls: customizePrefixCls,
     className,
@@ -89,8 +90,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
-  const { getReadOnly, setReadOnly, getEditorState, setEditorState } =
-    store.getItem('imagePluginMethods');
+  const {
+    getReadOnly,
+    setReadOnly,
+    getEditorState,
+    setEditorState,
+    getEditorRef,
+    getProps,
+  } = store.getItem('imagePluginMethods');
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
@@ -292,16 +299,23 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const getPopupContainer = (triggerNode: HTMLElement) =>
     triggerNode.parentElement;
 
-  const onTextareaVisibleChange = (visible: boolean) => {
-    setFigcaptionTextareaVisible(visible);
+  const onFigcaptionMouseUp = (e: MouseEvent) => {
+    e.stopPropagation();
+    setFigcaptionTextareaVisible(true);
   };
 
-  useLayoutEffect(() => {
+  const onTextareaVisibleChange = (visible: boolean) => {
+    // getEditorRef().blur();
+  };
+
+  useEffect(() => {
+    console.log('image textareaVisile useEffect');
     if (figcaptionTextareaVisible) {
       setReadOnly(true);
       // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
       setTimeout(() => {
         if (figcaptionTextareaRef.current) {
+          console.log('figcaptionTextareaRef.current.select()');
           figcaptionTextareaRef.current.select();
         }
       }, 0);
@@ -311,6 +325,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
     console.log('onFigcaptionTextareaBlur');
     setReadOnly(false);
+    // setTimeout(() => {
+    //   getEditorRef().focus();
+    // }, 0);
 
     // updateFigcaption(getEditorState(), e.target.value)
   };
@@ -375,11 +392,21 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         src={src}
         className={imageCls}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        onMouseUp={() => {
+          console.log('img mouseup');
+          if (document.querySelector('.public-DraftEditor-content')) {
+            console.log(
+              document
+                .querySelector('.public-DraftEditor-content')
+                .getAttribute('contenteditable'),
+            );
+          }
+        }}
       />
-      {(isFocused || figcaption) && (
+      {(isFocused || figcaption || figcaptionTextareaVisible) && (
         <Popover
           content={figcaptionTextarea}
-          trigger="click"
+          trigger={[]}
           visible={figcaptionTextareaVisible}
           onVisibleChange={onTextareaVisibleChange}
           overlayClassName={`${prefixCls}-figcaption-popover`}
@@ -391,7 +418,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           }}
           transitionName=""
         >
-          <figcaption className={figcaptionCls} onMouseUp={stopPropagation}>
+          <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
             {figcaption ||
               locale['eeeditor.image.figcaption.placeholder'] ||
               'eeeditor.image.figcaption.placeholder'}

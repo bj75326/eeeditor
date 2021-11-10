@@ -102,6 +102,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
     // memo
     const BlockFocusDecorator = memo(
       (props: BlockFocusDecoratorProps): ReactElement => {
+        console.log('BlockFocusDecorator run');
         const { getPrefixCls } = useContext(EEEditorContext);
         const prefixCls = getPrefixCls();
 
@@ -132,6 +133,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
 
         const onMouseUp = (event: MouseEvent) => {
           console.log('onMouseUp run');
+          console.log(document.activeElement);
           setFocusToBlock();
         };
 
@@ -154,6 +156,7 @@ export default ({ blockKeyStore }: DecoratorProps) =>
       (prevProps, nextProps) => {
         // 比较 blockProps
         if (prevProps.blockProps.isFocused !== nextProps.blockProps.isFocused) {
+          console.log('blockProps isFocused not same');
           return false;
         }
         // 比较 entity data
@@ -171,11 +174,13 @@ export default ({ blockKeyStore }: DecoratorProps) =>
             (value) => prevEntityData[value] !== nextEntityData[value],
           )
         ) {
+          console.log('entity data not same');
           return false;
         }
 
         //todo 比较 block data
 
+        console.log('props are the same');
         return true;
       },
     );

@@ -28,7 +28,7 @@ export const setSelectionToAtomicBlock = (
   range.setEnd(node, 0);
   selection.removeAllRanges();
   selection.addRange(range);
-
+  console.log('window.getSelection() ', window.getSelection());
   // setEditorState(
   //   EditorState.forceSelection(
   //     editorState,
