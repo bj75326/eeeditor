@@ -300,23 +300,37 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     triggerNode.parentElement;
 
   const onFigcaptionMouseUp = (e: MouseEvent) => {
-    e.stopPropagation();
+    console.log('onFigcaptionMouseUp');
+    // e.stopPropagation();
     setFigcaptionTextareaVisible(true);
+
+    setReadOnly(true);
+
+    getEditorRef().blur();
   };
 
-  const onTextareaVisibleChange = (visible: boolean) => {
-    // getEditorRef().blur();
-  };
+  // const onTextareaVisibleChange = (visible: boolean) => {
+  //   console.log('onTextareaVisibleChange ', visible);
+  //   if (visible) {
+  //     // Q: 为什么需要在 figcaption textarea visible = true 时手动 blur editor ？
+  //     // readOnly 设置为 true 后，activeElement 已经不是 editor 了，只是 selectionState
+  //     // 内并没有同步过来，需要手动 blur
+  //     getEditorRef().blur();
+  //   }
+
+  // };
 
   useEffect(() => {
     console.log('image textareaVisile useEffect');
     if (figcaptionTextareaVisible) {
-      setReadOnly(true);
+      // setReadOnly(true);
       // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
       setTimeout(() => {
         if (figcaptionTextareaRef.current) {
+          console.log('current activeElement ', document.activeElement);
           console.log('figcaptionTextareaRef.current.select()');
           figcaptionTextareaRef.current.select();
+          console.log('current activeElement ', document.activeElement);
         }
       }, 0);
     }
@@ -324,6 +338,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
     console.log('onFigcaptionTextareaBlur');
+
+    setFigcaptionTextareaVisible(false);
     setReadOnly(false);
     // setTimeout(() => {
     //   getEditorRef().focus();
@@ -408,9 +424,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           content={figcaptionTextarea}
           trigger={[]}
           visible={figcaptionTextareaVisible}
-          onVisibleChange={onTextareaVisibleChange}
+          // onVisibleChange={onTextareaVisibleChange}
           overlayClassName={`${prefixCls}-figcaption-popover`}
-          getPopupContainer={getPopupContainer}
+          // getPopupContainer={getPopupContainer}
           align={{
             points: ['tc', 'tc'],
             offset: [0, 0],

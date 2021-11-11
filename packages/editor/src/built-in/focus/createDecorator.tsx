@@ -134,6 +134,11 @@ export default ({ blockKeyStore }: DecoratorProps) =>
         const onMouseUp = (event: MouseEvent) => {
           console.log('onMouseUp run');
           console.log(document.activeElement);
+
+          // test
+          if (props.selection.getHasFocus()) {
+          }
+
           setFocusToBlock();
         };
 

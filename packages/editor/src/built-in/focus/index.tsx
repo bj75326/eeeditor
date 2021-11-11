@@ -5,6 +5,7 @@ import {
   EditorPlugin,
   getRangeCoords,
   getSelectionCoords,
+  PluginMethods,
 } from '../..';
 import insertNewLineBefore from '../../modifiers/insertNewLineBefore';
 import setSelection from '../../modifiers/setSelection';
@@ -19,6 +20,13 @@ import removeBlock from '../../modifiers/removeBlock';
 import setSelectionToAtomicBlock from '../../utils/setSelectionToAtomicBlock';
 import containsNode from 'fbjs/lib/containsNode';
 import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection';
+import { Store, createStore } from '@draft-js-plugins/utils';
+
+export interface StoreItemMap {
+  pluginMethods?: PluginMethods;
+}
+
+export type FocusPluginStore = Store<StoreItemMap>;
 
 // 有且仅有 focusable Block 被选中
 const focusableBlockIsSelected = (

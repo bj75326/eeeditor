@@ -12,12 +12,11 @@ const addFocusToSelection = (
 ) => {
   const activeElement = getActiveElement();
   if (selection.extend && containsNode(activeElement, node)) {
-    // eeeditor 将不支持 IE, 暂时保留
     selection.extend(node, offset);
   } else {
     const range = selection.getRangeAt(0);
     range.setEnd(node, offset);
-    // todo
+    // ie11
     selection.addRange(range.cloneRange());
   }
 };
@@ -74,9 +73,10 @@ export const reviseAtomicBlockSelection = (
   const hasFocus = focusKey === blockKey;
 
   if (hasAnchor || hasFocus) {
+    console.log('真的 revise 了');
     documentSelection.removeAllRanges();
-    addPointToSelection(documentSelection, targetNode, 0);
-    addFocusToSelection(documentSelection, targetNode, 0);
+    addPointToSelection(documentSelection, targetNode, anchorOffset);
+    addFocusToSelection(documentSelection, targetNode, focusOffset);
   }
 };
 
