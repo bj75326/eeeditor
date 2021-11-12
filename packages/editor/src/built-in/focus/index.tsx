@@ -22,9 +22,7 @@ import containsNode from 'fbjs/lib/containsNode';
 import getDraftEditorSelection from 'draft-js/lib/getDraftEditorSelection';
 import { Store, createStore } from '@draft-js-plugins/utils';
 
-export interface StoreItemMap {
-  pluginMethods?: PluginMethods;
-}
+export interface StoreItemMap extends Partial<PluginMethods> {}
 
 export type FocusPluginStore = Store<StoreItemMap>;
 
@@ -120,7 +118,15 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
   let withMouseDown: boolean = false;
   let preventIsFocusedChange: boolean = false;
 
+  const store = createStore<StoreItemMap>();
+
   return {
+    initialize: (pluginMethods: PluginMethods) => {
+      Object.keys(pluginMethods).forEach((methodName: keyof PluginMethods) => {
+        store.updateItem(methodName, pluginMethods[methodName]);
+      });
+    },
+
     handleReturn: (event, editorState, { setEditorState }) => {
       // 如果当前有且仅有 focusable block 被选中：
       // 按下 Return 则会在 focusable block 前插入一个新的 text block
@@ -491,7 +497,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
     onWrapperMouseDown: (e, { getEditorRef, getEditorState }) => {
       const hasFocus = getEditorState().getSelection().getHasFocus();
 
-      // 判断是否是通过鼠标事件触发 editor focus 事件
+      // 判断是否是通过鼠标事件触发 editor focus 事件
       if (containsNode(getEditorRef().editor, e.target as Node) && !hasFocus) {
         withMouseDown = true;
       }
@@ -567,6 +573,6 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       };
     },
 
-    decorator: createDecorator({ blockKeyStore }),
+    decorator: createDecorator({ blockKeyStore, store }),
   };
 };

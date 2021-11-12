@@ -17,9 +17,11 @@ import {
 } from '../..';
 import classNames from 'classnames';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
+import { FocusPluginStore } from '.';
 
 interface DecoratorProps {
   blockKeyStore: BlockKeyStore;
+  store: FocusPluginStore;
 }
 
 export interface BlockFocusDecoratorProps {
@@ -56,7 +58,7 @@ const getDisplayName = (WrappedComponent: WrappedComponentType): string => {
   return component.displayName || component.name || 'Component';
 };
 
-export default ({ blockKeyStore }: DecoratorProps) =>
+export default ({ blockKeyStore, store }: DecoratorProps) =>
   (
     WrappedComponent: WrappedComponentType,
   ): ComponentType<BlockFocusDecoratorProps> => {
@@ -108,6 +110,8 @@ export default ({ blockKeyStore }: DecoratorProps) =>
 
         const { isFocused, setFocusToBlock } = props.blockProps;
 
+        const getEditorRef = store.getItem('getEditorRef');
+
         useEffect(() => {
           blockKeyStore.add(props.block.getKey());
           return () => {
@@ -136,7 +140,8 @@ export default ({ blockKeyStore }: DecoratorProps) =>
           console.log(document.activeElement);
 
           // test
-          if (props.selection.getHasFocus()) {
+          if (!props.selection.getHasFocus()) {
+            getEditorRef().focus();
           }
 
           setFocusToBlock();

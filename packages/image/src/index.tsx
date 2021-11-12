@@ -43,6 +43,8 @@ export interface ImagePluginMethods extends PluginMethods {
 
 export interface StoreItemMap {
   imagePluginMethods?: ImagePluginMethods;
+  // 控制 figcaption edit popover 的显示隐藏
+  figcaptionEditPopoverVisible?: boolean;
   // entityKeyMap 用来存储 uid 与其对应的 entityKey
   entityKeyMap?: Record<string, string>;
   // fileMap 用来存储 entity 与其对应的 Rcfile
@@ -290,6 +292,7 @@ const createImagePlugin = ({
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
   const store = createStore<StoreItemMap>({
+    figcaptionEditPopoverVisible: false,
     entityKeyMap: {},
     fileMap: {},
     statusMap: {},

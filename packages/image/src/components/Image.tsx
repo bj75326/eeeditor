@@ -341,9 +341,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
     setFigcaptionTextareaVisible(false);
     setReadOnly(false);
-    // setTimeout(() => {
-    //   getEditorRef().focus();
-    // }, 0);
 
     // updateFigcaption(getEditorState(), e.target.value)
   };

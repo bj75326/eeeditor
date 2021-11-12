@@ -60,13 +60,13 @@ const LinkEditPopover: React.FC<LinkEditPopoverProps> = (props) => {
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
-    locale = languages[currLocale];
+    locale = languages[currLocale] || zhCN;
   }
 
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
-  const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
+  const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
 
   const popoverRef = useRef<HTMLDivElement>();
 
