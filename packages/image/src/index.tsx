@@ -18,9 +18,15 @@ import { UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/int
 import getAddImage from './modifiers/addImage';
 import getUpdateImage from './modifiers/updateImage';
 import { Store, createStore } from '@draft-js-plugins/utils';
-import DefaultImageButton, { ImageButtonProps } from './components/ImageButton';
-import DefaultImage, { ImageProps } from './components/Image';
+import DefaultImageButton, {
+  ImageButtonExtraProps,
+  ImageButtonProps,
+} from './components/ImageButton';
+import DefaultImage, { ImageExtraProps, ImageProps } from './components/Image';
 import classNames from 'classnames';
+import DefaultImageFigcaptionEditPopover, {
+  ImageFigcaptionEditPopoverProps,
+} from './components/ImageFigcaptionEditPopover';
 
 export * from './locale';
 
@@ -43,14 +49,16 @@ export interface ImagePluginMethods extends PluginMethods {
 
 export interface StoreItemMap {
   imagePluginMethods?: ImagePluginMethods;
-  // 控制 figcaption edit popover 的显示隐藏
-  figcaptionEditPopoverVisible?: boolean;
   // entityKeyMap 用来存储 uid 与其对应的 entityKey
   entityKeyMap?: Record<string, string>;
   // fileMap 用来存储 entity 与其对应的 Rcfile
   fileMap?: Record<string, RcFile>;
   // statusMap 用来存储 uid 与其对应的 image upload status
   statusMap?: Record<string, 'uploading' | 'success' | 'error'>;
+  // 控制 figcaption edit popover 的显示隐藏
+  figcaptionEditPopoverVisible?: boolean;
+  // edit popover
+  getImageProps?: () => Partial<ImageProps>;
 }
 
 export type ImagePluginStore = Store<StoreItemMap>;
@@ -90,10 +98,16 @@ interface ImagePluginConfig {
   imageUploadProps: ImageUploadProps;
   prefixCls?: string;
   imageClassName?: string;
+  imageFigcaptionEditPopoverCls?: string;
   entityType?: string;
   decorator?: unknown;
   focusable?: boolean;
   languages?: Languages;
+  imageComponent?: ComponentType<ImageProps & ImageExtraProps>;
+  imageButtonComponent?: ComponentType<
+    ImageButtonProps & ImageButtonExtraProps
+  >;
+  imageFigcaptionEditPopoverComponent?: ComponentType<ImageFigcaptionEditPopoverProps>;
 }
 
 // todo 开发使用配置 必须删除！！！
@@ -283,11 +297,16 @@ const getUploadProps = (
 const createImagePlugin = ({
   prefixCls,
   imageClassName,
+  imageFigcaptionEditPopoverCls,
   entityType = 'image',
   decorator,
   focusable = true,
   languages = lang,
   imageUploadProps = defaultUploadProps,
+  imageComponent: ImageComponent = DefaultImage,
+  imageButtonComponent: ImageButtonComponent = DefaultImageButton,
+  imageFigcaptionEditPopoverComponent:
+    ImageFigcaptionEditPopoverComponent = DefaultImageFigcaptionEditPopover,
 }: ImagePluginConfig): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
@@ -305,7 +324,7 @@ const createImagePlugin = ({
   let retryUploadProps: UploadProps = {};
 
   const ImageButton: React.FC<ImageButtonProps> = (props) => (
-    <DefaultImageButton
+    <ImageButtonComponent
       {...props}
       languages={languages}
       uploadProps={uploadProps}
@@ -316,7 +335,7 @@ const createImagePlugin = ({
     const { className: decoratorCls } = props;
     const className = classNames(decoratorCls, imageClassName);
     return (
-      <DefaultImage
+      <ImageComponent
         {...props}
         prefixCls={prefixCls}
         languages={languages}
@@ -340,6 +359,15 @@ const createImagePlugin = ({
   if (typeof decorator === 'function') {
     Image = decorator(Image);
   }
+
+  const ImageFigcaptionEditPopover: React.FC = () => (
+    <ImageFigcaptionEditPopoverComponent
+      prefixCls={prefixCls}
+      className={imageFigcaptionEditPopoverCls}
+      languages={languages}
+      store={store}
+    />
+  );
 
   const isImageBlock = (
     block: ContentBlock,
@@ -392,6 +420,8 @@ const createImagePlugin = ({
     },
 
     ImageButton,
+
+    suffix: () => <ImageFigcaptionEditPopover />,
   };
 };
 

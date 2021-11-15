@@ -76,24 +76,15 @@
 }
 
 .@{prefix}-figcaption-popover {
-  &.@{ant-prefix}-popover {
-    width: 100%;
-    margin-top: 10px;
-    padding: 0 1em;
-    font-size: @image-figcaption-size;
-  }
+  width: @image-figcaption-width;
+  position: absolute;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  .@{ant-prefix}-popover-arrow {
-    display: none;
-  }
-  .@{ant-prefix}-popover-inner {
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-  }
-  .@{ant-prefix}-popover-inner-content {
-    padding: 0;
-  }
+.@{prefix}-figcaption-popover-hidden {
+  // display: none;
 }
 
 .@{prefix}-figcaption-textarea {

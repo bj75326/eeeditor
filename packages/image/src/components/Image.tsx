@@ -118,11 +118,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     src.startsWith('blob:') ? 'uploading' : 'success',
   );
 
-  const [figcaptionTextareaVisible, setFigcaptionTextareaVisible] =
-    useState<boolean>(false);
-
   const imgRef = useRef<HTMLImageElement>();
-  const figcaptionTextareaRef = useRef<HTMLTextAreaElement>();
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -163,15 +159,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   //   }
   // };
 
-  // const onFigcaptionMouseUp = (e: MouseEvent) => {
-  //   e.stopPropagation();
-  // };
-
   // focusable 为 true 时，防止 figcaption 和 figcaptionTextarea 的 mouseup 冒泡到
   // 外层 wrapper 触发 mouseup 事件以 setFocusToBlock。
-  const stopPropagation = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
+  // const stopPropagation = (e: MouseEvent) => {
+  //   e.stopPropagation();
+  // };
 
   const retryUpload = async () => {
     const {
@@ -296,17 +288,18 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const getPopupContainer = (triggerNode: HTMLElement) =>
-    triggerNode.parentElement;
+  const getImageProps = () => ({
+    block,
+    offsetKey,
+  });
 
   const onFigcaptionMouseUp = (e: MouseEvent) => {
     console.log('onFigcaptionMouseUp');
-    // e.stopPropagation();
-    setFigcaptionTextareaVisible(true);
 
-    setReadOnly(true);
+    e.stopPropagation();
 
-    getEditorRef().blur();
+    store.updateItem('figcaptionEditPopoverVisible', true);
+    store.updateItem('getImageProps', getImageProps);
   };
 
   // const onTextareaVisibleChange = (visible: boolean) => {
@@ -320,43 +313,43 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   // };
 
-  useEffect(() => {
-    console.log('image textareaVisile useEffect');
-    if (figcaptionTextareaVisible) {
-      // setReadOnly(true);
-      // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
-      setTimeout(() => {
-        if (figcaptionTextareaRef.current) {
-          console.log('current activeElement ', document.activeElement);
-          console.log('figcaptionTextareaRef.current.select()');
-          figcaptionTextareaRef.current.select();
-          console.log('current activeElement ', document.activeElement);
-        }
-      }, 0);
-    }
-  }, [figcaptionTextareaVisible]);
+  // useEffect(() => {
+  //   console.log('image textareaVisile useEffect');
+  //   if (figcaptionTextareaVisible) {
+  //     // setReadOnly(true);
+  //     // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
+  //     setTimeout(() => {
+  //       if (figcaptionTextareaRef.current) {
+  //         console.log('current activeElement ', document.activeElement);
+  //         console.log('figcaptionTextareaRef.current.select()');
+  //         figcaptionTextareaRef.current.select();
+  //         console.log('current activeElement ', document.activeElement);
+  //       }
+  //     }, 0);
+  //   }
+  // }, [figcaptionTextareaVisible]);
 
-  const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
-    console.log('onFigcaptionTextareaBlur');
+  // const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
+  //   console.log('onFigcaptionTextareaBlur');
 
-    setFigcaptionTextareaVisible(false);
-    setReadOnly(false);
+  //   setFigcaptionTextareaVisible(false);
+  //   setReadOnly(false);
 
-    // updateFigcaption(getEditorState(), e.target.value)
-  };
+  //   // updateFigcaption(getEditorState(), e.target.value)
+  // };
 
-  const figcaptionTextarea = (
-    <textarea
-      className={`${prefixCls}-figcaption-textarea`}
-      placeholder={
-        locale['eeeditor.image.figcaption.placeholder'] ||
-        'eeeditor.image.figcaption.placeholder'
-      }
-      onMouseUp={stopPropagation}
-      onBlur={onFigcaptionTextareaBlur}
-      ref={figcaptionTextareaRef}
-    />
-  );
+  // const figcaptionTextarea = (
+  //   <textarea
+  //     className={`${prefixCls}-figcaption-textarea`}
+  //     placeholder={
+  //       locale['eeeditor.image.figcaption.placeholder'] ||
+  //       'eeeditor.image.figcaption.placeholder'
+  //     }
+  //     onMouseUp={stopPropagation}
+  //     onBlur={onFigcaptionTextareaBlur}
+  //     ref={figcaptionTextareaRef}
+  //   />
+  // );
 
   const imageCls = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-uploading`]: status !== 'success',
@@ -416,27 +409,12 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           }
         }}
       />
-      {(isFocused || figcaption || figcaptionTextareaVisible) && (
-        <Popover
-          content={figcaptionTextarea}
-          trigger={[]}
-          visible={figcaptionTextareaVisible}
-          // onVisibleChange={onTextareaVisibleChange}
-          overlayClassName={`${prefixCls}-figcaption-popover`}
-          // getPopupContainer={getPopupContainer}
-          align={{
-            points: ['tc', 'tc'],
-            offset: [0, 0],
-            targetOffset: [0, 0],
-          }}
-          transitionName=""
-        >
-          <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
-            {figcaption ||
-              locale['eeeditor.image.figcaption.placeholder'] ||
-              'eeeditor.image.figcaption.placeholder'}
-          </figcaption>
-        </Popover>
+      {(isFocused || figcaption) && (
+        <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
+          {figcaption ||
+            locale['eeeditor.image.figcaption.placeholder'] ||
+            'eeeditor.image.figcaption.placeholder'}
+        </figcaption>
       )}
     </>
   );
