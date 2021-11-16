@@ -114,9 +114,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const figcaption = blockData.get('figcaption');
   const size = blockData.get('size');
 
+  // image 状态
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
     src.startsWith('blob:') ? 'uploading' : 'success',
   );
+
+  // image figcaption popover 显示隐藏状态
+  const [figcaptionEditPopoverVisible, setFigcaptionEditPopoverVisible] =
+    useState<boolean>(false);
 
   const imgRef = useRef<HTMLImageElement>();
 
@@ -137,33 +142,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       store.unsubscribeFromItem('statusMap', onStatusMapChanged);
     };
   }, []);
-
-  //
-  // useEffect(() => {
-  //   if (focusable) {
-  //     reviseAtomicBlockSelection(
-  //       selection,
-  //       block,
-  //       status === 'success' ? imgRef.current : previewRef.current,
-  //     );
-  //   }
-  // });
-
-  // click 事件发生在 select 事件之后，eeeditor focus plugin 手动更改 原生 selection 放在 mouseup 事件内
-  // const handleImageClick = () => {
-  //   console.log('handleImageClick');
-  //   if (focusable) {
-  //     setFocusToBlock(
-  //       status === 'success' ? imgRef.current : previewRef.current,
-  //     );
-  //   }
-  // };
-
-  // focusable 为 true 时，防止 figcaption 和 figcaptionTextarea 的 mouseup 冒泡到
-  // 外层 wrapper 触发 mouseup 事件以 setFocusToBlock。
-  // const stopPropagation = (e: MouseEvent) => {
-  //   e.stopPropagation();
-  // };
 
   const retryUpload = async () => {
     const {
@@ -298,58 +276,30 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
     e.stopPropagation();
 
-    store.updateItem('figcaptionEditPopoverVisible', true);
     store.updateItem('getImageProps', getImageProps);
+    store.updateItem('figcaptionEditPopoverVisible', true);
+
+    setFigcaptionEditPopoverVisible(true);
   };
 
-  // const onTextareaVisibleChange = (visible: boolean) => {
-  //   console.log('onTextareaVisibleChange ', visible);
-  //   if (visible) {
-  //     // Q: 为什么需要在 figcaption textarea visible = true 时手动 blur editor ？
-  //     // readOnly 设置为 true 后，activeElement 已经不是 editor 了，只是 selectionState
-  //     // 内并没有同步过来，需要手动 blur
-  //     getEditorRef().blur();
-  //   }
+  const onFigcaptionEditPopoverVisibleChange = (visible: boolean) => {
+    if (!visible && figcaptionEditPopoverVisible) {
+      setFigcaptionEditPopoverVisible(false);
+    }
+  };
 
-  // };
-
-  // useEffect(() => {
-  //   console.log('image textareaVisile useEffect');
-  //   if (figcaptionTextareaVisible) {
-  //     // setReadOnly(true);
-  //     // 需要确保 textarea.select() 在 focusable block revise selection 之后执行
-  //     setTimeout(() => {
-  //       if (figcaptionTextareaRef.current) {
-  //         console.log('current activeElement ', document.activeElement);
-  //         console.log('figcaptionTextareaRef.current.select()');
-  //         figcaptionTextareaRef.current.select();
-  //         console.log('current activeElement ', document.activeElement);
-  //       }
-  //     }, 0);
-  //   }
-  // }, [figcaptionTextareaVisible]);
-
-  // const onFigcaptionTextareaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
-  //   console.log('onFigcaptionTextareaBlur');
-
-  //   setFigcaptionTextareaVisible(false);
-  //   setReadOnly(false);
-
-  //   // updateFigcaption(getEditorState(), e.target.value)
-  // };
-
-  // const figcaptionTextarea = (
-  //   <textarea
-  //     className={`${prefixCls}-figcaption-textarea`}
-  //     placeholder={
-  //       locale['eeeditor.image.figcaption.placeholder'] ||
-  //       'eeeditor.image.figcaption.placeholder'
-  //     }
-  //     onMouseUp={stopPropagation}
-  //     onBlur={onFigcaptionTextareaBlur}
-  //     ref={figcaptionTextareaRef}
-  //   />
-  // );
+  useEffect(() => {
+    store.subscribeToItem(
+      'figcaptionEditPopoverVisible',
+      onFigcaptionEditPopoverVisibleChange,
+    );
+    return () => {
+      store.unsubscribeFromItem(
+        'figcaptionEditPopoverVisible',
+        onFigcaptionEditPopoverVisibleChange,
+      );
+    };
+  }, [figcaptionEditPopoverVisible]);
 
   const imageCls = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-uploading`]: status !== 'success',
@@ -390,6 +340,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const figcaptionCls = classNames(`${prefixCls}-figcaption`, {
     [`${prefixCls}-figcaption-placeholder`]: !!!figcaption,
+    [`${prefixCls}-figcaption-is-editing`]: figcaptionEditPopoverVisible,
   });
 
   const imageLayout = (
@@ -398,18 +349,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         src={src}
         className={imageCls}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        onMouseUp={() => {
-          console.log('img mouseup');
-          if (document.querySelector('.public-DraftEditor-content')) {
-            console.log(
-              document
-                .querySelector('.public-DraftEditor-content')
-                .getAttribute('contenteditable'),
-            );
-          }
-        }}
       />
-      {(isFocused || figcaption) && (
+      {(isFocused || figcaption || figcaptionEditPopoverVisible) && (
         <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
           {figcaption ||
             locale['eeeditor.image.figcaption.placeholder'] ||

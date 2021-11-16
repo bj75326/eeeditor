@@ -8,12 +8,11 @@ import React, {
 } from 'react';
 import { Languages, Locale, zhCN, ImagePluginStore } from '..';
 import classNames from 'classnames';
+import { EEEditorContext, getEditorRootDomNode } from '@eeeditor/editor';
 import {
-  EEEditorContext,
-  getEditorRootDomNode,
-  getPopoverPosition,
+  getFigcaptionEditPopoverPosition,
   PopoverPosition,
-} from '@eeeditor/editor';
+} from '../utils/getFigcaptionEditPopoverPosition';
 
 export interface ImageFigcaptionEditPopoverProps {
   prefixCls?: string;
@@ -41,8 +40,7 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
   const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
 
   const popoverRef = useRef<HTMLDivElement>();
-
-  const styleRef = useRef<CSSProperties>({ top: 0, left: 0 });
+  const textareaRef = useRef<HTMLTextAreaElement>();
 
   const onStoredVisibleChange = (visible: boolean) => {
     // setPopoverVisible 触发重新渲染
@@ -64,10 +62,12 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
 
   const onFigcaptionTextareaBlur = () => {
     console.log('onFigcaptionTextareaBlur');
+    store.updateItem('figcaptionEditPopoverVisible', false);
 
-    setPopoverVisible(false);
+    // 更改
   };
 
+  // 获取 popover 位置
   useLayoutEffect(() => {
     if (popoverVisible) {
       const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
@@ -79,16 +79,21 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
         );
       const imageFigcaptionDom: HTMLElement =
         imageFigureDom.querySelector('figcaption');
-      let position: PopoverPosition = getPopoverPosition(
+      let position: PopoverPosition = getFigcaptionEditPopoverPosition(
         editorRoot,
         popoverRef.current,
         imageFigcaptionDom,
       );
+      // 直接更改 dom
+      popoverRef.current.style.top = `${position.top}px`;
+      popoverRef.current.style.left = `${position.left}px`;
+    }
+  }, [popoverVisible]);
 
-      styleRef.current = {
-        top: `${(position && position.top) || 0}px`,
-        left: `${(position && position.left) || 0}px`,
-      };
+  useEffect(() => {
+    // todo 为什么 useLayoutEffect 内获取焦点不起作用？
+    if (popoverVisible) {
+      textareaRef.current.select();
     }
   }, [popoverVisible]);
 
@@ -97,17 +102,14 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
   });
 
   return (
-    <div
-      className={popoverCls}
-      style={{ ...styleRef.current }}
-      ref={popoverRef}
-    >
+    <div className={popoverCls} ref={popoverRef}>
       <textarea
         className={`${prefixCls}-figcaption-textarea`}
         placeholder={
           locale['eeeditor.image.figcaption.placeholder'] ||
           'eeeditor.image.figcaption.placeholder'
         }
+        ref={textareaRef}
         onBlur={onFigcaptionTextareaBlur}
       />
     </div>

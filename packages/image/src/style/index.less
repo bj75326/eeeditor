@@ -75,8 +75,13 @@
   color: @image-figcaption-placeholder-color;
 }
 
+.@{prefix}-figcaption-is-editing {
+  opacity: 0;
+}
+
 .@{prefix}-figcaption-popover {
   width: @image-figcaption-width;
+  z-index: 2;
   position: absolute;
   box-sizing: border-box;
   margin: 0;
@@ -84,7 +89,7 @@
 }
 
 .@{prefix}-figcaption-popover-hidden {
-  // display: none;
+  display: none;
 }
 
 .@{prefix}-figcaption-textarea {
