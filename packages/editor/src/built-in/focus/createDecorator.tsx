@@ -137,12 +137,6 @@ export default ({ blockKeyStore, store }: DecoratorProps) =>
 
         const onMouseUp = (event: MouseEvent) => {
           console.log('onMouseUp run');
-          console.log(document.activeElement);
-
-          // test
-          if (!props.selection.getHasFocus()) {
-            getEditorRef().focus();
-          }
 
           setFocusToBlock();
         };
@@ -188,7 +182,14 @@ export default ({ blockKeyStore, store }: DecoratorProps) =>
           return false;
         }
 
-        //todo 比较 block data
+        // 比较 block data
+        console.log(
+          'prevProps.block !== nextProps.block ',
+          prevProps.block !== nextProps.block,
+        );
+        if (prevProps.block !== nextProps.block) {
+          return false;
+        }
 
         console.log('props are the same');
         return true;

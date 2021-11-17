@@ -4,15 +4,20 @@ import React, {
   useRef,
   useEffect,
   useLayoutEffect,
-  CSSProperties,
+  FocusEvent,
 } from 'react';
 import { Languages, Locale, zhCN, ImagePluginStore } from '..';
 import classNames from 'classnames';
-import { EEEditorContext, getEditorRootDomNode } from '@eeeditor/editor';
+import {
+  EEEditorContext,
+  getEditorRootDomNode,
+  EditorState,
+} from '@eeeditor/editor';
 import {
   getFigcaptionEditPopoverPosition,
   PopoverPosition,
 } from '../utils/getFigcaptionEditPopoverPosition';
+import updateFigcaption from '../modifiers/updateFigcaption';
 
 export interface ImageFigcaptionEditPopoverProps {
   prefixCls?: string;
@@ -26,7 +31,8 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
 ) => {
   const { prefixCls: customizePrefixCls, className, languages, store } = props;
 
-  const { getProps, getEditorRef } = store.getItem('imagePluginMethods');
+  const { getProps, getEditorRef, getEditorState, setEditorState } =
+    store.getItem('imagePluginMethods');
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -60,16 +66,26 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
     };
   }, []);
 
-  const onFigcaptionTextareaBlur = () => {
+  const onFigcaptionTextareaBlur = (e: FocusEvent) => {
     console.log('onFigcaptionTextareaBlur');
     store.updateItem('figcaptionEditPopoverVisible', false);
 
     // 更改
+    setEditorState(
+      updateFigcaption(
+        EditorState.forceSelection(
+          getEditorState(),
+          getEditorState().getSelection(),
+        ),
+        (e.target as HTMLTextAreaElement).value,
+      ),
+    );
   };
 
   // 获取 popover 位置
   useLayoutEffect(() => {
     if (popoverVisible) {
+      // 获取位置
       const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
       const { offsetKey } = store.getItem('getImageProps')();
 
@@ -84,15 +100,17 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
         popoverRef.current,
         imageFigcaptionDom,
       );
-      // 直接更改 dom
       popoverRef.current.style.top = `${position.top}px`;
       popoverRef.current.style.left = `${position.left}px`;
+
+      // 设置初始值
+      // todo
     }
   }, [popoverVisible]);
 
   useEffect(() => {
     // todo 为什么 useLayoutEffect 内获取焦点不起作用？
-    if (popoverVisible) {
+    if (popoverVisible && textareaRef.current) {
       textareaRef.current.select();
     }
   }, [popoverVisible]);

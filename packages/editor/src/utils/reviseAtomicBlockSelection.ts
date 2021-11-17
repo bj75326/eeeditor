@@ -75,8 +75,8 @@ export const reviseAtomicBlockSelection = (
   if (hasAnchor || hasFocus) {
     console.log('真的 revise 了');
     documentSelection.removeAllRanges();
-    addPointToSelection(documentSelection, targetNode, anchorOffset);
-    addFocusToSelection(documentSelection, targetNode, focusOffset);
+    addPointToSelection(documentSelection, targetNode, 0);
+    addFocusToSelection(documentSelection, targetNode, 0);
   }
 };
 
