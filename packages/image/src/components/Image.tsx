@@ -31,6 +31,7 @@ import {
   UploadProgressEvent,
   UploadRequestError,
 } from 'rc-upload/lib/interface';
+import addEventListener from 'rc-util/lib/Dom/addEventListener';
 
 export interface ImageProps {
   block: ContentBlock;
@@ -282,6 +283,40 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     setFigcaptionEditPopoverVisible(true);
   };
 
+  // showFigcaption 的作用是在焦点从 figcaption textarea 回到对应 image 上的时候
+  // 阻止 figcaption 闪烁一次
+  // onMouseDown (showFigcaption = true) --->
+  // figcaptionTextareaBlur (figcaptionTextareaVisible = false, showFigcaption = true) --->
+  // figcaptionTextareaBlur useEffect (figcaptionTextareaVisible = false, showFigcaption = false) --->
+  // onFocus (noop)
+  const showFigcaption = useRef<boolean>(false);
+
+  const onImageMouseDown = () => {
+    console.log('onImageMouseDown');
+    if (figcaptionEditPopoverVisible) {
+      showFigcaption.current = true;
+    }
+  };
+
+  useEffect(() => {
+    if (imgRef.current) {
+      const cleanOutsiderHandler = addEventListener(
+        imgRef.current.parentElement,
+        'mousedown',
+        onImageMouseDown,
+      );
+      return () => {
+        cleanOutsiderHandler.remove();
+      };
+    }
+  }, [figcaptionEditPopoverVisible]);
+
+  useEffect(() => {
+    if (!figcaptionEditPopoverVisible && showFigcaption.current) {
+      showFigcaption.current = false;
+    }
+  }, [figcaptionEditPopoverVisible]);
+
   const onFigcaptionEditPopoverVisibleChange = (visible: boolean) => {
     if (!visible && figcaptionEditPopoverVisible) {
       setFigcaptionEditPopoverVisible(false);
@@ -350,7 +385,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         className={imageCls}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
       />
-      {(isFocused || figcaption || figcaptionEditPopoverVisible) && (
+      {(isFocused ||
+        figcaption ||
+        figcaptionEditPopoverVisible ||
+        showFigcaption.current) && (
         <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
           {figcaption ||
             locale['eeeditor.image.figcaption.placeholder'] ||

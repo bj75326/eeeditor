@@ -85,9 +85,9 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
   // 获取 popover 位置
   useLayoutEffect(() => {
     if (popoverVisible) {
-      // 获取位置
+      // 设置位置
       const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-      const { offsetKey } = store.getItem('getImageProps')();
+      const { offsetKey, block } = store.getItem('getImageProps')();
 
       const imageFigureDom: HTMLElement =
         editorRoot.ownerDocument.querySelector(
@@ -104,7 +104,9 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
       popoverRef.current.style.left = `${position.left}px`;
 
       // 设置初始值
-      // todo
+      if (textareaRef.current) {
+        textareaRef.current.value = block.getData().get('figcaption') || '';
+      }
     }
   }, [popoverVisible]);
 
