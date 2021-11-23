@@ -91,14 +91,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
-  const {
-    getReadOnly,
-    setReadOnly,
-    getEditorState,
-    setEditorState,
-    getEditorRef,
-    getProps,
-  } = store.getItem('imagePluginMethods');
+  const { getEditorState } = store.getItem('imagePluginMethods');
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
@@ -288,7 +281,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // onMouseDown (showFigcaption = true) --->
   // figcaptionTextareaBlur (figcaptionTextareaVisible = false, showFigcaption = true) --->
   // figcaptionTextareaBlur useEffect (figcaptionTextareaVisible = false, showFigcaption = false) --->
-  // onFocus (noop)
+  // onFocus (另外处理)
   const showFigcaption = useRef<boolean>(false);
 
   const onImageMouseDown = () => {
@@ -300,6 +293,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   useEffect(() => {
     if (imgRef.current) {
+      console.log(
+        'imgRef.current.parentElement ',
+        imgRef.current.parentElement,
+      );
       const cleanOutsiderHandler = addEventListener(
         imgRef.current.parentElement,
         'mousedown',
@@ -312,10 +309,19 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   }, [figcaptionEditPopoverVisible]);
 
   useEffect(() => {
-    if (!figcaptionEditPopoverVisible && showFigcaption.current) {
+    if (showFigcaption.current) {
       showFigcaption.current = false;
     }
-  }, [figcaptionEditPopoverVisible]);
+  }, [getEditorState().getSelection().getHasFocus()]);
+
+  const shouldShowFigcaption = (): boolean => {
+    return (
+      isFocused || // blockProps.isFocused, focus plugin 提供
+      figcaption || // block data
+      figcaptionEditPopoverVisible || // 当 figcaption edit popover 显示时占位
+      showFigcaption.current
+    ); // 点击当前 image 使 figcaption edit textarea 失去焦点时，避免 figcaption 闪烁
+  };
 
   const onFigcaptionEditPopoverVisibleChange = (visible: boolean) => {
     if (!visible && figcaptionEditPopoverVisible) {
@@ -385,10 +391,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         className={imageCls}
         alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
       />
-      {(isFocused ||
-        figcaption ||
-        figcaptionEditPopoverVisible ||
-        showFigcaption.current) && (
+      {shouldShowFigcaption() && (
         <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
           {figcaption ||
             locale['eeeditor.image.figcaption.placeholder'] ||
