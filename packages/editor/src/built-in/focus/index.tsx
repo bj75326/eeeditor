@@ -179,13 +179,14 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return 'not-handled';
     },
 
-    onChange: (editorState, { getEditorState }) => {
+    onChange: (editorState) => {
       // in case the content changed there is no need to re-render blockRendererFn
       // since if a block was added it will be rendered anyway and if it was text
       // then the change was not a pure selection change
       const contentState = editorState.getCurrentContent();
       if (!contentState.equals(lastContentState!)) {
         lastContentState = contentState;
+        console.log(1);
         return editorState;
       }
       lastContentState = contentState;
@@ -194,6 +195,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       const selection = editorState.getSelection();
       if (lastSelection && selection.equals(lastSelection)) {
         lastSelection = editorState.getSelection();
+        console.log(2);
         return editorState;
       }
 
@@ -202,9 +204,10 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       // shouldComponentUpdate 直接返回 true。
       // 另外，forceSelection 会强制更改 hasFocus 为 true，使得 blur 发生时，focusable block 状态出现 bug
       if (
-        !selection.getHasFocus() &&
-        getEditorState().getSelection().getHasFocus()
+        !selection.getHasFocus()
+        // && getEditorState().getSelection().getHasFocus()
       ) {
+        console.log(3);
         return editorState;
       }
 
@@ -221,6 +224,7 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
           lastSelection = selection;
           // By forcing the selection the editor will trigger the blockRendererFn which is
           // necessary for the blockProps containing isFocus to be passed down again.
+          console.log(4);
           return EditorState.forceSelection(
             editorState,
             editorState.getSelection(),
@@ -239,12 +243,13 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
         lastSelection = selection;
         // By forcing the selection the editor will trigger the blockRendererFn which is
         // necessary for the blockProps containing isFocus to be passed down again.
+        console.log(5);
         return EditorState.forceSelection(
           editorState,
           editorState.getSelection(),
         );
       }
-
+      console.log(6);
       return editorState;
     },
 

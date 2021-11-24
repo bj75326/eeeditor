@@ -37,16 +37,12 @@ export const reviseAtomicBlockSelection = (
   targetNode: Node,
 ) => {
   if (selection == null || !selection.getHasFocus()) {
-    return;
-  }
-
-  const blockKey = block.getKey();
-
-  if (!selection.hasEdgeWithin(blockKey, 0, 0)) {
+    console.log('因为 getHasFoucs() === false 不进行 revise');
     return;
   }
 
   if (!containsNode(document.documentElement, targetNode)) {
+    console.log('因为 containsNode 不进行 revise');
     return;
   }
 
@@ -56,6 +52,18 @@ export const reviseAtomicBlockSelection = (
   let focusKey = selection.getFocusKey();
   let focusOffset = selection.getFocusOffset();
   let isBackward = selection.getIsBackward();
+
+  const blockKey = block.getKey();
+
+  // if (!selection.hasEdgeWithin(blockKey, 0, 0)) {
+  //   console.log('因为 hasEdgeWithin 不进行revise')
+  //   return;
+  // }
+
+  if (blockKey !== anchorKey && blockKey !== focusKey) {
+    console.log('因为 no hasEdgeWithin 不进行 revise');
+    return;
+  }
 
   // IE doesn't support backward selection. Swap key/offset pairs.
   // eeeditor 将不支持 IE, 暂时保留

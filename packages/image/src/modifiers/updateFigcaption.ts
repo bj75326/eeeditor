@@ -28,6 +28,7 @@ const updateFigcaption = (
     //   }),
     // ),
     withBlured,
+    // afterMergeBlockData,
     'change-block-data',
   );
 };
