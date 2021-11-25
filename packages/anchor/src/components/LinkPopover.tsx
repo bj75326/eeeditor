@@ -68,7 +68,7 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
   const handlePopoverMouseEnter = store.getItem('onPopoverMouseEnter');
   const handlePopoverMouseLeave = store.getItem('onPopoverMouseLeave');
 
-  const [popoverVisible, setPopoverVisible]: [boolean, any] = useState(false);
+  const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
 
   const popoverRef = useRef<HTMLDivElement>();
 
