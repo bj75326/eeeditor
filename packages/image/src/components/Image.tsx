@@ -268,7 +268,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const onFigcaptionMouseUp = (e: MouseEvent) => {
     console.log('onFigcaptionMouseUp');
 
-    e.stopPropagation();
+    // focusable block selection offset 应该被限制在固定位置0
+    // e.stopPropagation();
 
     store.updateItem('getImageProps', getImageProps);
     store.updateItem('figcaptionEditPopoverVisible', true);

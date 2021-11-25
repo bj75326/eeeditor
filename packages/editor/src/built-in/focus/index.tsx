@@ -111,12 +111,11 @@ type FocusEditorPlugin = EditorPlugin & {
 
 export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
   const blockKeyStore = createBlockKeyStore();
-  let lastSelection: SelectionState | undefined;
-  let lastContentState: ContentState | undefined;
+  // let lastSelection: SelectionState | undefined;
+  // let lastContentState: ContentState | undefined;
 
   // onFocus 事件导致的 editorState 变化不应该影响 focusable block 的 isFocused 值变化
   let withMouseDown: boolean = false;
-  let preventIsFocusedChange: boolean = false;
 
   const store = createStore<StoreItemMap>();
 
@@ -179,77 +178,143 @@ export default (config: FocusEditorPluginConfig = {}): FocusEditorPlugin => {
       return 'not-handled';
     },
 
-    onChange: (editorState) => {
-      // in case the content changed there is no need to re-render blockRendererFn
-      // since if a block was added it will be rendered anyway and if it was text
-      // then the change was not a pure selection change
-      const contentState = editorState.getCurrentContent();
-      if (!contentState.equals(lastContentState!)) {
-        lastContentState = contentState;
+    // lastContentState lastSelection 逻辑不易理解，作废
+    // onChange: (editorState) => {
+    //   // in case the content changed there is no need to re-render blockRendererFn
+    //   // since if a block was added it will be rendered anyway and if it was text
+    //   // then the change was not a pure selection change
+    //   const contentState = editorState.getCurrentContent();
+    //   if (!contentState.equals(lastContentState!)) {
+    //     lastContentState = contentState;
+    //     console.log(1);
+    //     return editorState;
+    //   }
+    //   lastContentState = contentState;
+
+    //   // if the selection didn't change there is no need to re-render
+    //   const selection = editorState.getSelection();
+
+    //   if (lastSelection && selection.equals(lastSelection)) {
+    //     lastSelection = selection;
+    //     console.log(2);
+    //     return editorState;
+    //   }
+
+    //   // editor blur 时不需要使用 forceSelection 强制 re-render 以触发 blockRendererFn
+    //   // 参考 DraftEditorContents shouldComponentUpdate 方法，当 hasFocus 发生变化时，
+    //   // shouldComponentUpdate 直接返回 true。
+    //   // 另外，forceSelection 会强制更改 hasFocus 为 true，使得 blur 发生时，focusable block 状态出现 bug
+    //   if (
+    //     !selection.getHasFocus()
+    //     // && getEditorState().getSelection().getHasFocus()
+    //   ) {
+    //     console.log(3);
+    //     return editorState;
+    //   }
+
+    //   // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
+    //   // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
+    //   const focusableBlockKeys = blockKeyStore.getAll();
+    //   if (lastSelection) {
+    //     const lastBlockMapKeys = getBlockMapKeys(
+    //       contentState,
+    //       lastSelection.getStartKey(),
+    //       lastSelection.getEndKey(),
+    //     );
+    //     if (lastBlockMapKeys.some((key) => focusableBlockKeys.includes(key!))) {
+    //       lastSelection = selection;
+    //       // By forcing the selection the editor will trigger the blockRendererFn which is
+    //       // necessary for the blockProps containing isFocus to be passed down again.
+    //       console.log(4);
+    //       return EditorState.forceSelection(
+    //         editorState,
+    //         editorState.getSelection(),
+    //       );
+    //     }
+    //   }
+
+    //   const currentBlockMapKeys = getBlockMapKeys(
+    //     contentState,
+    //     selection.getStartKey(),
+    //     selection.getEndKey(),
+    //   );
+    //   if (
+    //     currentBlockMapKeys.some((key) => focusableBlockKeys.includes(key!))
+    //   ) {
+    //     lastSelection = selection;
+    //     // By forcing the selection the editor will trigger the blockRendererFn which is
+    //     // necessary for the blockProps containing isFocus to be passed down again.
+    //     console.log(5);
+    //     return EditorState.forceSelection(
+    //       editorState,
+    //       editorState.getSelection(),
+    //     );
+    //   }
+    //   console.log(6);
+    //   return editorState;
+    // },
+
+    onChange: (editorState, { getEditorState }) => {
+      // focus plugin onChange 的作用是在 contentState 没有变化 selectionState 有变化时，如果有 focusable
+      // block 新增被选中或者被不选中，需要通过 forceSelection 强制刷新，使 blockRendererFn 执行计算得到新的
+      // blockProps.isFocused。
+
+      const nextContentState = editorState.getCurrentContent();
+      const nextSelection = editorState.getSelection();
+
+      const currContentState = getEditorState().getCurrentContent();
+      const currSelection = getEditorState().getSelection();
+
+      // 当 contentState 发生变化时，直接返回新的 editorState
+      if (!nextContentState.equals(currContentState)) {
         console.log(1);
         return editorState;
       }
-      lastContentState = contentState;
 
-      // if the selection didn't change there is no need to re-render
-      const selection = editorState.getSelection();
-      if (lastSelection && selection.equals(lastSelection)) {
-        lastSelection = editorState.getSelection();
+      // 当 selectionState 没有变化时，直接返回新的 editorState
+      if (nextSelection.equals(currSelection)) {
         console.log(2);
         return editorState;
       }
 
-      // editor blur 时不需要使用 forceSelection 强制 re-render 以触发 blockRendererFn
-      // 参考 DraftEditorContents shouldComponentUpdate 方法，当 hasFocus 发生变化时，
-      // shouldComponentUpdate 直接返回 true。
-      // 另外，forceSelection 会强制更改 hasFocus 为 true，使得 blur 发生时，focusable block 状态出现 bug
-      if (
-        !selection.getHasFocus()
-        // && getEditorState().getSelection().getHasFocus()
-      ) {
+      // 当 editor 失去焦点时，直接返回新的 editorState。hasFocus 的变化，
+      // DraftEditorContents shouldComponentUpdate 一定会返回 true
+      if (!nextSelection.getHasFocus()) {
         console.log(3);
         return editorState;
       }
 
-      // contentState 没有变化，但 selectionState 发生变化时，只有在 lastSelection 或者
-      // 当前 selection 包含 focusable block 时，需要通过 forceSelection 重新触发 blockRendererFn
       const focusableBlockKeys = blockKeyStore.getAll();
-      if (lastSelection) {
-        const lastBlockMapKeys = getBlockMapKeys(
-          contentState,
-          lastSelection.getStartKey(),
-          lastSelection.getEndKey(),
-        );
-        if (lastBlockMapKeys.some((key) => focusableBlockKeys.includes(key!))) {
-          lastSelection = selection;
-          // By forcing the selection the editor will trigger the blockRendererFn which is
-          // necessary for the blockProps containing isFocus to be passed down again.
-          console.log(4);
-          return EditorState.forceSelection(
-            editorState,
-            editorState.getSelection(),
-          );
-        }
-      }
 
-      const currentBlockMapKeys = getBlockMapKeys(
-        contentState,
-        selection.getStartKey(),
-        selection.getEndKey(),
+      const nextSelectedBlockMapKeys = getBlockMapKeys(
+        nextContentState,
+        nextSelection.getStartKey(),
+        nextSelection.getEndKey(),
       );
+
+      const currSelectedBlockMapKeys = getBlockMapKeys(
+        currContentState,
+        currSelection.getStartKey(),
+        currSelection.getEndKey(),
+      );
+
+      // 存在被选中的 focusable block 之前没有被选中，或者，存在之前被选中的 focusable block 没有被选中
       if (
-        currentBlockMapKeys.some((key) => focusableBlockKeys.includes(key!))
+        nextSelectedBlockMapKeys.some(
+          (key) =>
+            focusableBlockKeys.includes(key) &&
+            !currSelectedBlockMapKeys.includes(key),
+        ) ||
+        currSelectedBlockMapKeys.some(
+          (key) =>
+            focusableBlockKeys.includes(key) &&
+            !nextSelectedBlockMapKeys.includes(key),
+        )
       ) {
-        lastSelection = selection;
-        // By forcing the selection the editor will trigger the blockRendererFn which is
-        // necessary for the blockProps containing isFocus to be passed down again.
-        console.log(5);
-        return EditorState.forceSelection(
-          editorState,
-          editorState.getSelection(),
-        );
+        console.log(4);
+        return EditorState.forceSelection(editorState, nextSelection);
       }
-      console.log(6);
+      console.log(5);
       return editorState;
     },
 
