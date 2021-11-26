@@ -320,8 +320,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       isFocused || // blockProps.isFocused, focus plugin 提供
       figcaption || // block data
       figcaptionEditPopoverVisible || // 当 figcaption edit popover 显示时占位
-      showFigcaption.current
-    ); // 点击当前 image 使 figcaption edit textarea 失去焦点时，避免 figcaption 闪烁
+      showFigcaption.current // 点击当前 image 使 figcaption edit textarea 失去焦点时，避免 figcaption 闪烁
+    );
   };
 
   const onFigcaptionEditPopoverVisibleChange = (visible: boolean) => {
@@ -342,6 +342,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       );
     };
   }, [figcaptionEditPopoverVisible]);
+
+  // todo
+  useEffect(() => {
+    store.updateItem('toolbarPopoverVisible', isFocused);
+  }, [isFocused]);
 
   const imageCls = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-uploading`]: status !== 'success',

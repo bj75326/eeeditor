@@ -27,6 +27,9 @@ import classNames from 'classnames';
 import DefaultImageFigcaptionEditPopover, {
   ImageFigcaptionEditPopoverProps,
 } from './components/ImageFigcaptionEditPopover';
+import DefaultImageToolbarPopover, {
+  ImageToolbarPopoverProps,
+} from './components/ImageToolbarPopover';
 
 export * from './locale';
 
@@ -101,6 +104,7 @@ interface ImagePluginConfig {
   prefixCls?: string;
   imageClassName?: string;
   imageFigcaptionEditPopoverCls?: string;
+  imageToolbarPopoverCls?: string;
   entityType?: string;
   decorator?: unknown;
   focusable?: boolean;
@@ -110,6 +114,7 @@ interface ImagePluginConfig {
     ImageButtonProps & ImageButtonExtraProps
   >;
   imageFigcaptionEditPopoverComponent?: ComponentType<ImageFigcaptionEditPopoverProps>;
+  imageToolbarPopoverComponent?: ComponentType<ImageToolbarPopoverProps>;
 }
 
 // todo 开发使用配置 必须删除！！！
@@ -300,6 +305,7 @@ const createImagePlugin = ({
   prefixCls,
   imageClassName,
   imageFigcaptionEditPopoverCls,
+  imageToolbarPopoverCls,
   entityType = 'image',
   decorator,
   focusable = true,
@@ -309,6 +315,8 @@ const createImagePlugin = ({
   imageButtonComponent: ImageButtonComponent = DefaultImageButton,
   imageFigcaptionEditPopoverComponent:
     ImageFigcaptionEditPopoverComponent = DefaultImageFigcaptionEditPopover,
+  imageToolbarPopoverComponent:
+    ImageToolbarPopoverComponent = DefaultImageToolbarPopover,
 }: ImagePluginConfig): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
@@ -372,6 +380,15 @@ const createImagePlugin = ({
     />
   );
 
+  const ImageToolbarPopover: React.FC = () => (
+    <ImageToolbarPopoverComponent
+      prefixCls={prefixCls}
+      className={imageToolbarPopoverCls}
+      languages={languages}
+      store={store}
+    />
+  );
+
   const isImageBlock = (
     block: ContentBlock,
     editorState: EditorState,
@@ -424,7 +441,12 @@ const createImagePlugin = ({
 
     ImageButton,
 
-    suffix: () => <ImageFigcaptionEditPopover />,
+    suffix: () => (
+      <>
+        <ImageFigcaptionEditPopover />
+        <ImageToolbarPopover />
+      </>
+    ),
   };
 };
 
