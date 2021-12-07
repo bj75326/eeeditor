@@ -6,6 +6,8 @@ import {
   PluginMethods,
   focusDecorator,
   BlockFocusDecoratorProps,
+  ToolbarPopover,
+  ToolbarPopoverProps,
 } from '@eeeditor/editor';
 import lang, { Languages, zhCN, Locale } from './locale';
 import {
@@ -27,9 +29,12 @@ import classNames from 'classnames';
 import DefaultImageFigcaptionEditPopover, {
   ImageFigcaptionEditPopoverProps,
 } from './components/ImageFigcaptionEditPopover';
-import DefaultImageToolbarPopover, {
-  ImageToolbarPopoverProps,
-} from './components/ImageToolbarPopover';
+import {
+  defaultAlignCenterIcon,
+  defaultAlignLeftIcon,
+  defaultAlignRightIcon,
+} from '@eeeditor/buttons';
+import { Tooltip } from 'antd';
 
 export * from './locale';
 
@@ -37,7 +42,7 @@ export interface ImageEntityData {
   src?: string;
 }
 
-export interface ImagePluginMethods extends PluginMethods {
+export interface ImagePluginMethods {
   addImage: (
     editorState: EditorState,
     data: ImageEntityData,
@@ -52,6 +57,7 @@ export interface ImagePluginMethods extends PluginMethods {
 
 export interface StoreItemMap {
   imagePluginMethods?: ImagePluginMethods;
+  pluginMethods?: PluginMethods;
   // entityKeyMap 用来存储 uid 与其对应的 entityKey
   entityKeyMap?: Record<string, string>;
   // fileMap 用来存储 entity 与其对应的 Rcfile
@@ -60,10 +66,12 @@ export interface StoreItemMap {
   statusMap?: Record<string, 'uploading' | 'success' | 'error'>;
   // 控制 figcaption edit popover 的显示隐藏
   figcaptionEditPopoverVisible?: boolean;
-  // edit popover
-  getImageProps?: () => Partial<ImageProps>;
+
   // 控制 toolbar popover 的显示隐藏
   toolbarPopoverVisible?: boolean;
+
+  // 获取 image block props
+  getBlockProps?: () => Partial<ImageProps>;
 }
 
 export type ImagePluginStore = Store<StoreItemMap>;
@@ -75,26 +83,38 @@ export type ImageUploadProps<T = any> = Pick<
 > & {
   action?:
     | string
-    | ((file: RcFile, imagePluginMethods: ImagePluginMethods) => string)
     | ((
         file: RcFile,
         imagePluginMethods: ImagePluginMethods,
+        pluginMethods: PluginMethods,
+      ) => string)
+    | ((
+        file: RcFile,
+        imagePluginMethods: ImagePluginMethods,
+        pluginMethods: PluginMethods,
       ) => PromiseLike<string>);
   data?:
     | object
-    | ((file: UploadFile<T>, imagePluginMethods: ImagePluginMethods) => object);
+    | ((
+        file: UploadFile<T>,
+        imagePluginMethods: ImagePluginMethods,
+        pluginMethods: PluginMethods,
+      ) => object);
   customRequest?: (
     options: RcCustomRequestOptions,
     imagePluginMethods: ImagePluginMethods,
+    pluginMethods: PluginMethods,
   ) => void;
   beforeUpload?: (
     file: RcFile,
-    FileList: RcFile[],
+    fileList: RcFile[],
     imagePluginMethdos: ImagePluginMethods,
+    pluginMethods: PluginMethods,
   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
   onChange?: (
     info: UploadChangeParam,
     imagePluginMethods: ImagePluginMethods,
+    pluginMethods: PluginMethods,
   ) => void;
   imagePath?: string[];
 };
@@ -114,7 +134,7 @@ interface ImagePluginConfig {
     ImageButtonProps & ImageButtonExtraProps
   >;
   imageFigcaptionEditPopoverComponent?: ComponentType<ImageFigcaptionEditPopoverProps>;
-  imageToolbarPopoverComponent?: ComponentType<ImageToolbarPopoverProps>;
+  imageToolbarPopoverComponent?: ComponentType<ToolbarPopoverProps>;
 }
 
 // todo 开发使用配置 必须删除！！！
@@ -167,15 +187,12 @@ const getUploadProps = (
   languages: Languages,
 ): UploadProps => {
   const imagePluginMethods = store.getItem('imagePluginMethods');
-  const {
-    getEditorState,
-    setEditorState,
-    getProps,
-    getEditorRef,
-    addImage,
-    updateImage,
-  } = imagePluginMethods;
-  const { prefixCls, locale: currLocale } = getProps();
+  const pluginMethods = store.getItem('pluginMethods');
+  const { addImage, updateImage } = imagePluginMethods;
+  const { getEditorState, setEditorState, getProps, getEditorRef } =
+    pluginMethods;
+
+  const { locale: currLocale } = getProps();
   let locale: Locale = zhCN;
   if (currLocale && languages) {
     locale = languages[currLocale] || zhCN;
@@ -204,7 +221,12 @@ const getUploadProps = (
       let transformedFile: BeforeUploadValueType = file;
       if (beforeUpload) {
         try {
-          transformedFile = await beforeUpload(file, _, imagePluginMethods);
+          transformedFile = await beforeUpload(
+            file,
+            _,
+            imagePluginMethods,
+            pluginMethods,
+          );
         } catch (e) {
           // Rejection will also trade as false
           transformedFile = false;
@@ -217,7 +239,12 @@ const getUploadProps = (
       let transformedFile: BeforeUploadValueType = file;
       if (beforeUpload) {
         try {
-          transformedFile = await beforeUpload(file, _, imagePluginMethods);
+          transformedFile = await beforeUpload(
+            file,
+            _,
+            imagePluginMethods,
+            pluginMethods,
+          );
         } catch (e) {
           // Rejection will also trade as false
           transformedFile = false;
@@ -241,7 +268,7 @@ const getUploadProps = (
 
   uploadProps.onChange = (info: UploadChangeParam) => {
     if (onChange) {
-      onChange(info, imagePluginMethods);
+      onChange(info, imagePluginMethods, pluginMethods);
     }
     const statusMap = store.getItem('statusMap');
     if (info.file.status === 'done' || info.file.status === 'success') {
@@ -285,17 +312,18 @@ const getUploadProps = (
     uploadProps.action =
       typeof action === 'string'
         ? action
-        : (file: RcFile) => action(file, imagePluginMethods) as string;
+        : (file: RcFile) =>
+            action(file, imagePluginMethods, pluginMethods) as string;
   }
   if (data) {
     uploadProps.data =
       typeof data === 'object'
         ? data
-        : (file: UploadFile) => data(file, imagePluginMethods);
+        : (file: UploadFile) => data(file, imagePluginMethods, pluginMethods);
   }
   if (customRequest) {
     uploadProps.customRequest = (options: RcCustomRequestOptions) =>
-      customRequest(options, imagePluginMethods);
+      customRequest(options, imagePluginMethods, pluginMethods);
   }
 
   return uploadProps as UploadProps;
@@ -315,8 +343,7 @@ const createImagePlugin = ({
   imageButtonComponent: ImageButtonComponent = DefaultImageButton,
   imageFigcaptionEditPopoverComponent:
     ImageFigcaptionEditPopoverComponent = DefaultImageFigcaptionEditPopover,
-  imageToolbarPopoverComponent:
-    ImageToolbarPopoverComponent = DefaultImageToolbarPopover,
+  imageToolbarPopoverComponent: ImageToolbarPopoverComponent = ToolbarPopover,
 }: ImagePluginConfig): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
@@ -380,15 +407,6 @@ const createImagePlugin = ({
     />
   );
 
-  const ImageToolbarPopover: React.FC = () => (
-    <ImageToolbarPopoverComponent
-      prefixCls={prefixCls}
-      className={imageToolbarPopoverCls}
-      languages={languages}
-      store={store}
-    />
-  );
-
   const isImageBlock = (
     block: ContentBlock,
     editorState: EditorState,
@@ -405,10 +423,11 @@ const createImagePlugin = ({
   return {
     initialize(pluginMethods: PluginMethods) {
       store.updateItem('imagePluginMethods', {
-        ...pluginMethods,
         addImage,
         updateImage,
       });
+
+      store.updateItem('pluginMethods', pluginMethods);
 
       uploadProps = getUploadProps(imageUploadProps, store, false, languages);
       retryUploadProps = getUploadProps(
@@ -441,12 +460,50 @@ const createImagePlugin = ({
 
     ImageButton,
 
-    suffix: () => (
-      <>
-        <ImageFigcaptionEditPopover />
-        <ImageToolbarPopover />
-      </>
-    ),
+    suffix: () => {
+      const { getProps } = store.getItem('pluginMethods');
+      let locale: Locale = zhCN;
+      if (getProps && languages) {
+        const { locale: currLocale } = getProps();
+        locale = languages[currLocale] || zhCN;
+      }
+
+      // todo
+      // const getTipTitle = (): ReactNode => (
+      //   <span className={`${prefixCls}-tip`}>
+
+      //   </span>
+      // );
+
+      return focusable ? (
+        <>
+          <ImageFigcaptionEditPopover />
+
+          <ImageToolbarPopoverComponent
+            prefixCls={prefixCls}
+            className={imageToolbarPopoverCls}
+            store={store}
+          >
+            {[
+              {
+                type: 'left',
+                icon: defaultAlignLeftIcon,
+              },
+              {
+                type: 'center',
+                icon: defaultAlignCenterIcon,
+              },
+              {
+                type: 'right',
+                icon: defaultAlignRightIcon,
+              },
+            ].map(({ type, icon }) => (
+              <Tooltip title={locale[`eeeditor.image.align.${type}`]}></Tooltip>
+            ))}
+          </ImageToolbarPopoverComponent>
+        </>
+      ) : null;
+    },
   };
 };
 

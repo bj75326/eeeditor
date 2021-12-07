@@ -22,8 +22,7 @@ import {
   ImagePluginStore,
   BeforeUploadValueType,
 } from '..';
-import updateFigcaption from '../modifiers/updateFigcaption';
-import { UploadProps, Button, Popover } from 'antd';
+import { UploadProps, Button } from 'antd';
 import { file2Obj } from 'antd/lib/upload/utils';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
 import request from 'rc-upload/lib/request';
@@ -45,7 +44,7 @@ export interface ImageProps {
   decorator: unknown;
   direction: unknown;
   forceSelection: unknown;
-  offsetKey: unknown;
+  offsetKey: string;
   selection: SelectionState;
   tree: unknown;
   contentState: ContentState;
@@ -91,7 +90,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     ...elementProps
   } = otherProps;
 
-  const { getEditorState } = store.getItem('imagePluginMethods');
+  const { getEditorState } = store.getItem('pluginMethods');
 
   const { getPrefixCls, locale: currLocale } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('image', customizePrefixCls);
@@ -121,6 +120,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
+
+  // 传递给各个 popover 的数据
+  const imagePropsRef = useRef<Partial<ImageProps>>();
+  imagePropsRef.current = {
+    block,
+    offsetKey,
+  };
+  const getImageProps = () => imagePropsRef.current;
 
   const onStatusMapChanged = (
     statusMap: Record<string, 'uploading' | 'error' | 'success'>,
@@ -260,18 +267,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
   };
 
-  const getImageProps = () => ({
-    block,
-    offsetKey,
-  });
-
   const onFigcaptionMouseUp = (e: MouseEvent) => {
     console.log('onFigcaptionMouseUp');
 
     // focusable block selection offset 应该被限制在固定位置0
     // e.stopPropagation();
 
-    store.updateItem('getImageProps', getImageProps);
+    store.updateItem('getBlockProps', getImageProps);
     store.updateItem('figcaptionEditPopoverVisible', true);
 
     setFigcaptionEditPopoverVisible(true);
@@ -343,8 +345,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, [figcaptionEditPopoverVisible]);
 
-  // todo
+  // isFocused 的变化改变 image toolbar popover 的显隐状态
   useEffect(() => {
+    store.updateItem('getBlockProps', getImageProps);
     store.updateItem('toolbarPopoverVisible', isFocused);
   }, [isFocused]);
 

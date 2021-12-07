@@ -3,43 +3,52 @@ import React, {
   useEffect,
   useState,
   useRef,
-  CSSProperties,
+  ReactElement,
 } from 'react';
-import { Languages, Locale, zhCN, ImagePluginStore } from '..';
 import classNames from 'classnames';
-import { EEEditorContext, getEditorRootDomNode } from '@eeeditor/editor';
-import { Tooltip } from 'antd';
+import {
+  EEEditorContext,
+  getEditorRootDomNode,
+  getPopoverPosition,
+  PopoverPosition,
+  getPopoverPlacement,
+  PluginMethods,
+  ContentBlock,
+} from '..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
+import { Store } from '@draft-js-plugins/utils';
 
-export interface ImageToolbarPopoverProps {
+export interface ToolbarPopoverProps {
   prefixCls?: string;
   className?: string;
-  languages?: Languages;
-  store?: ImagePluginStore;
+  store: Store<{
+    // 控制显示隐藏
+    toolbarPopoverVisible?: boolean;
+    pluginMethods?: PluginMethods;
+    // atomic block props
+    getBlockProps?: () => {
+      offsetKey?: string;
+      block?: ContentBlock;
+    };
+  }>;
+  children?: ReactElement | ReactElement[];
 }
 
-const ImageToolbarPopover: React.FC<ImageToolbarPopoverProps> = (props) => {
-  const { prefixCls: customizePrefixCls, className, languages, store } = props;
+export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
+  const { prefixCls: customizePrefixCls, className, store, children } = props;
 
-  const { getProps, getEditorRef } = store.getItem('imagePluginMethods');
-
-  let locale: Locale = zhCN;
-  if (getProps && languages) {
-    const { locale: currLocale } = getProps();
-    locale = languages[currLocale] || zhCN;
-  }
+  const { getEditorRef } = store.getItem('pluginMethods');
 
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
   const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
 
+  const [position, setPosition] = useState<PopoverPosition>();
+  const [placement, setPlacement] = useState<'top' | 'bottom'>();
+
   const popoverRef = useRef<HTMLDivElement>();
-
-  const arrowPositionRef = useRef<'top' | 'bottom'>('top');
-
-  const styleRef = useRef<CSSProperties>({});
 
   // 监听 stored visible 变化改变来控制 popover 显示隐藏
   const onStoredVisibleChange = (visible: boolean) => {
@@ -55,8 +64,22 @@ const ImageToolbarPopover: React.FC<ImageToolbarPopoverProps> = (props) => {
 
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
     const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
+    const { offsetKey } = store.getItem('getBlockProps')();
+    const target: HTMLElement = editorRoot.ownerDocument.querySelector(
+      `figure[data-offset-key="${offsetKey}"]`,
+    ).firstChild as HTMLElement;
 
-    const { offsetKey, block } = store.getItem('getImageProps')();
+    const placement = getPopoverPlacement(target);
+    setPlacement(placement);
+
+    // styleRef.current = {
+    //   ...styleRef.current,
+    //   transformOrigin: `50% ${popoverElement.offsetHeight + 4} `,
+    // };
+
+    setPosition(
+      getPopoverPosition(editorRoot, popoverElement, target, placement),
+    );
   };
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
@@ -66,12 +89,6 @@ const ImageToolbarPopover: React.FC<ImageToolbarPopoverProps> = (props) => {
     `${prefixCls}-image-toolbar-popover`,
     className,
   );
-
-  const arrowCls = classNames(`${prefixCls}-popover-arrow`, {
-    [`${prefixCls}-popover-arrow-top`]: arrowPositionRef.current === 'top',
-    [`${prefixCls}-popover-arrow-bottom`]:
-      arrowPositionRef.current === 'bottom',
-  });
 
   return (
     <CSSMotion
@@ -88,15 +105,13 @@ const ImageToolbarPopover: React.FC<ImageToolbarPopoverProps> = (props) => {
           className={classNames(toolbarPopoverCls, className)}
           style={{
             ...style,
-            ...styleRef.current,
+            top: `${(position && position.top) || 0}px`,
+            left: `${(position && position.left) || 0}px`,
           }}
           ref={motionRef}
         >
           <div className={`${prefixCls}-popover-content`}>
-            <div className={arrowCls}>
-              <span className={`${prefixCls}-popover-arrow-content`} />
-            </div>
-            <div className={`${prefixCls}-popover-inner`}></div>
+            <div className={`${prefixCls}-popover-inner`}>{children}</div>
           </div>
         </div>
       )}
@@ -104,4 +119,4 @@ const ImageToolbarPopover: React.FC<ImageToolbarPopoverProps> = (props) => {
   );
 };
 
-export default ImageToolbarPopover;
+export default ToolbarPopover;

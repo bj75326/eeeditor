@@ -7,4 +7,7 @@ export default {
   'eeeditor.image.uploader.retry': '重试',
   'eeeditor.image.read.error.msg': '预览失败',
   'eeeditor.image.figcaption.placeholder': '添加图片注释',
+  'eeeditor.image.align.left': '左对齐',
+  'eeeditor.image.align.center': '居中对齐',
+  'eeeditor.image.align.right': '右对齐',
 };

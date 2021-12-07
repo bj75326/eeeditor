@@ -7,4 +7,7 @@ export default {
   'eeeditor.image.uploader.retry': 'Retry',
   'eeeditor.image.read.error.msg': 'Preview  failed',
   'eeeditor.image.figcaption.placeholder': 'Add a comment',
+  'eeeditor.image.align.left': 'Left align',
+  'eeeditor.image.align.center': 'Center align',
+  'eeeditor.image.align.right': 'Right align',
 };

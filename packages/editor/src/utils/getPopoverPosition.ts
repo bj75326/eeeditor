@@ -9,6 +9,7 @@ export const getPopoverPosition = (
   editorRoot: HTMLElement,
   popoverElement: HTMLElement,
   target?: HTMLElement,
+  placement?: 'top' | 'bottom',
 ): PopoverPosition | null => {
   const editorRootRect = editorRoot.getBoundingClientRect();
 
@@ -22,6 +23,17 @@ export const getPopoverPosition = (
   }
 
   if (!targetRect) return null;
+
+  if (placement === 'bottom') {
+    return {
+      top: editorRoot.offsetTop + (targetRect.bottom - editorRootRect.top) + 4,
+      left:
+        editorRoot.offsetLeft +
+        (targetRect.left - editorRootRect.left) +
+        targetRect.width / 2 -
+        popoverElement.offsetWidth / 2,
+    };
+  }
 
   return {
     top:

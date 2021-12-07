@@ -32,7 +32,7 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
   const { prefixCls: customizePrefixCls, className, languages, store } = props;
 
   const { getProps, getEditorRef, getEditorState, setEditorState } =
-    store.getItem('imagePluginMethods');
+    store.getItem('pluginMethods');
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -87,7 +87,7 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
     if (popoverVisible) {
       // 设置位置
       const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-      const { offsetKey, block } = store.getItem('getImageProps')();
+      const { offsetKey, block } = store.getItem('getBlockProps')();
 
       const imageFigureDom: HTMLElement =
         editorRoot.ownerDocument.querySelector(

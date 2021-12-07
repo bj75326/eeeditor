@@ -304,10 +304,13 @@ export * from './utils/getSelectedText';
 export * from './utils/getDecoratedLeavesOffset';
 export * from './utils/reviseAtomicBlockSelection';
 export * from './utils/setSelectionToAtomicBlock';
+export * from './utils/getPopoverPlacement';
 
 export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
 export * from './modifiers/insertNewLineBefore';
+
+export * from './components/ToolbarPopover';
 
 export {
   focusDecorator,
