@@ -15,6 +15,9 @@ import {
   PopoverPosition,
   DecoratedOffset,
   getDecoratedLeavesOffset,
+  editIcon,
+  copyIcon,
+  deleteIcon,
 } from '@eeeditor/editor';
 import { AnchorPluginStore, Languages, Locale, zhCN, LinkEntityData } from '..';
 import CSSMotion from 'rc-motion';
@@ -23,7 +26,8 @@ import classNames from 'classnames';
 import { Tooltip, message } from 'antd';
 import formatUrl from '../utils/formatUrl';
 import removeLink from '../modifiers/removeLink';
-import extraIcons from '../assets/extraIcons';
+
+const extraIcons = { editIcon, copyIcon, deleteIcon };
 
 export interface LinkPopoverProps {
   prefixCls?: string;

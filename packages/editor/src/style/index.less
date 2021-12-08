@@ -304,6 +304,21 @@
   box-shadow: ~'0 0 8px @{popover-box-shadow} \9';
 }
 
+.@{eeeditor-prefix-cls}-popover-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @popover-line-height;
+  height: @popover-line-height;
+  color: @button-text-color;
+  font-size: @popover-button-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @popover-button-hover-bg;
+  }
+}
+
 // todo
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   /* IE10+ */

@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 import {
   EditorPlugin,
   ContentBlock,
@@ -35,6 +35,7 @@ import {
   defaultAlignRightIcon,
 } from '@eeeditor/buttons';
 import { Tooltip } from 'antd';
+import { cropIcon } from './assets/extraIcons';
 
 export * from './locale';
 
@@ -468,38 +469,28 @@ const createImagePlugin = ({
         locale = languages[currLocale] || zhCN;
       }
 
-      // todo
-      // const getTipTitle = (): ReactNode => (
-      //   <span className={`${prefixCls}-tip`}>
-
-      //   </span>
-      // );
+      const getTipTitle = (name: string): ReactNode => (
+        <span className={`${prefixCls}-tip`}>
+          <span className={`${prefixCls}-tip-name`}>
+            {locale[name] || name}
+          </span>
+        </span>
+      );
 
       return focusable ? (
         <>
           <ImageFigcaptionEditPopover />
-
           <ImageToolbarPopoverComponent
             prefixCls={prefixCls}
             className={imageToolbarPopoverCls}
             store={store}
           >
-            {[
-              {
-                type: 'left',
-                icon: defaultAlignLeftIcon,
-              },
-              {
-                type: 'center',
-                icon: defaultAlignCenterIcon,
-              },
-              {
-                type: 'right',
-                icon: defaultAlignRightIcon,
-              },
-            ].map(({ type, icon }) => (
-              <Tooltip title={locale[`eeeditor.image.align.${type}`]}></Tooltip>
-            ))}
+            <Tooltip
+              title={getTipTitle('eeeditor.image.crop')}
+              overlayClassName={`${prefixCls}-tip-wrapper`}
+            >
+              <span className={`${prefixCls}-popover-button`}>{cropIcon}</span>
+            </Tooltip>
           </ImageToolbarPopoverComponent>
         </>
       ) : null;

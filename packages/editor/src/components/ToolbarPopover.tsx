@@ -111,7 +111,16 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
           ref={motionRef}
         >
           <div className={`${prefixCls}-popover-content`}>
-            <div className={`${prefixCls}-popover-inner`}>{children}</div>
+            <div className={`${prefixCls}-popover-inner`}>
+              {React.Children.map<ReactElement, ReactElement>(
+                children,
+                (child) =>
+                  React.cloneElement(child, {
+                    ...child.props,
+                    placement,
+                  }),
+              )}
+            </div>
           </div>
         </div>
       )}

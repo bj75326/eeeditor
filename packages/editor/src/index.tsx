@@ -312,6 +312,8 @@ export * from './modifiers/insertNewLineBefore';
 
 export * from './components/ToolbarPopover';
 
+export * from './assets/extraIcons';
+
 export {
   focusDecorator,
   BlockFocusDecoratorProps,
