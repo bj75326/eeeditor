@@ -69,7 +69,7 @@ export interface StoreItemMap {
   figcaptionEditPopoverVisible?: boolean;
 
   // 控制 toolbar popover 的显示隐藏
-  toolbarPopoverVisible?: boolean;
+  toolbarPopoverOffsetKey?: string;
 
   // 获取 image block props
   getBlockProps?: () => Partial<ImageProps>;
@@ -350,7 +350,7 @@ const createImagePlugin = ({
 } => {
   const store = createStore<StoreItemMap>({
     figcaptionEditPopoverVisible: false,
-    toolbarPopoverVisible: false,
+    toolbarPopoverOffsetKey: '',
     entityKeyMap: {},
     fileMap: {},
     statusMap: {},

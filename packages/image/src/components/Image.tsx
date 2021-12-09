@@ -347,8 +347,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   // isFocused 的变化改变 image toolbar popover 的显隐状态
   useEffect(() => {
-    store.updateItem('getBlockProps', getImageProps);
-    store.updateItem('toolbarPopoverVisible', isFocused);
+    if (isFocused) {
+      store.updateItem('toolbarPopoverOffsetKey', offsetKey);
+    } else {
+      if (store.getItem('toolbarPopoverOffsetKey') === offsetKey) {
+        store.updateItem('toolbarPopoverOffsetKey', '');
+      }
+    }
   }, [isFocused]);
 
   const imageCls = classNames(`${prefixCls}`, className, {

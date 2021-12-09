@@ -4,6 +4,7 @@ import React, {
   useState,
   useRef,
   ReactElement,
+  useLayoutEffect,
 } from 'react';
 import classNames from 'classnames';
 import {
@@ -24,9 +25,9 @@ export interface ToolbarPopoverProps {
   className?: string;
   store: Store<{
     // 控制显示隐藏
-    toolbarPopoverVisible?: boolean;
+    toolbarPopoverOffsetKey?: string;
     pluginMethods?: PluginMethods;
-    // atomic block props
+    // atomic block props 备用
     getBlockProps?: () => {
       offsetKey?: string;
       block?: ContentBlock;
@@ -43,7 +44,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   const { getPrefixCls: getEEEPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getEEEPrefixCls(undefined, customizePrefixCls);
 
-  const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
+  const [popoverOffsetKey, setPopoverOffsetKey] = useState<string>('');
 
   const [position, setPosition] = useState<PopoverPosition>();
   const [placement, setPlacement] = useState<'top' | 'bottom'>();
@@ -51,35 +52,51 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   const popoverRef = useRef<HTMLDivElement>();
 
   // 监听 stored visible 变化改变来控制 popover 显示隐藏
-  const onStoredVisibleChange = (visible: boolean) => {
-    setPopoverVisible(visible);
+  const onStoredVisibleChange = (popoverOffsetKey: string) => {
+    setPopoverOffsetKey(popoverOffsetKey);
   };
 
   useEffect(() => {
-    store.subscribeToItem('toolbarPopoverVisible', onStoredVisibleChange);
+    store.subscribeToItem('toolbarPopoverOffsetKey', onStoredVisibleChange);
     return () => {
-      store.unsubscribeFromItem('toolbarPopoverVisible', onStoredVisibleChange);
+      store.unsubscribeFromItem(
+        'toolbarPopoverOffsetKey',
+        onStoredVisibleChange,
+      );
     };
   }, []);
 
+  const setPopoverPositon = (): void => {
+    if (!!popoverOffsetKey && popoverRef.current) {
+      const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
+      const target: HTMLElement = editorRoot.ownerDocument.querySelector(
+        `figure[data-offset-key="${popoverOffsetKey}"]`,
+      ).firstChild as HTMLElement;
+
+      const placement = getPopoverPlacement(target);
+
+      setPlacement(placement);
+      setPosition(
+        getPopoverPosition(editorRoot, popoverRef.current, target, placement),
+      );
+    }
+  };
+
   const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
-    const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-    const { offsetKey } = store.getItem('getBlockProps')();
-    const target: HTMLElement = editorRoot.ownerDocument.querySelector(
-      `figure[data-offset-key="${offsetKey}"]`,
-    ).firstChild as HTMLElement;
+    // const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
 
-    const placement = getPopoverPlacement(target);
-    setPlacement(placement);
+    // const target: HTMLElement = editorRoot.ownerDocument.querySelector(
+    //   `figure[data-offset-key="${offsetKey}"]`,
+    // ).firstChild as HTMLElement;
 
-    // styleRef.current = {
-    //   ...styleRef.current,
-    //   transformOrigin: `50% ${popoverElement.offsetHeight + 4} `,
-    // };
+    // const placement = getPopoverPlacement(target);
+    // setPlacement(placement);
 
-    setPosition(
-      getPopoverPosition(editorRoot, popoverElement, target, placement),
-    );
+    // setPosition(
+    //   getPopoverPosition(editorRoot, popoverElement, target, placement),
+    // );
+
+    setPopoverPositon();
   };
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
@@ -92,7 +109,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
   return (
     <CSSMotion
-      visible={popoverVisible}
+      visible={!!popoverOffsetKey}
       motionName={`${getAntdPrefixCls ? getAntdPrefixCls() : 'ant'}-zoom-big`}
       motionDeadline={1000}
       leavedClassName={`${getEEEPrefixCls()}-hidden`}
