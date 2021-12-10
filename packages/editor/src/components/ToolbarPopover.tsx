@@ -4,7 +4,6 @@ import React, {
   useState,
   useRef,
   ReactElement,
-  useLayoutEffect,
 } from 'react';
 import classNames from 'classnames';
 import {
@@ -15,10 +14,12 @@ import {
   getPopoverPlacement,
   PluginMethods,
   ContentBlock,
+  usePrevious,
 } from '..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
 import { Store } from '@draft-js-plugins/utils';
+import contains from 'rc-util/lib/Dom/contains';
 
 export interface ToolbarPopoverProps {
   prefixCls?: string;
@@ -98,6 +99,21 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
     setPopoverPositon();
   };
+
+  // 处理
+  // useEffect(() => {
+  //   if (!!previousOffsetKey && !!popoverOffsetKey && previousOffsetKey !== popoverOffsetKey) {
+  //     setPopoverPositon();
+  //   }
+  // }, [popoverOffsetKey]);
+
+  // const onDocumentClick = (event: MouseEvent) => {
+  //   const { target } = event;
+  //   const popoverNode = popoverRef.current || null;
+  //   if (!contains(popoverNode, target as Node)) {
+
+  //   }
+  // };
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 

@@ -314,6 +314,8 @@ export * from './components/ToolbarPopover';
 
 export * from './assets/extraIcons';
 
+export * from './hooks/usePrevious';
+
 export {
   focusDecorator,
   BlockFocusDecoratorProps,
