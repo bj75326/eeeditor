@@ -132,14 +132,18 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const onStatusMapChanged = (
     statusMap: Record<string, 'uploading' | 'error' | 'success'>,
   ) => {
+    console.log('onStatusMapChanged ', file);
     if (file) {
+      console.log('statusMap[file.uid] ', statusMap[file.uid]);
       setStatus(statusMap[file.uid]);
     }
   };
 
   useEffect(() => {
+    console.log('subscribe status change');
     store.subscribeToItem('statusMap', onStatusMapChanged);
     return () => {
+      console.log('我 unmounted  了 呦');
       store.unsubscribeFromItem('statusMap', onStatusMapChanged);
     };
   }, []);

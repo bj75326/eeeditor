@@ -252,7 +252,7 @@ const getUploadProps = (
         }
       }
       if (transformedFile === false) return false;
-
+      console.log('beforeUpload');
       setEditorState(
         addImage(
           getEditorState(),

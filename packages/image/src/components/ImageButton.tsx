@@ -145,8 +145,12 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  const preventBubblingUp = (event: MouseEvent): void => {
+  const preventDefault = (event: MouseEvent): void => {
     event.preventDefault();
+  };
+
+  const preventBubblingUp = (event: MouseEvent): void => {
+    event.stopPropagation();
   };
 
   useEffect(() => {
@@ -229,8 +233,8 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
     );
 
   return (
-    <div className={`${prefixCls}-btn-wrapper`} onMouseDown={preventBubblingUp}>
-      {checkButtonShouldDisabled() ? (
+    <div className={`${prefixCls}-btn-wrapper`} onMouseDown={preventDefault}>
+      {/* {checkButtonShouldDisabled() ? (
         <div className={btnClassName} style={style}>
           {children}
         </div>
@@ -246,7 +250,29 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
             </div>
           </Tooltip>
         </Upload>
-      )}
+      )} */}
+
+      <Upload {...uploadProps}>
+        {checkButtonShouldDisabled() ? (
+          <div
+            className={btnClassName}
+            style={style}
+            onClick={preventBubblingUp}
+          >
+            {children}
+          </div>
+        ) : (
+          <Tooltip
+            title={tipTitle}
+            overlayClassName={`${prefixCls}-tip-wrapper`}
+            {...tipProps}
+          >
+            <div className={btnClassName} style={style}>
+              {children}
+            </div>
+          </Tooltip>
+        )}
+      </Upload>
     </div>
   );
 };
