@@ -6,19 +6,18 @@ export interface PopoverPosition {
 }
 
 export const getPopoverPosition = (
-  editorRoot: HTMLElement,
+  root: HTMLElement,
   popoverElement: HTMLElement,
   target?: HTMLElement,
   placement?: 'top' | 'bottom',
 ): PopoverPosition | null => {
-  const editorRootRect = editorRoot.getBoundingClientRect();
+  const rootRect = root.getBoundingClientRect();
 
   let targetRect = null;
   if (target) {
     targetRect = target.getBoundingClientRect();
   } else {
-    const parentWindow =
-      editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
+    const parentWindow = root.ownerDocument && root.ownerDocument.defaultView;
     targetRect = getVisibleSelectionRect(parentWindow || window);
   }
 
@@ -26,10 +25,10 @@ export const getPopoverPosition = (
 
   if (placement === 'bottom') {
     return {
-      top: editorRoot.offsetTop + (targetRect.bottom - editorRootRect.top) + 4,
+      top: root.offsetTop + (targetRect.bottom - rootRect.top) + 4,
       left:
-        editorRoot.offsetLeft +
-        (targetRect.left - editorRootRect.left) +
+        root.offsetLeft +
+        (targetRect.left - rootRect.left) +
         targetRect.width / 2 -
         popoverElement.offsetWidth / 2,
     };
@@ -37,13 +36,13 @@ export const getPopoverPosition = (
 
   return {
     top:
-      editorRoot.offsetTop +
-      (targetRect.top - editorRootRect.top) -
+      root.offsetTop +
+      (targetRect.top - rootRect.top) -
       popoverElement.offsetHeight -
       4,
     left:
-      editorRoot.offsetLeft +
-      (targetRect.left - editorRootRect.left) +
+      root.offsetLeft +
+      (targetRect.left - rootRect.left) +
       targetRect.width / 2 -
       popoverElement.offsetWidth / 2,
   };

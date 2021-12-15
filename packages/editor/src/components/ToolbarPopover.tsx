@@ -5,6 +5,7 @@ import React, {
   useRef,
   ReactElement,
 } from 'react';
+import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 import {
   EEEditorContext,
@@ -14,13 +15,10 @@ import {
   getPopoverPlacement,
   PluginMethods,
   ContentBlock,
-  usePrevious,
 } from '..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
 import { Store } from '@draft-js-plugins/utils';
-import contains from 'rc-util/lib/Dom/contains';
-import addEventListener from 'rc-util/lib/Dom/addEventListener';
 
 export interface ToolbarPopoverProps {
   prefixCls?: string;
@@ -68,67 +66,66 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
     };
   }, []);
 
-  const handlePopoverEnterPrepare = (popoverElement: HTMLElement): void => {
-    const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
-
-    const target: HTMLElement = editorRoot.ownerDocument.querySelector(
-      `figure[data-offset-key="${popoverOffsetKey}"]`,
-    ).firstChild as HTMLElement;
-
-    const placement = getPopoverPlacement(target);
+  const handlePopoverAppearPrepare = (popoverElement: HTMLElement): void => {
+    const root: HTMLElement = getContainer().firstChild as HTMLElement;
+    const placement = getPopoverPlacement(root);
     setPlacement(placement);
-
-    setPosition(
-      getPopoverPosition(editorRoot, popoverElement, target, placement),
+    console.log(
+      'handlePopoverEnterPrepare ',
+      getPopoverPosition(root, popoverElement, root, placement),
     );
+    setPosition(getPopoverPosition(root, popoverElement, root, placement));
   };
-
-  // useEffect(() => {
-  //   if (!!previousOffsetKey && !!popoverOffsetKey && previousOffsetKey !== popoverOffsetKey) {
-  //     setPopoverPositon();
-  //   }
-  // }, [popoverOffsetKey]);
 
   // 处理鼠标操作引起的 selection 变化，导致的 popover 位置可能不会被重新计算的问题
-  const onDocumentClick = (event: MouseEvent) => {
-    const { target } = event;
-    const popoverNode = popoverRef.current || null;
-    if (!contains(popoverNode, target as Node)) {
-      setPopoverOffsetKey('');
-    }
-  };
+  // const onDocumentClick = (event: MouseEvent) => {
+  //   const { target } = event;
+  //   const popoverNode = popoverRef.current || null;
+  //   if (!contains(popoverNode, target as Node)) {
+  //     setPopoverOffsetKey('');
+  //   }
+  // };
 
-  useEffect(() => {
-    let currentDocument: Document =
-      getEditorRootDomNode(getEditorRef()).ownerDocument || window.document;
-    const cleanOutsiderHandler = addEventListener(
-      currentDocument,
-      'mousedown',
-      onDocumentClick,
-    );
-    return () => {
-      cleanOutsiderHandler.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   let currentDocument: Document =
+  //     getEditorRootDomNode(getEditorRef()).ownerDocument || window.document;
+  //   const cleanOutsiderHandler = addEventListener(
+  //     currentDocument,
+  //     'mousedown',
+  //     onDocumentClick,
+  //   );
+  //   return () => {
+  //     cleanOutsiderHandler.remove();
+  //   };
+  // }, []);
 
   // 处理 keyboard 操作引起的 selection 变化，导致的 popover 位置可能不会被重新计算的问题
-  const onEditorRootDomKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode >= 37 && event.keyCode <= 40) {
-      setPopoverOffsetKey('');
-    }
-  };
+  // const onEditorRootDomKeyDown = (event: KeyboardEvent) => {
+  //   if (event.keyCode >= 37 && event.keyCode <= 40) {
+  //     setPopoverOffsetKey('');
+  //   }
+  // };
 
-  useEffect(() => {
-    let editorRootDom = getEditorRootDomNode(getEditorRef());
-    const cleanOutsiderHandler = addEventListener(
-      editorRootDom,
-      'keydown',
-      onEditorRootDomKeyDown,
-    );
-    return () => {
-      cleanOutsiderHandler.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   let editorRootDom = getEditorRootDomNode(getEditorRef());
+  //   const cleanOutsiderHandler = addEventListener(
+  //     editorRootDom,
+  //     'keydown',
+  //     onEditorRootDomKeyDown,
+  //   );
+  //   return () => {
+  //     cleanOutsiderHandler.remove();
+  //   };
+  // }, []);
+
+  const getContainer = () => {
+    if (getEditorRef()) {
+      return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+        `figure[data-offset-key="${popoverOffsetKey}"]`,
+      );
+    }
+    return null;
+  };
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
@@ -138,42 +135,47 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
     className,
   );
 
-  return (
-    <CSSMotion
-      visible={!!popoverOffsetKey}
-      motionName={`${getAntdPrefixCls ? getAntdPrefixCls() : 'ant'}-zoom-big`}
-      motionDeadline={1000}
-      leavedClassName={`${getEEEPrefixCls()}-hidden`}
-      removeOnLeave={false}
-      ref={popoverRef}
-      onEnterPrepare={handlePopoverEnterPrepare}
-    >
-      {({ style, className }, motionRef) => (
-        <div
-          className={classNames(toolbarPopoverCls, className)}
-          style={{
-            ...style,
-            top: `${(position && position.top) || 0}px`,
-            left: `${(position && position.left) || 0}px`,
-          }}
-          ref={motionRef}
+  return getContainer()
+    ? createPortal(
+        <CSSMotion
+          visible={!!popoverOffsetKey}
+          motionName={`${
+            getAntdPrefixCls ? getAntdPrefixCls() : 'ant'
+          }-zoom-big`}
+          motionDeadline={1000}
+          leavedClassName={`${getEEEPrefixCls()}-hidden`}
+          removeOnLeave={false}
+          ref={popoverRef}
+          onAppearPrepare={handlePopoverAppearPrepare}
         >
-          <div className={`${prefixCls}-popover-content`}>
-            <div className={`${prefixCls}-popover-inner`}>
-              {React.Children.map<ReactElement, ReactElement>(
-                children,
-                (child) =>
-                  React.cloneElement(child, {
-                    ...child.props,
-                    placement,
-                  }),
-              )}
+          {({ style, className }, motionRef) => (
+            <div
+              className={classNames(toolbarPopoverCls, className)}
+              style={{
+                ...style,
+                top: `${(position && position.top) || 0}px`,
+                left: `${(position && position.left) || 0}px`,
+              }}
+              ref={motionRef}
+            >
+              <div className={`${prefixCls}-popover-content`}>
+                <div className={`${prefixCls}-popover-inner`}>
+                  {React.Children.map<ReactElement, ReactElement>(
+                    children,
+                    (child) =>
+                      React.cloneElement(child, {
+                        ...child.props,
+                        placement,
+                      }),
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-    </CSSMotion>
-  );
+          )}
+        </CSSMotion>,
+        getContainer(),
+      )
+    : null;
 };
 
 export default ToolbarPopover;

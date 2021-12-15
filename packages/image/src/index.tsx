@@ -1,4 +1,4 @@
-import React, { ComponentType, ReactNode } from 'react';
+import React, { ComponentType, ReactNode, useContext } from 'react';
 import {
   EditorPlugin,
   ContentBlock,
@@ -8,6 +8,7 @@ import {
   BlockFocusDecoratorProps,
   ToolbarPopover,
   ToolbarPopoverProps,
+  EEEditorContext,
 } from '@eeeditor/editor';
 import lang, { Languages, zhCN, Locale } from './locale';
 import {
@@ -469,9 +470,12 @@ const createImagePlugin = ({
         locale = languages[currLocale] || zhCN;
       }
 
+      const { getPrefixCls } = useContext(EEEditorContext);
+      const suffixPrefixCls = getPrefixCls(undefined, prefixCls);
+
       const getTipTitle = (name: string): ReactNode => (
-        <span className={`${prefixCls}-tip`}>
-          <span className={`${prefixCls}-tip-name`}>
+        <span className={`${suffixPrefixCls}-tip`}>
+          <span className={`${suffixPrefixCls}-tip-name`}>
             {locale[name] || name}
           </span>
         </span>
@@ -481,16 +485,19 @@ const createImagePlugin = ({
         <>
           <ImageFigcaptionEditPopover />
           <ImageToolbarPopoverComponent
-            prefixCls={prefixCls}
+            prefixCls={suffixPrefixCls}
             className={imageToolbarPopoverCls}
             store={store}
           >
             <Tooltip
               title={getTipTitle('eeeditor.image.crop')}
-              overlayClassName={`${prefixCls}-tip-wrapper`}
+              overlayClassName={`${suffixPrefixCls}-tip-wrapper`}
             >
-              <span className={`${prefixCls}-popover-button`}>{cropIcon}</span>
+              <span className={`${suffixPrefixCls}-popover-button`}>
+                {cropIcon}
+              </span>
             </Tooltip>
+            <input />
           </ImageToolbarPopoverComponent>
         </>
       ) : null;
