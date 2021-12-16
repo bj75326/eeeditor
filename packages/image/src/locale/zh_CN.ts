@@ -11,4 +11,5 @@ export default {
   'eeeditor.image.align.center': '居中对齐',
   'eeeditor.image.align.right': '右对齐',
   'eeeditor.image.crop': '图片裁剪',
+  'eeeditor.image.resize': '图片等比缩放',
 };

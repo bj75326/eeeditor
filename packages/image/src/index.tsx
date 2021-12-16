@@ -30,13 +30,9 @@ import classNames from 'classnames';
 import DefaultImageFigcaptionEditPopover, {
   ImageFigcaptionEditPopoverProps,
 } from './components/ImageFigcaptionEditPopover';
-import {
-  defaultAlignCenterIcon,
-  defaultAlignLeftIcon,
-  defaultAlignRightIcon,
-} from '@eeeditor/buttons';
-import { Tooltip } from 'antd';
-import { cropIcon } from './assets/extraIcons';
+import DefaultImageToolbar, {
+  ImageToolbarProps,
+} from './components/ImageToolbar';
 
 export * from './locale';
 
@@ -126,7 +122,7 @@ interface ImagePluginConfig {
   prefixCls?: string;
   imageClassName?: string;
   imageFigcaptionEditPopoverCls?: string;
-  imageToolbarPopoverCls?: string;
+  imageToolbarCls?: string;
   entityType?: string;
   decorator?: unknown;
   focusable?: boolean;
@@ -136,7 +132,7 @@ interface ImagePluginConfig {
     ImageButtonProps & ImageButtonExtraProps
   >;
   imageFigcaptionEditPopoverComponent?: ComponentType<ImageFigcaptionEditPopoverProps>;
-  imageToolbarPopoverComponent?: ComponentType<ToolbarPopoverProps>;
+  imageToolbarComponent?: ComponentType<ImageToolbarProps>;
 }
 
 // todo 开发使用配置 必须删除！！！
@@ -335,7 +331,7 @@ const createImagePlugin = ({
   prefixCls,
   imageClassName,
   imageFigcaptionEditPopoverCls,
-  imageToolbarPopoverCls,
+  imageToolbarCls,
   entityType = 'image',
   decorator,
   focusable = true,
@@ -345,7 +341,7 @@ const createImagePlugin = ({
   imageButtonComponent: ImageButtonComponent = DefaultImageButton,
   imageFigcaptionEditPopoverComponent:
     ImageFigcaptionEditPopoverComponent = DefaultImageFigcaptionEditPopover,
-  imageToolbarPopoverComponent: ImageToolbarPopoverComponent = ToolbarPopover,
+  imageToolbarComponent: ImageToolbar = DefaultImageToolbar,
 }: ImagePluginConfig): EditorPlugin & {
   ImageButton: ComponentType<ImageButtonProps>;
 } => {
@@ -463,42 +459,15 @@ const createImagePlugin = ({
     ImageButton,
 
     suffix: () => {
-      const { getProps } = store.getItem('pluginMethods');
-      let locale: Locale = zhCN;
-      if (getProps && languages) {
-        const { locale: currLocale } = getProps();
-        locale = languages[currLocale] || zhCN;
-      }
-
-      const { getPrefixCls } = useContext(EEEditorContext);
-      const suffixPrefixCls = getPrefixCls(undefined, prefixCls);
-
-      const getTipTitle = (name: string): ReactNode => (
-        <span className={`${suffixPrefixCls}-tip`}>
-          <span className={`${suffixPrefixCls}-tip-name`}>
-            {locale[name] || name}
-          </span>
-        </span>
-      );
-
       return focusable ? (
         <>
           <ImageFigcaptionEditPopover />
-          <ImageToolbarPopoverComponent
-            prefixCls={suffixPrefixCls}
-            className={imageToolbarPopoverCls}
+          <ImageToolbar
+            prefixCls={prefixCls}
+            className={imageToolbarCls}
             store={store}
-          >
-            <Tooltip
-              title={getTipTitle('eeeditor.image.crop')}
-              overlayClassName={`${suffixPrefixCls}-tip-wrapper`}
-            >
-              <span className={`${suffixPrefixCls}-popover-button`}>
-                {cropIcon}
-              </span>
-            </Tooltip>
-            <input />
-          </ImageToolbarPopoverComponent>
+            languages={languages}
+          />
         </>
       ) : null;
     },

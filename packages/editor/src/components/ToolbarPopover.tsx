@@ -19,6 +19,8 @@ import {
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
 import { Store } from '@draft-js-plugins/utils';
+// import contains from 'rc-util/lib/Dom/contains';
+// import addEventListener from 'rc-util/lib/Dom/addEventListener';
 
 export interface ToolbarPopoverProps {
   prefixCls?: string;
