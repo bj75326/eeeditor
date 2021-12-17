@@ -132,7 +132,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const onStatusMapChanged = (
     statusMap: Record<string, 'uploading' | 'error' | 'success'>,
   ) => {
-    console.log('onStatusMapChanged ', file);
     if (file) {
       console.log('statusMap[file.uid] ', statusMap[file.uid]);
       setStatus(statusMap[file.uid]);
@@ -140,10 +139,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   useEffect(() => {
-    console.log('subscribe status change');
     store.subscribeToItem('statusMap', onStatusMapChanged);
     return () => {
-      console.log('我 unmounted  了 呦');
       store.unsubscribeFromItem('statusMap', onStatusMapChanged);
     };
   }, []);
@@ -349,16 +346,17 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, [figcaptionEditPopoverVisible]);
 
+  // todo 是否需要放到 decorator 内
   // isFocused 的变化改变 image toolbar popover 的显隐状态
-  useEffect(() => {
-    if (isFocused) {
-      store.updateItem('toolbarPopoverOffsetKey', offsetKey);
-    } else {
-      if (store.getItem('toolbarPopoverOffsetKey') === offsetKey) {
-        store.updateItem('toolbarPopoverOffsetKey', '');
-      }
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     store.updateItem('toolbarPopoverOffsetKey', offsetKey);
+  //   } else {
+  //     if (store.getItem('toolbarPopoverOffsetKey') === offsetKey) {
+  //       store.updateItem('toolbarPopoverOffsetKey', '');
+  //     }
+  //   }
+  // }, [isFocused]);
 
   const imageCls = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-uploading`]: status !== 'success',

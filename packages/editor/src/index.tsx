@@ -310,6 +310,8 @@ export * from './modifiers/insertAtomicBlockWithoutSplit';
 export * from './modifiers/setSelection';
 export * from './modifiers/insertNewLineBefore';
 
+export * from './built-in/atomic-block-toolbar';
+
 export * from './components/ToolbarPopover';
 
 export * from './assets/extraIcons';

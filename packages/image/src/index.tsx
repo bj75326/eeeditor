@@ -6,9 +6,7 @@ import {
   PluginMethods,
   focusDecorator,
   BlockFocusDecoratorProps,
-  ToolbarPopover,
-  ToolbarPopoverProps,
-  EEEditorContext,
+  BlockToolbarDecorator,
 } from '@eeeditor/editor';
 import lang, { Languages, zhCN, Locale } from './locale';
 import {
@@ -366,6 +364,8 @@ const createImagePlugin = ({
       uploadProps={uploadProps}
     />
   );
+
+  // todo
 
   let Image: React.FC<ImageProps> = (props) => {
     const { className: decoratorCls } = props;

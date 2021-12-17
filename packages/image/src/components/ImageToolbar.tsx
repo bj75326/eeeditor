@@ -42,9 +42,7 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
         title={getTipTitle('eeeditor.image.resize')}
         overlayClassName={`${prefixCls}-tip-wrapper`}
       >
-        <span className={`${prefixCls}-popover-button`} onClick={}>
-          {resizeIcon}
-        </span>
+        <span className={`${prefixCls}-popover-button`}>{resizeIcon}</span>
       </Tooltip>
       <Tooltip
         title={getTipTitle('eeeditor.image.crop')}
