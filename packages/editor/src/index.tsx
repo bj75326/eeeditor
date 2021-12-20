@@ -312,11 +312,11 @@ export * from './modifiers/insertNewLineBefore';
 
 export * from './built-in/atomic-block-toolbar';
 
-export * from './components/ToolbarPopover';
-
 export * from './assets/extraIcons';
 
 export * from './hooks/usePrevious';
+
+export * from './locale';
 
 export {
   focusDecorator,

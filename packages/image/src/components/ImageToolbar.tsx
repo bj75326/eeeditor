@@ -3,10 +3,11 @@ import {
   ToolbarPopover,
   ToolbarPopoverProps,
   EEEditorContext,
+  resizeIcon,
 } from '@eeeditor/editor';
 import { Languages, zhCN, Locale } from '..';
 import { Tooltip } from 'antd';
-import { cropIcon, resizeIcon } from '../assets/extraIcons';
+import { cropIcon } from '../assets/extraIcons';
 
 export interface ImageToolbarProps {
   prefixCls?: string;
@@ -28,17 +29,15 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
     locale = languages[currLocale] || zhCN;
   }
 
-  const toggleResizeMode = (): void => {};
-
-  const getTipTitle = (name: string): ReactNode => (
-    <span className={`${prefixCls}-tip`}>
-      <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
-    </span>
-  );
+  // const getTipTitle = (name: string): ReactNode => (
+  //   <span className={`${prefixCls}-tip`}>
+  //     <span className={`${prefixCls}-tip-name`}>{locale[name] || name}</span>
+  //   </span>
+  // );
 
   return (
     <ToolbarPopover prefixCls={prefixCls} className={className} store={store}>
-      <Tooltip
+      {/* <Tooltip
         title={getTipTitle('eeeditor.image.resize')}
         overlayClassName={`${prefixCls}-tip-wrapper`}
       >
@@ -49,7 +48,7 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
         overlayClassName={`${prefixCls}-tip-wrapper`}
       >
         <span className={`${prefixCls}-popover-button`}>{cropIcon}</span>
-      </Tooltip>
+      </Tooltip> */}
     </ToolbarPopover>
   );
 };

@@ -346,18 +346,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, [figcaptionEditPopoverVisible]);
 
-  // todo 是否需要放到 decorator 内
-  // isFocused 的变化改变 image toolbar popover 的显隐状态
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     store.updateItem('toolbarPopoverOffsetKey', offsetKey);
-  //   } else {
-  //     if (store.getItem('toolbarPopoverOffsetKey') === offsetKey) {
-  //       store.updateItem('toolbarPopoverOffsetKey', '');
-  //     }
-  //   }
-  // }, [isFocused]);
-
   const imageCls = classNames(`${prefixCls}`, className, {
     [`${prefixCls}-uploading`]: status !== 'success',
   });

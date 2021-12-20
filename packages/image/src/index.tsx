@@ -6,7 +6,8 @@ import {
   PluginMethods,
   focusDecorator,
   BlockFocusDecoratorProps,
-  BlockToolbarDecorator,
+  blockToolbarDecorator,
+  AtomicBlockToolbarDecoratorProps,
 } from '@eeeditor/editor';
 import lang, { Languages, zhCN, Locale } from './locale';
 import {
@@ -124,6 +125,7 @@ interface ImagePluginConfig {
   entityType?: string;
   decorator?: unknown;
   focusable?: boolean;
+  blockToolbar?: boolean;
   languages?: Languages;
   imageComponent?: ComponentType<ImageProps & ImageExtraProps>;
   imageButtonComponent?: ComponentType<
@@ -333,6 +335,7 @@ const createImagePlugin = ({
   entityType = 'image',
   decorator,
   focusable = true,
+  blockToolbar = true,
   languages = lang,
   imageUploadProps = defaultUploadProps,
   imageComponent: ImageComponent = DefaultImage,
@@ -365,11 +368,15 @@ const createImagePlugin = ({
     />
   );
 
-  // todo
-
   let Image: React.FC<ImageProps> = (props) => {
     const { className: decoratorCls } = props;
     const className = classNames(decoratorCls, imageClassName);
+    // block toolbar decorator 需要在 extra props 被包装进 props 之前被包装
+    if (blockToolbar) {
+      ImageComponent = blockToolbarDecorator(
+        ImageComponent,
+      ) as React.ComponentType<ImageProps & ImageExtraProps>;
+    }
     return (
       <ImageComponent
         {...props}
