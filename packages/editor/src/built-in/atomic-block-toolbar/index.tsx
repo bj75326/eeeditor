@@ -2,6 +2,9 @@ import React, { ComponentType, useEffect, useRef } from 'react';
 import { Store } from '@draft-js-plugins/utils';
 import { ContentBlock, SelectionState, ContentState } from '../..';
 
+export * from './buttons/RadioGroup';
+export * from './buttons/ResizeButton';
+
 export * from './ToolbarPopover';
 
 export interface AtomicBlockProps {

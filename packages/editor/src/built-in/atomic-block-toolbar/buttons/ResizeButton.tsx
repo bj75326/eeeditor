@@ -1,7 +1,7 @@
 import React, { CSSProperties, useState, ReactNode, useContext } from 'react';
-import { resizeIcon, PluginMethods, EEEditorContext } from '..';
-import lang, { zhCN, Locale, Languages } from '../locale';
-import { AtomicBlockProps } from '../built-in/atomic-block-toolbar';
+import { resizeIcon, PluginMethods, EEEditorContext } from '../../..';
+import lang, { zhCN, Locale, Languages } from '../../../locale';
+import { AtomicBlockProps } from '..';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 
@@ -13,19 +13,27 @@ export interface ResizeButtonProps {
 }
 
 export interface ResizeButtonExtraProps {
+  // RadioButton 提供
+  btnKey?: string;
+  activeBtn?: string;
+  changeActiveBtn?: (activeBtn: string) => void;
+  // ToolbarPopover 提供
   placement: 'top' | 'bottom';
   pluginMethods: PluginMethods;
   getBlockProps: () => Partial<AtomicBlockProps>;
 }
 
-const ResizeButton: React.FC<ResizeButtonProps & ResizeButtonExtraProps> = (
-  props,
-) => {
+export const ResizeButton: React.FC<
+  ResizeButtonProps & ResizeButtonExtraProps
+> = (props) => {
   const {
     prefixCls: customizePrefixCls,
     className,
     style,
     languages = lang,
+    btnKey,
+    activeBtn,
+    changeActiveBtn,
     placement,
     pluginMethods,
     getBlockProps,
@@ -42,7 +50,7 @@ const ResizeButton: React.FC<ResizeButtonProps & ResizeButtonExtraProps> = (
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  const [active, setActive] = useState<boolean>(false);
+  // const [active, setActive] = useState<boolean>(false);
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
@@ -50,7 +58,9 @@ const ResizeButton: React.FC<ResizeButtonProps & ResizeButtonExtraProps> = (
     </span>
   );
 
-  const btnCls = classNames(`${prefixCls}-popover-button`, className, {});
+  const btnCls = classNames(`${prefixCls}-popover-button`, className, {
+    [`${prefixCls}-popover-button-active`]: activeBtn === btnKey,
+  });
 
   return (
     <>
@@ -66,3 +76,5 @@ const ResizeButton: React.FC<ResizeButtonProps & ResizeButtonExtraProps> = (
     </>
   );
 };
+
+export default ResizeButton;

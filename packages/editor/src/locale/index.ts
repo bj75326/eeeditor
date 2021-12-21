@@ -1,6 +1,6 @@
 import zh_CN from './zh_CN';
 import en_US from './en_US';
-import { SupportedLanguage } from '@eeeditor/editor';
+import { SupportedLanguage } from '..';
 
 export type Locale = Record<string, string>;
 
