@@ -6,15 +6,13 @@ export interface RadioGroupProps {
   children?: ReactElement | ReactElement[];
 }
 
-export interface RadioGroupExtraProps {
-  placement: 'top' | 'bottom';
-  pluginMethods: PluginMethods;
-  getBlockProps: () => Partial<AtomicBlockProps>;
-}
+// export interface RadioGroupExtraProps {
+//   placement: 'top' | 'bottom';
+//   pluginMethods: PluginMethods;
+//   getBlockProps: () => Partial<AtomicBlockProps>;
+// }
 
-export const RadioGroup: React.FC<RadioGroupProps & RadioGroupExtraProps> = (
-  props,
-) => {
+export const RadioGroup: React.FC<RadioGroupProps> = (props) => {
   const { children, ...restProps } = props;
 
   const [activeBtn, setActiveBtn] = useState<string>('');

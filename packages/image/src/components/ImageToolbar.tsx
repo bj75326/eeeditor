@@ -3,7 +3,6 @@ import {
   ToolbarPopover,
   ToolbarPopoverProps,
   EEEditorContext,
-  resizeIcon,
   RadioGroup,
   ResizeButton,
 } from '@eeeditor/editor';

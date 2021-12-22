@@ -368,15 +368,18 @@ const createImagePlugin = ({
     />
   );
 
+  // 包装 block toolbar
+  if (blockToolbar) {
+    ImageComponent = blockToolbarDecorator(
+      ImageComponent,
+    ) as React.ComponentType<ImageProps & ImageExtraProps>;
+  }
+
+  // 包装 extra props
   let Image: React.FC<ImageProps> = (props) => {
     const { className: decoratorCls } = props;
     const className = classNames(decoratorCls, imageClassName);
-    // block toolbar decorator 需要在 extra props 被包装进 props 之前被包装
-    if (blockToolbar) {
-      ImageComponent = blockToolbarDecorator(
-        ImageComponent,
-      ) as React.ComponentType<ImageProps & ImageExtraProps>;
-    }
+
     return (
       <ImageComponent
         {...props}

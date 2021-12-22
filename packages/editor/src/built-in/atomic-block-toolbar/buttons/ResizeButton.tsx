@@ -1,4 +1,11 @@
-import React, { CSSProperties, useState, ReactNode, useContext } from 'react';
+import React, {
+  CSSProperties,
+  useState,
+  ReactNode,
+  useContext,
+  MouseEvent,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { resizeIcon, PluginMethods, EEEditorContext } from '../../..';
 import lang, { zhCN, Locale, Languages } from '../../../locale';
 import { AtomicBlockProps } from '..';
@@ -18,12 +25,12 @@ export interface ResizeButtonExtraProps {
   activeBtn?: string;
   changeActiveBtn?: (activeBtn: string) => void;
   // ToolbarPopover 提供
-  placement: 'top' | 'bottom';
-  pluginMethods: PluginMethods;
-  getBlockProps: () => Partial<AtomicBlockProps>;
+  placement?: 'top' | 'bottom';
+  pluginMethods?: PluginMethods;
+  getBlockProps?: () => Partial<AtomicBlockProps>;
 }
 
-export const ResizeButton: React.FC<
+const ResizeButtonComponent: React.FC<
   ResizeButtonProps & ResizeButtonExtraProps
 > = (props) => {
   const {
@@ -50,7 +57,16 @@ export const ResizeButton: React.FC<
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
-  // const [active, setActive] = useState<boolean>(false);
+  const [active, setActive] = useState<boolean>(false);
+
+  const handleBtnClick = (e: MouseEvent): void => {
+    if (btnKey) {
+      const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
+      changeActiveBtn(newActiveBtn);
+    } else {
+      setActive(!active);
+    }
+  };
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
@@ -59,22 +75,29 @@ export const ResizeButton: React.FC<
   );
 
   const btnCls = classNames(`${prefixCls}-popover-button`, className, {
-    [`${prefixCls}-popover-button-active`]: activeBtn === btnKey,
+    [`${prefixCls}-popover-button-active`]: btnKey
+      ? activeBtn === btnKey
+      : active,
   });
 
   return (
     <>
       <Tooltip
-        title={getTipTitle}
+        title={getTipTitle('eeeditor.component.resize.button.tip')}
         placement={placement}
         overlayClassName={`${prefixCls}-tip-wrapper`}
       >
-        <span className={btnCls} style={style}>
+        <span className={btnCls} style={style} onClick={handleBtnClick}>
           {resizeIcon}
         </span>
       </Tooltip>
+      {}
     </>
   );
 };
+
+export const ResizeButton: React.FC<ResizeButtonProps> = (props) => (
+  <ResizeButtonComponent {...props} />
+);
 
 export default ResizeButton;

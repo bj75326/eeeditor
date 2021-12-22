@@ -36,7 +36,7 @@ export interface ToolbarPopoverProps {
 export interface ToolbarPopoverChildrenProps {
   placement: 'top' | 'bottom';
   getBlockProps: () => Partial<AtomicBlockProps>;
-  pluginMethod: PluginMethods;
+  pluginMethods: PluginMethods;
 }
 
 export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
@@ -58,7 +58,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   const childrenProps: ToolbarPopoverChildrenProps = {
     placement,
     getBlockProps: store.getItem('getBlockProps'),
-    pluginMethod: store.getItem('pluginMethods'),
+    pluginMethods: store.getItem('pluginMethods'),
   };
 
   // 监听 stored visible 变化改变来控制 popover 显示隐藏
