@@ -4,8 +4,8 @@ import {
   ToolbarPopoverProps,
   EEEditorContext,
   RadioGroup,
-  ResizeButton,
 } from '@eeeditor/editor';
+import ResizeButton from './ResizeButton';
 import { Languages, zhCN, Locale } from '..';
 
 export interface ImageToolbarProps {

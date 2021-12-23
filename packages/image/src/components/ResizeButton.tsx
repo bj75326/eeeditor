@@ -4,16 +4,17 @@ import React, {
   ReactNode,
   useContext,
   MouseEvent,
+  useLayoutEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { resizeIcon } from '../assets/extraIcons';
 import {
-  resizeIcon,
   PluginMethods,
   EEEditorContext,
   getEditorRootDomNode,
-} from '../../..';
-import lang, { zhCN, Locale, Languages } from '../../../locale';
-import { AtomicBlockProps } from '..';
+} from '@eeeditor/editor';
+import lang, { Languages, Locale, zhCN } from '../locale';
+import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-toolbar';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 
@@ -65,8 +66,6 @@ const ResizeButtonComponent: React.FC<
   const [active, setActive] = useState<boolean>(false);
 
   const handleBtnClick = (e: MouseEvent): void => {
-    console.log('test ', getEditorRef());
-
     if (btnKey) {
       const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
       changeActiveBtn(newActiveBtn);
@@ -74,6 +73,12 @@ const ResizeButtonComponent: React.FC<
       setActive(!active);
     }
   };
+
+  useLayoutEffect(() => {
+    if (btnKey ? btnKey === activeBtn : active) {
+      // 计算并设置 resize box 的位置
+    }
+  }, [active, btnKey, activeBtn]);
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -99,7 +104,7 @@ const ResizeButtonComponent: React.FC<
   return (
     <>
       <Tooltip
-        title={getTipTitle('eeeditor.component.resize.button.tip')}
+        title={getTipTitle('eeeditor.image.resize')}
         placement={placement}
         overlayClassName={`${prefixCls}-tip-wrapper`}
       >
@@ -110,7 +115,7 @@ const ResizeButtonComponent: React.FC<
       {(btnKey ? activeBtn === btnKey : active) &&
         getContainer() &&
         createPortal(
-          <>
+          <div className={`${prefixCls}-resize-box`}>
             <span
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tl`}
             ></span>
@@ -123,7 +128,7 @@ const ResizeButtonComponent: React.FC<
             <span
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-bl`}
             ></span>
-          </>,
+          </div>,
           getContainer(),
         )}
     </>

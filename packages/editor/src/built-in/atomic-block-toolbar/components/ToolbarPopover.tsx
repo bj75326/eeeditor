@@ -15,11 +15,11 @@ import {
   getPopoverPlacement,
   PluginMethods,
   ContentBlock,
-} from '../..';
+} from '../../..';
 import CSSMotion from 'rc-motion';
 import { ConfigContext } from 'antd/lib/config-provider';
 import { Store } from '@draft-js-plugins/utils';
-import { AtomicBlockProps } from '.';
+import { AtomicBlockProps } from '..';
 
 export interface ToolbarPopoverProps {
   prefixCls?: string;
@@ -62,16 +62,16 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   };
 
   // 监听 stored visible 变化改变来控制 popover 显示隐藏
-  const onStoredVisibleChange = (popoverOffsetKey: string) => {
+  const onStoredOffsetKeyChange = (popoverOffsetKey: string) => {
     setPopoverOffsetKey(popoverOffsetKey);
   };
 
   useEffect(() => {
-    store.subscribeToItem('toolbarPopoverOffsetKey', onStoredVisibleChange);
+    store.subscribeToItem('toolbarPopoverOffsetKey', onStoredOffsetKeyChange);
     return () => {
       store.unsubscribeFromItem(
         'toolbarPopoverOffsetKey',
-        onStoredVisibleChange,
+        onStoredOffsetKeyChange,
       );
     };
   }, []);
