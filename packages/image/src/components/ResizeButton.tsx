@@ -5,6 +5,7 @@ import React, {
   useContext,
   MouseEvent,
   useLayoutEffect,
+  useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { resizeIcon } from '../assets/extraIcons';
@@ -65,6 +66,8 @@ const ResizeButtonComponent: React.FC<
 
   const [active, setActive] = useState<boolean>(false);
 
+  const [startX, setStartX] = useState<number>();
+
   const handleBtnClick = (e: MouseEvent): void => {
     if (btnKey) {
       const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
@@ -74,11 +77,9 @@ const ResizeButtonComponent: React.FC<
     }
   };
 
-  // useLayoutEffect(() => {
-  //   if (btnKey ? btnKey === activeBtn : active) {
-  //     // 计算并设置 resize box 的位置
-  //   }
-  // }, [active, btnKey, activeBtn]);
+  const onStart = (e: MouseEvent): void => {
+    setStartX(e.clientX);
+  };
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -134,6 +135,7 @@ const ResizeButtonComponent: React.FC<
             </div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tl`}
+              onMouseDown={onStart}
             ></div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tr`}
