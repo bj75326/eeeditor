@@ -149,6 +149,7 @@
   font-size: @editor-h6-font-size;
 }
 
+// todo figure 有可能在 blockRenderMap 内被替换
 // atomic block 内定位
 figure[data-block='true'] {
   position: relative;
@@ -325,40 +326,6 @@ figure[data-block='true'] {
   &.@{eeeditor-prefix-cls}-popover-button-active {
     color: @button-text-active-color;
   }
-}
-
-.@{eeeditor-prefix-cls}-resize-handler {
-  position: absolute;
-  z-index: 2;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  background-color: @resize-handler-color;
-}
-
-.@{eeeditor-prefix-cls}-resizer-tl {
-  top: -7px;
-  left: -7px;
-  cursor: nwse-resize;
-}
-
-.@{eeeditor-prefix-cls}-resizer-tr {
-  top: -7px;
-  right: -7px;
-  cursor: nesw-resize;
-}
-
-.@{eeeditor-prefix-cls}-resizer-br {
-  bottom: -7px;
-  right: -7px;
-  cursor: nwse-resize;
-}
-
-.@{eeeditor-prefix-cls}-resizer-bl {
-  bottom: -7px;
-  left: -7px;
-  cursor: nesw-resize;
 }
 
 // todo

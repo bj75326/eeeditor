@@ -74,17 +74,19 @@ const ResizeButtonComponent: React.FC<
     }
   };
 
-  useLayoutEffect(() => {
-    if (btnKey ? btnKey === activeBtn : active) {
-      // 计算并设置 resize box 的位置
-    }
-  }, [active, btnKey, activeBtn]);
+  // useLayoutEffect(() => {
+  //   if (btnKey ? btnKey === activeBtn : active) {
+  //     // 计算并设置 resize box 的位置
+  //   }
+  // }, [active, btnKey, activeBtn]);
 
   const getContainer = () => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
-        `figure[data-offset-key="${getBlockProps().offsetKey}"]`,
-      );
+        `[data-block="true"][data-offset-key="${
+          getBlockProps().offsetKey
+        }"] img`,
+      ).parentElement;
     }
     return null;
   };
@@ -115,20 +117,34 @@ const ResizeButtonComponent: React.FC<
       {(btnKey ? activeBtn === btnKey : active) &&
         getContainer() &&
         createPortal(
-          <div className={`${prefixCls}-resize-box`}>
-            <span
+          <>
+            <div className={`${prefixCls}-resize-box`}>
+              <span
+                className={`${prefixCls}-resizer ${prefixCls}-resizer-tl`}
+              ></span>
+              <span
+                className={`${prefixCls}-resizer ${prefixCls}-resizer-tr`}
+              ></span>
+              <span
+                className={`${prefixCls}-resizer ${prefixCls}-resizer-br`}
+              ></span>
+              <span
+                className={`${prefixCls}-resizer ${prefixCls}-resizer-bl`}
+              ></span>
+            </div>
+            <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tl`}
-            ></span>
-            <span
+            ></div>
+            <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tr`}
-            ></span>
-            <span
+            ></div>
+            <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-br`}
-            ></span>
-            <span
+            ></div>
+            <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-bl`}
-            ></span>
-          </div>,
+            ></div>
+          </>,
           getContainer(),
         )}
     </>

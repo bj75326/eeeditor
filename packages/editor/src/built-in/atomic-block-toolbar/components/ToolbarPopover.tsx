@@ -127,7 +127,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   const getContainer = () => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
-        `figure[data-offset-key="${popoverOffsetKey}"]`,
+        `[data-block="true"][data-offset-key="${popoverOffsetKey}"]`,
       );
     }
     return null;

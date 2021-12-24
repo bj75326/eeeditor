@@ -89,12 +89,11 @@ const ImageFigcaptionEditPopover: React.FC<ImageFigcaptionEditPopoverProps> = (
       const editorRoot: HTMLElement = getEditorRootDomNode(getEditorRef());
       const { offsetKey, block } = store.getItem('getBlockProps')();
 
-      const imageFigureDom: HTMLElement =
-        editorRoot.ownerDocument.querySelector(
-          `figure[data-offset-key="${offsetKey}"]`,
-        );
+      const imageBlockDom: HTMLElement = editorRoot.ownerDocument.querySelector(
+        `[data-block="true"][data-offset-key="${offsetKey}"]`,
+      );
       const imageFigcaptionDom: HTMLElement =
-        imageFigureDom.querySelector('figcaption');
+        imageBlockDom.querySelector('figcaption');
       let position: PopoverPosition = getFigcaptionEditPopoverPosition(
         editorRoot,
         popoverRef.current,

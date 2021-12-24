@@ -9,7 +9,11 @@
   vertical-align: top;
 }
 
-.@{prefix}-image {
+.@{prefix}-wrapper {
+  position: relative;
+}
+
+.@{prefix} {
   display: block;
   max-width: 100%;
 
@@ -113,6 +117,57 @@
   &:focus {
     outline: none;
   }
+}
+
+.@{eeeditor-prefix-cls}-resize-box {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+}
+
+.@{eeeditor-prefix-cls}-resizer,
+.@{eeeditor-prefix-cls}-resize-handler {
+  position: absolute;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  background-color: @image-resize-handler-color;
+}
+
+.@{eeeditor-prefix-cls}-resizer-tl {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+
+.@{eeeditor-prefix-cls}-resizer-tr {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+
+.@{eeeditor-prefix-cls}-resizer-br {
+  bottom: -7px;
+  right: -7px;
+  cursor: nwse-resize;
+}
+
+.@{eeeditor-prefix-cls}-resizer-bl {
+  bottom: -7px;
+  left: -7px;
+  cursor: nesw-resize;
+}
+
+.@{eeeditor-prefix-cls}-resize-handler {
+  z-index: 3;
+  border: none;
+  background-color: transparent;
 }
 
 @-webkit-keyframes LoadingBarForward {

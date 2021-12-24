@@ -390,11 +390,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const imageLayout = (
     <>
-      <img
-        src={src}
-        className={imageCls}
-        alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-      />
+      <div className={`${prefixCls}-wrapper`}>
+        <img
+          src={src}
+          className={imageCls}
+          alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        />
+      </div>
       {shouldShowFigcaption() && (
         <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>
           {figcaption ||

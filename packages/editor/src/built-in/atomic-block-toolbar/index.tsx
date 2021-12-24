@@ -3,7 +3,6 @@ import { Store } from '@draft-js-plugins/utils';
 import { ContentBlock, SelectionState, ContentState } from '../..';
 
 export * from './components/RadioGroup';
-export * from './buttons/ResizeButton';
 
 export * from './components/ToolbarPopover';
 
