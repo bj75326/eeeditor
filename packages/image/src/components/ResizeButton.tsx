@@ -4,7 +4,7 @@ import React, {
   ReactNode,
   useContext,
   MouseEvent,
-  useLayoutEffect,
+  useRef,
   useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
@@ -18,6 +18,7 @@ import lang, { Languages, Locale, zhCN } from '../locale';
 import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-toolbar';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
+import addEventListener from 'rc-util/lib/Dom/addEventListener';
 
 export interface ResizeButtonProps {
   prefixCls?: string;
@@ -64,9 +65,14 @@ const ResizeButtonComponent: React.FC<
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
+  // 非受控组件使用
   const [active, setActive] = useState<boolean>(false);
 
-  const [startX, setStartX] = useState<number>();
+  // resize 是否进行中
+  const [resizing, setResizing] = useState<boolean>(false);
+
+  // x 轴位移
+  const [offsetX, setOffsetX] = useState<number>();
 
   const handleBtnClick = (e: MouseEvent): void => {
     if (btnKey) {
@@ -77,9 +83,74 @@ const ResizeButtonComponent: React.FC<
     }
   };
 
-  const onStart = (e: MouseEvent): void => {
-    setStartX(e.clientX);
+  // 存放每次 resize 开始时的 clientX
+  const startXRef = useRef<number>();
+  // 存放每次 resize 点击的 resize handler
+  const handlerRef = useRef<'tl' | 'tr' | 'br' | 'bl'>();
+  // 存放每次 resize 开始时的 img 长宽比例
+  const ratioRef = useRef<number>();
+
+  const onMouseDown = (e: MouseEvent): void => {
+    e.preventDefault();
+    // 确定 resize 开始时的 clientX
+    startXRef.current = e.clientX;
+    // 确定 resize handler 位置
+    handlerRef.current = (e.target as HTMLDivElement).className
+      .split(' ')
+      .find((className) => className.startsWith(`${prefixCls}-resizer`))
+      .slice(-2) as 'tl' | 'tr' | 'br' | 'bl';
+    // 确定 resize img 原始尺寸
+    ratioRef.current = getContainer().offsetWidth / getContainer().offsetHeight;
+
+    setOffsetX(null);
   };
+
+  const onMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    if (typeof startXRef.current === 'number') {
+      // resize 开始
+      setResizing(true);
+
+      // clientX 发生变化
+      setOffsetX(e.clientX);
+    }
+  };
+
+  const onMouseUp = (e: MouseEvent) => {
+    e.preventDefault();
+    if (typeof startXRef.current === 'number') {
+      // resize 结束
+      setResizing(false);
+
+      // 重置 startX， handler 位置，img 长宽比
+      startXRef.current = null;
+      handlerRef.current = null;
+      ratioRef.current = null;
+
+      // 重置 x 轴位移
+      setOffsetX(null);
+    }
+  };
+
+  useEffect(() => {
+    if (btnKey ? btnKey === activeBtn : active) {
+      const cleanMouseMoveHandler = addEventListener(
+        window,
+        'mousemove',
+        onMouseMove,
+      );
+      const cleanMouseUpHandler = addEventListener(
+        window,
+        'mouseup',
+        onMouseUp,
+      );
+
+      return () => {
+        cleanMouseMoveHandler.remove();
+        cleanMouseUpHandler.remove();
+      };
+    }
+  }, [btnKey, activeBtn, active]);
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -98,10 +169,44 @@ const ResizeButtonComponent: React.FC<
     </span>
   );
 
+  const getResizeBoxInset = (): { inset: string } => {
+    if (typeof offsetX === 'number') {
+      let inset = '';
+      switch (handlerRef.current) {
+        case 'tl':
+          inset = `${
+            (offsetX - startXRef.current) / ratioRef.current
+          }px 0px 0px ${offsetX - startXRef.current}px`;
+          break;
+        case 'tr':
+          inset = `${(startXRef.current - offsetX) / ratioRef.current}px ${
+            startXRef.current - offsetX
+          }px 0px 0px`;
+          break;
+        case 'br':
+          inset = `0px ${startXRef.current - offsetX}px ${
+            (startXRef.current - offsetX) / ratioRef.current
+          }px 0px`;
+          break;
+        case 'bl':
+          inset = `0px 0px ${
+            (offsetX - startXRef.current) / ratioRef.current
+          }px ${offsetX - startXRef.current}px`;
+          break;
+      }
+      return { inset };
+    }
+    return null;
+  };
+
   const btnCls = classNames(`${prefixCls}-popover-button`, className, {
     [`${prefixCls}-popover-button-active`]: btnKey
       ? activeBtn === btnKey
       : active,
+  });
+
+  const boxCls = classNames(`${prefixCls}-resize-box`, {
+    [`${prefixCls}-resizing`]: resizing,
   });
 
   return (
@@ -119,7 +224,7 @@ const ResizeButtonComponent: React.FC<
         getContainer() &&
         createPortal(
           <>
-            <div className={`${prefixCls}-resize-box`}>
+            <div className={boxCls} style={getResizeBoxInset()}>
               <span
                 className={`${prefixCls}-resizer ${prefixCls}-resizer-tl`}
               ></span>
@@ -135,16 +240,19 @@ const ResizeButtonComponent: React.FC<
             </div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tl`}
-              onMouseDown={onStart}
+              onMouseDown={onMouseDown}
             ></div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-tr`}
+              onMouseDown={onMouseDown}
             ></div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-br`}
+              onMouseDown={onMouseDown}
             ></div>
             <div
               className={`${prefixCls}-resize-handler ${prefixCls}-resizer-bl`}
+              onMouseDown={onMouseDown}
             ></div>
           </>,
           getContainer(),
