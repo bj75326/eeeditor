@@ -8,7 +8,7 @@ import {
   SelectionState,
 } from '..';
 
-const insertBlockBeforeSelection = (
+export const insertBlockBeforeSelection = (
   contentState: ContentState,
   selectionState: SelectionState,
   newBlock: ContentBlock,

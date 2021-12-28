@@ -105,7 +105,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const blockData = block.getData();
   const figcaption = blockData.get('figcaption');
-  const size = blockData.get('size');
+  const width = blockData.get('width');
 
   // image 状态
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
@@ -394,6 +394,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         <img
           src={src}
           className={imageCls}
+          style={{ width }}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         />
       </div>

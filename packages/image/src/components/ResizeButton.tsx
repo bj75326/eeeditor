@@ -19,6 +19,7 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import updateBlockData from '../modifiers/updateBlockData';
 
 export interface ResizeButtonProps {
   prefixCls?: string;
@@ -54,7 +55,8 @@ const ResizeButtonComponent: React.FC<
     getBlockProps,
   } = props;
 
-  const { getProps, getEditorRef } = pluginMethods;
+  const { getProps, getEditorRef, setEditorState, getEditorState } =
+    pluginMethods;
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -129,6 +131,13 @@ const ResizeButtonComponent: React.FC<
 
       // 重置 x 轴位移
       setOffsetX(null);
+
+      // 将新的尺寸信息写入 block data
+      setEditorState(
+        updateBlockData(getEditorState(), {
+          width: resizeBoxRef.current.offsetWidth,
+        }),
+      );
     }
   };
 
@@ -199,6 +208,15 @@ const ResizeButtonComponent: React.FC<
     return null;
   };
 
+  const resizeBoxRef = useRef<HTMLDivElement>();
+
+  const getResizeBoxSize = (): string => {
+    if (resizeBoxRef.current) {
+      return `${resizeBoxRef.current.offsetWidth} x ${resizeBoxRef.current.offsetHeight}`;
+    }
+    return '';
+  };
+
   const btnCls = classNames(`${prefixCls}-popover-button`, className, {
     [`${prefixCls}-popover-button-active`]: btnKey
       ? activeBtn === btnKey
@@ -224,7 +242,12 @@ const ResizeButtonComponent: React.FC<
         getContainer() &&
         createPortal(
           <>
-            <div className={boxCls} style={getResizeBoxInset()}>
+            <div
+              className={boxCls}
+              style={getResizeBoxInset()}
+              data-size={getResizeBoxSize()}
+              ref={resizeBoxRef}
+            >
               <span
                 className={`${prefixCls}-resizer ${prefixCls}-resizer-tl`}
               ></span>

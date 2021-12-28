@@ -136,7 +136,7 @@ export default ({ blockKeyStore, store }: DecoratorProps) =>
         });
 
         const onMouseUp = (event: MouseEvent) => {
-          console.log('onMouseUp run');
+          console.log('focus plugin onMouseUp run');
 
           setFocusToBlock();
         };
