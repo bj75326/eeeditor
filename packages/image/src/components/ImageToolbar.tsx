@@ -6,6 +6,7 @@ import {
   RadioGroup,
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
+import CropButton from './CropButton';
 import { Languages, zhCN, Locale } from '..';
 
 export interface ImageToolbarProps {
@@ -32,6 +33,7 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
     <ToolbarPopover prefixCls={prefixCls} className={className} store={store}>
       <RadioGroup>
         <ResizeButton />
+        <CropButton />
       </RadioGroup>
     </ToolbarPopover>
   );
