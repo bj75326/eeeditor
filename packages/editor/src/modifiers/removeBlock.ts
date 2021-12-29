@@ -22,14 +22,14 @@ export default function (
 
   // 当 focusable 的 block 在 draft 开头处，删除之后保留 block ，类型 unstyled 且内容为空。
   if (beforeBlock === undefined) {
-    const targetRange = new SelectionState({
-      anchorKey: blockKey,
-      anchorOffset: 0,
-      focusKey: blockKey,
-      focusOffset: 1,
-      // 如果不设置 hasFocus 为 true， 可能会导致 selectionAfter 失效
-      hasFocus: true,
-    });
+    // const targetRange = new SelectionState({
+    //   anchorKey: blockKey,
+    //   anchorOffset: 0,
+    //   focusKey: blockKey,
+    //   focusOffset: 1,
+    //   // 如果不设置 hasFocus 为 true， 可能会导致 selectionAfter 失效
+    //   hasFocus: true,
+    // });
     // // change the blocktype and remove the characterList entry with the sticker
     // content = Modifier.removeRange(content, targetRange, 'backward');
     // content = Modifier.setBlockType(content, targetRange, 'unstyled');
@@ -51,6 +51,15 @@ export default function (
     const withNewLine = content.merge({
       blockMap: BlockMapBuilder.createFromArray(array),
     }) as ContentState;
+
+    const targetRange = new SelectionState({
+      anchorKey: newLineBlock.getKey(),
+      anchorOffset: 0,
+      focusKey: blockKey,
+      focusOffset: 1,
+      // 如果不设置 hasFocus 为 true， 可能会导致 selectionAfter 失效
+      hasFocus: true,
+    });
 
     const withRemoved = Modifier.removeRange(
       withNewLine,

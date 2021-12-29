@@ -54,6 +54,9 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
   const popoverRef = useRef<HTMLDivElement>();
 
+  const block =
+    store.getItem('getBlockProps') && store.getItem('getBlockProps')().block;
+
   // children props
   const childrenProps: ToolbarPopoverChildrenProps = {
     placement,
@@ -83,46 +86,15 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
     setPosition(getPopoverPosition(root, popoverElement, root, placement));
   };
 
-  // 处理鼠标操作引起的 selection 变化，导致的 popover 位置可能不会被重新计算的问题
-  // const onDocumentClick = (event: MouseEvent) => {
-  //   const { target } = event;
-  //   const popoverNode = popoverRef.current || null;
-  //   if (!contains(popoverNode, target as Node)) {
-  //     setPopoverOffsetKey('');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   let currentDocument: Document =
-  //     getEditorRootDomNode(getEditorRef()).ownerDocument || window.document;
-  //   const cleanOutsiderHandler = addEventListener(
-  //     currentDocument,
-  //     'mousedown',
-  //     onDocumentClick,
-  //   );
-  //   return () => {
-  //     cleanOutsiderHandler.remove();
-  //   };
-  // }, []);
-
-  // 处理 keyboard 操作引起的 selection 变化，导致的 popover 位置可能不会被重新计算的问题
-  // const onEditorRootDomKeyDown = (event: KeyboardEvent) => {
-  //   if (event.keyCode >= 37 && event.keyCode <= 40) {
-  //     setPopoverOffsetKey('');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   let editorRootDom = getEditorRootDomNode(getEditorRef());
-  //   const cleanOutsiderHandler = addEventListener(
-  //     editorRootDom,
-  //     'keydown',
-  //     onEditorRootDomKeyDown,
-  //   );
-  //   return () => {
-  //     cleanOutsiderHandler.remove();
-  //   };
-  // }, []);
+  // block 发生变化之后需要重新计算 toolbar 位置
+  useEffect(() => {
+    if (!!popoverOffsetKey && popoverRef.current) {
+      const root: HTMLElement = getContainer().firstChild as HTMLElement;
+      setPosition(
+        getPopoverPosition(root, popoverRef.current, root, placement),
+      );
+    }
+  }, [block]);
 
   const getContainer = () => {
     if (getEditorRef()) {
