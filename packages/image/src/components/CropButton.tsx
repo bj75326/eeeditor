@@ -16,6 +16,9 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { cropIcon } from '../assets/extraIcons';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
+import Cropper from 'react-cropper';
+
+import 'cropperjs/dist/cropper.css';
 
 export interface CropButtonProps {
   prefixCls?: string;
@@ -51,7 +54,14 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     getBlockProps,
   } = props;
 
-  const { getProps, getEditorRef } = pluginMethods;
+  const { getProps, getEditorRef, getEditorState } = pluginMethods;
+
+  // image src
+  const { offsetKey } = getBlockProps();
+  // const { src } = getEditorState().getCurrentContent().getEntity(block.getEntityAt(0)).getData();
+  const imgEl = getEditorRootDomNode(getEditorRef()).querySelector(
+    `[data-block="true"][data-offset-key="${offsetKey}"] img`,
+  );
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -109,8 +119,21 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
         </span>
       </Tooltip>
       {(btnKey ? activeBtn === btnKey : active) &&
-        getContainer &&
-        createPortal(<></>, getContainer())}
+        getContainer() &&
+        createPortal(
+          <Cropper
+            className={`${prefixCls}-crop-wrapper`}
+            viewMode={1}
+            // src={URL.createObjectURL()}
+            modal={false}
+            movable={false}
+            rotatable={false}
+            scalable={false}
+            zoomable={false}
+            checkCrossOrigin={false}
+          />,
+          getContainer(),
+        )}
     </>
   );
 };

@@ -396,6 +396,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           className={imageCls}
           style={{ width }}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+          onLoad={() => {
+            console.log('!!@#@#@#@#$@#@');
+          }}
         />
       </div>
       {shouldShowFigcaption() && (

@@ -24,6 +24,7 @@
     "@draft-js-plugins/utils": "^4.1.0",
     "@eeeditor/buttons": "1.0.0",
     "@eeeditor/editor": "1.0.0",
-    "classnames": "^2.2.6"
+    "classnames": "^2.2.6",
+    "react-cropper": "^2.1.8"
   }
 }
