@@ -388,17 +388,45 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     [`${prefixCls}-figcaption-is-editing`]: figcaptionEditPopoverVisible,
   });
 
+  // test
+  // const imageRef = useRef<HTMLImageElement>();
+  // function getBase64Image (img: HTMLImageElement) {
+
+  //   if (img) { 
+      
+  //     var canvas = document.createElement("canvas");
+  //     canvas.width = img.width;
+  //     canvas.height = img.height;
+
+  //     var ctx = canvas.getContext("2d");
+  //     ctx.drawImage(img, 0, 0);
+
+  //     var dataURL = canvas.toDataURL("image/png");
+
+  //     // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+  //     return dataURL;
+  //   }
+  // }
+
+  // const onLoad = () => { 
+  //   const image = new window.Image(); 
+  //   image.setAttribute('crossOrigin', 'anonymous');
+  //   image.onload = (e) => {
+  //     const base64 = getBase64Image(e.target as HTMLImageElement);
+  //     console.log(base64);
+  //   }
+  //   image.src = src;
+  //   imageRef.current.appendChild(image)
+  // };
+
   const imageLayout = (
     <>
-      <div className={`${prefixCls}-wrapper`}>
+      <div className={`${prefixCls}-wrapper`} style={{width}}>
         <img
           src={src}
           className={imageCls}
           style={{ width }}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-          onLoad={() => {
-            console.log('!!@#@#@#@#$@#@');
-          }}
         />
       </div>
       {shouldShowFigcaption() && (

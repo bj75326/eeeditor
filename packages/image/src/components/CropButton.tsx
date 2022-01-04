@@ -4,8 +4,8 @@ import React, {
   ReactNode,
   useState,
   MouseEvent,
+  useEffect,
 } from 'react';
-import { createPortal } from 'react-dom';
 import lang, { Languages, Locale, zhCN } from '../locale';
 import {
   PluginMethods,
@@ -16,15 +16,13 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { cropIcon } from '../assets/extraIcons';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
-import Cropper from 'react-cropper';
-
-import 'cropperjs/dist/cropper.css';
 
 export interface CropButtonProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
   languages?: Languages;
+  // todo 自定义 croppjs
 }
 
 export interface CropButtonExtraProps {
@@ -84,16 +82,37 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     }
   };
 
-  const getContainer = () => {
-    if (getEditorRef()) {
-      return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
-        `[data-block="true"][data-offset-key="${
-          getBlockProps().offsetKey
-        }"] img`,
-      ).parentElement;
-    }
-    return null;
-  };
+  // const getContainer = () => {
+  //   if (getEditorRef()) {
+  //     return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+  //       `[data-block="true"][data-offset-key="${
+  //         getBlockProps().offsetKey
+  //       }"] img`,
+  //     ).parentElement;
+  //   }
+  //   return null;
+  // };
+  
+  // useEffect(() => {
+  //   if (btnKey ? activeBtn === btnKey : active) { 
+  //     // 获取 img 
+  //     const imgEl: HTMLImageElement = getEditorRootDomNode(getEditorRef()).querySelector(`[data-block="true"][data-offset-key="${getBlockProps().offsetKey}"] img`);
+  //     if (imgEl) { 
+  //       const cropper = new Cropper(imgEl, {
+  //         viewMode: 1,
+  //         movable: false,
+  //         rotatable:false,
+  //         scalable: false,
+  //         zoomable: false,
+  //         checkCrossOrigin: false,
+  //       });
+
+  //       return () => { 
+  //         cropper.destroy();
+  //       };
+  //     }
+  //   }
+  // }, [btnKey, activeBtn, active]);
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
@@ -118,7 +137,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
           {cropIcon}
         </span>
       </Tooltip>
-      {(btnKey ? activeBtn === btnKey : active) &&
+      {/* {(btnKey ? activeBtn === btnKey : active) &&
         getContainer() &&
         createPortal(
           <Cropper
@@ -133,7 +152,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
             checkCrossOrigin={false}
           />,
           getContainer(),
-        )}
+        )} */}
     </>
   );
 };

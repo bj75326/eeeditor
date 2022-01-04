@@ -10,16 +10,20 @@
 }
 
 .@{prefix}-wrapper {
-  position: relative;
+  position: relative;  
+  max-width: 100%;
+  overflow: hidden;    
 }
 
 .@{prefix} {
   display: block;
   max-width: 100%;
 
-  &.@{prefix}-uploading {
-    opacity: 0.3;
-  }
+  
+}
+
+.@{prefix}-uploading {
+  opacity: 0.3;
 }
 
 .@{prefix}-status {
