@@ -346,9 +346,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     };
   }, [figcaptionEditPopoverVisible]);
 
-  const imageCls = classNames(`${prefixCls}`, className, {
-    [`${prefixCls}-uploading`]: status !== 'success',
-  });
+  // const imageViewportCls = classNames(`${prefixCls}-viewport`, className, {
+  //   [`${prefixCls}-uploading`]: status !== 'success',
+  // });
 
   const statusTextCls = classNames(`${prefixCls}-status-text`, {
     isError: status === 'error',
@@ -360,11 +360,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const uploaderLayout = (
     <>
-      <img
-        src={src}
-        className={imageCls}
-        alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-      />
+      <div className={`${prefixCls}-uploading` }>
+        <img
+          src={src}
+          className={`${prefixCls}` }
+          alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+        />
+      </div>
       <div className={`${prefixCls}-status`}>
         <div className={statusTextCls}>
           {locale[`eeeditor.image.uploader.status.${status}`]}
@@ -383,51 +385,23 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     </>
   );
 
+  const imageViewportCls = classNames(`${prefixCls}-viewport`, className);
+
   const figcaptionCls = classNames(`${prefixCls}-figcaption`, {
     [`${prefixCls}-figcaption-placeholder`]: !!!figcaption,
     [`${prefixCls}-figcaption-is-editing`]: figcaptionEditPopoverVisible,
   });
 
-  // test
-  // const imageRef = useRef<HTMLImageElement>();
-  // function getBase64Image (img: HTMLImageElement) {
-
-  //   if (img) { 
-      
-  //     var canvas = document.createElement("canvas");
-  //     canvas.width = img.width;
-  //     canvas.height = img.height;
-
-  //     var ctx = canvas.getContext("2d");
-  //     ctx.drawImage(img, 0, 0);
-
-  //     var dataURL = canvas.toDataURL("image/png");
-
-  //     // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  //     return dataURL;
-  //   }
-  // }
-
-  // const onLoad = () => { 
-  //   const image = new window.Image(); 
-  //   image.setAttribute('crossOrigin', 'anonymous');
-  //   image.onload = (e) => {
-  //     const base64 = getBase64Image(e.target as HTMLImageElement);
-  //     console.log(base64);
-  //   }
-  //   image.src = src;
-  //   imageRef.current.appendChild(image)
-  // };
-
   const imageLayout = (
     <>
-      <div className={`${prefixCls}-wrapper`} style={{width}}>
-        <img
-          src={src}
-          className={imageCls}
-          style={{ width }}
-          alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-        />
+      <div className={`${prefixCls}-wrapper`} data-container="true">
+        <div className={imageViewportCls} style={{width}}>
+          <img
+            src={src}
+            className={`${prefixCls}`}
+            alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+          />
+        </div>
       </div>
       {shouldShowFigcaption() && (
         <figcaption className={figcaptionCls} onMouseUp={onFigcaptionMouseUp}>

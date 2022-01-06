@@ -2,6 +2,8 @@
 
 @prefix: ~'@{eeeditor-prefix-cls}-image';
 
+@crop: ~'@{eeeditor-prefix-cls}-crop';
+
 .@{prefix}-layout {
   position: relative;
   display: inline-block;
@@ -9,20 +11,9 @@
   vertical-align: top;
 }
 
-.@{prefix}-wrapper {
-  position: relative;  
-  max-width: 100%;
-  overflow: hidden;    
-}
-
-.@{prefix} {
-  display: block;
-  max-width: 100%;
-
-  
-}
-
+// uploader 
 .@{prefix}-uploading {
+  max-width: 100%;
   opacity: 0.3;
 }
 
@@ -69,6 +60,24 @@
   background-color: hsla(0, 0%, 100%, 0.3);
   -webkit-animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
   animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
+}
+
+// image class
+.@{prefix} {
+  max-width: 100%;
+}
+
+// image
+.@{prefix}-wrapper {
+  display: block;
+  position: relative;
+  max-width: 100%;  
+}
+
+.@{prefix}-viewport {
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .@{prefix}-figcaption {
@@ -188,14 +197,56 @@
 }
 
 // crop
-.@{eeeditor-prefix-cls}-crop-wrapper {
+.@{crop}-box {
+  // pointer-events: none;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 3;
+  touch-action: none;  
 }
+
+.@{crop}-screen {
+  background: rgba(0,0,0,0.25);
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+.@{crop}-area {
+  cursor: move;
+  position: absolute;
+  outline: 2px dashed @image-crop-box-outline;
+  outline-offset: -2px;
+  overflow: hidden;
+}
+
+.@{crop}-handler {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+}
+
+.@{crop}-handler-tl {
+  top: 0;
+  left: 0;  
+  cursor: nwse-resize;
+  pointer-events: all;  
+}
+
+.@{crop}-handler-outer {
+  position: absolute;
+  background: #fff;  
+}
+
+.@{crop}-handler-inner {
+  position: absolute;
+  background-color: @image-crop-handler-color;
+}
+
+
 
 @-webkit-keyframes LoadingBarForward {
   0% {

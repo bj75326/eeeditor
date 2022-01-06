@@ -161,13 +161,24 @@ const ResizeButtonComponent: React.FC<
     }
   }, [btnKey, activeBtn, active]);
 
-  const getContainer = () => {
+  // resize mode 下 image 的样式修改
+  // useEffect(() => {
+  //   const imageWrapper = getContainer();
+  //   const resizeCls = `${prefixCls}-resize-mode`;
+  //   if (imageWrapper  && (btnKey ? btnKey === activeBtn : active)) {
+  //     imageWrapper.classList.add(resizeCls);
+  //   } else { 
+  //    imageWrapper.classList.remove(resizeCls);
+  //   }
+  // }, [btnKey, activeBtn, active]);
+
+  const getContainer = ():HTMLElement => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
         `[data-block="true"][data-offset-key="${
           getBlockProps().offsetKey
-        }"] img`,
-      ).parentElement;
+        }"] [data-container="true"]`,
+      );
     }
     return null;
   };

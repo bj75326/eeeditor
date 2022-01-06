@@ -16,13 +16,13 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { cropIcon } from '../assets/extraIcons';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
+import { createPortal } from 'react-dom';
 
 export interface CropButtonProps {
   prefixCls?: string;
   className?: string;
   style?: CSSProperties;
   languages?: Languages;
-  // todo 自定义 croppjs
 }
 
 export interface CropButtonExtraProps {
@@ -54,12 +54,12 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
 
   const { getProps, getEditorRef, getEditorState } = pluginMethods;
 
-  // image src
-  const { offsetKey } = getBlockProps();
-  // const { src } = getEditorState().getCurrentContent().getEntity(block.getEntityAt(0)).getData();
-  const imgEl = getEditorRootDomNode(getEditorRef()).querySelector(
-    `[data-block="true"][data-offset-key="${offsetKey}"] img`,
-  );
+  // // image src
+  // const { offsetKey } = getBlockProps();
+  // // const { src } = getEditorState().getCurrentContent().getEntity(block.getEntityAt(0)).getData();
+  // const imgEl = getEditorRootDomNode(getEditorRef()).querySelector(
+  //   `[data-block="true"][data-offset-key="${offsetKey}"] img`,
+  // );
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -82,37 +82,25 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     }
   };
 
-  // const getContainer = () => {
-  //   if (getEditorRef()) {
-  //     return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
-  //       `[data-block="true"][data-offset-key="${
-  //         getBlockProps().offsetKey
-  //       }"] img`,
-  //     ).parentElement;
-  //   }
-  //   return null;
-  // };
-  
+  // resize mode 下 image 的样式修改
   // useEffect(() => {
-  //   if (btnKey ? activeBtn === btnKey : active) { 
-  //     // 获取 img 
-  //     const imgEl: HTMLImageElement = getEditorRootDomNode(getEditorRef()).querySelector(`[data-block="true"][data-offset-key="${getBlockProps().offsetKey}"] img`);
-  //     if (imgEl) { 
-  //       const cropper = new Cropper(imgEl, {
-  //         viewMode: 1,
-  //         movable: false,
-  //         rotatable:false,
-  //         scalable: false,
-  //         zoomable: false,
-  //         checkCrossOrigin: false,
-  //       });
-
-  //       return () => { 
-  //         cropper.destroy();
-  //       };
-  //     }
+  //   const imageWrapper = getContainer();
+  //   const cropCls = `${prefixCls}-crop-mode`;
+  //   if (imageWrapper && (btnKey ? btnKey === activeBtn : active)) {
+  //     imageWrapper.classList.add(cropCls);
+  //   } else {
+  //     imageWrapper.classList.remove(cropCls);
   //   }
   // }, [btnKey, activeBtn, active]);
+
+  const getContainer = () => {
+    if (getEditorRef()) {
+      return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+        `[data-block="true"][data-offset-key="${getBlockProps().offsetKey
+        }"] [data-container="true"]`);
+    }
+    return null;
+  };
 
   const getTipTitle = (name: string): ReactNode => (
     <span className={`${prefixCls}-tip`}>
@@ -137,22 +125,33 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
           {cropIcon}
         </span>
       </Tooltip>
-      {/* {(btnKey ? activeBtn === btnKey : active) &&
+      {(btnKey ? btnKey === activeBtn : active) && 
         getContainer() &&
         createPortal(
-          <Cropper
-            className={`${prefixCls}-crop-wrapper`}
-            viewMode={1}
-            // src={URL.createObjectURL()}
-            modal={false}
-            movable={false}
-            rotatable={false}
-            scalable={false}
-            zoomable={false}
-            checkCrossOrigin={false}
-          />,
-          getContainer(),
-        )} */}
+          <div className={`${prefixCls}-crop-box`}>
+            <div className={`${prefixCls}-crop-screen`}>
+              <div className={`${prefixCls}-crop-area`} style={{ width: '500px', height: '300px'}}>
+                <div className={`${prefixCls}-crop-handlers`}>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-tl`}>
+                    <div className={`${prefixCls}-crop-handler-outer`} style={{width: '20px', height: '5px', top: 0, left: 0}}></div>
+                    <div className={`${prefixCls}-crop-handler-inner`} style={{width: '18px', height: '3px', top: '1px', left: '1px'}}></div>
+                    <div className={`${prefixCls}-crop-handler-outer`} style={{width: '5px', height: '15px', top: '5px', left: 0}}></div>
+                    <div className={`${prefixCls}-crop-handler-inner`} style={{ width: '3px', height: '18px', top: '1px', left: '1px'}}></div>
+                  </div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-t`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-tr`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-l`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-r`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-bl`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-b`}></div>
+                  <div className={`${prefixCls}-crop-handler ${prefixCls}-crop-handler-br`}></div>
+                </div>
+              </div>
+            </div>    
+          </div>
+          , getContainer()
+        )
+      }
     </>
   );
 };
