@@ -4,6 +4,8 @@
 
 @crop: ~'@{eeeditor-prefix-cls}-crop';
 
+@cropper: ~'@{eeeditor-prefix-cls}-cropper';
+
 .@{prefix}-layout {
   position: relative;
   display: inline-block;
@@ -11,7 +13,7 @@
   vertical-align: top;
 }
 
-// uploader 
+// uploader
 .@{prefix}-uploading {
   max-width: 100%;
   opacity: 0.3;
@@ -19,19 +21,19 @@
 
 .@{prefix}-status {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 }
 
 .@{prefix}-status-text {
-  font-size: @image-status-text-size;
   color: @image-status-text-color;
+  font-size: @image-status-text-size;
   &.isError {
     color: @image-upload-error-color;
   }
@@ -43,8 +45,8 @@
 
 .@{prefix}-progress {
   position: absolute;
-  left: 0;
   bottom: 0;
+  left: 0;
   width: 100%;
   height: 4px;
   background-color: @image-upload-progress-color;
@@ -54,8 +56,8 @@
 }
 
 .@{prefix}-loading-bar {
-  display: block;
   position: relative;
+  display: block;
   height: 100%;
   background-color: hsla(0, 0%, 100%, 0.3);
   -webkit-animation: LoadingBarForward 1s ease-in-out 0.8s infinite;
@@ -69,9 +71,9 @@
 
 // image
 .@{prefix}-wrapper {
-  display: block;
   position: relative;
-  max-width: 100%;  
+  display: block;
+  max-width: 100%;
 }
 
 .@{prefix}-viewport {
@@ -83,9 +85,9 @@
 .@{prefix}-figcaption {
   margin-top: 10px;
   padding: 0 1em;
+  color: @image-figcaption-color;
   font-size: @image-figcaption-size;
   text-align: center;
-  color: @image-figcaption-color;
 }
 
 .@{prefix}-figcaption-placeholder {
@@ -97,10 +99,10 @@
 }
 
 .@{prefix}-figcaption-popover {
-  width: @image-figcaption-width;
-  z-index: 2;
   position: absolute;
+  z-index: 2;
   box-sizing: border-box;
+  width: @image-figcaption-width;
   margin: 0;
   padding: 0;
 }
@@ -111,15 +113,15 @@
 
 .@{prefix}-figcaption-textarea {
   display: block;
-  overflow: hidden;
   width: 100%;
   margin: 0;
   padding: 0;
-  border: none;
+  overflow: hidden;
+  color: @image-figcaption-color;
   font-size: @image-figcaption-size;
   text-align: center;
-  color: @image-figcaption-color;
   background: none;
+  border: none;
   resize: none;
   &::placeholder,
   &::-webkit-input-placeholder,
@@ -133,25 +135,25 @@
 }
 
 .@{eeeditor-prefix-cls}-resize-box {
-  pointer-events: none;
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   z-index: 3;
   outline: 1px solid @image-resize-box-outline;
+  pointer-events: none;
   &.@{eeeditor-prefix-cls}-resizing:after {
     position: absolute;
     z-index: 3;
     display: flex;
-    width: 100%;
-    height: 100%;
     align-items: center;
     justify-content: center;
-    content: attr(data-size);
+    width: 100%;
+    height: 100%;
     color: #fff;
     background-color: rgba(0, 0, 0, 0.3);
+    content: attr(data-size);
   }
 }
 
@@ -161,9 +163,9 @@
   z-index: 2;
   width: 14px;
   height: 14px;
+  background-color: @image-resize-handler-color;
   border: 2px solid #fff;
   border-radius: 10px;
-  background-color: @image-resize-handler-color;
 }
 
 .@{eeeditor-prefix-cls}-resizer-tl {
@@ -179,8 +181,8 @@
 }
 
 .@{eeeditor-prefix-cls}-resizer-br {
-  bottom: -7px;
   right: -7px;
+  bottom: -7px;
   cursor: nwse-resize;
 }
 
@@ -192,61 +194,73 @@
 
 .@{eeeditor-prefix-cls}-resize-handler {
   z-index: 3;
-  border: none;
   background-color: transparent;
+  border: none;
 }
 
 // crop
 .@{crop}-box {
-  // pointer-events: none;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: -4px;
+  right: -4px;
+  bottom: -4px;
+  left: -4px;
   z-index: 3;
-  touch-action: none;  
+  pointer-events: none;
+  // touch-action: none;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-.@{crop}-screen {
-  background: rgba(0,0,0,0.25);
-  outline: none;
-  width: 100%;
-  height: 100%;
+.@{crop}-mask {
+  cursor: default;
+  opacity: 0.4;
+  user-select: none;
+  pointer-events: all;
+  fill: #000;
 }
 
 .@{crop}-area {
   cursor: move;
-  position: absolute;
-  outline: 2px dashed @image-crop-box-outline;
-  outline-offset: -2px;
-  overflow: hidden;
+  pointer-events: all;
+  fill: none;
+  stroke: @image-crop-stroke-color;
+  stroke-dasharray: 2px 2px;
 }
 
 .@{crop}-handler {
-  position: absolute;
-  width: 20px;
-  height: 20px;
+  pointer-events: all;
+  fill: none;
 }
 
-.@{crop}-handler-tl {
-  top: 0;
-  left: 0;  
+.@{crop}-bar {
+  pointer-events: all;
+  fill: @image-crop-stroke-color;
+  stroke: #fff;
+}
+
+.@{cropper}-tl,
+.@{cropper}-br {
   cursor: nwse-resize;
-  pointer-events: all;  
 }
 
-.@{crop}-handler-outer {
-  position: absolute;
-  background: #fff;  
+.@{cropper}-t,
+.@{cropper}-b {
+  cursor: ns-resize;
 }
 
-.@{crop}-handler-inner {
-  position: absolute;
-  background-color: @image-crop-handler-color;
+.@{cropper}-tr,
+.@{cropper}-bl {
+  cursor: nesw-resize;
 }
 
-
+.@{cropper}-l,
+.@{cropper}-r {
+  cursor: ew-resize;
+}
 
 @-webkit-keyframes LoadingBarForward {
   0% {

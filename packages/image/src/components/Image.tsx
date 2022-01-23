@@ -360,10 +360,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
 
   const uploaderLayout = (
     <>
-      <div className={`${prefixCls}-uploading` }>
+      <div className={`${prefixCls}-uploading`}>
         <img
           src={src}
-          className={`${prefixCls}` }
+          className={`${prefixCls}`}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         />
       </div>
@@ -395,9 +395,10 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const imageLayout = (
     <>
       <div className={`${prefixCls}-wrapper`} data-container="true">
-        <div className={imageViewportCls} style={{width}}>
+        <div className={imageViewportCls} style={{ width }}>
           <img
             src={src}
+            width={width}
             className={`${prefixCls}`}
             alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
           />
