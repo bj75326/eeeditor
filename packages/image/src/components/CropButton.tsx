@@ -4,6 +4,7 @@ import React, {
   ReactNode,
   useState,
   MouseEvent,
+  useLayoutEffect,
   useEffect,
   useRef,
 } from 'react';
@@ -19,21 +20,33 @@ import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import { createPortal } from 'react-dom';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import updateCropPositions from '../modifiers/updateCropPositions';
 
 // 偏移常量
-const OFFSET: number = 1.5;
+export const OFFSET: number = 1.5;
 // 角 handler 尺寸
-const CORNER_SIZE: number = 21;
+export const CORNER_SIZE: number = 21;
 // 边 handler 尺寸
-const SIDE_WIDTH: number = 34;
-const SIDE_HEIGHT: number = 3;
+export const SIDE_WIDTH: number = 34;
+export const SIDE_HEIGHT: number = 3;
 // 最小距离
-const MIN_GAP: number = 13;
+export const MIN_GAP: number = 13;
 
 interface CropBarPosition {
   x: number;
   y: number;
 }
+
+type Positions = {
+  cropTl?: CropBarPosition;
+  cropT?: CropBarPosition;
+  cropTr?: CropBarPosition;
+  cropL?: CropBarPosition;
+  cropR?: CropBarPosition;
+  cropBl?: CropBarPosition;
+  cropB?: CropBarPosition;
+  cropBr?: CropBarPosition;
+};
 
 const convertBarPosition = (position: string): CropBarPosition => {
   const coords: string[] = position.split(',');
@@ -91,7 +104,8 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     getBlockProps,
   } = props;
 
-  const { getProps, getEditorRef, getEditorState } = pluginMethods;
+  const { getProps, getEditorRef, getEditorState, setEditorState } =
+    pluginMethods;
 
   // // image src
   // const { offsetKey } = getBlockProps();
@@ -144,7 +158,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   const cropBr = useRef<CropBarPosition>({ x: 0, y: 0 });
 
   // resize mode 下 image 的样式修改
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (btnKey ? btnKey === activeBtn : active) {
       // crop 初始化
       // image & viewport 样式初始化
@@ -189,7 +203,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
           }`,
       );
       cropBl.current = convertBarPosition(
-        block.getData().get('cropBr') ||
+        block.getData().get('cropBl') ||
           `${-OFFSET},${image.offsetHeight - CORNER_SIZE + OFFSET} `,
       );
       cropB.current = convertBarPosition(
@@ -199,7 +213,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
           }`,
       );
       cropBr.current = convertBarPosition(
-        block.getData().get('cropBl') ||
+        block.getData().get('cropBr') ||
           `${image.offsetWidth - CORNER_SIZE + OFFSET},${
             image.offsetHeight - CORNER_SIZE + OFFSET
           }`,
@@ -216,7 +230,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
 
   // 存放每次 crop 点击的 crop handler
   const handlerRef = useRef<
-    'tl' | 't' | 'tr' | 'l' | 'r' | 'bl' | 'b' | 'br'
+    'tl' | 't' | 'tr' | 'l' | 'r' | 'bl' | 'b' | 'br' | 'area'
   >();
 
   // mousedown
@@ -233,6 +247,12 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
         .find((className) => className.startsWith(`${prefixCls}-cropper`))
         .split('-')
         .pop() as 'tl' | 't' | 'tr' | 'l' | 'r' | 'bl' | 'b' | 'br';
+      // 确定起始位置
+      startXRef.current = e.clientX;
+      startYRef.current = e.clientY;
+    }
+    if (targetClassList.contains(`${prefixCls}-crop-area`)) {
+      handlerRef.current = 'area';
       // 确定起始位置
       startXRef.current = e.clientX;
       startYRef.current = e.clientY;
@@ -399,6 +419,27 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
             setY(y);
           }
           break;
+        case 'area':
+          if (cropL.current.x + x <= -SIDE_WIDTH / 2) {
+            setX(-SIDE_WIDTH / 2 - cropL.current.x);
+          } else if (
+            cropR.current.x + x >=
+            image.offsetWidth - SIDE_WIDTH / 2
+          ) {
+            setX(image.offsetWidth - SIDE_WIDTH / 2 - cropR.current.x);
+          } else {
+            setX(x);
+          }
+          if (cropT.current.y + y <= -SIDE_HEIGHT / 2) {
+            setY(-SIDE_HEIGHT / 2 - cropT.current.y);
+          } else if (
+            cropB.current.y + y >=
+            image.offsetHeight + SIDE_HEIGHT / 2
+          ) {
+            setY(image.offsetHeight + SIDE_HEIGHT / 2 - cropB.current.y);
+          } else {
+            setY(y);
+          }
       }
     }
   };
@@ -406,9 +447,39 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   const onMouseUp = (e: MouseEvent): void => {
     e.preventDefault();
     if (typeof startXRef.current === 'number') {
+      // 更改 ref 保存的坐标值
+      const positions: Positions = {};
+      ['tl', 't', 'tr', 'l', 'r', 'bl', 'b', 'br'].forEach(
+        (position: string) => {
+          // dom 获取 bar x, y attribute 值
+          const bar = getContainer().querySelector(
+            `.${prefixCls}-cropper-${position}`,
+          );
+          positions[
+            `crop${position
+              .split('')
+              .map((value: string, index: number) =>
+                index === 0 ? value.toUpperCase() : value,
+              )
+              .join('')}`
+          ] = {
+            x: +bar.getAttribute('x'),
+            y: +bar.getAttribute('y'),
+          };
+        },
+      );
+      cropTl.current = positions.cropTl;
+      cropT.current = positions.cropT;
+      cropTr.current = positions.cropTr;
+      cropL.current = positions.cropL;
+      cropR.current = positions.cropR;
+      cropBl.current = positions.cropBl;
+      cropB.current = positions.cropB;
+      cropBr.current = positions.cropBr;
+
+      // 重置 ref
       startXRef.current = null;
       startYRef.current = null;
-
       handlerRef.current = null;
     }
   };
@@ -433,305 +504,362 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     }
   }, [btnKey, activeBtn, active]);
 
-  // 根据 x, y 计算出当前各个 crop bar 位置
-  const getCropBarPosition = () => {
-    if (handlerRef.current) {
-      switch (handlerRef.current) {
-        case 'tl':
-          return {
-            cropTl: {
-              x: cropTl.current.x + x,
-              y: cropTl.current.y + y,
-            },
-            cropT: {
-              x:
-                (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y + y,
-            },
-            cropTr: {
-              x: cropTr.current.x,
-              y: cropTr.current.y + y,
-            },
-            cropL: {
-              x: cropL.current.x + x,
-              y:
-                (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x,
-              y:
-                (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: {
-              x: cropBl.current.x + x,
-              y: cropBl.current.y,
-            },
-            cropB: {
-              x:
-                (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y,
-            },
-            cropBr: cropBr.current,
-          };
-        case 't':
-          return {
-            cropTl: {
-              x: cropTl.current.x,
-              y: cropTl.current.y + y,
-            },
-            cropT: {
-              x: cropT.current.x,
-              y: cropT.current.y + y,
-            },
-            cropTr: {
-              x: cropTr.current.x,
-              y: cropTr.current.y + y,
-            },
-            cropL: {
-              x: cropL.current.x,
-              y:
-                (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x,
-              y:
-                (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: cropBl.current,
-            cropB: cropB.current,
-            cropBr: cropBr.current,
-          };
-        case 'tr':
-          return {
-            cropTl: {
-              x: cropTl.current.x,
-              y: cropTl.current.y + y,
-            },
-            cropT: {
-              x:
-                (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y + y,
-            },
-            cropTr: {
-              x: cropTr.current.x + x,
-              y: cropTr.current.y + y,
-            },
-            cropL: {
-              x: cropL.current.x,
-              y:
-                (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x + x,
-              y:
-                (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: cropBl.current,
-            cropB: {
-              x:
-                (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y,
-            },
-            cropBr: {
-              x: cropBr.current.x + x,
-              y: cropBr.current.y,
-            },
-          };
-        case 'l':
-          return {
-            cropTl: {
-              x: cropTl.current.x + x,
-              y: cropTl.current.y,
-            },
-            cropT: {
-              x:
-                (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y,
-            },
-            cropTr: cropTr.current,
-            cropL: {
-              x: cropL.current.x + x,
-              y: cropL.current.y,
-            },
-            cropR: cropR.current,
-            cropBl: {
-              x: cropBl.current.x + x,
-              y: cropBl.current.y,
-            },
-            cropB: {
-              x:
-                (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y,
-            },
-            cropBr: cropBr.current,
-          };
-        case 'r':
-          return {
-            cropTl: cropTl.current,
-            cropT: {
-              x:
-                (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y,
-            },
-            cropTr: {
-              x: cropTr.current.x + x,
-              y: cropTr.current.y,
-            },
-            cropL: cropL.current,
-            cropR: {
-              x: cropR.current.x + x,
-              y: cropR.current.y,
-            },
-            cropBl: cropBl.current,
-            cropB: {
-              x:
-                (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y,
-            },
-            cropBr: {
-              x: cropBr.current.x + x,
-              y: cropBr.current.y,
-            },
-          };
-        case 'bl':
-          return {
-            cropTl: {
-              x: cropTl.current.x + x,
-              y: cropTl.current.y,
-            },
-            cropT: {
-              x:
-                (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y,
-            },
-            cropTr: cropTr.current,
-            cropL: {
-              x: cropL.current.x + x,
-              y:
-                (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x,
-              y:
-                (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: {
-              x: cropBl.current.x + x,
-              y: cropBl.current.y + y,
-            },
-            cropB: {
-              x:
-                (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y + y,
-            },
-            cropBr: {
-              x: cropBr.current.x,
-              y: cropBr.current.y + y,
-            },
-          };
-        case 'b':
-          return {
-            cropTl: cropTl.current,
-            cropT: cropT.current,
-            cropTr: cropTr.current,
-            cropL: {
-              x: cropL.current.x,
-              y:
-                (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x,
-              y:
-                (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: {
-              x: cropBl.current.x,
-              y: cropBl.current.y + y,
-            },
-            cropB: {
-              x: cropB.current.x,
-              y: cropB.current.y + y,
-            },
-            cropBr: {
-              x: cropBr.current.x,
-              y: cropBr.current.y + y,
-            },
-          };
-        case 'br':
-          return {
-            cropTl: cropTl.current,
-            cropT: {
-              x:
-                (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropT.current.y,
-            },
-            cropTr: {
-              x: cropTr.current.x + x,
-              y: cropTr.current.y,
-            },
-            cropL: {
-              x: cropL.current.x,
-              y:
-                (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropR: {
-              x: cropR.current.x + x,
-              y:
-                (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
-                SIDE_HEIGHT / 2,
-            },
-            cropBl: {
-              x: cropBl.current.x,
-              y: cropBl.current.y + y,
-            },
-            cropB: {
-              x:
-                (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
-                SIDE_WIDTH / 2,
-              y: cropB.current.y + y,
-            },
-            cropBr: {
-              x: cropBr.current.x + x,
-              y: cropBr.current.y + y,
-            },
-          };
+  // 什么时候将 position 保存到 block data ？
+  // 1. CropButton active 时 unmount
+  // 2. CropButton unactive 但 image 仍然保持 focused
+  useEffect(() => {
+    return () => {
+      if (getContainer().querySelector(`.${prefixCls}-crop-box`)) {
+        // console.log('yes yes yes');
+        setEditorState(
+          updateCropPositions(getEditorState(), getBlockProps().block, {
+            cropTl: `${cropTl.current.x},${cropTl.current.y}`,
+            cropT: `${cropT.current.x},${cropT.current.y}`,
+            cropTr: `${cropTr.current.x},${cropTr.current.y}`,
+            cropL: `${cropL.current.x},${cropL.current.y}`,
+            cropR: `${cropR.current.x},${cropR.current.y}`,
+            cropBl: `${cropBl.current.x},${cropBl.current.y}`,
+            cropB: `${cropB.current.x},${cropB.current.y}`,
+            cropBr: `${cropBr.current.x},${cropBr.current.y}`,
+          }),
+        );
       }
-    }
-    return {
-      cropTl: cropTl.current,
-      cropT: cropT.current,
-      cropTr: cropTr.current,
-      cropL: cropL.current,
-      cropR: cropR.current,
-      cropBl: cropBl.current,
-      cropB: cropB.current,
-      cropBr: cropBr.current,
     };
+  }, []);
+
+  // 根据 x, y 计算出当前各个 crop bar 位置
+  const getCropBarPositions = (): Positions => {
+    switch (handlerRef.current) {
+      case 'tl':
+        return {
+          cropTl: {
+            x: cropTl.current.x + x,
+            y: cropTl.current.y + y,
+          },
+          cropT: {
+            x:
+              (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y + y,
+          },
+          cropTr: {
+            x: cropTr.current.x,
+            y: cropTr.current.y + y,
+          },
+          cropL: {
+            x: cropL.current.x + x,
+            y:
+              (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x,
+            y:
+              (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: {
+            x: cropBl.current.x + x,
+            y: cropBl.current.y,
+          },
+          cropB: {
+            x:
+              (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y,
+          },
+          cropBr: cropBr.current,
+        };
+      case 't':
+        return {
+          cropTl: {
+            x: cropTl.current.x,
+            y: cropTl.current.y + y,
+          },
+          cropT: {
+            x: cropT.current.x,
+            y: cropT.current.y + y,
+          },
+          cropTr: {
+            x: cropTr.current.x,
+            y: cropTr.current.y + y,
+          },
+          cropL: {
+            x: cropL.current.x,
+            y:
+              (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x,
+            y:
+              (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: cropBl.current,
+          cropB: cropB.current,
+          cropBr: cropBr.current,
+        };
+      case 'tr':
+        return {
+          cropTl: {
+            x: cropTl.current.x,
+            y: cropTl.current.y + y,
+          },
+          cropT: {
+            x:
+              (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y + y,
+          },
+          cropTr: {
+            x: cropTr.current.x + x,
+            y: cropTr.current.y + y,
+          },
+          cropL: {
+            x: cropL.current.x,
+            y:
+              (cropTl.current.y + y + cropBl.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x + x,
+            y:
+              (cropTr.current.y + y + cropBr.current.y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: cropBl.current,
+          cropB: {
+            x:
+              (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y,
+          },
+          cropBr: {
+            x: cropBr.current.x + x,
+            y: cropBr.current.y,
+          },
+        };
+      case 'l':
+        return {
+          cropTl: {
+            x: cropTl.current.x + x,
+            y: cropTl.current.y,
+          },
+          cropT: {
+            x:
+              (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y,
+          },
+          cropTr: cropTr.current,
+          cropL: {
+            x: cropL.current.x + x,
+            y: cropL.current.y,
+          },
+          cropR: cropR.current,
+          cropBl: {
+            x: cropBl.current.x + x,
+            y: cropBl.current.y,
+          },
+          cropB: {
+            x:
+              (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y,
+          },
+          cropBr: cropBr.current,
+        };
+      case 'r':
+        return {
+          cropTl: cropTl.current,
+          cropT: {
+            x:
+              (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y,
+          },
+          cropTr: {
+            x: cropTr.current.x + x,
+            y: cropTr.current.y,
+          },
+          cropL: cropL.current,
+          cropR: {
+            x: cropR.current.x + x,
+            y: cropR.current.y,
+          },
+          cropBl: cropBl.current,
+          cropB: {
+            x:
+              (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y,
+          },
+          cropBr: {
+            x: cropBr.current.x + x,
+            y: cropBr.current.y,
+          },
+        };
+      case 'bl':
+        return {
+          cropTl: {
+            x: cropTl.current.x + x,
+            y: cropTl.current.y,
+          },
+          cropT: {
+            x:
+              (cropTl.current.x + x + cropTr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y,
+          },
+          cropTr: cropTr.current,
+          cropL: {
+            x: cropL.current.x + x,
+            y:
+              (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x,
+            y:
+              (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: {
+            x: cropBl.current.x + x,
+            y: cropBl.current.y + y,
+          },
+          cropB: {
+            x:
+              (cropBl.current.x + x + cropBr.current.x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y + y,
+          },
+          cropBr: {
+            x: cropBr.current.x,
+            y: cropBr.current.y + y,
+          },
+        };
+      case 'b':
+        return {
+          cropTl: cropTl.current,
+          cropT: cropT.current,
+          cropTr: cropTr.current,
+          cropL: {
+            x: cropL.current.x,
+            y:
+              (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x,
+            y:
+              (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: {
+            x: cropBl.current.x,
+            y: cropBl.current.y + y,
+          },
+          cropB: {
+            x: cropB.current.x,
+            y: cropB.current.y + y,
+          },
+          cropBr: {
+            x: cropBr.current.x,
+            y: cropBr.current.y + y,
+          },
+        };
+      case 'br':
+        return {
+          cropTl: cropTl.current,
+          cropT: {
+            x:
+              (cropTl.current.x + cropTr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropT.current.y,
+          },
+          cropTr: {
+            x: cropTr.current.x + x,
+            y: cropTr.current.y,
+          },
+          cropL: {
+            x: cropL.current.x,
+            y:
+              (cropTl.current.y + cropBl.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropR: {
+            x: cropR.current.x + x,
+            y:
+              (cropTr.current.y + cropBr.current.y + y + CORNER_SIZE) / 2 -
+              SIDE_HEIGHT / 2,
+          },
+          cropBl: {
+            x: cropBl.current.x,
+            y: cropBl.current.y + y,
+          },
+          cropB: {
+            x:
+              (cropBl.current.x + cropBr.current.x + x + CORNER_SIZE) / 2 -
+              SIDE_WIDTH / 2,
+            y: cropB.current.y + y,
+          },
+          cropBr: {
+            x: cropBr.current.x + x,
+            y: cropBr.current.y + y,
+          },
+        };
+      case 'area':
+        return {
+          cropTl: {
+            x: cropTl.current.x + x,
+            y: cropTl.current.y + y,
+          },
+          cropT: {
+            x: cropT.current.x + x,
+            y: cropT.current.y + y,
+          },
+          cropTr: {
+            x: cropTr.current.x + x,
+            y: cropTr.current.y + y,
+          },
+          cropL: {
+            x: cropL.current.x + x,
+            y: cropL.current.y + y,
+          },
+          cropR: {
+            x: cropR.current.x + x,
+            y: cropR.current.y + y,
+          },
+          cropBl: {
+            x: cropBl.current.x + x,
+            y: cropBl.current.y + y,
+          },
+          cropB: {
+            x: cropB.current.x + x,
+            y: cropB.current.y + y,
+          },
+          cropBr: {
+            x: cropBr.current.x + x,
+            y: cropBr.current.y + y,
+          },
+        };
+      default:
+        return {
+          cropTl: cropTl.current,
+          cropT: cropT.current,
+          cropTr: cropTr.current,
+          cropL: cropL.current,
+          cropR: cropR.current,
+          cropBl: cropBl.current,
+          cropB: cropB.current,
+          cropBr: cropBr.current,
+        };
+    }
   };
 
-  const position = getCropBarPosition();
+  const positions = getCropBarPositions();
 
   const getContainer = () => {
     if (getEditorRef()) {
@@ -761,6 +889,12 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     [`${prefixCls}-popover-button-active`]: btnKey
       ? activeBtn === btnKey
       : active,
+  });
+
+  const areaCls = classNames(`${prefixCls}-crop-area`, {
+    [`${prefixCls}-crop-area-moveable`]:
+      positions.cropB.y - positions.cropT.y < getImg().offsetHeight ||
+      positions.cropR.x - positions.cropL.x < getImg().offsetWidth,
   });
 
   return (
@@ -794,158 +928,158 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
                   d={`M0,0 h${getImg()!.offsetWidth} v${
                     getImg()!.offsetHeight
                   } h-${getImg()!.offsetWidth} z
-            M${position.cropTl.x + OFFSET},${position.cropTl.y + OFFSET} v${
-                    position.cropBl.y -
+            M${positions.cropTl.x + OFFSET},${positions.cropTl.y + OFFSET} v${
+                    positions.cropBl.y -
                     OFFSET +
                     CORNER_SIZE -
-                    (position.cropTl.y + OFFSET)
+                    (positions.cropTl.y + OFFSET)
                   }
             h${
-              position.cropBr.x -
+              positions.cropBr.x -
               OFFSET +
               CORNER_SIZE -
-              (position.cropBl.x + OFFSET)
+              (positions.cropBl.x + OFFSET)
             } v${
-                    position.cropTr.y +
+                    positions.cropTr.y +
                     OFFSET -
-                    (position.cropBr.y - OFFSET) -
+                    (positions.cropBr.y - OFFSET) -
                     CORNER_SIZE
                   } z`}
                 ></path>
                 <path
-                  className={`${prefixCls}-crop-area`}
-                  d={`M${position.cropTl.x + OFFSET},${
-                    position.cropTl.y + OFFSET
+                  className={areaCls}
+                  d={`M${positions.cropTl.x + OFFSET},${
+                    positions.cropTl.y + OFFSET
                   } v${
-                    position.cropBl.y -
+                    positions.cropBl.y -
                     OFFSET +
                     CORNER_SIZE -
-                    (position.cropTl.y + OFFSET)
+                    (positions.cropTl.y + OFFSET)
                   }
             h${
-              position.cropBr.x -
+              positions.cropBr.x -
               OFFSET +
               CORNER_SIZE -
-              (position.cropBl.x + OFFSET)
+              (positions.cropBl.x + OFFSET)
             } v${
-                    position.cropTr.y +
+                    positions.cropTr.y +
                     OFFSET -
-                    (position.cropBr.y - OFFSET) -
+                    (positions.cropBr.y - OFFSET) -
                     CORNER_SIZE
                   } z`}
                 ></path>
                 <rect
                   className={`${prefixCls}-crop-handler ${prefixCls}-cropper-tl`}
-                  x={position.cropTl.x}
-                  y={position.cropTl.y}
+                  x={positions.cropTl.x}
+                  y={positions.cropTl.y}
                   width={`${CORNER_SIZE}`}
                   height={`${CORNER_SIZE}`}
                 ></rect>
                 <use
-                  x={position.cropTl.x}
-                  y={position.cropTl.y}
+                  x={positions.cropTl.x}
+                  y={positions.cropTl.y}
                   transform={`rotate(0 ${
-                    (position.cropTl.x + position.cropTl.x + CORNER_SIZE) / 2
+                    (positions.cropTl.x + positions.cropTl.x + CORNER_SIZE) / 2
                   } ${
-                    (position.cropTl.y + position.cropTl.y + CORNER_SIZE) / 2
+                    (positions.cropTl.y + positions.cropTl.y + CORNER_SIZE) / 2
                   })`}
                   xlinkHref="#corner"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-tl`}
                 ></use>
                 <use
-                  x={position.cropT.x}
-                  y={position.cropT.y}
+                  x={positions.cropT.x}
+                  y={positions.cropT.y}
                   transform={`rotate(0 ${
-                    (position.cropT.x + position.cropT.x + SIDE_WIDTH) / 2
+                    (positions.cropT.x + positions.cropT.x + SIDE_WIDTH) / 2
                   } ${
-                    (position.cropT.y + position.cropT.y + SIDE_HEIGHT) / 2
+                    (positions.cropT.y + positions.cropT.y + SIDE_HEIGHT) / 2
                   })`}
                   xlinkHref="#handle"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-t`}
                 ></use>
                 <rect
                   className={`${prefixCls}-crop-handler ${prefixCls}-cropper-tr`}
-                  x={position.cropTr.x}
-                  y={position.cropTr.y}
+                  x={positions.cropTr.x}
+                  y={positions.cropTr.y}
                   width={`${CORNER_SIZE}`}
                   height={`${CORNER_SIZE}`}
                 ></rect>
                 <use
-                  x={position.cropTr.x}
-                  y={position.cropTr.y}
+                  x={positions.cropTr.x}
+                  y={positions.cropTr.y}
                   transform={`rotate(90 ${
-                    (position.cropTr.x + position.cropTr.x + CORNER_SIZE) / 2
+                    (positions.cropTr.x + positions.cropTr.x + CORNER_SIZE) / 2
                   } ${
-                    (position.cropTr.y + position.cropTr.y + CORNER_SIZE) / 2
+                    (positions.cropTr.y + positions.cropTr.y + CORNER_SIZE) / 2
                   })`}
                   xlinkHref="#corner"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-tr`}
                 ></use>
                 <use
-                  x={position.cropL.x}
-                  y={position.cropL.y}
+                  x={positions.cropL.x}
+                  y={positions.cropL.y}
                   transform={`rotate(90 ${
-                    (position.cropL.x + position.cropL.x + SIDE_WIDTH) / 2
+                    (positions.cropL.x + positions.cropL.x + SIDE_WIDTH) / 2
                   } ${
-                    (position.cropL.y + position.cropL.y + SIDE_HEIGHT) / 2
+                    (positions.cropL.y + positions.cropL.y + SIDE_HEIGHT) / 2
                   })`}
                   xlinkHref="#handle"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-l`}
                 ></use>
                 <use
-                  x={position.cropR.x}
-                  y={position.cropR.y}
+                  x={positions.cropR.x}
+                  y={positions.cropR.y}
                   transform={`rotate(90 ${
-                    (position.cropR.x + position.cropR.x + SIDE_WIDTH) / 2
+                    (positions.cropR.x + positions.cropR.x + SIDE_WIDTH) / 2
                   } ${
-                    (position.cropR.y + position.cropR.y + SIDE_HEIGHT) / 2
+                    (positions.cropR.y + positions.cropR.y + SIDE_HEIGHT) / 2
                   })`}
                   xlinkHref="#handle"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-r`}
                 ></use>
                 <rect
                   className={`${prefixCls}-crop-handler ${prefixCls}-cropper-bl`}
-                  x={position.cropBl.x}
-                  y={position.cropBl.y}
+                  x={positions.cropBl.x}
+                  y={positions.cropBl.y}
                   width={`${CORNER_SIZE}`}
                   height={`${CORNER_SIZE}`}
                 ></rect>
                 <use
-                  x={position.cropBl.x}
-                  y={position.cropBl.y}
+                  x={positions.cropBl.x}
+                  y={positions.cropBl.y}
                   transform={`rotate(270 ${
-                    (position.cropBl.x + position.cropBl.x + CORNER_SIZE) / 2
+                    (positions.cropBl.x + positions.cropBl.x + CORNER_SIZE) / 2
                   } ${
-                    (position.cropBl.y + position.cropBl.y + CORNER_SIZE) / 2
+                    (positions.cropBl.y + positions.cropBl.y + CORNER_SIZE) / 2
                   })`}
                   xlinkHref="#corner"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-bl`}
                 ></use>
                 <use
-                  x={position.cropB.x}
-                  y={position.cropB.y}
+                  x={positions.cropB.x}
+                  y={positions.cropB.y}
                   transform={`rotate(0 ${
-                    (position.cropB.x + position.cropB.x + SIDE_WIDTH) / 2
+                    (positions.cropB.x + positions.cropB.x + SIDE_WIDTH) / 2
                   } ${
-                    (position.cropB.y + position.cropB.y + SIDE_HEIGHT) / 2
+                    (positions.cropB.y + positions.cropB.y + SIDE_HEIGHT) / 2
                   })`}
                   xlinkHref="#handle"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-b`}
                 ></use>
                 <rect
                   className={`${prefixCls}-crop-handler ${prefixCls}-cropper-br`}
-                  x={position.cropBr.x}
-                  y={position.cropBr.y}
+                  x={positions.cropBr.x}
+                  y={positions.cropBr.y}
                   width={`${CORNER_SIZE}`}
                   height={`${CORNER_SIZE}`}
                 ></rect>
                 <use
-                  x={position.cropBr.x}
-                  y={position.cropBr.y}
+                  x={positions.cropBr.x}
+                  y={positions.cropBr.y}
                   transform={`rotate(180 ${
-                    (position.cropBr.x + position.cropBr.x + CORNER_SIZE) / 2
+                    (positions.cropBr.x + positions.cropBr.x + CORNER_SIZE) / 2
                   } ${
-                    (position.cropBr.y + position.cropBr.y + CORNER_SIZE) / 2
+                    (positions.cropBr.y + positions.cropBr.y + CORNER_SIZE) / 2
                   })`}
                   xlinkHref="#corner"
                   className={`${prefixCls}-crop-bar ${prefixCls}-cropper-br`}

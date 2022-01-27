@@ -103,9 +103,21 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     .getEntity(block.getEntityAt(0))
     .getData() as ImageEntityData;
 
+  // image atomic block data
   const blockData = block.getData();
+  // figcaption
   const figcaption = blockData.get('figcaption');
+  // width
   const width = blockData.get('width');
+  // crop positions
+  const cropTl = blockData.get('cropTl');
+  const cropT = blockData.get('cropT');
+  const cropTr = blockData.get('cropTr');
+  const cropL = blockData.get('cropL');
+  const cropR = blockData.get('cropR');
+  const cropBl = blockData.get('cropBl');
+  const cropB = blockData.get('cropB');
+  const cropBr = blockData.get('cropBr');
 
   // image 状态
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
@@ -395,12 +407,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const imageLayout = (
     <>
       <div className={`${prefixCls}-wrapper`} data-container="true">
-        <div className={imageViewportCls} style={{ width }}>
+        <div className={imageViewportCls} style={{}}>
           <img
             src={src}
-            width={width}
             className={`${prefixCls}`}
             alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
+            style={{
+              position: 'absolute',
+            }}
           />
         </div>
       </div>

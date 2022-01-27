@@ -19,7 +19,7 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
-import updateBlockData from '../modifiers/updateBlockData';
+import updateBlockData from '../modifiers/updateCropPositions';
 
 export interface ResizeButtonProps {
   prefixCls?: string;
@@ -167,12 +167,12 @@ const ResizeButtonComponent: React.FC<
   //   const resizeCls = `${prefixCls}-resize-mode`;
   //   if (imageWrapper  && (btnKey ? btnKey === activeBtn : active)) {
   //     imageWrapper.classList.add(resizeCls);
-  //   } else { 
+  //   } else {
   //    imageWrapper.classList.remove(resizeCls);
   //   }
   // }, [btnKey, activeBtn, active]);
 
-  const getContainer = ():HTMLElement => {
+  const getContainer = (): HTMLElement => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
         `[data-block="true"][data-offset-key="${

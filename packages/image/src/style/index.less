@@ -224,11 +224,15 @@
 }
 
 .@{crop}-area {
-  cursor: move;
+  cursor: default;
   pointer-events: all;
   fill: none;
   stroke: @image-crop-stroke-color;
   stroke-dasharray: 2px 2px;
+}
+
+.@{crop}-area-moveable {
+  cursor: move;
 }
 
 .@{crop}-handler {
