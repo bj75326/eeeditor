@@ -133,11 +133,11 @@ const ResizeButtonComponent: React.FC<
       setOffsetX(null);
 
       // 将新的尺寸信息写入 block data
-      setEditorState(
-        updateBlockData(getEditorState(), {
-          width: resizeBoxRef.current.offsetWidth,
-        }),
-      );
+      // setEditorState(
+      //   updateBlockData(getEditorState(), {
+      //     width: resizeBoxRef.current.offsetWidth,
+      //   }),
+      // );
     }
   };
 

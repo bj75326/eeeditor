@@ -31,6 +31,16 @@ import {
   UploadRequestError,
 } from 'rc-upload/lib/interface';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import { CropBarPosition, CORNER_SIZE, OFFSET } from './CropButton';
+
+const convertBarPosition = (position: string): CropBarPosition => {
+  if (!position) return null;
+  const coords: string[] = position.split(',');
+  return {
+    x: +coords[0].trim(),
+    y: +coords[1].trim(),
+  };
+};
 
 export interface ImageProps {
   block: ContentBlock;
@@ -110,14 +120,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // width
   const width = blockData.get('width');
   // crop positions
-  const cropTl = blockData.get('cropTl');
-  const cropT = blockData.get('cropT');
-  const cropTr = blockData.get('cropTr');
-  const cropL = blockData.get('cropL');
-  const cropR = blockData.get('cropR');
-  const cropBl = blockData.get('cropBl');
-  const cropB = blockData.get('cropB');
-  const cropBr = blockData.get('cropBr');
+  const cropTl = convertBarPosition(blockData.get('cropTl'));
+  const cropT = convertBarPosition(blockData.get('cropT'));
+  const cropTr = convertBarPosition(blockData.get('cropTr'));
+  const cropL = convertBarPosition(blockData.get('cropL'));
+  const cropR = convertBarPosition(blockData.get('cropR'));
+  const cropBl = convertBarPosition(blockData.get('cropBl'));
+  const cropB = convertBarPosition(blockData.get('cropB'));
+  const cropBr = convertBarPosition(blockData.get('cropBr'));
 
   // image 状态
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
@@ -375,7 +385,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <div className={`${prefixCls}-uploading`}>
         <img
           src={src}
-          className={`${prefixCls}`}
+          className={`${prefixCls}-preview`}
           alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
         />
       </div>
@@ -407,13 +417,21 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const imageLayout = (
     <>
       <div className={`${prefixCls}-wrapper`} data-container="true">
-        <div className={imageViewportCls} style={{}}>
+        <div
+          className={imageViewportCls}
+          style={{
+            width: cropTl ? `${cropR.x - cropL.x}px` : 'auto',
+            height: cropTl ? `${cropB.y - cropT.y}px` : 'auto',
+          }}
+        >
           <img
             src={src}
             className={`${prefixCls}`}
             alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
             style={{
-              position: 'absolute',
+              position: 'relative',
+              top: cropTl ? `${-(cropTl.y + OFFSET)}px` : 0,
+              left: cropTl ? `${-(cropTl.x + OFFSET)}px` : 0,
             }}
           />
         </div>

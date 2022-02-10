@@ -32,7 +32,7 @@ export const SIDE_HEIGHT: number = 3;
 // 最小距离
 export const MIN_GAP: number = 13;
 
-interface CropBarPosition {
+export interface CropBarPosition {
   x: number;
   y: number;
 }
@@ -509,8 +509,10 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   // 2. CropButton unactive 但 image 仍然保持 focused
   useEffect(() => {
     return () => {
-      if (getContainer().querySelector(`.${prefixCls}-crop-box`)) {
-        // console.log('yes yes yes');
+      if (
+        getContainer() &&
+        getContainer().querySelector(`.${prefixCls}-crop-box`)
+      ) {
         setEditorState(
           updateCropPositions(getEditorState(), getBlockProps().block, {
             cropTl: `${cropTl.current.x},${cropTl.current.y}`,

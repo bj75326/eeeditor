@@ -95,7 +95,19 @@ export const blockToolbarDecorator = (
           store.updateItem('toolbarPopoverOffsetKey', '');
         }
       }
+      // return () => {
+      //   console.log('return function 内 isFocused 这个时候将 toolbarPopoverOffsetKey 设置为 ', isFocused);
+      //   console.log('store 内的 toolbarPopoverOffsetKey ', store.getItem('toolbarPopoverOffsetKey'));
+      // };
     }, [isFocused]);
+
+    // todo: 是否需要加上 unmount hook
+    useEffect(() => {
+      return () => {
+        // 使用了 atomic block toolbar 的 block 在 unmount 时，store 内将 toolbarPopoverOffsetKey 设置为 ''
+        store.updateItem('toolbarPopoverOffsetKey', '');
+      };
+    }, []);
 
     return <WrappedComponent {...props} />;
   };

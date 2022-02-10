@@ -98,6 +98,12 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
   const getContainer = () => {
     if (getEditorRef()) {
+      console.log(
+        'ToolbarPopover getContainer 结果 -- ',
+        getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
+          `[data-block="true"][data-offset-key="${popoverOffsetKey}"]`,
+        ),
+      );
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
         `[data-block="true"][data-offset-key="${popoverOffsetKey}"]`,
       );
