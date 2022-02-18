@@ -163,13 +163,22 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
       // crop 初始化
       // image & viewport 样式初始化
       const image = getImg();
-      if (image) {
-        image.style.transformOrigin = '50% 50%';
-        image.style.transform = 'translate(0%, 0%)';
-      }
+
+      if (!image) return;
+
+      // image.style.transformOrigin = '50% 50%';
+      // image.style.transform = 'translate(0%, 0%)';
+      image.style.position = 'relative';
+      image.style.top = '0px';
+      image.style.left = '0px';
+      image.style.width = `${image.naturalWidth}px`;
+      // image.style.height = `${image.naturalHeight}px`;
+      image.style.maxWidth = '100%';
+
       const viewport = image.parentElement;
       if (viewport) {
-        viewport.style.width = `${image.naturalWidth}px`;
+        viewport.style.width = 'auto';
+        viewport.style.height = 'auto';
       }
       // crop bar position 初始化
       const { block } = getBlockProps();

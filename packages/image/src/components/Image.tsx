@@ -6,6 +6,8 @@ import React, {
   FocusEvent,
   MouseEvent,
   useLayoutEffect,
+  SyntheticEvent,
+  CSSProperties,
 } from 'react';
 import {
   ContentBlock,
@@ -120,14 +122,27 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // width
   const width = blockData.get('width');
   // crop positions
-  const cropTl = convertBarPosition(blockData.get('cropTl'));
-  const cropT = convertBarPosition(blockData.get('cropT'));
-  const cropTr = convertBarPosition(blockData.get('cropTr'));
-  const cropL = convertBarPosition(blockData.get('cropL'));
-  const cropR = convertBarPosition(blockData.get('cropR'));
-  const cropBl = convertBarPosition(blockData.get('cropBl'));
-  const cropB = convertBarPosition(blockData.get('cropB'));
-  const cropBr = convertBarPosition(blockData.get('cropBr'));
+  let cropTl = convertBarPosition(blockData.get('cropTl'));
+  let cropT = convertBarPosition(blockData.get('cropT'));
+  let cropTr = convertBarPosition(blockData.get('cropTr'));
+  let cropL = convertBarPosition(blockData.get('cropL'));
+  let cropR = convertBarPosition(blockData.get('cropR'));
+  let cropBl = convertBarPosition(blockData.get('cropBl'));
+  let cropB = convertBarPosition(blockData.get('cropB'));
+  let cropBr = convertBarPosition(blockData.get('cropBr'));
+  // 检查 crop positions 是否符合规范
+  if (
+    !cropTl ||
+    !cropT ||
+    !cropTr ||
+    !cropL ||
+    !cropR ||
+    !cropBl ||
+    !cropB ||
+    !cropBr
+  ) {
+    cropTl = cropT = cropTr = cropL = cropR = cropBl = cropB = cropBr = null;
+  }
 
   // image 状态
   const [status, setStatus] = useState<'uploading' | 'error' | 'success'>(
@@ -138,7 +153,15 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   const [figcaptionEditPopoverVisible, setFigcaptionEditPopoverVisible] =
     useState<boolean>(false);
 
+  // image onload 之后触发重新渲染
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  const layoutRef = useRef<HTMLDivElement>();
   const imgRef = useRef<HTMLImageElement>();
+  // 存放 img 在 crop 时的 offsetWidth
+  const offsetWidthRef = useRef<number>();
+  // 存放 img atomic block 的最大 width
+  const maxWidthRef = useRef<number>();
 
   // 当前网页，新上传的 image 才会有 file 对象
   const file = store.getItem('fileMap')[block.getEntityAt(0)];
@@ -318,13 +341,13 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   useEffect(() => {
-    if (imgRef.current) {
-      console.log(
-        'imgRef.current.parentElement ',
-        imgRef.current.parentElement,
-      );
+    if (layoutRef.current) {
+      // console.log(
+      //   'layoutRef.current.parentElement ',
+      //   layoutRef.current.parentElement,
+      // );
       const cleanOutsiderHandler = addEventListener(
-        imgRef.current.parentElement,
+        layoutRef.current.parentElement,
         'mousedown',
         onImageMouseDown,
       );
@@ -367,6 +390,65 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       );
     };
   }, [figcaptionEditPopoverVisible]);
+
+  const onImageLoad = () => {
+    // 获取 image 在 crop 模式下 offsetWidth
+    offsetWidthRef.current = imgRef.current && imgRef.current.offsetWidth;
+    // 获取 viewport 最大 width
+    maxWidthRef.current =
+      imgRef.current &&
+      (
+        imgRef.current.ownerDocument.querySelector(
+          `[data-block="true"][data-offset-Key="${offsetKey}"]`,
+        ) as HTMLElement
+      ).offsetWidth;
+    setLoaded(true);
+  };
+
+  const getViewportSize = () => {
+    if (!cropTl) {
+      return {
+        width: 'auto',
+        height: 'auto',
+      };
+    }
+    const ratio = getViewportRatio();
+    const cropWidth = cropR.x - cropL.x;
+    const cropHeight = cropB.y - cropT.y;
+    return {
+      width: cropWidth * ratio,
+      height: cropHeight * ratio,
+    };
+  };
+
+  const getImageStyle = (): CSSProperties => {
+    if (!cropTl) {
+      return {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        maxWidth: '100%',
+      };
+    }
+    const ratio = getViewportRatio();
+    return {
+      position: 'relative',
+      top: `-${(cropTl.y + OFFSET) * ratio}px`,
+      left: `-${(cropTl.x + OFFSET) * ratio}px`,
+      maxWidth: `${offsetWidthRef.current * ratio}px`,
+    };
+  };
+
+  const getViewportRatio = () => {
+    const cropWidth = cropR.x - cropL.x;
+    let ratio = imgRef.current.naturalWidth / offsetWidthRef.current;
+    const width = cropWidth * ratio;
+    if (width > maxWidthRef.current) {
+      ratio = maxWidthRef.current / cropWidth;
+      return ratio;
+    }
+    return ratio;
+  };
 
   // const imageViewportCls = classNames(`${prefixCls}-viewport`, className, {
   //   [`${prefixCls}-uploading`]: status !== 'success',
@@ -419,20 +501,21 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
       <div className={`${prefixCls}-wrapper`} data-container="true">
         <div
           className={imageViewportCls}
-          style={{
-            width: cropTl ? `${cropR.x - cropL.x}px` : 'auto',
-            height: cropTl ? `${cropB.y - cropT.y}px` : 'auto',
-          }}
+          style={loaded ? getViewportSize() : null}
         >
           <img
             src={src}
             className={`${prefixCls}`}
             alt={locale['eeeditor.image.alt'] || 'eeeditor.image.alt'}
-            style={{
-              position: 'relative',
-              top: cropTl ? `${-(cropTl.y + OFFSET)}px` : 0,
-              left: cropTl ? `${-(cropTl.x + OFFSET)}px` : 0,
-            }}
+            style={
+              loaded
+                ? getImageStyle()
+                : {
+                    maxWidth: '100%',
+                  }
+            }
+            onLoad={onImageLoad}
+            ref={imgRef}
           />
         </div>
       </div>
@@ -447,7 +530,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   );
 
   return (
-    <div className={`${prefixCls}-layout`} ref={imgRef} {...elementProps}>
+    <div className={`${prefixCls}-layout`} ref={layoutRef} {...elementProps}>
       {status === 'success' ? imageLayout : uploaderLayout}
     </div>
   );
