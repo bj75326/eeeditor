@@ -19,7 +19,8 @@ import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-tool
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
-import updateBlockData from '../modifiers/updateCropPositions';
+import updateImageSize from '../modifiers/updateImageSize';
+import { convertBarPosition } from './Image';
 
 export interface ResizeButtonProps {
   prefixCls?: string;
@@ -133,11 +134,21 @@ const ResizeButtonComponent: React.FC<
       setOffsetX(null);
 
       // 将新的尺寸信息写入 block data
-      // setEditorState(
-      //   updateBlockData(getEditorState(), {
-      //     width: resizeBoxRef.current.offsetWidth,
-      //   }),
-      // );
+      const { block } = getBlockProps();
+      const blockData = block.getData();
+
+      const cropL = convertBarPosition(blockData.get('cropL'));
+      const cropR = convertBarPosition(blockData.get('cropR'));
+      const cropBasedWidth = blockData.get('cropBasedWidth');
+
+      let width: number = null;
+      if (cropL && cropR && cropBasedWidth) {
+        const cropWidth = cropR.x - cropL.x;
+        width = (resizeBoxRef.current.offsetWidth * cropBasedWidth) / cropWidth;
+      } else {
+        width = resizeBoxRef.current.offsetWidth;
+      }
+      setEditorState(updateImageSize(getEditorState(), width));
     }
   };
 

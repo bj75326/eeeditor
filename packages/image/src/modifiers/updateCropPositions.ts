@@ -21,7 +21,7 @@ const updateCropPositions = (
   const afterMergeBlockData = Modifier.mergeBlockData(
     editorState.getCurrentContent(),
     targetSelection,
-    Immutable.Map<string, string>(data),
+    Immutable.Map<string, string | number>(data),
   );
 
   // 将 selectionAfter 改成当前 selection

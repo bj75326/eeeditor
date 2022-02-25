@@ -35,7 +35,7 @@ import {
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import { CropBarPosition, CORNER_SIZE, OFFSET } from './CropButton';
 
-const convertBarPosition = (position: string): CropBarPosition => {
+export const convertBarPosition = (position: string): CropBarPosition => {
   if (!position) return null;
   const coords: string[] = position.split(',');
   return {
@@ -120,7 +120,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // figcaption
   const figcaption = blockData.get('figcaption');
   // width
-  const width = blockData.get('width');
+  const viewportWidth = blockData.get('width');
   // crop positions
   let cropTl = convertBarPosition(blockData.get('cropTl'));
   let cropT = convertBarPosition(blockData.get('cropT'));
@@ -406,10 +406,31 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const getViewportSize = () => {
-    if (!cropTl) {
+    if (
+      !cropTl &&
+      !(
+        typeof viewportWidth === 'number' &&
+        viewportWidth > 0 &&
+        viewportWidth <= maxWidthRef.current
+      )
+    ) {
       return {
         width: 'auto',
         height: 'auto',
+      };
+    }
+    if (
+      !cropTl &&
+      typeof viewportWidth === 'number' &&
+      viewportWidth > 0 &&
+      viewportWidth <= maxWidthRef.current
+    ) {
+      return {
+        width: `${viewportWidth}px`,
+        height: `${
+          (viewportWidth * imgRef.current.naturalHeight) /
+          imgRef.current.naturalWidth
+        }px`,
       };
     }
     const ratio = getViewportRatio();
@@ -422,7 +443,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const getImageStyle = (): CSSProperties => {
-    if (!cropTl) {
+    if (
+      !cropTl &&
+      !(
+        typeof viewportWidth === 'number' &&
+        viewportWidth > 0 &&
+        viewportWidth <= maxWidthRef.current
+      )
+    ) {
       return {
         position: 'relative',
         top: 0,
@@ -430,18 +458,62 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         maxWidth: '100%',
       };
     }
+    if (
+      !cropTl &&
+      typeof viewportWidth === 'number' &&
+      viewportWidth > 0 &&
+      viewportWidth <= maxWidthRef.current
+    ) {
+      return {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        width: '100%',
+        maxWidth: '100%',
+      };
+    }
+
     const ratio = getViewportRatio();
+    if (
+      cropTl &&
+      !(
+        typeof viewportWidth === 'number' &&
+        viewportWidth > 0 &&
+        viewportWidth <= maxWidthRef.current
+      )
+    ) {
+      return {
+        position: 'relative',
+        top: `-${(cropTl.y + OFFSET) * ratio}px`,
+        left: `-${(cropTl.x + OFFSET) * ratio}px`,
+        maxWidth: `${offsetWidthRef.current * ratio}px`,
+      };
+    }
     return {
       position: 'relative',
       top: `-${(cropTl.y + OFFSET) * ratio}px`,
       left: `-${(cropTl.x + OFFSET) * ratio}px`,
+      width: `${offsetWidthRef.current * ratio}px`,
+      height: `${
+        (offsetWidthRef.current * ratio * imgRef.current.naturalHeight) /
+        imgRef.current.naturalWidth
+      }px`,
       maxWidth: `${offsetWidthRef.current * ratio}px`,
     };
   };
 
+  // 适用于 crop 模式下求取缩放比例
   const getViewportRatio = () => {
     const cropWidth = cropR.x - cropL.x;
     let ratio = imgRef.current.naturalWidth / offsetWidthRef.current;
+    if (
+      typeof viewportWidth === 'number' &&
+      viewportWidth > 0 &&
+      viewportWidth <= maxWidthRef.current
+    ) {
+      ratio = viewportWidth / cropWidth;
+      return ratio;
+    }
     const width = cropWidth * ratio;
     if (width > maxWidthRef.current) {
       ratio = maxWidthRef.current / cropWidth;
