@@ -92,6 +92,8 @@ const ResizeButtonComponent: React.FC<
   const handlerRef = useRef<'tl' | 'tr' | 'br' | 'bl'>();
   // 存放每次 resize 开始时的 img 长宽比例
   const ratioRef = useRef<number>();
+  // 存放每次 resize 开始时 container 宽度
+  const widthRef = useRef<number>();
 
   const onMouseDown = (e: MouseEvent): void => {
     e.preventDefault();
@@ -102,8 +104,12 @@ const ResizeButtonComponent: React.FC<
       .split(' ')
       .find((className) => className.startsWith(`${prefixCls}-resizer`))
       .slice(-2) as 'tl' | 'tr' | 'br' | 'bl';
+
+    const container = getContainer();
     // 确定 resize img 原始尺寸
-    ratioRef.current = getContainer().offsetWidth / getContainer().offsetHeight;
+    ratioRef.current = container.offsetWidth / container.offsetHeight;
+    // 保存 width
+    widthRef.current = container.offsetWidth;
 
     setOffsetX(null);
   };
@@ -115,7 +121,10 @@ const ResizeButtonComponent: React.FC<
       setResizing(true);
 
       // clientX 发生变化
+      // if (((handlerRef.current === 'tl' || handlerRef.current === 'bl') && (e.clientX - startXRef.current) < widthRef.current) ||
+      //   ((handlerRef.current === 'tr' || handlerRef.current === 'br') && (e.clientX - startXRef.current) > -widthRef.current)) {
       setOffsetX(e.clientX);
+      // }
     }
   };
 
@@ -129,6 +138,7 @@ const ResizeButtonComponent: React.FC<
       startXRef.current = null;
       handlerRef.current = null;
       ratioRef.current = null;
+      widthRef.current = null;
 
       // 重置 x 轴位移
       setOffsetX(null);
@@ -201,28 +211,36 @@ const ResizeButtonComponent: React.FC<
   );
 
   const getResizeBoxInset = (): { inset: string } => {
-    if (typeof offsetX === 'number') {
+    if (typeof offsetX === 'number' && typeof widthRef.current === 'number') {
       let inset = '';
       switch (handlerRef.current) {
         case 'tl':
-          inset = `${
-            (offsetX - startXRef.current) / ratioRef.current
-          }px 0px 0px ${offsetX - startXRef.current}px`;
+          const tlOffset =
+            offsetX - startXRef.current <= widthRef.current
+              ? offsetX - startXRef.current
+              : widthRef.current;
+          inset = `${tlOffset / ratioRef.current}px 0px 0px ${tlOffset}px`;
           break;
         case 'tr':
-          inset = `${(startXRef.current - offsetX) / ratioRef.current}px ${
-            startXRef.current - offsetX
-          }px 0px 0px`;
+          const trOffset =
+            startXRef.current - offsetX <= widthRef.current
+              ? startXRef.current - offsetX
+              : widthRef.current;
+          inset = `${trOffset / ratioRef.current}px ${trOffset}px 0px 0px`;
           break;
         case 'br':
-          inset = `0px ${startXRef.current - offsetX}px ${
-            (startXRef.current - offsetX) / ratioRef.current
-          }px 0px`;
+          const brOffset =
+            startXRef.current - offsetX <= widthRef.current
+              ? startXRef.current - offsetX
+              : widthRef.current;
+          inset = `0px ${brOffset}px ${brOffset / ratioRef.current}px 0px`;
           break;
         case 'bl':
-          inset = `0px 0px ${
-            (offsetX - startXRef.current) / ratioRef.current
-          }px ${offsetX - startXRef.current}px`;
+          const blOffset =
+            offsetX - startXRef.current <= widthRef.current
+              ? offsetX - startXRef.current
+              : widthRef.current;
+          inset = `0px 0px ${blOffset / ratioRef.current}px ${blOffset}px`;
           break;
       }
       return { inset };
