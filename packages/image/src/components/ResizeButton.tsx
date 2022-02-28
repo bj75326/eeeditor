@@ -120,11 +120,7 @@ const ResizeButtonComponent: React.FC<
       // resize 开始
       setResizing(true);
 
-      // clientX 发生变化
-      // if (((handlerRef.current === 'tl' || handlerRef.current === 'bl') && (e.clientX - startXRef.current) < widthRef.current) ||
-      //   ((handlerRef.current === 'tr' || handlerRef.current === 'br') && (e.clientX - startXRef.current) > -widthRef.current)) {
       setOffsetX(e.clientX);
-      // }
     }
   };
 

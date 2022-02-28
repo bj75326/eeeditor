@@ -120,8 +120,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   // figcaption
   const figcaption = blockData.get('figcaption');
   // width
-  const viewportWidth = blockData.get('width');
+  const imageWidth = blockData.get('width');
   // crop positions
+  let cropBasedWidth = blockData.get('cropBasedWidth');
   let cropTl = convertBarPosition(blockData.get('cropTl'));
   let cropT = convertBarPosition(blockData.get('cropT'));
   let cropTr = convertBarPosition(blockData.get('cropTr'));
@@ -406,120 +407,134 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const getViewportSize = () => {
-    if (
-      !cropTl &&
-      !(
-        typeof viewportWidth === 'number' &&
-        viewportWidth > 0 &&
-        viewportWidth <= maxWidthRef.current
-      )
-    ) {
+    if (!cropTl && typeof imageWidth !== 'number') {
       return {
-        width: 'auto',
-        height: 'auto',
+        // width: 'auto',
+        // height: 'auto',
       };
     }
-    if (
-      !cropTl &&
-      typeof viewportWidth === 'number' &&
-      viewportWidth > 0 &&
-      viewportWidth <= maxWidthRef.current
-    ) {
+    if (!cropTl && typeof imageWidth === 'number') {
       return {
-        width: `${viewportWidth}px`,
-        height: `${
-          (viewportWidth * imgRef.current.naturalHeight) /
-          imgRef.current.naturalWidth
-        }px`,
+        width: `${imageWidth}px`,
       };
     }
+
     const ratio = getViewportRatio();
-    const cropWidth = cropR.x - cropL.x;
-    const cropHeight = cropB.y - cropT.y;
     return {
-      width: cropWidth * ratio,
-      height: cropHeight * ratio,
+      width: `${(cropR.x - cropL.x) * ratio}px`,
+      height: `${(cropB.y - cropT.y) * ratio}px`,
     };
   };
 
-  const getImageStyle = (): CSSProperties => {
-    if (
-      !cropTl &&
-      !(
-        typeof viewportWidth === 'number' &&
-        viewportWidth > 0 &&
-        viewportWidth <= maxWidthRef.current
-      )
-    ) {
-      return {
-        position: 'relative',
-        top: 0,
-        left: 0,
-        maxWidth: '100%',
-      };
+  // 适用于 crop 后求取缩放比例
+  const getViewportRatio = () => {
+    let ratio =
+      typeof imageWidth === 'number'
+        ? imageWidth / cropBasedWidth
+        : imgRef.current.naturalWidth / cropBasedWidth;
+    const cropWidth = cropR.x - cropL.x;
+    if (cropWidth * ratio > maxWidthRef.current) {
+      ratio = maxWidthRef.current / cropWidth;
     }
-    if (
-      !cropTl &&
-      typeof viewportWidth === 'number' &&
-      viewportWidth > 0 &&
-      viewportWidth <= maxWidthRef.current
-    ) {
-      return {
-        position: 'relative',
-        top: 0,
-        left: 0,
-        width: '100%',
-        maxWidth: '100%',
-      };
-    }
+    return ratio;
+  };
 
+  const getImageStyle = (): CSSProperties => {
+    // if (
+    //   !cropTl &&
+    //   !(
+    //     typeof viewportWidth === 'number' &&
+    //     viewportWidth > 0 &&
+    //     viewportWidth <= maxWidthRef.current
+    //   )
+    // ) {
+    //   return {
+    //     position: 'relative',
+    //     top: 0,
+    //     left: 0,
+    //     maxWidth: '100%',
+    //   };
+    // }
+    if (!cropTl && typeof imageWidth !== 'number') {
+      return {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        maxWidth: '100%',
+      };
+    }
+    // if (
+    //   !cropTl &&
+    //   typeof viewportWidth === 'number' &&
+    //   viewportWidth > 0 &&
+    //   viewportWidth <= maxWidthRef.current
+    // ) {
+    //   return {
+    //     position: 'relative',
+    //     top: 0,
+    //     left: 0,
+    //     width: '100%',
+    //     maxWidth: '100%',
+    //   };
+    // }
+    if (!cropTl && typeof imageWidth === 'number') {
+      return {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        width: imageWidth,
+        maxWidth: '100%',
+      };
+    }
+    // const ratio = getViewportRatio();
+    // if (
+    //   cropTl &&
+    //   !(
+    //     typeof viewportWidth === 'number' &&
+    //     viewportWidth > 0 &&
+    //     viewportWidth <= maxWidthRef.current
+    //   )
+    // ) {
+    //   return {
+    //     position: 'relative',
+    //     top: `-${(cropTl.y + OFFSET) * ratio}px`,
+    //     left: `-${(cropTl.x + OFFSET) * ratio}px`,
+    //     maxWidth: `${offsetWidthRef.current * ratio}px`,
+    //   };
+    // }
+    // return {
+    //   position: 'relative',
+    //   top: `-${(cropTl.y + OFFSET) * ratio}px`,
+    //   left: `-${(cropTl.x + OFFSET) * ratio}px`,
+    //   width: `${offsetWidthRef.current * ratio}px`,
+    //   height: `${
+    //     (offsetWidthRef.current * ratio * imgRef.current.naturalHeight) /
+    //     imgRef.current.naturalWidth
+    //   }px`,
+    //   maxWidth: `${offsetWidthRef.current * ratio}px`,
+    // };
     const ratio = getViewportRatio();
-    if (
-      cropTl &&
-      !(
-        typeof viewportWidth === 'number' &&
-        viewportWidth > 0 &&
-        viewportWidth <= maxWidthRef.current
-      )
-    ) {
+    if (cropTl && typeof imageWidth !== 'number') {
       return {
         position: 'relative',
         top: `-${(cropTl.y + OFFSET) * ratio}px`,
         left: `-${(cropTl.x + OFFSET) * ratio}px`,
-        maxWidth: `${offsetWidthRef.current * ratio}px`,
+        maxWidth: `${
+          (cropBasedWidth * maxWidthRef.current) / (cropR.x - cropL.x)
+        }px`,
       };
     }
-    return {
-      position: 'relative',
-      top: `-${(cropTl.y + OFFSET) * ratio}px`,
-      left: `-${(cropTl.x + OFFSET) * ratio}px`,
-      width: `${offsetWidthRef.current * ratio}px`,
-      height: `${
-        (offsetWidthRef.current * ratio * imgRef.current.naturalHeight) /
-        imgRef.current.naturalWidth
-      }px`,
-      maxWidth: `${offsetWidthRef.current * ratio}px`,
-    };
-  };
-
-  // 适用于 crop 模式下求取缩放比例
-  const getViewportRatio = () => {
-    const cropWidth = cropR.x - cropL.x;
-    let ratio = imgRef.current.naturalWidth / offsetWidthRef.current;
-    if (
-      typeof viewportWidth === 'number' &&
-      viewportWidth > 0 &&
-      viewportWidth <= maxWidthRef.current
-    ) {
-      ratio = viewportWidth / cropWidth;
-      return ratio;
+    if (cropTl && typeof imageWidth === 'number') {
+      return {
+        position: 'relative',
+        top: `-${(cropTl.y + OFFSET) * ratio}px`,
+        left: `-${(cropTl.x + OFFSET) * ratio}px`,
+        width: `${imageWidth}px`,
+        maxWidth: `${
+          (cropBasedWidth * maxWidthRef.current) / (cropR.x - cropL.x)
+        }px`,
+      };
     }
-    const width = cropWidth * ratio;
-    if (width > maxWidthRef.current) {
-      ratio = maxWidthRef.current / cropWidth;
-      return ratio;
-    }
-    return ratio;
   };
 
   // const imageViewportCls = classNames(`${prefixCls}-viewport`, className, {
