@@ -59,6 +59,9 @@ const ResizeButtonComponent: React.FC<
   const { getProps, getEditorRef, setEditorState, getEditorState } =
     pluginMethods;
 
+  const { block } = getBlockProps();
+  const blockData = block.getData();
+
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
@@ -107,7 +110,18 @@ const ResizeButtonComponent: React.FC<
 
     const container = getContainer();
     // 确定 resize img 原始尺寸
-    ratioRef.current = container.offsetWidth / container.offsetHeight;
+    // ratioRef.current = container.offsetWidth / container.offsetHeight;
+    const cropL = convertBarPosition(blockData.get('cropL'));
+    const cropR = convertBarPosition(blockData.get('cropR'));
+    const cropT = convertBarPosition(blockData.get('cropT'));
+    const cropB = convertBarPosition(blockData.get('cropB'));
+    if (cropL && cropR && cropT && cropB) {
+      ratioRef.current = (cropR.x - cropL.x) / (cropB.y - cropT.y);
+    } else {
+      const imgDom = getContainer().querySelector('img');
+      ratioRef.current = imgDom.naturalWidth / imgDom.naturalHeight;
+    }
+
     // 保存 width
     widthRef.current = container.offsetWidth;
 
@@ -140,8 +154,6 @@ const ResizeButtonComponent: React.FC<
       setOffsetX(null);
 
       // 将新的尺寸信息写入 block data
-      const { block } = getBlockProps();
-      const blockData = block.getData();
 
       const cropL = convertBarPosition(blockData.get('cropL'));
       const cropR = convertBarPosition(blockData.get('cropR'));

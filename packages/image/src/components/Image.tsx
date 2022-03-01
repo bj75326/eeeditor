@@ -406,7 +406,8 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     setLoaded(true);
   };
 
-  const getViewportSize = () => {
+  const getViewportSize = (): CSSProperties => {
+    console.log('getViewSize run!!!!!!!! ', cropTl);
     if (!cropTl && typeof imageWidth !== 'number') {
       return {
         // width: 'auto',
@@ -420,6 +421,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
 
     const ratio = getViewportRatio();
+    console.log('ratio ', ratio);
+    console.log('结果 ', {
+      width: `${(cropR.x - cropL.x) * ratio}px`,
+      height: `${(cropB.y - cropT.y) * ratio}px`,
+    });
     return {
       width: `${(cropR.x - cropL.x) * ratio}px`,
       height: `${(cropB.y - cropT.y) * ratio}px`,
@@ -590,6 +596,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           className={imageViewportCls}
           style={loaded ? getViewportSize() : null}
         >
+          {/* <div>{loaded ? getViewportSize().width + ' ' + getViewportSize().height : 'null'}</div> */}
           <img
             src={src}
             className={`${prefixCls}`}

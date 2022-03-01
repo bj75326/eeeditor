@@ -556,6 +556,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
         getContainer() &&
         getContainer().querySelector(`.${prefixCls}-crop-box`)
       ) {
+        console.log('🍏🍎🍐🍊🍋🍌');
         setEditorState(
           updateCropPositions(getEditorState(), getBlockProps().block, {
             cropBasedWidth: cropBasedWidth.current,
