@@ -150,6 +150,9 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     src.startsWith('blob:') ? 'uploading' : 'success',
   );
 
+  // image crop mode on
+  const [cropping, setCropping] = useState<boolean>(false);
+
   // image figcaption popover 显示隐藏状态
   const [figcaptionEditPopoverVisible, setFigcaptionEditPopoverVisible] =
     useState<boolean>(false);
@@ -175,11 +178,11 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
   const getImageProps = () => imagePropsRef.current;
 
+  // 监听 image status
   const onStatusMapChanged = (
     statusMap: Record<string, 'uploading' | 'error' | 'success'>,
   ) => {
     if (file) {
-      console.log('statusMap[file.uid] ', statusMap[file.uid]);
       setStatus(statusMap[file.uid]);
     }
   };
@@ -188,6 +191,22 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     store.subscribeToItem('statusMap', onStatusMapChanged);
     return () => {
       store.unsubscribeFromItem('statusMap', onStatusMapChanged);
+    };
+  }, []);
+
+  // 监听 image crop mode on
+  const onCropOffsetKeyChange = (cropOffsetKey: string) => {
+    if (cropOffsetKey === offsetKey) {
+      setCropping(true);
+    } else {
+      setCropping(false);
+    }
+  };
+
+  useEffect(() => {
+    store.subscribeToItem('cropOffsetKey', onCropOffsetKeyChange);
+    return () => {
+      store.unsubscribeFromItem('cropOffsetKey', onCropOffsetKeyChange);
     };
   }, []);
 
@@ -407,7 +426,14 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const getViewportSize = (): CSSProperties => {
-    console.log('getViewSize run!!!!!!!! ', cropTl);
+    // cropping 时的 viewport style
+    if (cropping) {
+      return {
+        // width: 'auto',
+        // height: 'auto',
+      };
+    }
+
     if (!cropTl && typeof imageWidth !== 'number') {
       return {
         // width: 'auto',
@@ -421,11 +447,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
     }
 
     const ratio = getViewportRatio();
-    console.log('ratio ', ratio);
-    console.log('结果 ', {
-      width: `${(cropR.x - cropL.x) * ratio}px`,
-      height: `${(cropB.y - cropT.y) * ratio}px`,
-    });
     return {
       width: `${(cropR.x - cropL.x) * ratio}px`,
       height: `${(cropB.y - cropT.y) * ratio}px`,
@@ -446,21 +467,16 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
   };
 
   const getImageStyle = (): CSSProperties => {
-    // if (
-    //   !cropTl &&
-    //   !(
-    //     typeof viewportWidth === 'number' &&
-    //     viewportWidth > 0 &&
-    //     viewportWidth <= maxWidthRef.current
-    //   )
-    // ) {
-    //   return {
-    //     position: 'relative',
-    //     top: 0,
-    //     left: 0,
-    //     maxWidth: '100%',
-    //   };
-    // }
+    if (cropping) {
+      return {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        width: imageWidth || imgRef.current.naturalWidth,
+        maxWidth: '100%',
+      };
+    }
+
     if (!cropTl && typeof imageWidth !== 'number') {
       return {
         position: 'relative',
@@ -469,20 +485,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         maxWidth: '100%',
       };
     }
-    // if (
-    //   !cropTl &&
-    //   typeof viewportWidth === 'number' &&
-    //   viewportWidth > 0 &&
-    //   viewportWidth <= maxWidthRef.current
-    // ) {
-    //   return {
-    //     position: 'relative',
-    //     top: 0,
-    //     left: 0,
-    //     width: '100%',
-    //     maxWidth: '100%',
-    //   };
-    // }
+
     if (!cropTl && typeof imageWidth === 'number') {
       return {
         position: 'relative',
@@ -492,33 +495,7 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
         maxWidth: '100%',
       };
     }
-    // const ratio = getViewportRatio();
-    // if (
-    //   cropTl &&
-    //   !(
-    //     typeof viewportWidth === 'number' &&
-    //     viewportWidth > 0 &&
-    //     viewportWidth <= maxWidthRef.current
-    //   )
-    // ) {
-    //   return {
-    //     position: 'relative',
-    //     top: `-${(cropTl.y + OFFSET) * ratio}px`,
-    //     left: `-${(cropTl.x + OFFSET) * ratio}px`,
-    //     maxWidth: `${offsetWidthRef.current * ratio}px`,
-    //   };
-    // }
-    // return {
-    //   position: 'relative',
-    //   top: `-${(cropTl.y + OFFSET) * ratio}px`,
-    //   left: `-${(cropTl.x + OFFSET) * ratio}px`,
-    //   width: `${offsetWidthRef.current * ratio}px`,
-    //   height: `${
-    //     (offsetWidthRef.current * ratio * imgRef.current.naturalHeight) /
-    //     imgRef.current.naturalWidth
-    //   }px`,
-    //   maxWidth: `${offsetWidthRef.current * ratio}px`,
-    // };
+
     const ratio = getViewportRatio();
     if (cropTl && typeof imageWidth !== 'number') {
       return {
@@ -596,7 +573,6 @@ const Image: React.FC<ImageProps & ImageExtraProps> = (props) => {
           className={imageViewportCls}
           style={loaded ? getViewportSize() : null}
         >
-          {/* <div>{loaded ? getViewportSize().width + ' ' + getViewportSize().height : 'null'}</div> */}
           <img
             src={src}
             className={`${prefixCls}`}

@@ -69,6 +69,9 @@ export interface StoreItemMap {
 
   // 获取 image block props
   getBlockProps?: () => Partial<ImageProps>;
+
+  // crop mode on
+  cropOffsetKey?: string;
 }
 
 export type ImagePluginStore = Store<StoreItemMap>;

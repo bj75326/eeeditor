@@ -14,6 +14,7 @@ import {
   EEEditorContext,
   getEditorRootDomNode,
 } from '@eeeditor/editor';
+import { Store } from '@draft-js-plugins/utils';
 import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-toolbar';
 import { cropIcon } from '../assets/extraIcons';
 import { Tooltip } from 'antd';
@@ -86,6 +87,7 @@ export interface CropButtonExtraProps {
   placement?: 'top' | 'bottom';
   pluginMethods?: PluginMethods;
   getBlockProps?: () => Partial<AtomicBlockProps>;
+  store?: Store<any>;
 }
 
 const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
@@ -102,6 +104,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     placement,
     pluginMethods,
     getBlockProps,
+    store,
   } = props;
 
   const { getProps, getEditorRef, getEditorState, setEditorState } =
@@ -159,31 +162,45 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   // cropBasedWidth 记录 crop 时 cropbox 的宽度
   const cropBasedWidth = useRef<number>();
 
-  // resize mode 下 image 的样式修改
-  useLayoutEffect(() => {
+  // crop 开始后
+  useEffect(() => {
     if (btnKey ? btnKey === activeBtn : active) {
       // crop 初始化
       // image & viewport 样式初始化
+      // 如果直接使用 dom api 进行修改，会影响 react diff
+      // 使用 store 修改 image state
       const image = getImg();
-
       if (!image) return;
 
-      image.style.position = 'relative';
-      image.style.top = '0px';
-      image.style.left = '0px';
+      // image.style.position = 'relative';
+      // image.style.top = '0px';
+      // image.style.left = '0px';
 
-      const { block } = getBlockProps();
+      const { block, offsetKey } = getBlockProps();
       const blockData = block.getData();
-      image.style.width = `${blockData.get('width') || image.naturalWidth}px`;
-      image.style.maxWidth = '100%';
 
-      const viewport = image.parentElement;
-      if (viewport) {
-        viewport.style.width = 'auto';
-        viewport.style.height = 'auto';
-      }
+      const maxWidth = (
+        image.ownerDocument.querySelector(
+          `[data-block="true"][data-offset-Key="${offsetKey}"]`,
+        ) as HTMLElement
+      ).offsetWidth;
+      // image.style.width = `${blockData.get('width') || image.naturalWidth}px`;
+      // image.style.maxWidth = '100%';
+
+      // const viewport = image.parentElement;
+      // if (viewport) {
+      //   viewport.style.width = 'auto';
+      //   viewport.style.height = 'auto';
+      // }
+      store.updateItem('cropOffsetKey', offsetKey);
+
       // crop bar position 初始化
-      cropBasedWidth.current = image.offsetWidth;
+
+      // cropBasedWidth.current = image.offsetWidth;
+      cropBasedWidth.current = blockData.get('width') || image.naturalWidth;
+      if (cropBasedWidth.current > maxWidth) {
+        cropBasedWidth.current = maxWidth;
+      }
 
       const prevCropBasedWidth = blockData.get('cropBasedWidth');
       let ratio: number = null;
@@ -556,7 +573,8 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
         getContainer() &&
         getContainer().querySelector(`.${prefixCls}-crop-box`)
       ) {
-        console.log('🍏🍎🍐🍊🍋🍌');
+        store.updateItem('cropOffsetKey', '');
+
         setEditorState(
           updateCropPositions(getEditorState(), getBlockProps().block, {
             cropBasedWidth: cropBasedWidth.current,
