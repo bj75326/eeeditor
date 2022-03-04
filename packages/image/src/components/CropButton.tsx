@@ -51,16 +51,60 @@ type Positions = {
 
 const convertBarPosition = (
   position: string,
+  handler: 'tl' | 't' | 'tr' | 'l' | 'r' | 'bl' | 'b' | 'br',
   ratio: number,
 ): CropBarPosition => {
   const coords: string[] = position.split(',');
   if (coords.length !== 2) {
     return null;
   }
-  return {
-    x: +coords[0].trim() * ratio,
-    y: +coords[1].trim() * ratio,
-  };
+  if (
+    handler === 't' ||
+    handler === 'l' ||
+    handler === 'r' ||
+    handler === 'b'
+  ) {
+    return {
+      x: (+coords[0].trim() + SIDE_WIDTH / 2) * ratio - SIDE_WIDTH / 2,
+      y: (+coords[1].trim() + SIDE_HEIGHT / 2) * ratio - SIDE_HEIGHT / 2,
+    };
+  }
+  if (handler === 'tl') {
+    return {
+      x: (+coords[0].trim() + OFFSET) * ratio - OFFSET,
+      y: (+coords[1].trim() + OFFSET) * ratio - OFFSET,
+    };
+  }
+  if (handler === 'tr') {
+    return {
+      x:
+        (+coords[0].trim() - OFFSET + CORNER_SIZE) * ratio -
+        CORNER_SIZE +
+        OFFSET,
+      y: (+coords[1].trim() + OFFSET) * ratio - OFFSET,
+    };
+  }
+  if (handler === 'bl') {
+    return {
+      x: (+coords[0].trim() + OFFSET) * ratio - OFFSET,
+      y:
+        (+coords[1].trim() - OFFSET + CORNER_SIZE) * ratio -
+        CORNER_SIZE +
+        OFFSET,
+    };
+  }
+  if (handler === 'br') {
+    return {
+      x:
+        (+coords[0].trim() - OFFSET + CORNER_SIZE) * ratio -
+        CORNER_SIZE +
+        OFFSET,
+      y:
+        (+coords[1].trim() - OFFSET + CORNER_SIZE) * ratio -
+        CORNER_SIZE +
+        OFFSET,
+    };
+  }
 };
 
 // const transformPosition = (position: CropBarPosition, svgElement: SVGSVGElement): SVGPoint => {
@@ -195,8 +239,6 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
       store.updateItem('cropOffsetKey', offsetKey);
 
       // crop bar position 初始化
-
-      // cropBasedWidth.current = image.offsetWidth;
       cropBasedWidth.current = blockData.get('width') || image.naturalWidth;
       if (cropBasedWidth.current > maxWidth) {
         cropBasedWidth.current = maxWidth;
@@ -208,72 +250,41 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
         ratio = cropBasedWidth.current / prevCropBasedWidth;
       }
 
-      // cropTl.current = convertBarPosition(
-      //   block.getData().get('cropTl') || `${-OFFSET},${-OFFSET}`,
-      // );
       cropTl.current = ratio
-        ? convertBarPosition(blockData.get('cropTl'), ratio)
+        ? convertBarPosition(blockData.get('cropTl'), 'tl', ratio)
         : { x: -OFFSET, y: -OFFSET };
-      // cropT.current = convertBarPosition(
-      //   block.getData().get('cropT') ||
-      //     `${image.offsetWidth / 2 - SIDE_WIDTH / 2},${-SIDE_HEIGHT / 2}`,
-      // );
       cropT.current = ratio
-        ? convertBarPosition(blockData.get('cropT'), ratio)
+        ? convertBarPosition(blockData.get('cropT'), 't', ratio)
         : { x: image.offsetWidth / 2 - SIDE_WIDTH / 2, y: -SIDE_HEIGHT / 2 };
-      // cropTr.current = convertBarPosition(
-      //   block.getData().get('cropTr') ||
-      //     `${image.offsetWidth - CORNER_SIZE + OFFSET},${-OFFSET}`,
-      // );
+
       cropTr.current = ratio
-        ? convertBarPosition(blockData.get('cropTr'), ratio)
+        ? convertBarPosition(blockData.get('cropTr'), 'tr', ratio)
         : { x: image.offsetWidth - CORNER_SIZE + OFFSET, y: -OFFSET };
-      // cropL.current = convertBarPosition(
-      //   block.getData().get('cropL') ||
-      //     `${-SIDE_WIDTH / 2},${image.offsetHeight / 2 - SIDE_HEIGHT / 2}`,
-      // );
+
       cropL.current = ratio
-        ? convertBarPosition(blockData.get('cropL'), ratio)
+        ? convertBarPosition(blockData.get('cropL'), 'l', ratio)
         : { x: -SIDE_WIDTH / 2, y: image.offsetHeight / 2 - SIDE_HEIGHT / 2 };
-      // cropR.current = convertBarPosition(
-      //   block.getData().get('cropR') ||
-      //     `${image.offsetWidth - SIDE_WIDTH / 2},${
-      //       image.offsetHeight / 2 - SIDE_HEIGHT / 2
-      //     }`,
-      // );
+
       cropR.current = ratio
-        ? convertBarPosition(blockData.get('cropR'), ratio)
+        ? convertBarPosition(blockData.get('cropR'), 'r', ratio)
         : {
             x: image.offsetWidth - SIDE_WIDTH / 2,
             y: image.offsetHeight / 2 - SIDE_HEIGHT / 2,
           };
-      // cropBl.current = convertBarPosition(
-      //   block.getData().get('cropBl') ||
-      //     `${-OFFSET},${image.offsetHeight - CORNER_SIZE + OFFSET} `,
-      // );
+
       cropBl.current = ratio
-        ? convertBarPosition(blockData.get('cropBl'), ratio)
+        ? convertBarPosition(blockData.get('cropBl'), 'bl', ratio)
         : { x: -OFFSET, y: image.offsetHeight - CORNER_SIZE + OFFSET };
-      // cropB.current = convertBarPosition(
-      //   block.getData().get('cropB') ||
-      //     `${image.offsetWidth / 2 - SIDE_WIDTH / 2},${
-      //       image.offsetHeight - SIDE_HEIGHT / 2
-      //     }`,
-      // );
+
       cropB.current = ratio
-        ? convertBarPosition(blockData.get('cropB'), ratio)
+        ? convertBarPosition(blockData.get('cropB'), 'b', ratio)
         : {
             x: image.offsetWidth / 2 - SIDE_WIDTH / 2,
             y: image.offsetHeight - SIDE_HEIGHT / 2,
           };
-      // cropBr.current = convertBarPosition(
-      //   block.getData().get('cropBr') ||
-      //     `${image.offsetWidth - CORNER_SIZE + OFFSET},${
-      //       image.offsetHeight - CORNER_SIZE + OFFSET
-      //     }`,
-      // );
+
       cropBr.current = ratio
-        ? convertBarPosition(blockData.get('cropBr'), ratio)
+        ? convertBarPosition(blockData.get('cropBr'), 'br', ratio)
         : {
             x: image.offsetWidth - CORNER_SIZE + OFFSET,
             y: image.offsetHeight - CORNER_SIZE + OFFSET,
