@@ -207,7 +207,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   const cropBasedWidth = useRef<number>();
 
   // crop 开始后
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (btnKey ? btnKey === activeBtn : active) {
       // crop 初始化
       // image & viewport 样式初始化
@@ -505,9 +505,9 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
             setY(-SIDE_HEIGHT / 2 - cropT.current.y);
           } else if (
             cropB.current.y + y >=
-            image.offsetHeight + SIDE_HEIGHT / 2
+            image.offsetHeight - SIDE_HEIGHT / 2
           ) {
-            setY(image.offsetHeight + SIDE_HEIGHT / 2 - cropB.current.y);
+            setY(image.offsetHeight - SIDE_HEIGHT / 2 - cropB.current.y);
           } else {
             setY(y);
           }
