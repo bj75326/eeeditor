@@ -132,11 +132,13 @@ export interface CropButtonExtraProps {
   pluginMethods?: PluginMethods;
   getBlockProps?: () => Partial<AtomicBlockProps>;
   store?: Store<any>;
+  updatePopoverPosition?: () => void;
 }
 
 const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   props,
 ) => {
+  console.log('CropButtonComponent render ');
   const {
     prefixCls: customizePrefixCls,
     className,
@@ -149,6 +151,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     pluginMethods,
     getBlockProps,
     store,
+    updatePopoverPosition,
   } = props;
 
   const { getProps, getEditorRef, getEditorState, setEditorState } =
@@ -228,14 +231,8 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
           `[data-block="true"][data-offset-Key="${offsetKey}"]`,
         ) as HTMLElement
       ).offsetWidth;
-      // image.style.width = `${blockData.get('width') || image.naturalWidth}px`;
-      // image.style.maxWidth = '100%';
 
-      // const viewport = image.parentElement;
-      // if (viewport) {
-      //   viewport.style.width = 'auto';
-      //   viewport.style.height = 'auto';
-      // }
+      // 通过 store 设置 image 进入 crop 状态
       store.updateItem('cropOffsetKey', offsetKey);
 
       // crop bar position 初始化
@@ -292,6 +289,14 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
 
       setX(0);
       setY(0);
+    }
+  }, [btnKey, activeBtn, active]);
+
+  useEffect(() => {
+    if (btnKey ? btnKey === activeBtn : active) {
+      setImmediate(() => {
+        updatePopoverPosition();
+      });
     }
   }, [btnKey, activeBtn, active]);
 

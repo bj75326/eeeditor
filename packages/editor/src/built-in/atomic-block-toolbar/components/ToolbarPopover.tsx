@@ -39,6 +39,8 @@ export interface ToolbarPopoverChildrenProps {
   pluginMethods: PluginMethods;
   // 通过 store 修改 image 状态
   store: Store<any>;
+  // 手动更新 toolbar popover 位置
+  updatePopoverPosition: () => void;
 }
 
 export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
@@ -60,11 +62,21 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
     store.getItem('getBlockProps') && store.getItem('getBlockProps')().block;
 
   // children props
+  const updatePopoverPosition = () => {
+    if (!!popoverOffsetKey && popoverRef.current) {
+      const root: HTMLElement = getContainer().firstChild as HTMLElement;
+      setPosition(
+        getPopoverPosition(root, popoverRef.current, root, placement),
+      );
+    }
+  };
+
   const childrenProps: ToolbarPopoverChildrenProps = {
     placement,
     getBlockProps: store.getItem('getBlockProps'),
     pluginMethods: store.getItem('pluginMethods'),
     store,
+    updatePopoverPosition,
   };
 
   // 监听 stored visible 变化改变来控制 popover 显示隐藏
@@ -91,12 +103,13 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
   // block 发生变化之后需要重新计算 toolbar 位置
   useEffect(() => {
-    if (!!popoverOffsetKey && popoverRef.current) {
-      const root: HTMLElement = getContainer().firstChild as HTMLElement;
-      setPosition(
-        getPopoverPosition(root, popoverRef.current, root, placement),
-      );
-    }
+    // if (!!popoverOffsetKey && popoverRef.current) {
+    //   const root: HTMLElement = getContainer().firstChild as HTMLElement;
+    //   setPosition(
+    //     getPopoverPosition(root, popoverRef.current, root, placement),
+    //   );
+    // }
+    updatePopoverPosition();
   }, [block]);
 
   const getContainer = () => {
@@ -110,11 +123,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
 
   const { getPrefixCls: getAntdPrefixCls } = useContext(ConfigContext);
 
-  const toolbarPopoverCls = classNames(
-    `${prefixCls}-popover`,
-    `${prefixCls}-image-toolbar-popover`,
-    className,
-  );
+  const toolbarPopoverCls = classNames(`${prefixCls}-popover`, className);
 
   return getContainer()
     ? createPortal(
