@@ -6,6 +6,8 @@ export * from './components/RadioGroup';
 
 export * from './components/ToolbarPopover';
 
+export * from './components/Separator';
+
 export interface AtomicBlockProps {
   block: ContentBlock;
   blockProps: {

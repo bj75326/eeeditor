@@ -1,6 +1,6 @@
 import React, { CSSProperties, useContext } from 'react';
 import classNames from 'classnames';
-import { EEEditorContext } from '@eeeditor/editor';
+import { EEEditorContext } from '../../../Editor';
 
 export interface SeparatorProps {
   prefixCls?: string;
@@ -8,7 +8,7 @@ export interface SeparatorProps {
   style?: CSSProperties;
 }
 
-const Separator: React.FC<SeparatorProps> = (props) => {
+export const Separator: React.FC<SeparatorProps> = (props) => {
   const { prefixCls: customizePrefixCls, className, style } = props;
 
   const { getPrefixCls } = useContext(EEEditorContext);

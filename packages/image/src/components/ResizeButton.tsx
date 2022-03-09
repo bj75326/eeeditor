@@ -81,6 +81,7 @@ const ResizeButtonComponent: React.FC<
   const [offsetX, setOffsetX] = useState<number>();
 
   const handleBtnClick = (e: MouseEvent): void => {
+    e.preventDefault();
     if (btnKey) {
       const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
       changeActiveBtn(newActiveBtn);

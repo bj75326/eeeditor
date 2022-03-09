@@ -329,6 +329,24 @@ figure[data-block='true'] {
 }
 
 .@{eeeditor-prefix-cls}-popover-separator {
+  position: relative;
+  display: inline-block;
+  width: 1px;
+  height: @popover-line-height;
+  margin: 0 7px;
+  vertical-align: top;
+  &:after {
+    position: absolute;
+    top: 7px;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: @popover-separator-size;
+    border-left: 1px solid @popover-separator-color;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+    content: '';
+  }
 }
 
 // todo

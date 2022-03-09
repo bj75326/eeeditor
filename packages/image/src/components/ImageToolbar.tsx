@@ -4,6 +4,7 @@ import {
   ToolbarPopoverProps,
   EEEditorContext,
   RadioGroup,
+  Separator,
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
 import CropButton from './CropButton';
@@ -35,6 +36,7 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
         <ResizeButton />
         <CropButton />
       </RadioGroup>
+      <Separator />
     </ToolbarPopover>
   );
 };

@@ -67,17 +67,10 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
   const { getPrefixCls } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('selector-btn', customizePrefixCls);
 
-  const [visible, setVisible]: [boolean, any] = useState(false);
-  const [selectorBtnActive, setSelectorBtnActive]: [boolean[], any] = useState(
-    [],
-  );
-  const [selectorBtnDisabled, setSelectorBtnDisabled]: [
-    boolean[],
-    any,
-  ] = useState([]);
-  const [selectorBtnIcon, setSelectorBtnIcon]: [ReactNode, any] = useState(
-    icon,
-  );
+  const [visible, setVisible] = useState<boolean>(false);
+  const [selectorBtnActive, setSelectorBtnActive] = useState<boolean[]>([]);
+  const [selectorBtnDisabled, setSelectorBtnDisabled] = useState<boolean[]>([]);
+  const [selectorBtnIcon, setSelectorBtnIcon] = useState<ReactNode>(icon);
 
   const setBtnActive = (active: boolean, optionKey: number): void => {
     if (active === selectorBtnActive[optionKey]) return;

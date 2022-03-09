@@ -177,6 +177,7 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   const [active, setActive] = useState<boolean>(false);
 
   const handleBtnClick = (e: MouseEvent): void => {
+    e.preventDefault();
     if (btnKey) {
       const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
       changeActiveBtn(newActiveBtn);
