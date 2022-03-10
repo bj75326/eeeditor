@@ -11,7 +11,12 @@ import { EEEditorContext } from '../../../Editor';
 import classNames from 'classnames';
 
 export interface SelectorGroupChildrenProps
-  extends ToolbarPopoverChildrenProps {}
+  extends Partial<ToolbarPopoverChildrenProps> {
+  // 兼容 @eeeditor/buttons
+  setBtnActive?: (active: boolean, optionKey: number) => void;
+  optionKey?: number;
+  setBtnIcon?: (icon?: ReactNode) => void;
+}
 
 export interface SelectorGroupProps {
   prefixCls?: string;
@@ -54,24 +59,22 @@ export const SelectorGroup: React.FC<
 
   const setSelectorGroupActive = (active: boolean, optionKey: number): void => {
     if (active === groupActive[optionKey]) return;
-    setGroupActive((groupActive: boolean[]) =>
-      groupActive.map((currActive, index) => {
-        if (optionKey === index) {
-          return active;
-        }
-        return currActive;
-      }),
-    );
+    setGroupActive((groupActive: boolean[]) => {
+      const newGroupActive = [...groupActive];
+      newGroupActive[optionKey] = active;
+      return newGroupActive;
+    });
   };
 
   const setSelectorGroupIcon = (icon: ReactNode): void => {
     setGroupIcon(icon);
   };
 
-  const groupChildProps = {
+  const groupChildProps: SelectorGroupChildrenProps = {
     ...childProps,
-    setSelectorGroupActive,
-    setSelectorGroupIcon,
+    // 兼容 @eeeditor/buttons
+    setBtnActive: setSelectorGroupActive,
+    setBtnIcon: setSelectorGroupIcon,
   };
 
   const groupCls = classNames(`${prefixCls}`, className, {

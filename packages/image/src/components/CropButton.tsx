@@ -122,14 +122,13 @@ export interface CropButtonProps {
   languages?: Languages;
 }
 
-export interface CropButtonExtraProps {
+export interface CropButtonExtraProps extends Partial<PluginMethods> {
   // RadioButton 提供
   btnKey?: string;
   activeBtn?: string;
   changeActiveBtn?: (activeBtn: string) => void;
   // ToolbarPopover 提供
   placement?: 'top' | 'bottom';
-  pluginMethods?: PluginMethods;
   getBlockProps?: () => Partial<AtomicBlockProps>;
   store?: Store<any>;
   updatePopoverPosition?: () => void;
@@ -148,14 +147,14 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     activeBtn,
     changeActiveBtn,
     placement,
-    pluginMethods,
+    getProps,
+    getEditorRef,
+    getEditorState,
+    setEditorState,
     getBlockProps,
     store,
     updatePopoverPosition,
   } = props;
-
-  const { getProps, getEditorRef, getEditorState, setEditorState } =
-    pluginMethods;
 
   // // image src
   // const { offsetKey } = getBlockProps();

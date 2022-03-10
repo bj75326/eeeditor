@@ -108,23 +108,23 @@ export default function CreateToggleInlineStyleButton<K, S>({
     }
 
     useEffect(() => {
-      if (buttonKeyBindingFn) {
+      if (buttonKeyBindingFn && addKeyBindingFn) {
         addKeyBindingFn(buttonKeyBindingFn);
       }
-      if (buttonKeyCommandHandler) {
+      if (buttonKeyCommandHandler && addKeyCommandHandler) {
         addKeyCommandHandler(buttonKeyCommandHandler);
       }
-      if (buttonBeforeInputHandler) {
+      if (buttonBeforeInputHandler && addBeforeInputHandler) {
         addBeforeInputHandler(buttonBeforeInputHandler);
       }
       return () => {
-        if (buttonKeyBindingFn) {
+        if (buttonKeyBindingFn && removeKeyBindingFn) {
           removeKeyBindingFn(buttonKeyBindingFn);
         }
-        if (buttonKeyCommandHandler) {
+        if (buttonKeyCommandHandler && removeKeyCommandHandler) {
           removeKeyCommandHandler(buttonKeyCommandHandler);
         }
-        if (buttonBeforeInputHandler) {
+        if (buttonBeforeInputHandler && removeBeforeInputHandler) {
           removeBeforeInputHandler(buttonBeforeInputHandler);
         }
       };

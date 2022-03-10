@@ -4,6 +4,7 @@ import React, {
   useState,
   useRef,
   ReactElement,
+  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import classNames from 'classnames';
@@ -33,14 +34,17 @@ export interface ToolbarPopoverProps {
   children?: ReactElement | ReactElement[];
 }
 
-export interface ToolbarPopoverChildrenProps {
-  placement: 'top' | 'bottom';
-  getBlockProps: () => Partial<AtomicBlockProps>;
-  pluginMethods: PluginMethods;
+export interface ToolbarPopoverChildrenProps extends Partial<PluginMethods> {
+  // block toolbar popover 定位
+  placement?: 'top' | 'bottom';
+  // 获取 block props
+  getBlockProps?: () => Partial<AtomicBlockProps>;
+  // 移除 pluginMethods 直接传递
+  // pluginMethods: PluginMethods;
   // 通过 store 修改 image 状态
-  store: Store<any>;
+  store?: Store<any>;
   // 手动更新 toolbar popover 位置
-  updatePopoverPosition: () => void;
+  updatePopoverPosition?: () => void;
 }
 
 export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
@@ -72,9 +76,9 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
   };
 
   const childrenProps: ToolbarPopoverChildrenProps = {
+    ...store.getItem('pluginMethods'),
     placement,
     getBlockProps: store.getItem('getBlockProps'),
-    pluginMethods: store.getItem('pluginMethods'),
     store,
     updatePopoverPosition,
   };

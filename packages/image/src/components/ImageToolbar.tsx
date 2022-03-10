@@ -5,10 +5,16 @@ import {
   EEEditorContext,
   RadioGroup,
   Separator,
+  SelectorGroup,
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
 import CropButton from './CropButton';
 import { Languages, zhCN, Locale } from '..';
+import {
+  AlignCenterButton,
+  AlignLeftButton,
+  AlignRightButton,
+} from '@eeeditor/buttons';
 
 export interface ImageToolbarProps {
   prefixCls?: string;
@@ -31,12 +37,32 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
   }
 
   return (
-    <ToolbarPopover prefixCls={prefixCls} className={className} store={store}>
+    <ToolbarPopover className={className} store={store}>
       <RadioGroup>
         <ResizeButton />
         <CropButton />
       </RadioGroup>
       <Separator />
+      <SelectorGroup>
+        <AlignLeftButton
+          className={`${prefixCls}-popover-button`}
+          title={{
+            name: 'eeeditor.button.align.left.tip.name',
+          }}
+        />
+        <AlignCenterButton
+          className={`${prefixCls}-popover-button`}
+          title={{
+            name: 'eeeditor.button.align.center.tip.name',
+          }}
+        />
+        <AlignRightButton
+          className={`${prefixCls}-popover-button`}
+          title={{
+            name: 'eeeditor.button.align.right.tip.name',
+          }}
+        />
+      </SelectorGroup>
     </ToolbarPopover>
   );
 };

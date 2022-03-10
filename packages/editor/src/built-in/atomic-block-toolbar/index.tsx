@@ -8,6 +8,8 @@ export * from './components/ToolbarPopover';
 
 export * from './components/Separator';
 
+export * from './components/SelectorGroup';
+
 export interface AtomicBlockProps {
   block: ContentBlock;
   blockProps: {

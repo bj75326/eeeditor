@@ -349,6 +349,38 @@ figure[data-block='true'] {
   }
 }
 
+.@{eeeditor-prefix-cls}-popover-selector-group-wrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.@{eeeditor-prefix-cls}-popover-selector-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @popover-line-height;
+  height: @popover-line-height;
+  color: @button-text-color;
+  font-size: @popover-button-icon-size;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  &:hover {
+    background-color: @popover-button-hover-bg;
+  }
+  // .@{eeeditor-prefix-cls}-popover-selector-group-active {
+  //   color: @button-text-active-color;
+  // }
+}
+
+.@{eeeditor-prefix-cls}-popover-selector-group-options {
+  position: absolute;
+  top: @popover-line-height;
+  left: 0;
+  width: 100%;
+  background: @popover-toolbar-bg-color;
+}
+
 // todo
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   /* IE10+ */

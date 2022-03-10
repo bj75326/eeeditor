@@ -29,14 +29,13 @@ export interface ResizeButtonProps {
   languages?: Languages;
 }
 
-export interface ResizeButtonExtraProps {
+export interface ResizeButtonExtraProps extends Partial<PluginMethods> {
   // RadioButton 提供
   btnKey?: string;
   activeBtn?: string;
   changeActiveBtn?: (activeBtn: string) => void;
   // ToolbarPopover 提供
   placement?: 'top' | 'bottom';
-  pluginMethods?: PluginMethods;
   getBlockProps?: () => Partial<AtomicBlockProps>;
 }
 
@@ -52,12 +51,12 @@ const ResizeButtonComponent: React.FC<
     activeBtn,
     changeActiveBtn,
     placement,
-    pluginMethods,
+    getProps,
+    getEditorRef,
+    setEditorState,
+    getEditorState,
     getBlockProps,
   } = props;
-
-  const { getProps, getEditorRef, setEditorState, getEditorState } =
-    pluginMethods;
 
   const { block } = getBlockProps();
   const blockData = block.getData();
