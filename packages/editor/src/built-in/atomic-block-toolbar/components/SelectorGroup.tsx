@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
   MouseEvent,
+  useRef,
 } from 'react';
 import { ToolbarPopoverChildrenProps } from './ToolbarPopover';
 import { EEEditorContext } from '../../../Editor';
@@ -49,12 +50,33 @@ export const SelectorGroup: React.FC<
     e.preventDefault();
   };
 
+  const delayTimer = useRef<number>();
+
+  const clearDelayTimer = () => {
+    if (delayTimer.current) {
+      clearTimeout(delayTimer.current);
+      delayTimer.current = null;
+    }
+  };
+
+  const delaySetOptionsVisible = (visible: boolean) => {
+    // 取 antd tooltip 组件 mouseEnterDelay & mouseLeaveDelay 默认值
+    const delay = 100;
+    // 清除之前的定时器
+    clearDelayTimer();
+    delayTimer.current = window.setTimeout(() => {
+      setVisible(visible);
+      // 清除自己的定时器
+      clearDelayTimer();
+    }, delay);
+  };
+
   const showOptions = (): void => {
-    setVisible(true);
+    delaySetOptionsVisible(true);
   };
 
   const hideOptions = (): void => {
-    setVisible(true);
+    delaySetOptionsVisible(false);
   };
 
   const setSelectorGroupActive = (active: boolean, optionKey: number): void => {
@@ -87,16 +109,21 @@ export const SelectorGroup: React.FC<
   });
 
   return (
-    <div
-      className={`${prefixCls}-wrapper`}
-      onMouseEnter={showOptions}
-      onMouseLeave={hideOptions}
-      onMouseDown={preventBubblingUp}
-    >
-      <div className={groupCls} style={style}>
+    <div className={`${prefixCls}-wrapper`}>
+      <div
+        className={groupCls}
+        style={style}
+        onMouseEnter={showOptions}
+        onMouseLeave={hideOptions}
+        onMouseDown={preventBubblingUp}
+      >
         {groupActive.some((status: boolean) => status) ? groupIcon : icon}
       </div>
-      <div className={optionsCls}>
+      <div
+        className={optionsCls}
+        onMouseEnter={showOptions}
+        onMouseLeave={hideOptions}
+      >
         {React.Children.map<ReactElement, ReactElement>(
           children,
           (child, index) =>

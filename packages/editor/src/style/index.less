@@ -149,6 +149,23 @@
   font-size: @editor-h6-font-size;
 }
 
+// align css
+.align-center {
+  text-align: center;
+}
+
+.align-justify {
+  text-align: justify;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
 // todo figure 有可能在 blockRenderMap 内被替换
 // atomic block 内定位
 figure[data-block='true'] {
@@ -368,17 +385,38 @@ figure[data-block='true'] {
   &:hover {
     background-color: @popover-button-hover-bg;
   }
-  // .@{eeeditor-prefix-cls}-popover-selector-group-active {
-  //   color: @button-text-active-color;
-  // }
+  &:before {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: @button-text-color;
+    transform: rotate(-45deg);
+    content: '';
+  }
+  &.@{eeeditor-prefix-cls}-popover-selector-group-active {
+    color: @button-text-active-color;
+  }
+  &.@{eeeditor-prefix-cls}-popover-selector-group-show {
+    &:before {
+      display: none;
+    }
+  }
 }
 
 .@{eeeditor-prefix-cls}-popover-selector-group-options {
   position: absolute;
-  top: @popover-line-height;
+  top: @popover-line-height + @popover-inner-padding + 2;
   left: 0;
   width: 100%;
   background: @popover-toolbar-bg-color;
+}
+
+.@{eeeditor-prefix-cls}-popover-selector-group-options-hidden {
+  display: none;
 }
 
 // todo

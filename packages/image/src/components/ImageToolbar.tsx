@@ -1,4 +1,4 @@
-import React, { useContext, ReactNode } from 'react';
+import React, { useContext } from 'react';
 import {
   ToolbarPopover,
   ToolbarPopoverProps,
@@ -15,6 +15,7 @@ import {
   AlignLeftButton,
   AlignRightButton,
 } from '@eeeditor/buttons';
+import { TooltipPropsWithTitle } from 'antd/es/tooltip';
 
 export interface ImageToolbarProps {
   prefixCls?: string;
@@ -26,7 +27,7 @@ export interface ImageToolbarProps {
 const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
   const { prefixCls: customizePrefixCls, className, store, languages } = props;
 
-  const { getPrefixCls } = useContext(EEEditorContext);
+  const { getPrefixCls, textDirectionality } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls(undefined, customizePrefixCls);
 
   let locale: Locale = zhCN;
@@ -35,6 +36,10 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
     const { locale: currLocale } = getProps();
     locale = languages[currLocale] || zhCN;
   }
+
+  const selectGroupBtnTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
+    placement: textDirectionality === 'RTL' ? 'left' : 'right',
+  };
 
   return (
     <ToolbarPopover className={className} store={store}>
@@ -49,18 +54,21 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
           title={{
             name: 'eeeditor.button.align.left.tip.name',
           }}
+          tipProps={selectGroupBtnTip}
         />
         <AlignCenterButton
           className={`${prefixCls}-popover-button`}
           title={{
             name: 'eeeditor.button.align.center.tip.name',
           }}
+          tipProps={selectGroupBtnTip}
         />
         <AlignRightButton
           className={`${prefixCls}-popover-button`}
           title={{
             name: 'eeeditor.button.align.right.tip.name',
           }}
+          tipProps={selectGroupBtnTip}
         />
       </SelectorGroup>
     </ToolbarPopover>

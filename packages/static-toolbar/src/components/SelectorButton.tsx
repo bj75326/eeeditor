@@ -50,7 +50,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     className,
     style,
     icon,
-    childrenTipProps = { placement: 'right' },
+    childrenTipProps,
     children,
     getEditorState,
     setEditorState,
@@ -64,8 +64,13 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     removeBeforeInputHandler,
   } = props;
 
-  const { getPrefixCls } = useContext(EEEditorContext);
+  const { getPrefixCls, textDirectionality } = useContext(EEEditorContext);
   const prefixCls = getPrefixCls('selector-btn', customizePrefixCls);
+
+  const defaultChildrenTipProps: Partial<Omit<TooltipPropsWithTitle, 'title'>> =
+    {
+      placement: textDirectionality === 'RTL' ? 'left' : 'right',
+    };
 
   const [visible, setVisible] = useState<boolean>(false);
   const [selectorBtnActive, setSelectorBtnActive] = useState<boolean[]>([]);
@@ -119,7 +124,10 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
     setBtnActive,
     setBtnDisabled,
     setBtnIcon,
-    tipProps: childrenTipProps,
+    tipProps: {
+      ...defaultChildrenTipProps,
+      ...childrenTipProps,
+    },
   };
 
   const btnClassName = classNames(`${prefixCls}`, className, {

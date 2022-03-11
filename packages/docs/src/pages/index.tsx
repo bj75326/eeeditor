@@ -321,9 +321,9 @@ const Page: React.FC<PageProps> = (props) => {
   console.log('title: ', title);
   console.log('rtl: ', rtl);
 
-  const selectBtnChildrenTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
-    placement: rtl ? 'left' : 'right',
-  };
+  // const selectBtnChildrenTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
+  //   placement: rtl ? 'left' : 'right',
+  // };
   // const staticToolbarBtnTip: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
   //   placement: 'bottom',
   // };
@@ -573,7 +573,7 @@ const Page: React.FC<PageProps> = (props) => {
               <Separator />
               <SelectorButton
                 icon={defaultHeadIcon}
-                childrenTipProps={selectBtnChildrenTip}
+                // childrenTipProps={selectBtnChildrenTip}
               >
                 <HeadlineOneButton />
                 <HeadlineTwoButton />
@@ -582,7 +582,7 @@ const Page: React.FC<PageProps> = (props) => {
                 <HeadlineFiveButton />
                 <HeadlineSixButton />
               </SelectorButton>
-              <SelectorButton childrenTipProps={selectBtnChildrenTip}>
+              <SelectorButton>
                 <AlignLeftButton />
                 <AlignCenterButton />
                 <AlignRightButton />

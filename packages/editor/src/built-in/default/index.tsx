@@ -1,6 +1,12 @@
 import { KeyboardEvent } from 'react';
 import { EditorPlugin, DraftEditorCommand } from '../..';
-import { KeyBindingUtil, RichUtils, Modifier, EditorState } from 'draft-js';
+import {
+  KeyBindingUtil,
+  RichUtils,
+  Modifier,
+  EditorState,
+  ContentBlock,
+} from 'draft-js';
 import UserAgent from 'fbjs/lib/UserAgent';
 import Keys from 'fbjs/lib/Keys';
 
@@ -37,7 +43,6 @@ const getBackspaceCommand = (e: KeyboardEvent): DraftEditorCommand | null => {
 
 export default (): EditorPlugin => ({
   keyBindingFn: (e: KeyboardEvent): DraftEditorCommand | null => {
-    console.log('default keyBindingFn');
     switch (e.keyCode) {
       // bold command 会在 @eeeditor/buttons BoldButton 中设置
       // case 66: // B
@@ -75,7 +80,7 @@ export default (): EditorPlugin => ({
       // undo&redo command 会在 @eeeditor/undo UndoButton RedoButton 中设置
       // case 90: // Z
       //   return getZCommand(e) || null;
-      // built-in default plugin 添加了 handleReturn，这里可以保留也可以删去 
+      // built-in default plugin 添加了 handleReturn，这里可以保留也可以删去
       case Keys.RETURN:
         return 'split-block';
       case Keys.DELETE:
@@ -96,27 +101,48 @@ export default (): EditorPlugin => ({
     }
   },
 
-  onTab: (
-    e,
-    { getEditorState, setEditorState },
-  ) => {
+  onTab: (e, { getEditorState, setEditorState }) => {
     const editorState = getEditorState();
     setEditorState(RichUtils.onTab(e, editorState, 4));
     return false;
   },
 
   handleReturn: (e, editorState, { setEditorState }) => {
-    console.log('default handle return run run run');
-    let contentState = Modifier.splitBlock(editorState.getCurrentContent(), editorState.getSelection());
+    let contentState = Modifier.splitBlock(
+      editorState.getCurrentContent(),
+      editorState.getSelection(),
+    );
     const selectionAfter = contentState.getSelectionAfter();
 
     const block = contentState.getBlockForKey(selectionAfter.getStartKey());
     if (block.getType().startsWith('header-') && block.getLength() === 0) {
-      contentState = Modifier.setBlockType(contentState, selectionAfter, 'unstyled');
+      contentState = Modifier.setBlockType(
+        contentState,
+        selectionAfter,
+        'unstyled',
+      );
     }
 
     setEditorState(EditorState.push(editorState, contentState, 'split-block'));
 
     return 'handled';
+  },
+
+  // align block style
+  blockStyleFn: (contentBlock: ContentBlock) => {
+    const blockData = contentBlock.getData();
+    const align = blockData.get('align');
+    switch (align) {
+      case 'center':
+        return 'align-center';
+      case 'justify':
+        return 'align-justify';
+      case 'left':
+        return 'align-left';
+      case 'right':
+        return 'align-right';
+      default:
+        return '';
+    }
   },
 });
