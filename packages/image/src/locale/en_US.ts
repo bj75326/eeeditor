@@ -12,4 +12,5 @@ export default {
   'eeeditor.image.align.right': 'Right align',
   'eeeditor.image.crop': 'Crop picture',
   'eeeditor.image.resize': 'Scale picture',
+  'eeeditor.image.reset': 'Reset picture',
 };

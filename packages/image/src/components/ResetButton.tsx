@@ -46,7 +46,7 @@ const ResetButtonComponent: React.FC<ResetButtonProps & ResetButtonExtraProps> =
 
     const handleBtnClick = (e: MouseEvent) => {
       e.preventDefault();
-      setEditorState(resetCrop());
+      setEditorState(resetCrop(getEditorState()));
     };
 
     const getTipTitle = (name: string): ReactNode => (

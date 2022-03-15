@@ -9,6 +9,7 @@ import {
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
 import CropButton from './CropButton';
+import ResetButton from './ResetButton';
 import { Languages, zhCN, Locale } from '..';
 import {
   AlignCenterButton,
@@ -47,6 +48,8 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
         <ResizeButton />
         <CropButton />
       </RadioGroup>
+      <Separator />
+      <ResetButton />
       <Separator />
       <SelectorGroup>
         <AlignLeftButton
