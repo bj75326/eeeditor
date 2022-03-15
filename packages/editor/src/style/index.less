@@ -343,6 +343,13 @@ figure[data-block='true'] {
   &.@{eeeditor-prefix-cls}-popover-button-active {
     color: @button-text-active-color;
   }
+  &.@{eeeditor-prefix-cls}-popover-button-disabled {
+    color: @button-text-disabled-color;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+  }
 }
 
 .@{eeeditor-prefix-cls}-popover-separator {

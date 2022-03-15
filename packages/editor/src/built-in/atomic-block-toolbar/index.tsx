@@ -96,6 +96,7 @@ export const blockToolbarDecorator = (
         store.updateItem('toolbarPopoverOffsetKey', offsetKey);
       } else {
         if (store.getItem('toolbarPopoverOffsetKey') === offsetKey) {
+          store.updateItem('getBlockProps', null);
           store.updateItem('toolbarPopoverOffsetKey', '');
         }
       }
