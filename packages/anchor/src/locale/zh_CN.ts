@@ -12,5 +12,5 @@ export default {
   'eeeditor.anchor.edit.link.label': '链接',
   'eeeditor.anchor.edit.link.placeholder': '输入链接，回车确定',
   'eeeditor.anchor.edit.text.placeholder': '文本为空则显示为链接值',
-  'eeeditor.anchor.copy.success.msg': '链接已复制',
+  'eeeditor.anchor.copy.success.msg': '链接已拷贝',
 };

@@ -13,4 +13,8 @@ export default {
   'eeeditor.image.crop': 'Crop picture',
   'eeeditor.image.resize': 'Scale picture',
   'eeeditor.image.reset': 'Reset picture',
+  // built-in atomic-block-toolbar
+  'eeeditor.block.toolbar.copy.button.tip': 'Copy picture',
+  'eeeditor.block.toolbar.copy.success.msg': 'Picture copied',
+  'eeeditor.block.toolbar.copy.error.msg': 'Picture copy failed',
 };

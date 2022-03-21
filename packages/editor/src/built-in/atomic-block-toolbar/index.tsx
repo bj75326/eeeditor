@@ -10,6 +10,8 @@ export * from './components/Separator';
 
 export * from './components/SelectorGroup';
 
+export * from './buttons/CopyButton';
+
 export interface AtomicBlockProps {
   block: ContentBlock;
   blockProps: {

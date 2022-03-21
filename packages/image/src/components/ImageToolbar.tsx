@@ -6,11 +6,12 @@ import {
   RadioGroup,
   Separator,
   SelectorGroup,
+  CopyButton,
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
 import CropButton from './CropButton';
 import ResetButton from './ResetButton';
-import { Languages, zhCN, Locale } from '..';
+import lang, { Languages, zhCN, Locale } from '../locale';
 import {
   AlignCenterButton,
   AlignLeftButton,
@@ -74,6 +75,8 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
           tipProps={selectGroupBtnTip}
         />
       </SelectorGroup>
+      <Separator />
+      <CopyButton languages={lang} />
     </ToolbarPopover>
   );
 };

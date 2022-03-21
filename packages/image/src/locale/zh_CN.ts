@@ -13,4 +13,8 @@ export default {
   'eeeditor.image.crop': '图片裁剪',
   'eeeditor.image.resize': '图片等比缩放',
   'eeeditor.image.reset': '图片重置',
+  // built-in atomic-block-toolbar
+  'eeeditor.block.toolbar.copy.button.tip': '拷贝图片',
+  'eeeditor.block.toolbar.copy.success.msg': '图片拷贝成功',
+  'eeeditor.block.toolbar.copy.error.msg': '图片拷贝失败',
 };

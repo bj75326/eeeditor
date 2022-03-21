@@ -35,7 +35,7 @@ import {
   DraftBlockRenderMap,
   EditorState,
   SelectionState,
-  Editor,
+  BlockMap,
 } from 'draft-js';
 import { createEditorStateWithTextFn } from 'draft-js-plugins-editor';
 import { composeDecoratorsFn } from 'draft-js-plugins-editor';
@@ -52,6 +52,8 @@ export interface EditorRef {
   blur(): void;
   /** Force synchronize RawDraftContentState to backend */
   forceSync?: boolean;
+  /** Copy ContentState fragment manually**/
+  setClipboard: (blockMap: BlockMap) => void;
 }
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;
