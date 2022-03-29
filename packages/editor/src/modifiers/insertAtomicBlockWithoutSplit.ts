@@ -11,7 +11,7 @@ import {
   isFirstBlock,
   isLastBlock,
 } from '..';
-import { List, Repeat } from 'immutable';
+import { List, Repeat, Map } from 'immutable';
 
 const checkSelectionAfter = (
   withAtomicBlock: ContentState,
@@ -39,6 +39,7 @@ export const insertAtomicBlockWithoutSplit = (
   editorState: EditorState,
   entityKey: string,
   character: string,
+  data?: object,
 ): EditorState => {
   const contentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
@@ -51,10 +52,6 @@ export const insertAtomicBlockWithoutSplit = (
 
   const targetSelection = afterRemoval.getSelectionAfter();
 
-  // console.log('targetSleection: ', targetSelection);
-  // test
-  // return EditorState.push(editorState, afterRemoval, 'remove-range');
-
   const startKey = targetSelection.getStartKey();
   // console.log('startKey: ', startKey);
   const currentBlock = afterRemoval.getBlockForKey(startKey);
@@ -65,7 +62,13 @@ export const insertAtomicBlockWithoutSplit = (
     type: 'atomic',
     text: character,
     characterList: List(Repeat(charData, character.length)),
+    data: Map(),
   };
+
+  // atomic-block-toolbar paste 需要在 insert atomic block 时，复制 block data
+  if (data && Object.keys(data).length > 0) {
+    atomicBlockConfig.data = Map(data);
+  }
 
   const atomicDividerBlockConfig = {
     key: genKey(),

@@ -54,6 +54,10 @@ export interface EditorRef {
   forceSync?: boolean;
   /** Copy ContentState fragment manually**/
   setClipboard: (blockMap: BlockMap) => void;
+  /** Get Clipboard**/
+  getClipboard: () => BlockMap;
+  /** Get Editor key**/
+  getEditorKey: () => string;
 }
 export type PluginMethods = {
   getPlugins: () => Array<Plugin>;

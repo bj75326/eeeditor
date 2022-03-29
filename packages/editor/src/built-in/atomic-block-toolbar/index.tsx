@@ -1,6 +1,12 @@
 import React, { ComponentType, useEffect, useRef } from 'react';
 import { Store } from '@draft-js-plugins/utils';
-import { ContentBlock, SelectionState, ContentState } from '../..';
+import {
+  ContentBlock,
+  SelectionState,
+  ContentState,
+  EditorPlugin,
+  insertAtomicBlockWithoutSplit,
+} from '../..';
 
 export * from './components/RadioGroup';
 
@@ -128,3 +134,28 @@ export const blockToolbarDecorator = (
 
   return AtomicBlockToolbarDecorator;
 };
+
+export default (): EditorPlugin => ({
+  handlePastedText(text, _, editorState, { getEditorRef, setEditorState }) {
+    if (text === 'eeeditor.atomic-block.paste') {
+      // 单独的 atomic block paste
+      const internalClipboard = getEditorRef().getClipboard();
+      if (internalClipboard && internalClipboard.size === 1) {
+        const block = internalClipboard.first();
+        // 复制 block
+        console.log('handlePastedText test ----> ', block.getEntityAt(0));
+        const entityKey = block.getEntityAt(0);
+        const character = block.getText();
+        const data = block.getData();
+
+        setEditorState(
+          insertAtomicBlockWithoutSplit(editorState, entityKey, ' ', data),
+        );
+
+        return 'handled';
+      }
+    }
+
+    return 'not-handled';
+  },
+});

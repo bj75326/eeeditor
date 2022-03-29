@@ -128,9 +128,9 @@ export default ({ blockKeyStore, store }: DecoratorProps) =>
           console.log('revise focusable block selection');
 
           const offsetKey = DraftOffsetKey.encode(props.block.getKey(), 0, 0);
-          const node = document.querySelectorAll(
-            `[data-offset-key="${offsetKey}"]`,
-          )[0].firstChild;
+          const node = document.querySelector(
+            `[data-offset-key="${offsetKey}"][data-block="true"]`,
+          ).firstChild;
 
           reviseAtomicBlockSelection(props.selection, props.block, node);
         });

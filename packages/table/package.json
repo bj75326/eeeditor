@@ -1,6 +1,8 @@
 {
-  "name": "@eeeditor/editor",
+  "name": "@eeeditor/table",
   "version": "1.0.0",
+  "description": "table plugin for EEEditor",
+  "author": "bj75326 <superice_gy@163.com>",
   "scripts": {
     "build": "father build",
     "build:watch": "father build --watch",
@@ -12,19 +14,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "antd": "^4.11.2",
-    "clipboard": "^2.0.10",
-    "draft-js": "^0.10.5",
-    "draft-js-plugins-editor": "^2.1.1"
-  },
-  "devDependencies": {
-    "@types/draft-js": "^0.10.44"
-  },
   "peerDependencies": {
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.13.8",
+    "@draft-js-plugins/utils": "^4.1.0",
+    "@eeeditor/buttons": "1.0.0",
+    "@eeeditor/editor": "1.0.0",
+    "classnames": "^2.2.6"
+  }
 }

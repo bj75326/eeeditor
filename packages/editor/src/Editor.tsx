@@ -24,6 +24,7 @@ import {
 import classNames from 'classnames';
 import createFocusPlugin, { BlockFocusDecoratorProps } from './built-in/focus';
 import createDefaultPlugin from './built-in/default';
+import createAtomicBlockToolbarPlugin from './built-in/atomic-block-toolbar';
 import { ConfigProvider } from 'antd';
 import { DirectionType } from 'antd/lib/config-provider';
 import { Locale } from 'antd/lib/locale-provider';
@@ -32,6 +33,7 @@ import enUS from 'antd/lib/locale/en_US';
 
 const { decorator: focusDecorator, ...focusPlugin } = createFocusPlugin();
 const defaultPlugin = createDefaultPlugin();
+const atomicBlockToolbarPlugin = createAtomicBlockToolbarPlugin();
 
 export { focusDecorator, BlockFocusDecoratorProps };
 
@@ -197,15 +199,18 @@ const EEEditor: React.FC<EEEditorProps> = (props) => {
   let suffixes = [];
 
   // 获取 suffixes
-  const eeeditorPlugins = [focusPlugin, ...plugins, defaultPlugin].map(
-    (plugin) => {
-      const { suffix, ...others } = plugin;
-      if (suffix) {
-        suffixes.push(suffix);
-      }
-      return others;
-    },
-  );
+  const eeeditorPlugins = [
+    focusPlugin,
+    atomicBlockToolbarPlugin,
+    ...plugins,
+    defaultPlugin,
+  ].map((plugin) => {
+    const { suffix, ...others } = plugin;
+    if (suffix) {
+      suffixes.push(suffix);
+    }
+    return others;
+  });
 
   // 获取 wrapper event hooks
   const wrapperEventHookKeys = [];
