@@ -15,7 +15,6 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "antd": "^4.11.2",
-    "clipboard": "^2.0.10",
     "draft-js": "^0.10.5",
     "draft-js-plugins-editor": "^2.1.1"
   },

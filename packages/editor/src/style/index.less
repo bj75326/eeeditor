@@ -320,6 +320,7 @@ figure[data-block='true'] {
 
 .@{eeeditor-prefix-cls}-popover-inner {
   padding: @popover-inner-padding;
+  white-space: nowrap;
   background-color: @popover-background;
   background-clip: padding-box;
   border-radius: @popover-border-radius;
@@ -366,7 +367,7 @@ figure[data-block='true'] {
     left: 0;
     width: 0;
     height: @popover-separator-size;
-    border-left: 1px solid @popover-separator-color;
+    border-left: 1px solid @separator-color;
     transform: scaleX(0.5);
     transform-origin: 0 0;
     content: '';
@@ -419,7 +420,8 @@ figure[data-block='true'] {
   top: @popover-line-height + @popover-inner-padding + 2;
   left: 0;
   width: 100%;
-  background: @popover-toolbar-bg-color;
+  white-space: normal;
+  background: @popover-background;
 }
 
 .@{eeeditor-prefix-cls}-popover-selector-group-options-hidden {

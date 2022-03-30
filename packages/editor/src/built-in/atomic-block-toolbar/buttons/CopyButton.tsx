@@ -3,15 +3,14 @@ import React, {
   useContext,
   ReactNode,
   MouseEvent,
-  useEffect,
 } from 'react';
-import { PluginMethods, EEEditorContext } from '../../..';
+import { PluginMethods, EEEditorContext, BlockMapBuilder } from '../../..';
 import lang, { Languages, Locale, zhCN } from '../../../locale';
 import { AtomicBlockProps } from '../';
 import { Tooltip, message } from 'antd';
 import { copyIcon } from '../../../assets/extraIcons';
-import getContentStateFragment from 'draft-js/lib/getContentStateFragment';
-import Clipboard from 'clipboard';
+import randomizeBlockMapKeys from 'draft-js/lib/randomizeBlockMapKeys';
+import classNames from 'classnames';
 
 export interface CopyButtonProps {
   prefixCls?: string;
@@ -37,11 +36,9 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
     getBlockProps,
     getProps,
     getEditorRef,
-    getEditorState,
-    setEditorState,
   } = props;
 
-  const { block, offsetKey } = getBlockProps();
+  const { block } = getBlockProps();
 
   let locale: Locale = zhCN;
   if (getProps && languages) {
@@ -54,78 +51,59 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
 
   const handleBtnClick = (e: MouseEvent) => {
     e.preventDefault();
-    const editorState = getEditorState();
     const editorRef = getEditorRef();
 
-    // if (editorState.getSelection().isCollapsed()) {
-    //   return;
-    // }
-    // try {
-    // const data = new DataTransfer();
-    // data.setData('text/html', '<img src="xxxxxxxxxxx"/>')
-    navigator.clipboard
-      .write([
-        new ClipboardItem({
-          // 加入 text 使 dataTransfer.isRichText === true
-          'text/plain': new Blob(['eeeditor.atomic-block.paste'], {
-            type: 'text/plain',
+    try { 
+      navigator.clipboard
+        .write([
+          new ClipboardItem({
+            // 加入 text 使 dataTransfer.isRichText === true
+            'text/plain': new Blob(['eeeditor.atomic-block.paste'], {
+              type: 'text/plain',
+            }),
+            // 加入 data-editor 使 editOnPaste 使用 internalClipboard 直接插入 fragment, 如果使用自定义 handlePastedText，不添加 data-editor 也可以
+            'text/html': new Blob(
+              [
+                `<figure data-block="true" data-editor="${getEditorRef().getEditorKey()}"></figure>`,
+              ],
+              { type: 'text/html' },
+            ),
           }),
-          // 加入 data-editor 使 editOnPaste 使用 internalClipboard 直接插入 fragment, 如果使用自定义 handlePastedText，不添加 data-editor 也可以
-          'text/html': new Blob(
-            [
-              `<figure data-block="true" data-editor="${getEditorRef().getEditorKey()}"></figure>`,
-            ],
-            { type: 'text/html' },
-          ),
-        }),
-      ])
-      .then(() => {
-        message.open({
-          content:
-            locale['eeeditor.block.toolbar.copy.success.msg'] ||
-            'eeeditor.block.toolbar.copy.success.msg',
-          type: 'info',
-          duration: 3,
-          className: `${prefixCls}-message`,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        message.open({
-          content:
-            locale['eeeditor.block.toolbar.copy.error.msg'] ||
-            'eeeditor.block.toolbar.copy.error.msg',
-          type: 'error',
-          duration: 3,
-          className: `${prefixCls}-message`,
-        });
-      });
+        ])
+        .then(() => {
+          message.open({
+            content:
+              locale['eeeditor.block.toolbar.copy.success.msg'] ||
+              'eeeditor.block.toolbar.copy.success.msg',
+            type: 'info',
+            duration: 3,
+            className: `${prefixCls}-message`,
+          });
+        })
+        .catch(() => {
+          message.open({
+            content:
+              locale['eeeditor.block.toolbar.copy.error.msg'] ||
+              'eeeditor.block.toolbar.copy.error.msg',
+            type: 'error',
+            duration: 3,
+            className: `${prefixCls}-message`,
+          });
+        });  
+    } catch (err) {
+      message.open({
+        content:
+          locale['eeeditor.block.toolbar.copy.error.msg'] ||
+          'eeeditor.block.toolbar.copy.error.msg',
+        type: 'error',
+        duration: 3,
+        className: `${prefixCls}-message`,
+      });  
+    }
 
     editorRef.setClipboard(
-      getContentStateFragment(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-      ),
+      randomizeBlockMapKeys(BlockMapBuilder.createFromArray([block]))
     );
-    // } catch (err) {
-    //   message.open({
-    //     content:
-    //       locale['eeeditor.block.toolbar.copy.error.msg'] ||
-    //       'eeeditor.block.toolbar.copy.error.msg',
-    //     type: 'error',
-    //     duration: 3,
-    //     className: `${prefixCls}-message`,
-    //   });
-    // }
-
-    // message.open({
-    //   content:
-    //     locale['eeeditor.block.toolbar.copy.success.msg'] ||
-    //     'eeeditor.block.toolbar.copy.success.msg',
-    //   type: 'info',
-    //   duration: 3,
-    //   className: `${prefixCls}-message`,
-    // });
   };
 
   const getTipTitle = (name: string): ReactNode => (
@@ -134,6 +112,8 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
     </span>
   );
 
+  const btnCls = classNames(`${prefixCls}-popover-button`, className);
+
   return (
     <Tooltip
       title={getTipTitle('eeeditor.block.toolbar.copy.button.tip')}
@@ -141,7 +121,8 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
       overlayClassName={`${prefixCls}-tip-wrapper`}
     >
       <span
-        className={`${prefixCls}-popover-button`}
+        className={btnCls}
+        style={style}
         onClick={handleBtnClick}
         id="test"
       >

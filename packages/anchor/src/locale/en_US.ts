@@ -14,4 +14,5 @@ export default {
   'eeeditor.anchor.edit.text.placeholder':
     'Will use link url if no text provided',
   'eeeditor.anchor.copy.success.msg': 'Link copyed',
+  'eeeditor.anchor.copy.error.msg': 'Link copy failed',
 };

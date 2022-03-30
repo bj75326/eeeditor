@@ -107,21 +107,39 @@ const LinkPopover: React.FC<LinkPopoverProps> = (props) => {
     event.preventDefault();
     setPopoverVisible(false);
 
-    navigator.clipboard.writeText(formattedHref).then(
-      () => {
-        message.open({
-          content:
-            locale['eeeditor.anchor.copy.success.msg'] ||
-            'eeeditor.anchor.copy.success.msg',
-          type: 'info',
-          duration: 3,
-          className: `${prefixCls}-message`,
-        });
-      },
-      (error) => {
-        throw new Error(error);
-      },
-    );
+    try { 
+      navigator.clipboard.writeText(formattedHref).then(
+        () => {
+          message.open({
+            content:
+              locale['eeeditor.anchor.copy.success.msg'] ||
+              'eeeditor.anchor.copy.success.msg',
+            type: 'info',
+            duration: 3,
+            className: `${prefixCls}-message`,
+          });
+        },
+        () => {
+          message.open({
+            content:
+              locale['eeeditor.anchor.copy.error.msg'] ||
+              'eeeditor.anchor.copy.error.msg',
+            type: 'error',
+            duration: 3,
+            className: `${prefixCls}-message`,
+          });  
+        },
+      );
+    } catch (err) {
+      message.open({
+        content:
+          locale['eeeditor.anchor.copy.error.msg'] ||
+          'eeeditor.anchor.copy.error.msg',
+        type: 'error',
+        duration: 3,
+        className: `${prefixCls}-message`,
+      }); 
+    }
   };
   const handleDelete = (event: MouseEvent): void => {
     event.preventDefault();
