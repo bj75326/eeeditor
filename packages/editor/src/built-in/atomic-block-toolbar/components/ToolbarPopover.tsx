@@ -116,6 +116,19 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
     updatePopoverPosition();
   }, [block]);
 
+  //
+  // useEffect(() => {
+  //   if (popoverOffsetKey) {
+  //     const io = new IntersectionObserver((entries) => {
+  //       console.log('entries[0] ', entries[0]);
+  //     }, {
+  //       trackVisibility: true,
+  //     });
+
+  //     io.observe(document.querySelector('.test1'));
+  //   }
+  // }, [popoverOffsetKey]);
+
   const getContainer = () => {
     if (getEditorRef()) {
       return getEditorRootDomNode(getEditorRef()).ownerDocument.querySelector(
@@ -152,6 +165,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
               }}
               ref={motionRef}
             >
+              <div className="test1">test1</div>
               <div className={`${prefixCls}-popover-content`}>
                 <div className={`${prefixCls}-popover-inner`}>
                   {React.Children.map<ReactElement, ReactElement>(
@@ -164,6 +178,7 @@ export const ToolbarPopover: React.FC<ToolbarPopoverProps> = (props) => {
                   )}
                 </div>
               </div>
+              <div className="test2">test2</div>
             </div>
           )}
         </CSSMotion>,

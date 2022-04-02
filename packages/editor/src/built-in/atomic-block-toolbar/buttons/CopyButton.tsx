@@ -1,12 +1,7 @@
-import React, {
-  CSSProperties,
-  useContext,
-  ReactNode,
-  MouseEvent,
-} from 'react';
+import React, { CSSProperties, useContext, ReactNode, MouseEvent } from 'react';
 import { PluginMethods, EEEditorContext, BlockMapBuilder } from '../../..';
 import lang, { Languages, Locale, zhCN } from '../../../locale';
-import { AtomicBlockProps } from '../';
+import { AtomicBlockProps } from '..';
 import { Tooltip, message } from 'antd';
 import { copyIcon } from '../../../assets/extraIcons';
 import randomizeBlockMapKeys from 'draft-js/lib/randomizeBlockMapKeys';
@@ -53,9 +48,11 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
     e.preventDefault();
     const editorRef = getEditorRef();
 
-    try { 
+    try {
       navigator.clipboard
+        // @ts-ignore
         .write([
+          // @ts-ignore
           new ClipboardItem({
             // 加入 text 使 dataTransfer.isRichText === true
             'text/plain': new Blob(['eeeditor.atomic-block.paste'], {
@@ -89,7 +86,7 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
             duration: 3,
             className: `${prefixCls}-message`,
           });
-        });  
+        });
     } catch (err) {
       message.open({
         content:
@@ -98,11 +95,11 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
         type: 'error',
         duration: 3,
         className: `${prefixCls}-message`,
-      });  
+      });
     }
 
     editorRef.setClipboard(
-      randomizeBlockMapKeys(BlockMapBuilder.createFromArray([block]))
+      randomizeBlockMapKeys(BlockMapBuilder.createFromArray([block])),
     );
   };
 
@@ -120,12 +117,7 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
       placement={placement}
       overlayClassName={`${prefixCls}-tip-wrapper`}
     >
-      <span
-        className={btnCls}
-        style={style}
-        onClick={handleBtnClick}
-        id="test"
-      >
+      <span className={btnCls} style={style} onClick={handleBtnClick} id="test">
         {copyIcon}
       </span>
     </Tooltip>

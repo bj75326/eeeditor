@@ -1,6 +1,4 @@
 import React, { ReactElement, useState } from 'react';
-import { PluginMethods } from '../../..';
-import { AtomicBlockProps } from '..';
 
 export interface RadioGroupProps {
   children?: ReactElement | ReactElement[];

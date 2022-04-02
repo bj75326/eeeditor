@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-const table = require('@eeeditor/table');
+const image = require('@eeeditor/table');
 
 // TODO: DEMONSTRATE API
 ```

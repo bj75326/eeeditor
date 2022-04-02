@@ -1,6 +1,6 @@
 export const getPopoverPlacement = (
   target: HTMLElement,
-  top: number = 40,
+  top: number = 60,
 ): 'top' | 'bottom' => {
   const targetRect = target.getBoundingClientRect();
   if (targetRect.top < top) {
