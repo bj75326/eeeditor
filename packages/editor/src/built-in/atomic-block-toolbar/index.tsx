@@ -18,6 +18,8 @@ export * from './components/SelectorGroup';
 
 export * from './buttons/CopyButton';
 
+export * from './buttons/DeleteButton';
+
 export interface AtomicBlockProps {
   block: ContentBlock;
   blockProps: {

@@ -103,9 +103,9 @@ const defaultCustomStyleMap: PluginEditorProps['customStyleMap'] = {
     fontFamily:
       'SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace',
   },
-  STRIKETHROUGH: {
-    textDecoration: 'line-through',
-  },
+  // STRIKETHROUGH: {
+  //   textDecoration: 'line-through',
+  // },
 };
 
 // ref 获取的 PluginEditor 实例对象的类型

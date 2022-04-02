@@ -7,6 +7,7 @@ import {
   Separator,
   SelectorGroup,
   CopyButton,
+  DeleteButton,
 } from '@eeeditor/editor';
 import ResizeButton from './ResizeButton';
 import CropButton from './CropButton';
@@ -77,6 +78,7 @@ const ImageToolbar: React.FC<ImageToolbarProps> = (props) => {
       </SelectorGroup>
       <Separator />
       <CopyButton languages={lang} />
+      <DeleteButton languages={lang} />
     </ToolbarPopover>
   );
 };

@@ -17,4 +17,5 @@ export default {
   'eeeditor.block.toolbar.copy.button.tip': 'Copy picture',
   'eeeditor.block.toolbar.copy.success.msg': 'Picture copied',
   'eeeditor.block.toolbar.copy.error.msg': 'Picture copy failed',
+  'eeeditor.block.toolbar.delete.button.tip': 'Delete picture',
 };

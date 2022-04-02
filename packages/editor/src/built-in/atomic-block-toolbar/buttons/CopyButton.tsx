@@ -117,7 +117,7 @@ const CopyButtonComponent: React.FC<CopyButtonProps & CopyButtonExtraProps> = (
       placement={placement}
       overlayClassName={`${prefixCls}-tip-wrapper`}
     >
-      <span className={btnCls} style={style} onClick={handleBtnClick} id="test">
+      <span className={btnCls} style={style} onClick={handleBtnClick}>
         {copyIcon}
       </span>
     </Tooltip>

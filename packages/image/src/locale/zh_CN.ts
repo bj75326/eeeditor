@@ -17,4 +17,5 @@ export default {
   'eeeditor.block.toolbar.copy.button.tip': '拷贝图片',
   'eeeditor.block.toolbar.copy.success.msg': '图片拷贝成功',
   'eeeditor.block.toolbar.copy.error.msg': '图片拷贝失败',
+  'eeeditor.block.toolbar.delete.button.tip': '删除图片',
 };
