@@ -13,6 +13,7 @@ import {
   PluginMethods,
   EEEditorContext,
   getEditorRootDomNode,
+  usePrevious,
 } from '@eeeditor/editor';
 import { Store } from '@draft-js-plugins/utils';
 import { AtomicBlockProps } from '@eeeditor/editor/es/built-in/atomic-block-toolbar';
@@ -137,7 +138,6 @@ export interface CropButtonExtraProps extends Partial<PluginMethods> {
 const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   props,
 ) => {
-  console.log('CropButtonComponent render ');
   const {
     prefixCls: customizePrefixCls,
     className,
@@ -156,13 +156,6 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
     updatePopoverPosition,
   } = props;
 
-  // // image src
-  // const { offsetKey } = getBlockProps();
-  // // const { src } = getEditorState().getCurrentContent().getEntity(block.getEntityAt(0)).getData();
-  // const imgEl = getEditorRootDomNode(getEditorRef()).querySelector(
-  //   `[data-block="true"][data-offset-key="${offsetKey}"] img`,
-  // );
-
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
@@ -175,8 +168,14 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   // 非受控组件使用
   const [active, setActive] = useState<boolean>(false);
 
+  // previous
+  const prevActive = usePrevious<boolean>(active);
+  const prevBtnKey = usePrevious<string>(btnKey);
+  const prevActiveBtn = usePrevious<string>(activeBtn);
+
   const handleBtnClick = (e: MouseEvent): void => {
     e.preventDefault();
+    // 更新 button 状态
     if (btnKey) {
       const newActiveBtn = activeBtn === btnKey ? '' : btnKey;
       changeActiveBtn(newActiveBtn);
@@ -190,14 +189,6 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
   const [y, setY] = useState<number>();
 
   // ref 记录 crop bar 位置
-  // const [cropTl, setCropTl] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropT, setCropT] = useState<CropBarPosition>({x: 0, y: 0});
-  // const [cropTr, setCropTr] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropL, setCropL] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropR, setCropR] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropBl, setCropBl] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropB, setCropB] = useState<CropBarPosition>({ x: 0, y: 0 });
-  // const [cropBr, setCropBr] = useState<CropBarPosition>({ x: 0, y: 0 });
   const cropTl = useRef<CropBarPosition>({ x: 0, y: 0 });
   const cropT = useRef<CropBarPosition>({ x: 0, y: 0 });
   const cropTr = useRef<CropBarPosition>({ x: 0, y: 0 });
@@ -607,6 +598,29 @@ const CropButtonComponent: React.FC<CropButtonProps & CropButtonExtraProps> = (
       }
     };
   }, []);
+
+  useLayoutEffect(() => {
+    if (
+      (btnKey && prevActiveBtn === btnKey && activeBtn !== btnKey) ||
+      (!btnKey && prevActive && !active)
+    ) {
+      store.updateItem('cropOffsetKey', '');
+
+      setEditorState(
+        updateCropPositions(getEditorState(), getBlockProps().block, {
+          cropBasedWidth: cropBasedWidth.current,
+          cropTl: `${cropTl.current.x},${cropTl.current.y}`,
+          cropT: `${cropT.current.x},${cropT.current.y}`,
+          cropTr: `${cropTr.current.x},${cropTr.current.y}`,
+          cropL: `${cropL.current.x},${cropL.current.y}`,
+          cropR: `${cropR.current.x},${cropR.current.y}`,
+          cropBl: `${cropBl.current.x},${cropBl.current.y}`,
+          cropB: `${cropB.current.x},${cropB.current.y}`,
+          cropBr: `${cropBr.current.x},${cropBr.current.y}`,
+        }),
+      );
+    }
+  }, [active, btnKey, activeBtn]);
 
   // 根据 x, y 计算出当前各个 crop bar 位置
   const getCropBarPositions = (): Positions => {
