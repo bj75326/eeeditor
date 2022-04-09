@@ -33,6 +33,15 @@ import DefaultImageToolbar, {
   ImageToolbarProps,
 } from './components/ImageToolbar';
 
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
+// import {request} from '@octokit/request';
+// import { Coding } from 'coding-picbed';
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
+// todo 开发使用配置 必须删除！！！
+
 export * from './locale';
 
 export interface ImageEntityData {
@@ -145,6 +154,9 @@ const getFileName = (file: RcFile): string => {
   const { name, uid } = file;
   return `${uid}.${name.split('.').pop()}`;
 };
+
+// gitee 图床
+// gitee 已经禁止外链图床
 const defaultUploadProps: ImageUploadProps = {
   action: (file) =>
     `https://gitee.com/api/v5/repos/bj75326/image-bed/contents/images/${getFileName(
@@ -176,6 +188,106 @@ const defaultUploadProps: ImageUploadProps = {
   },
   imagePath: ['content', 'download_url'],
 };
+
+// github 图床
+// download_url 已经被墙
+// const defaultUploadProps: ImageUploadProps = {
+//   data: (file) => {
+//     return new Promise((resolve) => {
+//       const reader = new FileReader();
+//       reader.onload = (e: ProgressEvent<FileReader>) => {
+//         resolve({
+//           path: `images/${getFileName(
+//             file.originFileObj ? file.originFileObj : (file as RcFile),
+//           )}`,
+//           message: 'upload image from eeeditor',
+//           content: (e.target.result as string).replace(
+//             'data:image/png;base64,',
+//             '',
+//           ),
+//         });
+//       };
+//       // 异常处理省略
+//       reader.readAsDataURL(
+//         file.originFileObj ? file.originFileObj : (file as RcFile),
+//       );
+//     });
+//   },
+//   customRequest: (options) => {
+//     const { data, onSuccess, onError} = options;
+//     request('PUT /repos/{owner}/{repo}/contents/{path}', {
+//       owner: 'bj75326',
+//       repo: 'image-bed',
+//       path: (data as any).path,
+//       headers: {
+//         authorization: "token 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"
+//       },
+//       message: (data as any).message,
+//       content: (data as any).content,
+//     }).then((response) => {
+//       console.log('response -> ', response);
+//       onSuccess(response, null);      
+//     }).catch((error) => {
+//       console.log('error -> ', error);
+//       onError(null);
+//     });
+//   },
+//   imagePath: ['data','content', 'download_url'],
+// };
+
+// coding 图床
+// const defaultUploadProps: ImageUploadProps = {
+//   data: (file) => {
+//     const xhr = new XMLHttpRequest();
+//     xhr.onreadystatechange = () => { 
+//       console.log('xhr ===> ', xhr.status);
+//     };
+
+//     xhr.open('POST', 'https://e.coding.net/open-api?Action=DescribeGitCommits');
+//     xhr.setRequestHeader('Content-type', 'application/json');
+//     xhr.setRequestHeader('Authorization', 'token a679d629f984e0513d4d4d37889eb814f5b6c2e3');
+
+//     xhr.send('{"Action": "DescribeGitCommits", "DepotId": 9483314, "Ref": "master"}');
+
+//     return null;
+
+//     // return new Promise((resolve) => {
+//     //   const reader = new FileReader();
+//     //   reader.onload = (e: ProgressEvent<FileReader>) => {
+//     //     resolve({
+//     //       path: `images/${getFileName(
+//     //         file.originFileObj ? file.originFileObj : (file as RcFile),
+//     //       )}`,
+//     //       message: 'upload image from eeeditor',
+//     //       content: (e.target.result as string).replace(
+//     //         'data:image/png;base64,',
+//     //         '',
+//     //       ),
+//     //     });
+//     //   };
+//     //   // 异常处理省略
+//     //   reader.readAsDataURL(
+//     //     file.originFileObj ? file.originFileObj : (file as RcFile),
+//     //   );
+//     // });
+//   },
+
+  // customRequest: (options) => {
+  //   const { } = options;
+  //   const coding = new Coding();  
+  //   coding.config({
+  //     token: 'a679d629f984e0513d4d4d37889eb814f5b6c2e3',
+  //     repository: 'https://bj75326.coding.net/p/image-bed/d/image-bed/git',
+  //   }).then(() => {
+  //     return coding.upload();
+  //   }).then(() => {
+      
+  //   }).catch(() => {
+      
+  //   });
+  // },
+// };
+
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
 // todo 开发使用配置 必须删除！！！
