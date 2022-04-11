@@ -139,7 +139,7 @@ const ImageButton: React.FC<ImageButtonProps & ImageButtonExtraProps> = (
   let locale: Locale = zhCN;
   if (getProps && languages) {
     const { locale: currLocale } = getProps();
-    locale = languages[currLocale];
+    locale = languages[currLocale] || zhCN;
   }
 
   const { getPrefixCls } = useContext(EEEditorContext);

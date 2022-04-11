@@ -2,6 +2,9 @@ import React, {} from 'react';
 import { EditorPlugin, PluginMethods } from '@eeeditor/editor';
 import { Store, createStore } from '@draft-js-plugins/utils';
 import { Map } from 'immutable';
+import TableWrapper from './components/TableWrapper';
+
+export * from './locale';
 
 interface TablePluginConfig {
 
@@ -28,7 +31,7 @@ const createTablePlugin = ({
     blockRenderMap: Map({
       'table-cell': {
         element: "div",
-        // wrapper: 
+        wrapper: TableWrapper
       }
     }),
   };
