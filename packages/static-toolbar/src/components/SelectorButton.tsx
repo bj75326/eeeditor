@@ -70,6 +70,7 @@ const SelectorButton: React.FC<SelectorButtonProps & ToolbarChildrenProps> = (
   const defaultChildrenTipProps: Partial<Omit<TooltipPropsWithTitle, 'title'>> =
     {
       placement: textDirectionality === 'RTL' ? 'left' : 'right',
+      getPopupContainer: (triggerNode) => triggerNode.parentElement,
     };
 
   const [visible, setVisible] = useState<boolean>(false);

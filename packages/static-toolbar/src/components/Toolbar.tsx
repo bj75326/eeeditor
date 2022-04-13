@@ -65,12 +65,17 @@ interface ToolbarProps extends ToolbarPubProps {
   store: StaticToolbarPluginStore;
 }
 
+const defaultChildrenTipProps: Partial<Omit<TooltipPropsWithTitle, 'title'>> = {
+  placement: 'bottom',
+  getPopupContainer: (triggerNode) => triggerNode.parentElement,
+};
+
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const {
     prefixCls: customizePrefixCls,
     className,
     style,
-    childrenTipProps = { placement: 'bottom' },
+    childrenTipProps,
     children,
     store,
   } = props;
@@ -173,7 +178,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       );
     },
     // static toolbar 默认的 button tip props
-    tipProps: childrenTipProps,
+    tipProps: { ...defaultChildrenTipProps, ...childrenTipProps },
   };
 
   const defaultButtons = (

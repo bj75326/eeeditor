@@ -16,6 +16,7 @@
     "@eeeditor/image": "1.0.0",
     "@eeeditor/inline-toolbar": "1.0.0",
     "@eeeditor/static-toolbar": "1.0.0",
+    "@eeeditor/table": "1.0.0",
     "@eeeditor/undo": "1.0.0",
     "@icon-park/react": "^1.2.0",
     "@umijs/plugin-antd": "^0.9.1",

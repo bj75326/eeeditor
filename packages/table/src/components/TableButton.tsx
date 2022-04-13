@@ -256,21 +256,25 @@ const TableButton: React.FC<TableButtonProps & TableButtonExtraProps> = (
 
   const popoverContent = (
     <div className={`${prefixCls}-table-selector`}>
-      {Array(getRow()).map((_, rowIndex) => (
-        <div className={`${prefixCls}-table-selector-row`} key={rowIndex}>
-          {Array(getColumn()).map((_, columnIndex) => (
-            <TableSelectorCell
-              row={rowIndex + 1}
-              column={columnIndex + 1}
-              currRow={row}
-              currColumn={column}
-              changeRow={updateRow}
-              changeColumn={updateColumn}
-              key={columnIndex}
-            />
-          ))}
-        </div>
-      ))}
+      {Array(getRow())
+        .fill(null)
+        .map((_, rowIndex) => (
+          <div className={`${prefixCls}-table-selector-row`} key={rowIndex}>
+            {Array(getColumn())
+              .fill(null)
+              .map((_, columnIndex) => (
+                <TableSelectorCell
+                  row={rowIndex + 1}
+                  column={columnIndex + 1}
+                  currRow={row}
+                  currColumn={column}
+                  changeRow={updateRow}
+                  changeColumn={updateColumn}
+                  key={columnIndex}
+                />
+              ))}
+          </div>
+        ))}
     </div>
   );
 
@@ -285,6 +289,8 @@ const TableButton: React.FC<TableButtonProps & TableButtonExtraProps> = (
           content={popoverContent}
           placement={popoverPlacement}
           trigger="click"
+          overlayClassName={`${prefixCls}-table-selector-popover`}
+          getPopupContainer={(triggerNode) => triggerNode.parentElement}
         >
           <Tooltip
             title={tipTitle}

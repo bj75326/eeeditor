@@ -20,6 +20,7 @@ import createUndoPlugin from '@eeeditor/undo';
 import createDividerPlugin from '@eeeditor/divider';
 import createAnchorPlugin from '@eeeditor/anchor';
 import createImagePlugin from '@eeeditor/image';
+import createTablePlugin from '@eeeditor/table';
 import {
   defaultHeadIcon,
   defaultAlignLeftIcon,
@@ -78,6 +79,7 @@ import '@eeeditor/anchor/es/style';
 import '@eeeditor/inline-toolbar/es/style';
 import '@eeeditor/side-toolbar/es/style';
 import '@eeeditor/image/es/style';
+import '@eeeditor/table/es/style';
 import { EEEditorProps } from '@eeeditor/editor/es/Editor';
 
 SyntaxHighlighter.registerLanguage('json', json);
@@ -105,6 +107,8 @@ const { LinkButton, ...anchorPlugin } = createAnchorPlugin({});
 
 const { ImageButton, ...imagePlugin } = createImagePlugin({});
 
+const { TableButton, ...tablePlugin } = createTablePlugin({});
+
 const plugins: EditorPlugin[] = [
   staticToolbarPlugin,
   inlineToolbarPlugin,
@@ -113,6 +117,7 @@ const plugins: EditorPlugin[] = [
   dividerPlugin,
   anchorPlugin,
   imagePlugin,
+  tablePlugin,
 ];
 
 export interface PageProps extends ConnectProps {
@@ -593,6 +598,7 @@ const Page: React.FC<PageProps> = (props) => {
               <BlockquoteButton />
               <DividerButton />
               <ImageButton />
+              <TableButton />
               <Separator />
               <DecoratedUndoButton />
               <DecoratedRedoButton />
@@ -632,6 +638,7 @@ const Page: React.FC<PageProps> = (props) => {
                 <BlockquoteButton />
                 <DividerButton />
                 <ImageButton />
+                <TableButton />
               </SideToolbar>
             </>
           )}
